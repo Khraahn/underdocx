@@ -29,6 +29,7 @@ import de.underdocx.common.doc.odf.OdtContainer;
 import de.underdocx.enginelayers.defaultodtengine.DefaultODTEngine;
 import de.underdocx.enginelayers.modelengine.model.ModelNode;
 import de.underdocx.enginelayers.modelengine.model.simple.LeafModelNode;
+import de.underdocx.enginelayers.modelengine.model.simple.ReflectionInterceptorRegistry;
 import de.underdocx.enginelayers.modelengine.model.simple.ReflectionModelNode;
 import org.junit.jupiter.api.Test;
 
@@ -96,6 +97,23 @@ public class ReflectionModelTest extends AbstractOdtTest {
         show(doc);
         assertContains(doc, "Item1");
         assertContains(doc, "42");
+        assertNoPlaceholders(doc);
+    }
+
+    @Test
+    public void testInterceptor() {
+        OdtContainer doc = new OdtContainer("" +
+                "${@a}      \n" +
+                "${@c}      \n");
+        DefaultODTEngine engine = new DefaultODTEngine(doc);
+        engine.setModel(new TestClassA());
+        ReflectionInterceptorRegistry.DEFAULT.register(TestClassA.class, "c",
+                (reflectionObject, requestedProperty) -> Optional.of(new LeafModelNode("Hugo")));
+        show(doc);
+        engine.run();
+        show(doc);
+        assertContains(doc, "Hallo");
+        assertContains(doc, "Hugo");
         assertNoPlaceholders(doc);
     }
 }

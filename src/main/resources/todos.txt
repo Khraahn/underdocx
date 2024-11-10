@@ -17,4 +17,3 @@
 - Wert-Auflösungsmethoden überarbeiten
   - Konvertierung ausgliedern
   - Zugriff auf das Model ausgliedern
-- Interceptor für Reflection anbieten

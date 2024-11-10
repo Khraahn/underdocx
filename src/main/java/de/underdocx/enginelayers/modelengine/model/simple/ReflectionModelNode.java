@@ -37,7 +37,7 @@ public class ReflectionModelNode extends AbstractModelNode<Object> implements Mo
 
     private final Object containedValue;
     protected ModelNode parent;
-    protected Resolver resolver = null;
+    protected Resolver resolver = ReflectionInterceptorRegistry.DEFAULT;
 
     public ReflectionModelNode(Object object) {
         this.containedValue = object;
