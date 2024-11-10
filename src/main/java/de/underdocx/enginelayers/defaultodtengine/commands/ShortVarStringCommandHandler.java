@@ -22,34 +22,28 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-package de.underdocx.enginelayers.modelengine.modelaccess;
+package de.underdocx.enginelayers.defaultodtengine.commands;
 
+import de.underdocx.common.doc.DocContainer;
+import de.underdocx.enginelayers.defaultodtengine.commands.internal.AbstractTextualCommandHandler;
 import de.underdocx.enginelayers.modelengine.model.ModelNode;
-import de.underdocx.enginelayers.modelengine.modelpath.ModelPath;
-import de.underdocx.tools.common.Pair;
+import de.underdocx.tools.common.Regex;
 
 import java.util.Optional;
 
-public interface ModelAccess {
+public class ShortVarStringCommandHandler<C extends DocContainer<D>, D> extends AbstractTextualCommandHandler<C, D> {
 
-    Optional<ModelNode> getCurrentModelNode();
+    public final static Regex KEYS = new Regex("[$]\\S+");
 
-    ModelNode getRootModelNode();
+    public ShortVarStringCommandHandler() {
+        super(KEYS);
+    }
 
-    ModelPath getCurrentModelPath();
-
-    void setCurrentModelPath(ModelPath modelPath);
-
-    Pair<String, Optional<ModelNode>> interpret(String suffix, boolean setAsCurrent);
-
-    @Deprecated
-    void setCurrentPath(String modelPath);
-
-    void popVariable(String name);
-
-    Optional<ModelNode> getVariable(String name);
-
-    void pushVariable(String name, ModelNode value);
-
+    protected CommandHandlerResult tryExecuteTextualCommand() {
+        String pathStr = placeholderData.getKey().substring(1);
+        Optional<ModelNode> modelData = modelAccess.getVariable(pathStr);
+        ShortModelStringCommandHandler.writeModelNode(selection, modelData);
+        return CommandHandlerResult.EXECUTED;
+    }
 
 }
