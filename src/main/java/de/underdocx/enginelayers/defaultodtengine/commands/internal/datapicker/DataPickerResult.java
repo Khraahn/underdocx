@@ -22,24 +22,45 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-package de.underdocx.enginelayers.defaultodtengine.commands;
+package de.underdocx.enginelayers.defaultodtengine.commands.internal.datapicker;
 
-import de.underdocx.common.doc.DocContainer;
-import de.underdocx.enginelayers.defaultodtengine.commands.internal.AbstractTextualCommandHandler;
-import de.underdocx.tools.common.Regex;
+import java.util.Optional;
 
-public class ForCommandHandler<C extends DocContainer<D>, D> extends AbstractTextualCommandHandler<C, D> {
+public class DataPickerResult<T> {
 
-    public static final Regex KEYS = new Regex("For|EndFor");
+    public enum ResultType {
+        RESOLVED(true), // value recieved, null value might be valid
+        UNRESOLVED_INVALID_ATTR_VALUE(false), // For example invalid ModelPath syntax
+        UNRESOLVED_MISSING_ATTR(false), // For example mandatory "@value" attribute is missing
+        UNRESOLVED_MISSING_VALUE(false); // For example model does not contain requiested data
 
-    public ForCommandHandler() {
-        super(KEYS);
+        private final boolean resolved;
+
+        ResultType(boolean resolved) {
+            this.resolved = resolved;
+        }
     }
 
-    @Override
-    protected CommandHandlerResult tryExecuteTextualCommand() {
+    public T value;
+    public ResultType type;
 
-
-        return CommandHandlerResult.IGNORED;
+    public boolean isResolved() {
+        return type.resolved;
     }
+
+    public Optional<T> getOptionalValue() {
+        return Optional.ofNullable(value);
+    }
+
+    public DataPickerResult(T value) {
+        this.type = ResultType.RESOLVED;
+        this.value = value;
+    }
+
+    public DataPickerResult(ResultType type) {
+        this.type = type;
+        this.value = null;
+    }
+
+
 }

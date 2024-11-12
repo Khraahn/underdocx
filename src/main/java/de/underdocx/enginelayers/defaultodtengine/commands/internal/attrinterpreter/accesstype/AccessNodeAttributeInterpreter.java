@@ -22,24 +22,27 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-package de.underdocx.enginelayers.defaultodtengine.commands;
+package de.underdocx.enginelayers.defaultodtengine.commands.internal.attrinterpreter.accesstype;
 
-import de.underdocx.common.doc.DocContainer;
-import de.underdocx.enginelayers.defaultodtengine.commands.internal.AbstractTextualCommandHandler;
-import de.underdocx.tools.common.Regex;
+import com.fasterxml.jackson.databind.JsonNode;
+import de.underdocx.common.codec.JsonCodec;
+import de.underdocx.enginelayers.defaultodtengine.commands.internal.attrinterpreter.AbstractAttributeInterpreter;
+import de.underdocx.enginelayers.modelengine.model.ModelNode;
+import de.underdocx.enginelayers.modelengine.model.simple.AbstractPredefinedModelNode;
 
-public class ForCommandHandler<C extends DocContainer<D>, D> extends AbstractTextualCommandHandler<C, D> {
+import java.util.Optional;
 
-    public static final Regex KEYS = new Regex("For|EndFor");
+public class AccessNodeAttributeInterpreter extends AbstractAttributeInterpreter<Optional<ModelNode>, String> {
 
-    public ForCommandHandler() {
-        super(KEYS);
-    }
 
     @Override
-    protected CommandHandlerResult tryExecuteTextualCommand() {
-
-
-        return CommandHandlerResult.IGNORED;
+    protected Optional<ModelNode> interpretAttributes() {
+        Optional<JsonNode> attrValue = getComplexAttribute(configuration);
+        if (attrValue.isPresent()) {
+            JsonNode json = attrValue.get();
+            Object obj = new JsonCodec().getAsObject(json);
+            return Optional.of(AbstractPredefinedModelNode.createRootNode(obj));
+        }
+        return Optional.empty();
     }
 }

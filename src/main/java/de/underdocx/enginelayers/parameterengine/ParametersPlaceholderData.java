@@ -47,29 +47,41 @@ public interface ParametersPlaceholderData {
 
     void addStringAttribute(String property, String value);
 
+    @Deprecated
+    // Use AbstractAttributeInterpreter
     default boolean hasAttribute(String property) {
         return getJson() != null && getJson().has(property);
     }
 
+    @Deprecated
+    // Use AbstractAttributeInterpreter
     default boolean hasNotNullAttribute(String property) {
         return getJson() != null && getJson().hasNonNull(property);
     }
 
+    @Deprecated
+    // Use AbstractAttributeInterpreter
     default Optional<String> getStringAttribute(String property) {
         return buildOptional(w -> ifNotNull(getJson(),
                 json -> ifIs(json.get(property), jp -> jp != null && jp.isTextual(), jp -> w.value = jp.asText())));
     }
 
+    @Deprecated
+    // Use AbstractAttributeInterpreter
     default Optional<Integer> getIntegerAttribute(String property) {
         return buildOptional(w -> ifNotNull(getJson(),
                 json -> ifIs(json.get(property), jp -> jp != null && jp.isInt(), jp -> w.value = jp.asInt())));
     }
 
+    @Deprecated
+    // Use AbstractAttributeInterpreter
     default Optional<Double> getDoubleAttribute(String property) {
         return buildOptional(w -> ifNotNull(getJson(),
                 json -> ifIs(json.get(property), jp -> jp != null && jp.isDouble(), jp -> w.value = jp.asDouble())));
     }
 
+    @Deprecated
+    // Use AbstractAttributeInterpreter
     default Optional<Boolean> getBooleanAttribute(String property) {
         return buildOptional(w -> ifNotNull(getJson(),
                 json -> ifIs(json.get(property), jp -> jp != null && jp.isBoolean(), jp -> w.value = jp.asBoolean())));

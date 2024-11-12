@@ -22,24 +22,13 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-package de.underdocx.enginelayers.defaultodtengine.commands;
+package de.underdocx.enginelayers.defaultodtengine.commands.internal.attrinterpreter;
 
-import de.underdocx.common.doc.DocContainer;
-import de.underdocx.enginelayers.defaultodtengine.commands.internal.AbstractTextualCommandHandler;
-import de.underdocx.tools.common.Regex;
+import com.fasterxml.jackson.databind.JsonNode;
 
-public class ForCommandHandler<C extends DocContainer<D>, D> extends AbstractTextualCommandHandler<C, D> {
+public interface AttributesInterpreter<R, C> {
 
-    public static final Regex KEYS = new Regex("For|EndFor");
-
-    public ForCommandHandler() {
-        super(KEYS);
-    }
-
-    @Override
-    protected CommandHandlerResult tryExecuteTextualCommand() {
+    R interpretAttributes(JsonNode attributes, C configuration);
 
 
-        return CommandHandlerResult.IGNORED;
-    }
 }

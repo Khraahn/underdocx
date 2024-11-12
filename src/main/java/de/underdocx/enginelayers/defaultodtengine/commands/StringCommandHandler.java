@@ -29,7 +29,7 @@ import de.underdocx.enginelayers.baseengine.modifiers.deleteplaceholder.DeletePl
 import de.underdocx.enginelayers.baseengine.modifiers.deleteplaceholder.DeletePlaceholderModifierData;
 import de.underdocx.enginelayers.baseengine.modifiers.stringmodifier.ReplaceWithTextModifier;
 import de.underdocx.enginelayers.defaultodtengine.commands.internal.AbstractTextualCommandHandler;
-import de.underdocx.enginelayers.defaultodtengine.commands.internal.ResolvedAttributeValue;
+import de.underdocx.enginelayers.defaultodtengine.commands.internal.datapicker.DataPickerResult;
 import de.underdocx.enginelayers.modelengine.model.ModelNode;
 import de.underdocx.enginelayers.parameterengine.ParametersPlaceholderData;
 import de.underdocx.tools.common.Convenience;
@@ -39,7 +39,7 @@ import java.util.Optional;
 import java.util.regex.Pattern;
 
 public class StringCommandHandler<C extends DocContainer<D>, D> extends AbstractTextualCommandHandler<C, D> {
-    
+
     public final static Regex KEYS = new Regex(Pattern.quote("String"));
 
     public StringCommandHandler() {
@@ -47,12 +47,12 @@ public class StringCommandHandler<C extends DocContainer<D>, D> extends Abstract
     }
 
     protected CommandHandlerResult tryExecuteTextualCommand() {
-        ResolvedAttributeValue<String> resolvedText = resolveStringAttribute("value");
-        if (resolvedText.getValue() != null) {
-            new ReplaceWithTextModifier<C, ParametersPlaceholderData, D>().modify(selection, resolvedText.getValue());
+        DataPickerResult<String> resolvedText = resolveStringAttribute("value");
+        if (resolvedText.value != null) {
+            new ReplaceWithTextModifier<C, ParametersPlaceholderData, D>().modify(selection, resolvedText.value);
             return CommandHandlerResult.EXECUTED;
         }
-        if (resolvedText.getResolveType() == ResolvedAttributeValue.ResolveType.UNRESOLVED_NO_ATTRIBUTE) {
+        if (resolvedText.type == DataPickerResult.ResultType.UNRESOLVED_MISSING_ATTR) {
             Optional<String> txt = getTextNoAttribute();
             if (txt.isPresent()) {
                 new ReplaceWithTextModifier<C, ParametersPlaceholderData, D>().modify(selection, txt.get());

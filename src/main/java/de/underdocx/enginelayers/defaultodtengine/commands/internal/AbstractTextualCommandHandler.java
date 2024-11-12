@@ -27,6 +27,9 @@ package de.underdocx.enginelayers.defaultodtengine.commands.internal;
 import de.underdocx.common.doc.DocContainer;
 import de.underdocx.common.placeholder.TextualPlaceholderToolkit;
 import de.underdocx.enginelayers.baseengine.SelectedNode;
+import de.underdocx.enginelayers.defaultodtengine.commands.internal.datapicker.AttributeNodeDataPicker;
+import de.underdocx.enginelayers.defaultodtengine.commands.internal.datapicker.DataPickerResult;
+import de.underdocx.enginelayers.defaultodtengine.commands.internal.datapicker.StringConvertDataPicker;
 import de.underdocx.enginelayers.modelengine.model.ModelNode;
 import de.underdocx.enginelayers.parameterengine.ParametersPlaceholderData;
 import de.underdocx.enginelayers.parameterengine.internal.ParametersPlaceholderCodec;
@@ -51,10 +54,9 @@ public abstract class AbstractTextualCommandHandler<C extends DocContainer<D>, D
     }
 
 
-    protected ResolvedAttributeValue<String> resolveStringAttribute(String name) {
-        return AttributeResolver.resolveStringAttribute(name, modelAccess, placeholderData);
-    }
 
+
+    /*
     protected ResolvedAttributeValue<Boolean> resolveBooleanAttribute(String name) {
         return AttributeResolver.resolveBooleanAttribute(name, modelAccess, placeholderData);
     }
@@ -70,14 +72,21 @@ public abstract class AbstractTextualCommandHandler<C extends DocContainer<D>, D
     protected Optional<String> resolveValue() {
         return resolveStringAttribute("value").getOptionalValue();
     }
+    */
+
+
+    protected DataPickerResult<String> resolveStringAttribute(String name) {
+        return new StringConvertDataPicker(modelAccess, placeholderData.getJson()).pickData(name);
+    }
 
     protected Optional<String> resolveValue(String attrName) {
-        return resolveStringAttribute(attrName).getOptionalValue();
+        return new StringConvertDataPicker(modelAccess, placeholderData.getJson()).pickData(attrName).getOptionalValue();
     }
 
     protected Optional<ModelNode> resolveModelValue() {
-        return AttributeResolver.resolveModelNode("value", modelAccess, placeholderData).getOptionalValue();
+        return new AttributeNodeDataPicker(modelAccess, placeholderData.getJson()).pickData("value").getOptionalValue();
     }
+
 
     @Override
     protected CommandHandlerResult tryExecuteCommand() {

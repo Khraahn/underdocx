@@ -22,24 +22,16 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-package de.underdocx.enginelayers.defaultodtengine.commands;
+package de.underdocx.enginelayers.defaultodtengine.commands.internal.datapicker;
 
-import de.underdocx.common.doc.DocContainer;
-import de.underdocx.enginelayers.defaultodtengine.commands.internal.AbstractTextualCommandHandler;
-import de.underdocx.tools.common.Regex;
+import java.util.Optional;
 
-public class ForCommandHandler<C extends DocContainer<D>, D> extends AbstractTextualCommandHandler<C, D> {
+public interface DataPicker<T> {
 
-    public static final Regex KEYS = new Regex("For|EndFor");
+    DataPickerResult<T> pickData(String name);
 
-    public ForCommandHandler() {
-        super(KEYS);
+    default Optional<T> getData(String name) {
+        return pickData(name).getOptionalValue();
     }
 
-    @Override
-    protected CommandHandlerResult tryExecuteTextualCommand() {
-
-
-        return CommandHandlerResult.IGNORED;
-    }
 }

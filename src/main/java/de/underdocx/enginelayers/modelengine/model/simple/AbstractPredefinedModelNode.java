@@ -73,21 +73,24 @@ public abstract class AbstractPredefinedModelNode<T> extends AbstractModelNode<T
 
     @Override
     protected AbstractPredefinedModelNode<?> create(Object object) {
+        return also(createRootNode(object), result -> result.setParent(this));
+    }
+
+    public static AbstractPredefinedModelNode<?> createRootNode(Object object) {
         return build(w -> {
             if (object == null) {
                 w.value = new LeafModelNode<>(null);
             } else if (object instanceof Collection<?>) {
                 w.value = also(new ListModelNode(),
                         node -> ((List<?>) object).forEach(
-                                child -> node.add(create(child))));
+                                child -> node.add(node.create(child))));
             } else if (object instanceof Map<?, ?>) {
                 w.value = also(new MapModelNode(),
                         node -> ((Map<?, ?>) object).forEach(
-                                (key, value) -> node.add(String.valueOf(key), create(value))));
+                                (key, value) -> node.add(String.valueOf(key), node.create(value))));
             } else {
                 w.value = new LeafModelNode<>(object);
             }
-            w.value.setParent(this);
         });
     }
 

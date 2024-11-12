@@ -28,6 +28,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.json.JsonReadFeature;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.JsonNodeType;
 import de.underdocx.environment.UnderdocxEnv;
 import de.underdocx.environment.UnderdocxExecutionException;
 import de.underdocx.tools.common.Convenience;
@@ -138,5 +139,17 @@ public class JsonCodec implements Codec<JsonNode> {
             UnderdocxEnv.getInstance().logger.error(e);
             return Optional.empty();
         }
+    }
+
+    public Object getAsObject(JsonNode node) {
+        JsonNodeType type = node.getNodeType();
+        return switch (type) {
+            case BOOLEAN -> node.asBoolean();
+            case NUMBER -> node.isLong() ? node.asLong() : (node.isInt() ? node.asInt() : node.asDouble());
+            case STRING -> node.asText();
+            case ARRAY -> getAsList(node);
+            case OBJECT -> getAsObject(node);
+            default -> null;
+        };
     }
 }

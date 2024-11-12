@@ -22,24 +22,24 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-package de.underdocx.enginelayers.defaultodtengine.commands;
+package de.underdocx.enginelayers.defaultodtengine.commands.internal.attrinterpreter.accesstype;
 
-import de.underdocx.common.doc.DocContainer;
-import de.underdocx.enginelayers.defaultodtengine.commands.internal.AbstractTextualCommandHandler;
-import de.underdocx.tools.common.Regex;
+import de.underdocx.enginelayers.defaultodtengine.commands.internal.attrinterpreter.AbstractAttributeInterpreter;
 
-public class ForCommandHandler<C extends DocContainer<D>, D> extends AbstractTextualCommandHandler<C, D> {
+import java.util.Optional;
 
-    public static final Regex KEYS = new Regex("For|EndFor");
-
-    public ForCommandHandler() {
-        super(KEYS);
-    }
+public class AccessTypeInterpreter extends AbstractAttributeInterpreter<Optional<AccessType>, String> {
 
     @Override
-    protected CommandHandlerResult tryExecuteTextualCommand() {
-
-
-        return CommandHandlerResult.IGNORED;
+    protected Optional<AccessType> interpretAttributes() {
+        AccessType accessType = null;
+        if (hasAttribute(AccessType.MODEL.rename(configuration))) {
+            accessType = AccessType.MODEL;
+        } else if (hasAttribute(AccessType.VAR.rename(configuration))) {
+            accessType = AccessType.VAR;
+        } else if (hasAttribute(configuration)) {
+            accessType = AccessType.ATTR;
+        }
+        return Optional.ofNullable(accessType);
     }
 }
