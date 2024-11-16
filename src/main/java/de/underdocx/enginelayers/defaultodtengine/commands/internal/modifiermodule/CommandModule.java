@@ -22,26 +22,12 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-package de.underdocx.enginelayers.defaultodtengine.commands;
+package de.underdocx.enginelayers.defaultodtengine.commands.internal.modifiermodule;
 
 import de.underdocx.common.doc.DocContainer;
-import de.underdocx.enginelayers.defaultodtengine.commands.internal.AbstractStringCommandHandler;
-import de.underdocx.enginelayers.defaultodtengine.commands.internal.datapicker.ModelNameDataPicker;
-import de.underdocx.enginelayers.defaultodtengine.commands.internal.modifiermodule.stringoutput.StringOutputModuleConfig;
-import de.underdocx.tools.common.Regex;
+import de.underdocx.enginelayers.modelengine.MSelection;
 
-public class ShortModelStringCommandHandler<C extends DocContainer<D>, D> extends AbstractStringCommandHandler<C, D> {
+public interface CommandModule<C extends DocContainer<D>, P, D, R> {
 
-    public final static Regex KEYS = new Regex("@\\S*");
-
-    public ShortModelStringCommandHandler() {
-        super(KEYS);
-    }
-
-    @Override
-    protected StringOutputModuleConfig getConfig() {
-        String pathStr = placeholderData.getKey().substring(1);
-        return buildConfig(pathStr, new ModelNameDataPicker());
-    }
-
+    R execute(MSelection<C, P, D> selection);
 }

@@ -83,19 +83,21 @@ public class ModelPathCodec implements Codec<ModelPath> {
         }
 
         private List<ModelPathElement> parse() throws ModelPathParseException {
-            StringTokenizer t = new StringTokenizer(toParse, "<^[].", true);
-            while (t.hasMoreTokens()) {
-                String token = t.nextToken();
-                switch (token) {
-                    case "<" -> parseBack();
-                    case "^" -> parseRoot();
-                    case "[" -> parseBeginIndex();
-                    case "]" -> parseEndIndex();
-                    case "." -> parseSeparator();
-                    default -> parseToken(token);
+            if (!toParse.isBlank()) {
+                StringTokenizer t = new StringTokenizer(toParse, "<^[].", true);
+                while (t.hasMoreTokens()) {
+                    String token = t.nextToken();
+                    switch (token) {
+                        case "<" -> parseBack();
+                        case "^" -> parseRoot();
+                        case "[" -> parseBeginIndex();
+                        case "]" -> parseEndIndex();
+                        case "." -> parseSeparator();
+                        default -> parseToken(token);
+                    }
                 }
+                storeProperty();
             }
-            storeProperty();
             return result;
         }
 

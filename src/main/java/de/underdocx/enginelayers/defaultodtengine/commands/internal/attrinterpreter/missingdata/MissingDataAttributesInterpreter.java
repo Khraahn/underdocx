@@ -22,29 +22,28 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-package de.underdocx.enginelayers.defaultodtengine.commands.internal.attrinterpreter.accesstype;
+package de.underdocx.enginelayers.defaultodtengine.commands.internal.attrinterpreter.missingdata;
 
 import de.underdocx.enginelayers.defaultodtengine.commands.internal.attrinterpreter.AbstractAttributeInterpreter;
-import de.underdocx.enginelayers.defaultodtengine.commands.internal.attrinterpreter.AttributesInterpreter;
+import de.underdocx.tools.common.Convenience;
 
-public class AccessTypeInterpreter extends AbstractAttributeInterpreter<AccessType, String> {
+import java.util.Optional;
 
-    public static AttributesInterpreter DEFAULT = new AccessTypeInterpreter();
-
+public class MissingDataAttributesInterpreter extends AbstractAttributeInterpreter<MissingDataConfig, MissingDataConfig> {
     @Override
-    protected AccessType interpretAttributes() {
-        AccessType accessType = null;
-        if (configuration != null && hasAttribute(AccessType.ACCESS_MODEL_BY_NAME.rename(configuration))) {
-            accessType = AccessType.ACCESS_MODEL_BY_NAME;
-        } else if (configuration != null && hasAttribute(AccessType.ACCESS_VARIABLE_BY_NAME.rename(configuration))) {
-            accessType = AccessType.ACCESS_VARIABLE_BY_NAME;
-        } else if (configuration != null && hasAttribute(configuration)) {
-            accessType = AccessType.ACCESS_ATTR_VALUE;
-        } else if (configuration == null) {
-            accessType = AccessType.ACCESS_CURRENT_MODEL_NODE;
-        } else {
-            accessType = AccessType.MISSING_ACCESS;
-        }
-        return accessType;
+    protected MissingDataConfig interpretAttributes() {
+        return Convenience.also(new MissingDataConfig(configuration), result -> {
+            getStringAttribute("fallback").ifPresent(f -> result.fallback = f);
+            getStrategy(MissingDataSzenario.ERROR).ifPresent(f -> result.setStrategy(MissingDataSzenario.ERROR, f));
+            getStrategy(MissingDataSzenario.EMPTY).ifPresent(f -> result.setStrategy(MissingDataSzenario.EMPTY, f));
+            getStrategy(MissingDataSzenario.NULL).ifPresent(f -> result.setStrategy(MissingDataSzenario.NULL, f));
+        });
+    }
+
+    private Optional<MissingDataStrategy> getStrategy(MissingDataSzenario szenario) {
+        Optional<String> attrValue = getStringAttribute(szenario.getValue());
+        if (attrValue.isPresent())
+            return Optional.ofNullable(MissingDataStrategy.getByString(attrValue.get()));
+        return Optional.empty();
     }
 }

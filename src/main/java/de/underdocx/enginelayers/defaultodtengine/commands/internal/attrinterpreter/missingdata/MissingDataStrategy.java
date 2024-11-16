@@ -22,26 +22,35 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-package de.underdocx.enginelayers.defaultodtengine.commands;
+package de.underdocx.enginelayers.defaultodtengine.commands.internal.attrinterpreter.missingdata;
 
-import de.underdocx.common.doc.DocContainer;
-import de.underdocx.enginelayers.defaultodtengine.commands.internal.AbstractStringCommandHandler;
-import de.underdocx.enginelayers.defaultodtengine.commands.internal.datapicker.ModelNameDataPicker;
-import de.underdocx.enginelayers.defaultodtengine.commands.internal.modifiermodule.stringoutput.StringOutputModuleConfig;
-import de.underdocx.tools.common.Regex;
+public enum MissingDataStrategy {
+    SKIP("skip"),
+    FALLBACK("fallback"),
+    FAIL("fail"),
+    EMPTY("empty"),
+    DELETE_PLACEHOLDER_KEEP_PARAGRAPH("deletePlaceholderKeepParagraph"),
+    DELETE_PLACEHOLDER_DELETE_EMPTY_PARAGRAPH("deletePlaceholderDeleteEmptyParagraph"),
+    DELETE_PLACEHOLDER_DELETE_PARAGRAPH("deletePlaceholderDeleteParagraph"),
+    DELETE_PLACEHOLDER_DELETE_AREA("deletePlaceholderDeleteArea"),
+    KEEP_PLACEHOLDER("keepPlaceholder");
 
-public class ShortModelStringCommandHandler<C extends DocContainer<D>, D> extends AbstractStringCommandHandler<C, D> {
+    private final String value;
 
-    public final static Regex KEYS = new Regex("@\\S*");
-
-    public ShortModelStringCommandHandler() {
-        super(KEYS);
+    MissingDataStrategy(String value) {
+        this.value = value;
     }
 
-    @Override
-    protected StringOutputModuleConfig getConfig() {
-        String pathStr = placeholderData.getKey().substring(1);
-        return buildConfig(pathStr, new ModelNameDataPicker());
+    public String getValue() {
+        return value;
     }
 
+    public static MissingDataStrategy getByString(String string) {
+        for (MissingDataStrategy value : MissingDataStrategy.values()) {
+            if (value.value.equals(string)) {
+                return value;
+            }
+        }
+        return null;
+    }
 }

@@ -51,11 +51,9 @@ public class ShortStringTest extends AbstractOdtTest {
                 "C ${@^c.d[1]} C            \n" +
                 "D ${@^no} D                \n";
         OdtContainer doc = new OdtContainer(documentStr);
-        show(doc);
         DefaultODTEngine engine = new DefaultODTEngine(doc);
         engine.setModel(new MapModelNode(jsonString));
         engine.run();
-        show(doc);
         assertContains(doc, "A Test0 A");
         assertContains(doc, "B Test0 B");
         assertContains(doc, "C Test3 C");

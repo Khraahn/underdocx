@@ -22,26 +22,31 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-package de.underdocx.enginelayers.defaultodtengine.commands;
+package de.underdocx.enginelayers.defaultodtengine.commands.internal.modifiermodule.missingdata;
 
-import de.underdocx.common.doc.DocContainer;
-import de.underdocx.enginelayers.defaultodtengine.commands.internal.AbstractStringCommandHandler;
-import de.underdocx.enginelayers.defaultodtengine.commands.internal.datapicker.ModelNameDataPicker;
-import de.underdocx.enginelayers.defaultodtengine.commands.internal.modifiermodule.stringoutput.StringOutputModuleConfig;
-import de.underdocx.tools.common.Regex;
+public class MissingDataCommandModuleResult<M> {
 
-public class ShortModelStringCommandHandler<C extends DocContainer<D>, D> extends AbstractStringCommandHandler<C, D> {
-
-    public final static Regex KEYS = new Regex("@\\S*");
-
-    public ShortModelStringCommandHandler() {
-        super(KEYS);
+    public enum MissingDataCommandModuleResultType {
+        STRATEGY_EXECUTED,
+        VALUE_RECEIVED,
+        SKIP
     }
 
-    @Override
-    protected StringOutputModuleConfig getConfig() {
-        String pathStr = placeholderData.getKey().substring(1);
-        return buildConfig(pathStr, new ModelNameDataPicker());
+    public M value = null;
+
+    public MissingDataCommandModuleResultType resultType;
+
+    public MissingDataCommandModuleResult(M value) {
+        this.value = value;
+        this.resultType = MissingDataCommandModuleResultType.VALUE_RECEIVED;
     }
 
+    public MissingDataCommandModuleResult(MissingDataCommandModuleResultType type) {
+        this.resultType = MissingDataCommandModuleResultType.STRATEGY_EXECUTED;
+    }
+
+    public MissingDataCommandModuleResult(MissingDataCommandModuleResultType type, M value) {
+        this.resultType = type;
+        this.value = value;
+    }
 }

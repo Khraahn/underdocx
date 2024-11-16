@@ -25,13 +25,12 @@ SOFTWARE.
 package de.underdocx.enginelayers.defaultodtengine.commands;
 
 import de.underdocx.common.doc.DocContainer;
-import de.underdocx.enginelayers.defaultodtengine.commands.internal.AbstractTextualCommandHandler;
-import de.underdocx.enginelayers.modelengine.model.ModelNode;
+import de.underdocx.enginelayers.defaultodtengine.commands.internal.AbstractStringCommandHandler;
+import de.underdocx.enginelayers.defaultodtengine.commands.internal.datapicker.VarNameDataPicker;
+import de.underdocx.enginelayers.defaultodtengine.commands.internal.modifiermodule.stringoutput.StringOutputModuleConfig;
 import de.underdocx.tools.common.Regex;
 
-import java.util.Optional;
-
-public class ShortVarStringCommandHandler<C extends DocContainer<D>, D> extends AbstractTextualCommandHandler<C, D> {
+public class ShortVarStringCommandHandler<C extends DocContainer<D>, D> extends AbstractStringCommandHandler<C, D> {
 
     public final static Regex KEYS = new Regex("[$]\\S+");
 
@@ -39,11 +38,9 @@ public class ShortVarStringCommandHandler<C extends DocContainer<D>, D> extends 
         super(KEYS);
     }
 
-    protected CommandHandlerResult tryExecuteTextualCommand() {
+    @Override
+    protected StringOutputModuleConfig getConfig() {
         String pathStr = placeholderData.getKey().substring(1);
-        Optional<ModelNode> modelData = modelAccess.getVariable(pathStr);
-        ShortModelStringCommandHandler.writeModelNode(selection, modelData);
-        return CommandHandlerResult.EXECUTED;
+        return buildConfig(pathStr, new VarNameDataPicker());
     }
-
 }

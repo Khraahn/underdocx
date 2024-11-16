@@ -48,7 +48,6 @@ public class Demo_0_3_0_Test extends AbstractOdtTest {
         engine.registerSimpleDollarReplacement("name", System.getProperty("user.name"));
         engine.registerSimpleDollarImageReplacement("image", imageURL, true);
         engine.run();
-        show(doc);
         doc.save(os);
 
         if (UnderdocxEnv.isLibreOfficeInstalled()) {

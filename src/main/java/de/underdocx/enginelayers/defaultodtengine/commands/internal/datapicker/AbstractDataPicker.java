@@ -31,23 +31,35 @@ import de.underdocx.enginelayers.modelengine.modelaccess.ModelAccess;
 
 import java.util.Optional;
 
-public abstract class AbstractDataPicker<T, N> implements DataPicker<T> {
+public abstract class AbstractDataPicker<T, N> implements ExtendedDataPicker<T> {
 
     protected JsonNode attributes;
     protected ModelAccess model;
     protected AttributesInterpreter<Optional<N>, String> attributeInterpreter;
-    protected AttributesInterpreter<Optional<AccessType>, String> typeInterpreter;
+    protected AttributesInterpreter<AccessType, String> typeInterpreter;
 
     protected AbstractDataPicker(
-            ModelAccess model,
-            JsonNode attributes,
-            AttributesInterpreter<Optional<AccessType>, String> typeInterpreter,
+            AttributesInterpreter<AccessType, String> typeInterpreter,
             AttributesInterpreter<Optional<N>, String> attributeInterpreter) {
-        this.attributes = attributes;
-        this.model = model;
+
         this.typeInterpreter = typeInterpreter;
         this.attributeInterpreter = attributeInterpreter;
     }
 
+    public JsonNode getAttributes() {
+        return attributes;
+    }
 
+    public ModelAccess getModel() {
+        return model;
+    }
+
+    @Override
+    public DataPickerResult<T> pickData(String name, ModelAccess modelAccess, JsonNode attributes) {
+        this.attributes = attributes;
+        this.model = modelAccess;
+        return pickData(name);
+    }
+
+    abstract protected DataPickerResult<T> pickData(String name);
 }

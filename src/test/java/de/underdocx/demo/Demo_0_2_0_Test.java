@@ -51,7 +51,6 @@ public class Demo_0_2_0_Test extends AbstractOdtTest {
         engine.registerSimpleDollarReplacement("date", String.valueOf(new Date()));
         engine.registerSimpleDollarImageReplacement("image", imageURL, true);
         engine.run();
-        show(doc);
         doc.save(os);
 
         if (UnderdocxEnv.isLibreOfficeInstalled()) {

@@ -31,25 +31,25 @@ import de.underdocx.tools.common.Wrapper;
 
 import java.util.Optional;
 
-public class StringConvertDataPicker {
+public class StringConvertDataPicker implements ExtendedDataPicker<String> {
 
     private final Model2StringConverter converter;
-    private final DataPicker<ModelNode> dataPicker;
+    private final ExtendedDataPicker<ModelNode> dataPicker;
 
-    public StringConvertDataPicker(ModelAccess model, JsonNode attributes) {
-        this(new AttributeNodeDataPicker(model, attributes), new DefaultModel2StringConverter());
+    public StringConvertDataPicker() {
+        this(new AttributeNodeDataPicker(), new DefaultModel2StringConverter());
     }
 
     public StringConvertDataPicker(
-            DataPicker<ModelNode> dataPicker,
+            ExtendedDataPicker<ModelNode> dataPicker,
             Model2StringConverter converter
     ) {
         this.converter = converter;
         this.dataPicker = dataPicker;
     }
 
-    public DataPickerResult<String> pickData(String name) {
-        DataPickerResult<ModelNode> tmpResult = dataPicker.pickData(name);
+    public DataPickerResult<String> pickData(String name, ModelAccess modelAccess, JsonNode attributes) {
+        DataPickerResult<ModelNode> tmpResult = dataPicker.pickData(name, modelAccess, attributes);
         if (!tmpResult.isResolved()) {
             return new DataPickerResult<>(tmpResult.type);
         } else {

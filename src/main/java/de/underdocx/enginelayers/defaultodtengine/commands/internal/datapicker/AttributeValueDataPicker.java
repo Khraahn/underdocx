@@ -24,7 +24,6 @@ SOFTWARE.
 
 package de.underdocx.enginelayers.defaultodtengine.commands.internal.datapicker;
 
-import com.fasterxml.jackson.databind.JsonNode;
 import de.underdocx.enginelayers.defaultodtengine.commands.internal.attrinterpreter.AttributesInterpreter;
 import de.underdocx.enginelayers.defaultodtengine.commands.internal.attrinterpreter.accesstype.AccessNodeAttributeInterpreter;
 import de.underdocx.enginelayers.defaultodtengine.commands.internal.attrinterpreter.accesstype.AccessType;
@@ -35,25 +34,24 @@ import java.util.Optional;
 
 public class AttributeValueDataPicker extends AbstractDataPicker<ModelNode, ModelNode> {
 
-    public AttributeValueDataPicker(JsonNode attributes) {
-        this(attributes, new AccessTypeInterpreter(), new AccessNodeAttributeInterpreter());
+    public AttributeValueDataPicker() {
+        this(new AccessTypeInterpreter(), new AccessNodeAttributeInterpreter());
     }
 
     public AttributeValueDataPicker(
-            JsonNode attributes,
-            AttributesInterpreter<Optional<AccessType>, String> typeInterpreter,
+            AttributesInterpreter<AccessType, String> typeInterpreter,
             AttributesInterpreter<Optional<ModelNode>, String> attributeInterpreter
     ) {
-        super(null, attributes, typeInterpreter, attributeInterpreter);
+        super(typeInterpreter, attributeInterpreter);
     }
 
     @Override
-    public DataPickerResult<ModelNode> pickData(String name) {
-        Optional<AccessType> oType = typeInterpreter.interpretAttributes(attributes, name);
-        if (oType.isEmpty()) {
+    protected DataPickerResult<ModelNode> pickData(String name) {
+        AccessType type = typeInterpreter.interpretAttributes(attributes, name);
+        if (type != AccessType.ACCESS_ATTR_VALUE) {
             return new DataPickerResult<>(DataPickerResult.ResultType.UNRESOLVED_MISSING_ATTR);
         }
-        String attrName = oType.get().rename(name);
+        String attrName = type.rename(name);
         Optional<ModelNode> oNode = attributeInterpreter.interpretAttributes(attributes, attrName);
         if (oNode.isEmpty()) {
             return new DataPickerResult<>(DataPickerResult.ResultType.UNRESOLVED_INVALID_ATTR_VALUE);
@@ -61,4 +59,6 @@ public class AttributeValueDataPicker extends AbstractDataPicker<ModelNode, Mode
             return new DataPickerResult<>(oNode.get());
         }
     }
+
+
 }

@@ -22,26 +22,18 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-package de.underdocx.enginelayers.defaultodtengine.commands;
+package de.underdocx.enginelayers.defaultodtengine.commands.internal.datapicker;
 
-import de.underdocx.common.doc.DocContainer;
-import de.underdocx.enginelayers.defaultodtengine.commands.internal.AbstractStringCommandHandler;
-import de.underdocx.enginelayers.defaultodtengine.commands.internal.datapicker.ModelNameDataPicker;
-import de.underdocx.enginelayers.defaultodtengine.commands.internal.modifiermodule.stringoutput.StringOutputModuleConfig;
-import de.underdocx.tools.common.Regex;
+import com.fasterxml.jackson.databind.JsonNode;
+import de.underdocx.enginelayers.modelengine.modelaccess.ModelAccess;
 
-public class ShortModelStringCommandHandler<C extends DocContainer<D>, D> extends AbstractStringCommandHandler<C, D> {
+import java.util.Optional;
 
-    public final static Regex KEYS = new Regex("@\\S*");
+public interface PredefinedDataPicker<T> {
+    DataPickerResult<T> pickData(ModelAccess modelAccess, JsonNode jsonNode);
 
-    public ShortModelStringCommandHandler() {
-        super(KEYS);
-    }
-
-    @Override
-    protected StringOutputModuleConfig getConfig() {
-        String pathStr = placeholderData.getKey().substring(1);
-        return buildConfig(pathStr, new ModelNameDataPicker());
+    default Optional<T> getData(ModelAccess modelAccess, JsonNode jsonNode) {
+        return pickData(modelAccess, jsonNode).getOptionalValue();
     }
 
 }

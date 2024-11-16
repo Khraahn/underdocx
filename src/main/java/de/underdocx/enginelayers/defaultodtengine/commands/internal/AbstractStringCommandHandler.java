@@ -22,26 +22,31 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-package de.underdocx.enginelayers.defaultodtengine.commands;
+package de.underdocx.enginelayers.defaultodtengine.commands.internal;
 
 import de.underdocx.common.doc.DocContainer;
-import de.underdocx.enginelayers.defaultodtengine.commands.internal.AbstractStringCommandHandler;
-import de.underdocx.enginelayers.defaultodtengine.commands.internal.datapicker.ModelNameDataPicker;
+import de.underdocx.enginelayers.defaultodtengine.commands.internal.datapicker.ExtendedDataPicker;
+import de.underdocx.enginelayers.defaultodtengine.commands.internal.datapicker.StringConvertDataPicker;
+import de.underdocx.enginelayers.defaultodtengine.commands.internal.modifiermodule.stringoutput.StringOutputCommandModule;
 import de.underdocx.enginelayers.defaultodtengine.commands.internal.modifiermodule.stringoutput.StringOutputModuleConfig;
 import de.underdocx.tools.common.Regex;
 
-public class ShortModelStringCommandHandler<C extends DocContainer<D>, D> extends AbstractStringCommandHandler<C, D> {
+public abstract class AbstractStringCommandHandler<C extends DocContainer<D>, D> extends AbstractTextualCommandHandler<C, D> {
 
-    public final static Regex KEYS = new Regex("@\\S*");
-
-    public ShortModelStringCommandHandler() {
+    public AbstractStringCommandHandler(Regex KEYS) {
         super(KEYS);
     }
 
-    @Override
-    protected StringOutputModuleConfig getConfig() {
-        String pathStr = placeholderData.getKey().substring(1);
-        return buildConfig(pathStr, new ModelNameDataPicker());
+    protected CommandHandlerResult tryExecuteTextualCommand() {
+        StringOutputCommandModule<C, D> module = new StringOutputCommandModule<>(getConfig());
+        return module.execute(selection) ? CommandHandlerResult.EXECUTED : CommandHandlerResult.IGNORED;
+    }
+
+    protected abstract StringOutputModuleConfig getConfig();
+
+    protected StringOutputModuleConfig buildConfig(String path, ExtendedDataPicker picker) {
+        return () -> new StringConvertDataPicker(picker,
+                new StringConvertDataPicker.DefaultModel2StringConverter()).asPredefined(path);
     }
 
 }

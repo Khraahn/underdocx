@@ -22,18 +22,28 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-package de.underdocx.enginelayers.modelengine;
+package de.underdocx.enginelayers.defaultodtengine.commands.internal.datapicker;
 
-import de.underdocx.common.doc.DocContainer;
-import de.underdocx.enginelayers.baseengine.Selection;
-import de.underdocx.enginelayers.baseengine.modifiers.Modifier;
-import de.underdocx.enginelayers.modelengine.internal.MSelectionWrapper;
+import de.underdocx.enginelayers.modelengine.model.ModelNode;
+import de.underdocx.tools.common.Pair;
 
-public interface MModifier<C extends DocContainer<D>, P, D, M> extends Modifier<C, P, D, M> {
+import java.util.Optional;
 
-    default boolean modify(Selection<C, P, D> selection, M modifierData) {
-        return modify(new MSelectionWrapper<>(selection), modifierData);
+public class ModelNameDataPicker extends AbstractDataPicker<ModelNode, Object> {
+
+    public ModelNameDataPicker() {
+        super(null, null);
     }
 
-    boolean modify(MSelection<C, P, D> selection, M modifierData);
+    @Override
+    protected DataPickerResult<ModelNode> pickData(String name) {
+        if (name == null) {
+            name = "";
+        }
+        Pair<String, Optional<ModelNode>> modelNode = model.interpret(name, false);
+        if (modelNode.right.isEmpty()) {
+            return new DataPickerResult<>(DataPickerResult.ResultType.UNRESOLVED_MISSING_VALUE);
+        }
+        return new DataPickerResult<>(modelNode.right.get());
+    }
 }

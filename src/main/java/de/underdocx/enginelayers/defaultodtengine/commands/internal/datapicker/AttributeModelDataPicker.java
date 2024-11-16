@@ -24,49 +24,51 @@ SOFTWARE.
 
 package de.underdocx.enginelayers.defaultodtengine.commands.internal.datapicker;
 
-import com.fasterxml.jackson.databind.JsonNode;
 import de.underdocx.enginelayers.defaultodtengine.commands.internal.attrinterpreter.AttributesInterpreter;
 import de.underdocx.enginelayers.defaultodtengine.commands.internal.attrinterpreter.accesstype.AccessStringAttributeInterpreter;
 import de.underdocx.enginelayers.defaultodtengine.commands.internal.attrinterpreter.accesstype.AccessType;
 import de.underdocx.enginelayers.defaultodtengine.commands.internal.attrinterpreter.accesstype.AccessTypeInterpreter;
 import de.underdocx.enginelayers.modelengine.model.ModelNode;
-import de.underdocx.enginelayers.modelengine.modelaccess.ModelAccess;
-import de.underdocx.tools.common.Pair;
 
 import java.util.Optional;
 
 public class AttributeModelDataPicker extends AbstractDataPicker<ModelNode, String> {
 
+    private ModelNameDataPicker nameDataPicker = new ModelNameDataPicker();
 
-    public AttributeModelDataPicker(ModelAccess modelAccess, JsonNode attributes) {
-        this(modelAccess, attributes, new AccessTypeInterpreter(), new AccessStringAttributeInterpreter());
+    public AttributeModelDataPicker() {
+        this(new AccessTypeInterpreter(), new AccessStringAttributeInterpreter());
     }
 
     public AttributeModelDataPicker(
-            ModelAccess modelAccess,
-            JsonNode attributes,
-            AttributesInterpreter<Optional<AccessType>, String> typeInterpreter,
+            AttributesInterpreter<AccessType, String> typeInterpreter,
             AttributesInterpreter<Optional<String>, String> stringAttributeInterpreter
     ) {
-        super(modelAccess, attributes, typeInterpreter, stringAttributeInterpreter);
+        super(typeInterpreter, stringAttributeInterpreter);
     }
 
     @Override
-    public DataPickerResult<ModelNode> pickData(String name) {
-        Optional<AccessType> oType = typeInterpreter.interpretAttributes(attributes, name);
-        if (oType.isEmpty()) {
-            return new DataPickerResult<>(DataPickerResult.ResultType.UNRESOLVED_MISSING_ATTR);
+    protected DataPickerResult<ModelNode> pickData(String name) {
+        AccessType type = typeInterpreter.interpretAttributes(attributes, name);
+        if (name == null) {
+            if (type != AccessType.ACCESS_CURRENT_MODEL_NODE) {
+                return new DataPickerResult<>(DataPickerResult.ResultType.UNRESOLVED_MISSING_ATTR);
+            } else {
+                return fetchModelNode("");
+            }
         }
-        String attrName = oType.get().rename(name);
+        String attrName = type.rename(name);
         Optional<String> attrValue = attributeInterpreter.interpretAttributes(attributes, attrName);
         if (attrValue.isEmpty()) {
             return new DataPickerResult<>(DataPickerResult.ResultType.UNRESOLVED_INVALID_ATTR_VALUE);
         }
-
-        Pair<String, Optional<ModelNode>> modelNode = model.interpret(attrValue.get(), false);
-        if (modelNode.right.isEmpty()) {
-            return new DataPickerResult<>(DataPickerResult.ResultType.UNRESOLVED_MISSING_VALUE);
-        }
-        return new DataPickerResult<>(modelNode.right.get());
+        String modelName = attrValue.get();
+        return fetchModelNode(modelName);
     }
+
+    private DataPickerResult<ModelNode> fetchModelNode(String modelName) {
+        return nameDataPicker.pickData(modelName, model, null);
+    }
+
+
 }

@@ -74,9 +74,7 @@ public class ReflectionModelTest extends AbstractOdtTest {
         OdtContainer doc = new OdtContainer("${String @value:\"b.c[0]\"}");
         DefaultODTEngine engine = new DefaultODTEngine(doc);
         engine.setModel(new TestClassA());
-        show(doc);
         engine.run();
-        show(doc);
         assertContains(doc, "Item1");
         assertNoPlaceholders(doc);
     }
@@ -92,9 +90,7 @@ public class ReflectionModelTest extends AbstractOdtTest {
                 (object, name) -> name.equals("x")
                         ? java.util.Optional.of(new LeafModelNode("42"))
                         : Optional.empty());
-        show(doc);
         engine.run();
-        show(doc);
         assertContains(doc, "Item1");
         assertContains(doc, "42");
         assertNoPlaceholders(doc);
@@ -109,9 +105,7 @@ public class ReflectionModelTest extends AbstractOdtTest {
         engine.setModel(new TestClassA());
         ReflectionInterceptorRegistry.DEFAULT.register(TestClassA.class, "c",
                 (reflectionObject, requestedProperty) -> Optional.of(new LeafModelNode("Hugo")));
-        show(doc);
         engine.run();
-        show(doc);
         assertContains(doc, "Hallo");
         assertContains(doc, "Hugo");
         assertNoPlaceholders(doc);

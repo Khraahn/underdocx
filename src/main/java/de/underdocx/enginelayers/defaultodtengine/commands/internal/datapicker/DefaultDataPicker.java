@@ -22,26 +22,32 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-package de.underdocx.enginelayers.defaultodtengine.commands;
+package de.underdocx.enginelayers.defaultodtengine.commands.internal.datapicker;
 
-import de.underdocx.common.doc.DocContainer;
-import de.underdocx.enginelayers.defaultodtengine.commands.internal.AbstractStringCommandHandler;
-import de.underdocx.enginelayers.defaultodtengine.commands.internal.datapicker.ModelNameDataPicker;
-import de.underdocx.enginelayers.defaultodtengine.commands.internal.modifiermodule.stringoutput.StringOutputModuleConfig;
-import de.underdocx.tools.common.Regex;
+import com.fasterxml.jackson.databind.JsonNode;
+import de.underdocx.enginelayers.modelengine.model.ModelNode;
+import de.underdocx.enginelayers.modelengine.modelaccess.ModelAccess;
 
-public class ShortModelStringCommandHandler<C extends DocContainer<D>, D> extends AbstractStringCommandHandler<C, D> {
+public class DefaultDataPicker implements PredefinedDataPicker<ModelNode> {
 
-    public final static Regex KEYS = new Regex("@\\S*");
+    private final String name;
+    private ExtendedDataPicker dataPicker;
 
-    public ShortModelStringCommandHandler() {
-        super(KEYS);
+    public DefaultDataPicker(String name) {
+        this.name = name;
+        dataPicker = new AttributeNodeDataPicker();
+    }
+
+    public DefaultDataPicker(String name, ExtendedDataPicker dataPicker) {
+        this.name = name;
+        this.dataPicker = dataPicker;
     }
 
     @Override
-    protected StringOutputModuleConfig getConfig() {
-        String pathStr = placeholderData.getKey().substring(1);
-        return buildConfig(pathStr, new ModelNameDataPicker());
+    public DataPickerResult pickData(ModelAccess modelAccess, JsonNode jsonNode) {
+        return dataPicker.pickData(name, modelAccess, jsonNode);
     }
 
 }
+
+

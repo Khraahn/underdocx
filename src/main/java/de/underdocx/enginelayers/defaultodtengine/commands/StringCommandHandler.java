@@ -24,21 +24,25 @@ SOFTWARE.
 
 package de.underdocx.enginelayers.defaultodtengine.commands;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import de.underdocx.common.doc.DocContainer;
-import de.underdocx.enginelayers.baseengine.modifiers.deleteplaceholder.DeletePlaceholderModifier;
-import de.underdocx.enginelayers.baseengine.modifiers.deleteplaceholder.DeletePlaceholderModifierData;
-import de.underdocx.enginelayers.baseengine.modifiers.stringmodifier.ReplaceWithTextModifier;
-import de.underdocx.enginelayers.defaultodtengine.commands.internal.AbstractTextualCommandHandler;
-import de.underdocx.enginelayers.defaultodtengine.commands.internal.datapicker.DataPickerResult;
-import de.underdocx.enginelayers.modelengine.model.ModelNode;
-import de.underdocx.enginelayers.parameterengine.ParametersPlaceholderData;
-import de.underdocx.tools.common.Convenience;
+import de.underdocx.enginelayers.defaultodtengine.commands.internal.AbstractStringCommandHandler;
+import de.underdocx.enginelayers.defaultodtengine.commands.internal.attrinterpreter.accesstype.AccessType;
+import de.underdocx.enginelayers.defaultodtengine.commands.internal.attrinterpreter.accesstype.AccessTypeInterpreter;
+import de.underdocx.enginelayers.defaultodtengine.commands.internal.datapicker.PredefinedDataPicker;
+import de.underdocx.enginelayers.defaultodtengine.commands.internal.datapicker.StringConvertDataPicker;
+import de.underdocx.enginelayers.defaultodtengine.commands.internal.modifiermodule.stringoutput.StringOutputModuleConfig;
 import de.underdocx.tools.common.Regex;
 
-import java.util.Optional;
+import java.util.function.Predicate;
 import java.util.regex.Pattern;
 
-public class StringCommandHandler<C extends DocContainer<D>, D> extends AbstractTextualCommandHandler<C, D> {
+public class StringCommandHandler<C extends DocContainer<D>, D> extends AbstractStringCommandHandler<C, D> {
+
+    PredefinedDataPicker<String> directDataPicker = new StringConvertDataPicker().asPredefined(null);
+    PredefinedDataPicker<String> valueDataPicker = new StringConvertDataPicker().asPredefined("value");
+    Predicate<JsonNode> isDirectAccess = jsonNode ->
+            (AccessTypeInterpreter.DEFAULT.interpretAttributes(jsonNode, "value") == AccessType.MISSING_ACCESS);
 
     public final static Regex KEYS = new Regex(Pattern.quote("String"));
 
@@ -46,30 +50,10 @@ public class StringCommandHandler<C extends DocContainer<D>, D> extends Abstract
         super(KEYS);
     }
 
-    protected CommandHandlerResult tryExecuteTextualCommand() {
-        DataPickerResult<String> resolvedText = resolveStringAttribute("value");
-        if (resolvedText.value != null) {
-            new ReplaceWithTextModifier<C, ParametersPlaceholderData, D>().modify(selection, resolvedText.value);
-            return CommandHandlerResult.EXECUTED;
-        }
-        if (resolvedText.type == DataPickerResult.ResultType.UNRESOLVED_MISSING_ATTR) {
-            Optional<String> txt = getTextNoAttribute();
-            if (txt.isPresent()) {
-                new ReplaceWithTextModifier<C, ParametersPlaceholderData, D>().modify(selection, txt.get());
-                return CommandHandlerResult.EXECUTED;
-            }
-        }
-        DeletePlaceholderModifier.modify(selection.getNode(), DeletePlaceholderModifierData.DEFAULT);
-        return CommandHandlerResult.EXECUTED;
-    }
-
-    private Optional<String> getTextNoAttribute() {
-        return Convenience.buildOptional(result -> {
-            modelAccess.getCurrentModelNode().ifPresent(modelNode -> {
-                if (modelNode.getType() == ModelNode.ModelNodeType.LEAF) {
-                    result.value = String.valueOf(modelNode.getValue());
-                }
-            });
-        });
+    @Override
+    protected StringOutputModuleConfig getConfig() {
+        return () -> (modelAccess, jsonNode) -> isDirectAccess.test(jsonNode)
+                ? directDataPicker.pickData(modelAccess, jsonNode)
+                : valueDataPicker.pickData(modelAccess, jsonNode);
     }
 }

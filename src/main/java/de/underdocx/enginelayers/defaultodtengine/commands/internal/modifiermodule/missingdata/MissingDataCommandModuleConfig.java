@@ -22,26 +22,26 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-package de.underdocx.enginelayers.defaultodtengine.commands;
+package de.underdocx.enginelayers.defaultodtengine.commands.internal.modifiermodule.missingdata;
 
-import de.underdocx.common.doc.DocContainer;
-import de.underdocx.enginelayers.defaultodtengine.commands.internal.AbstractStringCommandHandler;
-import de.underdocx.enginelayers.defaultodtengine.commands.internal.datapicker.ModelNameDataPicker;
-import de.underdocx.enginelayers.defaultodtengine.commands.internal.modifiermodule.stringoutput.StringOutputModuleConfig;
-import de.underdocx.tools.common.Regex;
+import de.underdocx.enginelayers.defaultodtengine.commands.internal.attrinterpreter.missingdata.MissingDataConfig;
+import de.underdocx.enginelayers.defaultodtengine.commands.internal.datapicker.PredefinedDataPicker;
+import org.w3c.dom.Node;
 
-public class ShortModelStringCommandHandler<C extends DocContainer<D>, D> extends AbstractStringCommandHandler<C, D> {
+import java.util.function.Predicate;
 
-    public final static Regex KEYS = new Regex("@\\S*");
+public interface MissingDataCommandModuleConfig<M> {
 
-    public ShortModelStringCommandHandler() {
-        super(KEYS);
+    default MissingDataConfig getMissingDataConfig() {
+        return new MissingDataConfig();
     }
 
-    @Override
-    protected StringOutputModuleConfig getConfig() {
-        String pathStr = placeholderData.getKey().substring(1);
-        return buildConfig(pathStr, new ModelNameDataPicker());
+    PredefinedDataPicker<M> getDataPicker();
+
+    default Node getAreaEnd() {
+        return null;
     }
+
+    Predicate<M> getIsEmptyPredicate();
 
 }

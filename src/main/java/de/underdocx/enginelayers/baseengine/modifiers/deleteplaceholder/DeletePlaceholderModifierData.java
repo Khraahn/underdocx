@@ -46,6 +46,10 @@ public interface DeletePlaceholderModifierData {
             this.copyPageStyle = copyPageStyle;
         }
 
+        public Simple(Strategy strategy) {
+            this(strategy, true);
+        }
+
         private Strategy strategy;
         private boolean copyPageStyle;
 

@@ -24,36 +24,32 @@ SOFTWARE.
 
 package de.underdocx.enginelayers.defaultodtengine.commands.internal.datapicker;
 
-import com.fasterxml.jackson.databind.JsonNode;
 import de.underdocx.enginelayers.defaultodtengine.commands.internal.attrinterpreter.AttributesInterpreter;
 import de.underdocx.enginelayers.defaultodtengine.commands.internal.attrinterpreter.accesstype.AccessType;
 import de.underdocx.enginelayers.defaultodtengine.commands.internal.attrinterpreter.accesstype.AccessTypeInterpreter;
 import de.underdocx.enginelayers.modelengine.model.ModelNode;
-import de.underdocx.enginelayers.modelengine.modelaccess.ModelAccess;
-
-import java.util.Optional;
 
 public class AttributeNodeDataPicker extends AbstractDataPicker<ModelNode, String> {
 
-    public AttributeNodeDataPicker(ModelAccess model, JsonNode attributes) {
-        this(model, attributes, new AccessTypeInterpreter());
+    public AttributeNodeDataPicker() {
+        this(new AccessTypeInterpreter());
     }
 
     public AttributeNodeDataPicker(
-            ModelAccess model,
-            JsonNode attributes,
-            AttributesInterpreter<Optional<AccessType>, String> typeInterpreter
+            AttributesInterpreter<AccessType, String> typeInterpreter
     ) {
-        super(model, attributes, typeInterpreter, null);
+        super(typeInterpreter, null);
     }
 
     @Override
-    public DataPickerResult<ModelNode> pickData(String name) {
-        AccessType accessType = typeInterpreter.interpretAttributes(attributes, name).orElse(AccessType.ATTR);
+    protected DataPickerResult<ModelNode> pickData(String name) {
+        AccessType accessType = typeInterpreter.interpretAttributes(attributes, name);
         return switch (accessType) {
-            case ATTR -> new AttributeValueDataPicker(attributes).pickData(name);
-            case MODEL -> new AttributeModelDataPicker(model, attributes).pickData(name);
-            case VAR -> new AttributeVarDataPicker(model, attributes).pickData(name);
+            case ACCESS_CURRENT_MODEL_NODE, ACCESS_MODEL_BY_NAME ->
+                    new AttributeModelDataPicker().pickData(name, model, attributes);
+            case ACCESS_ATTR_VALUE -> new AttributeValueDataPicker().pickData(name, model, attributes);
+            case ACCESS_VARIABLE_BY_NAME -> new AttributeVarDataPicker().pickData(name, model, attributes);
+            case MISSING_ACCESS -> new DataPickerResult<>(DataPickerResult.ResultType.UNRESOLVED_MISSING_ATTR);
         };
     }
 }

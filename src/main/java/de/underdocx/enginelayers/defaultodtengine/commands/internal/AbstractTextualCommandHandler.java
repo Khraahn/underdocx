@@ -53,38 +53,16 @@ public abstract class AbstractTextualCommandHandler<C extends DocContainer<D>, D
         this.allowedKeys = keys;
     }
 
-
-
-
-    /*
-    protected ResolvedAttributeValue<Boolean> resolveBooleanAttribute(String name) {
-        return AttributeResolver.resolveBooleanAttribute(name, modelAccess, placeholderData);
-    }
-
-    protected ResolvedAttributeValue<Integer> resolveIntegerAttribute(String name) {
-        return AttributeResolver.resolveIntegerAttribute(name, modelAccess, placeholderData);
-    }
-
-    protected ResolvedAttributeValue<Double> resolveDoubleAttribute(String name) {
-        return AttributeResolver.resolveDoubleAttribute(name, modelAccess, placeholderData);
-    }
-
-    protected Optional<String> resolveValue() {
-        return resolveStringAttribute("value").getOptionalValue();
-    }
-    */
-
-
     protected DataPickerResult<String> resolveStringAttribute(String name) {
-        return new StringConvertDataPicker(modelAccess, placeholderData.getJson()).pickData(name);
+        return new StringConvertDataPicker().pickData(name, modelAccess, placeholderData.getJson());
     }
 
     protected Optional<String> resolveValue(String attrName) {
-        return new StringConvertDataPicker(modelAccess, placeholderData.getJson()).pickData(attrName).getOptionalValue();
+        return new StringConvertDataPicker().pickData(attrName, modelAccess, placeholderData.getJson()).getOptionalValue();
     }
 
     protected Optional<ModelNode> resolveModelValue() {
-        return new AttributeNodeDataPicker(modelAccess, placeholderData.getJson()).pickData("value").getOptionalValue();
+        return new AttributeNodeDataPicker().pickData("value", modelAccess, placeholderData.getJson()).getOptionalValue();
     }
 
 

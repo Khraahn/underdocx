@@ -22,26 +22,24 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-package de.underdocx.enginelayers.defaultodtengine.commands;
+package de.underdocx.enginelayers.defaultodtengine.commands.internal.datapicker;
 
-import de.underdocx.common.doc.DocContainer;
-import de.underdocx.enginelayers.defaultodtengine.commands.internal.AbstractStringCommandHandler;
-import de.underdocx.enginelayers.defaultodtengine.commands.internal.datapicker.ModelNameDataPicker;
-import de.underdocx.enginelayers.defaultodtengine.commands.internal.modifiermodule.stringoutput.StringOutputModuleConfig;
-import de.underdocx.tools.common.Regex;
+import de.underdocx.enginelayers.modelengine.model.ModelNode;
 
-public class ShortModelStringCommandHandler<C extends DocContainer<D>, D> extends AbstractStringCommandHandler<C, D> {
+import java.util.Optional;
 
-    public final static Regex KEYS = new Regex("@\\S*");
+public class VarNameDataPicker extends AbstractDataPicker<ModelNode, Object> {
 
-    public ShortModelStringCommandHandler() {
-        super(KEYS);
+    public VarNameDataPicker() {
+        super(null, null);
     }
 
     @Override
-    protected StringOutputModuleConfig getConfig() {
-        String pathStr = placeholderData.getKey().substring(1);
-        return buildConfig(pathStr, new ModelNameDataPicker());
+    protected DataPickerResult<ModelNode> pickData(String variableName) {
+        Optional<ModelNode> variable = model.getVariable(variableName);
+        if (variable.isEmpty()) {
+            return new DataPickerResult<>(DataPickerResult.ResultType.UNRESOLVED_MISSING_VALUE);
+        }
+        return new DataPickerResult<>(variable.get());
     }
-
 }

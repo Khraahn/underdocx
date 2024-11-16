@@ -1,9 +1,11 @@
 package de.underdocx.enginelayers.defaultodtengine.commands.internal.attrinterpreter.accesstype;
 
 public enum AccessType {
-    MODEL("@"),
-    VAR("$"),
-    ATTR("");
+    ACCESS_MODEL_BY_NAME("@"),
+    ACCESS_VARIABLE_BY_NAME("$"),
+    ACCESS_ATTR_VALUE(""),
+    ACCESS_CURRENT_MODEL_NODE(null),
+    MISSING_ACCESS(null);
 
     private final String prefix;
 
@@ -16,18 +18,18 @@ public enum AccessType {
     }
 
     public static AccessType getTypeOf(String name) {
-        if (name.startsWith(MODEL.prefix)) {
-            return MODEL;
+        if (name.startsWith(ACCESS_MODEL_BY_NAME.prefix)) {
+            return ACCESS_MODEL_BY_NAME;
         }
-        if (name.startsWith(VAR.prefix)) {
-            return VAR;
+        if (name.startsWith(ACCESS_VARIABLE_BY_NAME.prefix)) {
+            return ACCESS_VARIABLE_BY_NAME;
         }
-        return ATTR;
+        return ACCESS_ATTR_VALUE;
     }
 
     public String getPureName(String propertyName) {
         String result = propertyName;
-        if (propertyName.startsWith(MODEL.prefix) || propertyName.startsWith(VAR.prefix)) {
+        if (propertyName.startsWith(ACCESS_MODEL_BY_NAME.prefix) || propertyName.startsWith(ACCESS_VARIABLE_BY_NAME.prefix)) {
             result = result.substring(1);
         }
         return result;
