@@ -42,8 +42,8 @@ public class ModelNameDataPicker extends AbstractDataPicker<ModelNode, Object> {
         }
         Pair<String, Optional<ModelNode>> modelNode = model.interpret(name, false);
         if (modelNode.right.isEmpty()) {
-            return new DataPickerResult<>(DataPickerResult.ResultType.UNRESOLVED_MISSING_VALUE);
+            return DataPickerResult.unresolvedMissingValue(DataPickerResult.ResultSource.MODEL);
         }
-        return new DataPickerResult<>(modelNode.right.get());
+        return DataPickerResult.resolvedModel(modelNode.right.get());
     }
 }

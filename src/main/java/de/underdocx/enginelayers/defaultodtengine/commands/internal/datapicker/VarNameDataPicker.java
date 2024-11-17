@@ -38,8 +38,8 @@ public class VarNameDataPicker extends AbstractDataPicker<ModelNode, Object> {
     protected DataPickerResult<ModelNode> pickData(String variableName) {
         Optional<ModelNode> variable = model.getVariable(variableName);
         if (variable.isEmpty()) {
-            return new DataPickerResult<>(DataPickerResult.ResultType.UNRESOLVED_MISSING_VALUE);
+            return DataPickerResult.unresolvedMissingValue(DataPickerResult.ResultSource.VAR);
         }
-        return new DataPickerResult<>(variable.get());
+        return DataPickerResult.resolvedVariable(variable.get());
     }
 }

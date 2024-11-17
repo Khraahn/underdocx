@@ -51,14 +51,14 @@ public class StringConvertDataPicker implements ExtendedDataPicker<String> {
     public DataPickerResult<String> pickData(String name, ModelAccess modelAccess, JsonNode attributes) {
         DataPickerResult<ModelNode> tmpResult = dataPicker.pickData(name, modelAccess, attributes);
         if (!tmpResult.isResolved()) {
-            return new DataPickerResult<>(tmpResult.type);
+            return DataPickerResult.convert(null, tmpResult);
         } else {
             Optional<Wrapper<String>> converted = converter.convert(tmpResult.value);
             if (converted.isEmpty()) {
-                return new DataPickerResult<>(DataPickerResult.ResultType.UNRESOLVED_INVALID_ATTR_VALUE);
+                return DataPickerResult.unresolvedInvalidAttrValue(tmpResult.source);
             }
             String value = converted.get().value;
-            return new DataPickerResult<>(value);
+            return DataPickerResult.convert(value, tmpResult);
         }
     }
 

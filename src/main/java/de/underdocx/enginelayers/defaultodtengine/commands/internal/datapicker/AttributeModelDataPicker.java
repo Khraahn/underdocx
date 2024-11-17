@@ -52,7 +52,7 @@ public class AttributeModelDataPicker extends AbstractDataPicker<ModelNode, Stri
         AccessType type = typeInterpreter.interpretAttributes(attributes, name);
         if (name == null) {
             if (type != AccessType.ACCESS_CURRENT_MODEL_NODE) {
-                return new DataPickerResult<>(DataPickerResult.ResultType.UNRESOLVED_MISSING_ATTR);
+                return DataPickerResult.unresolvedMissingAttr(DataPickerResult.ResultSource.MODEL);
             } else {
                 return fetchModelNode("");
             }
@@ -60,7 +60,7 @@ public class AttributeModelDataPicker extends AbstractDataPicker<ModelNode, Stri
         String attrName = type.rename(name);
         Optional<String> attrValue = attributeInterpreter.interpretAttributes(attributes, attrName);
         if (attrValue.isEmpty()) {
-            return new DataPickerResult<>(DataPickerResult.ResultType.UNRESOLVED_INVALID_ATTR_VALUE);
+            return DataPickerResult.unresolvedInvalidAttrValue(DataPickerResult.ResultSource.MODEL);
         }
         String modelName = attrValue.get();
         return fetchModelNode(modelName);
@@ -69,6 +69,4 @@ public class AttributeModelDataPicker extends AbstractDataPicker<ModelNode, Stri
     private DataPickerResult<ModelNode> fetchModelNode(String modelName) {
         return nameDataPicker.pickData(modelName, model, null);
     }
-
-
 }

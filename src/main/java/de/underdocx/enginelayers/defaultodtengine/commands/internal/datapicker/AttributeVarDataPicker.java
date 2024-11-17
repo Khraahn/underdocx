@@ -49,12 +49,12 @@ public class AttributeVarDataPicker extends AbstractDataPicker<ModelNode, String
     protected DataPickerResult<ModelNode> pickData(String name) {
         AccessType type = typeInterpreter.interpretAttributes(attributes, name);
         if (type != AccessType.ACCESS_VARIABLE_BY_NAME) {
-            return new DataPickerResult<>(DataPickerResult.ResultType.UNRESOLVED_MISSING_ATTR);
+            return DataPickerResult.unresolvedMissingAttr(DataPickerResult.ResultSource.VAR);
         }
         String attrName = type.rename(name);
         Optional<String> attrValue = attributeInterpreter.interpretAttributes(attributes, attrName);
         if (attrValue.isEmpty()) {
-            return new DataPickerResult<>(DataPickerResult.ResultType.UNRESOLVED_INVALID_ATTR_VALUE);
+            return DataPickerResult.unresolvedInvalidAttrValue(DataPickerResult.ResultSource.VAR);
         }
         String variableName = attrValue.get();
         return new VarNameDataPicker().pickData(variableName, model, null);

@@ -49,7 +49,7 @@ public class AttributeNodeDataPicker extends AbstractDataPicker<ModelNode, Strin
                     new AttributeModelDataPicker().pickData(name, model, attributes);
             case ACCESS_ATTR_VALUE -> new AttributeValueDataPicker().pickData(name, model, attributes);
             case ACCESS_VARIABLE_BY_NAME -> new AttributeVarDataPicker().pickData(name, model, attributes);
-            case MISSING_ACCESS -> new DataPickerResult<>(DataPickerResult.ResultType.UNRESOLVED_MISSING_ATTR);
+            case MISSING_ACCESS -> DataPickerResult.unresolvedMissingAttr(DataPickerResult.ResultSource.UNKNOWN);
         };
     }
 }

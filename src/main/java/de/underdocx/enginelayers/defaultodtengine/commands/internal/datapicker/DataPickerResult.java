@@ -24,12 +24,30 @@ SOFTWARE.
 
 package de.underdocx.enginelayers.defaultodtengine.commands.internal.datapicker;
 
+import de.underdocx.enginelayers.defaultodtengine.commands.internal.attrinterpreter.accesstype.AccessType;
+
 import java.util.Optional;
 
 public class DataPickerResult<T> {
 
+    public enum ResultSource {
+        MODEL, // value received from model
+        VAR, // value received from variable storage
+        ATTR_VALUE,  // value provided directly by attribute
+        UNKNOWN; // value provided directly by attribute or any other source
+
+        public static ResultSource convert(AccessType accessType) {
+            return switch (accessType) {
+                case ACCESS_ATTR_VALUE -> ATTR_VALUE;
+                case MISSING_ACCESS -> UNKNOWN;
+                case ACCESS_VARIABLE_BY_NAME -> VAR;
+                case ACCESS_MODEL_BY_NAME, ACCESS_CURRENT_MODEL_NODE -> MODEL;
+            };
+        }
+    }
+
     public enum ResultType {
-        RESOLVED(true), // value recieved, null value might be valid
+        RESOLVED(true), // value received, null value might be valid
         UNRESOLVED_INVALID_ATTR_VALUE(false), // For example invalid ModelPath syntax
         UNRESOLVED_MISSING_ATTR(false), // For example mandatory "@value" attribute is missing
         UNRESOLVED_MISSING_VALUE(false); // For example model does not contain requiested data
@@ -42,6 +60,7 @@ public class DataPickerResult<T> {
     }
 
     public T value;
+    public ResultSource source;
     public ResultType type;
 
     public boolean isResolved() {
@@ -52,15 +71,41 @@ public class DataPickerResult<T> {
         return Optional.ofNullable(value);
     }
 
-    public DataPickerResult(T value) {
-        this.type = ResultType.RESOLVED;
-        this.value = value;
-    }
-
-    public DataPickerResult(ResultType type) {
+    public DataPickerResult(ResultType type, ResultSource source, T value) {
         this.type = type;
-        this.value = null;
+        this.value = value;
+        this.source = source;
     }
 
+    public static <T> DataPickerResult<T> unresolvedInvalidAttrValue(ResultSource source) {
+        return new DataPickerResult<>(ResultType.UNRESOLVED_INVALID_ATTR_VALUE, source, null);
+    }
 
+    public static <T> DataPickerResult<T> unresolvedMissingAttr(ResultSource source) {
+        return new DataPickerResult<>(ResultType.UNRESOLVED_MISSING_ATTR, source, null);
+    }
+
+    public static <T> DataPickerResult<T> unresolvedMissingValue(ResultSource source) {
+        return new DataPickerResult<>(ResultType.UNRESOLVED_MISSING_VALUE, source, null);
+    }
+
+    public static <T> DataPickerResult<T> resolvedModel(T value) {
+        return new DataPickerResult<>(ResultType.RESOLVED, ResultSource.MODEL, value);
+    }
+
+    public static <T> DataPickerResult<T> resolvedVariable(T value) {
+        return new DataPickerResult<>(ResultType.RESOLVED, ResultSource.VAR, value);
+    }
+
+    public static <T> DataPickerResult<T> resolvedAttrValue(T value) {
+        return new DataPickerResult<>(ResultType.RESOLVED, ResultSource.ATTR_VALUE, value);
+    }
+
+    public static <T> DataPickerResult<T> resolvedUnknownSource(T value) {
+        return new DataPickerResult<>(ResultType.RESOLVED, ResultSource.UNKNOWN, value);
+    }
+
+    public static <T> DataPickerResult<T> convert(T value, DataPickerResult<?> toConvert) {
+        return new DataPickerResult<>(toConvert.type, toConvert.source, value);
+    }
 }

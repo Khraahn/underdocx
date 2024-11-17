@@ -33,9 +33,9 @@ public class StringDataPicker implements DataPicker<ModelNode>, ExtendedDataPick
     @Override
     public DataPickerResult<ModelNode> pickData(String name) {
         if (name == null) {
-            return new DataPickerResult<>(DataPickerResult.ResultType.UNRESOLVED_MISSING_VALUE);
+            return DataPickerResult.unresolvedMissingValue(DataPickerResult.ResultSource.UNKNOWN);
         } else {
-            return new DataPickerResult<>(new LeafModelNode<>(name));
+            return DataPickerResult.resolvedUnknownSource(new LeafModelNode<>(name));
         }
     }
 
