@@ -88,6 +88,10 @@ public class ModelPath {
         subPath.forEach(subElement -> subElement.interpret(elements));
     }
 
+    public void subPath(int index) {
+        elements = elements.subList(index, elements.size());
+    }
+
     public ModelPath clone() {
         return new ModelPath(this);
     }

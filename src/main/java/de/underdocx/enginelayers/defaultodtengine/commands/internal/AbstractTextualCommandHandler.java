@@ -28,7 +28,6 @@ import de.underdocx.common.doc.DocContainer;
 import de.underdocx.common.placeholder.TextualPlaceholderToolkit;
 import de.underdocx.enginelayers.baseengine.SelectedNode;
 import de.underdocx.enginelayers.defaultodtengine.commands.internal.datapicker.AttributeNodeDataPicker;
-import de.underdocx.enginelayers.defaultodtengine.commands.internal.datapicker.DataPickerResult;
 import de.underdocx.enginelayers.defaultodtengine.commands.internal.datapicker.StringConvertDataPicker;
 import de.underdocx.enginelayers.modelengine.model.ModelNode;
 import de.underdocx.enginelayers.parameterengine.ParametersPlaceholderData;
@@ -53,16 +52,12 @@ public abstract class AbstractTextualCommandHandler<C extends DocContainer<D>, D
         this.allowedKeys = keys;
     }
 
-    protected DataPickerResult<String> resolveStringAttribute(String name) {
-        return new StringConvertDataPicker().pickData(name, modelAccess, placeholderData.getJson());
-    }
-
-    protected Optional<String> resolveValue(String attrName) {
+    protected Optional<String> resolveStringByAttr(String attrName) {
         return new StringConvertDataPicker().pickData(attrName, modelAccess, placeholderData.getJson()).getOptionalValue();
     }
 
-    protected Optional<ModelNode> resolveModelValue() {
-        return new AttributeNodeDataPicker().pickData("value", modelAccess, placeholderData.getJson()).getOptionalValue();
+    protected Optional<ModelNode> resolveNodeByAttr(String attrName) {
+        return new AttributeNodeDataPicker().pickData(attrName, modelAccess, placeholderData.getJson()).getOptionalValue();
     }
 
 

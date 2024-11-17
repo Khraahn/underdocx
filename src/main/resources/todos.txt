@@ -1,9 +1,4 @@
 - 0.4.0
-    - Lese-Zugriff auf Variablen mit ModelPath Notation
-      - Variable Setzen nur mit root-Namen erlaubt
-    - Wert für Model registrieren: setzt auch Variablen
-    - Sicherstellen: Kopie eines Submodels als neue Variable
-    - DataPicker: Muss Art der Auflösung liefern
     - Schleifen
       - ${For @value:"entities", $as:"subEntity"}
            ${For $value:"subEntity", $as:"x"} ${$x} ${EndIf}

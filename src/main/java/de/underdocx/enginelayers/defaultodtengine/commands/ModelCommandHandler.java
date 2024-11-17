@@ -70,9 +70,9 @@ public class ModelCommandHandler<C extends DocContainer<D>, D> extends AbstractT
         return build(CommandHandlerResult.EXECUTED, result -> {
             engineAccess.addListener(this);
             ModelPath newPath = build(modelAccess.getCurrentModelPath(), p ->
-                    resolveValue(ATTR_VALUE).ifPresentOrElse(
+                    resolveStringByAttr(ATTR_VALUE).ifPresentOrElse(
                             value -> p.value = setPath(value),
-                            () -> resolveValue(ATTR_INTERPRET).ifPresent(interpret ->
+                            () -> resolveStringByAttr(ATTR_INTERPRET).ifPresent(interpret ->
                                     p.value = interpret(interpret))));
             newPath = prepareModelPathPrefix(newPath);
             modelAccess.setCurrentModelPath(newPath);
@@ -80,7 +80,7 @@ public class ModelCommandHandler<C extends DocContainer<D>, D> extends AbstractT
     }
 
     private ModelPath prepareModelPathPrefix(ModelPath currentModelPath) {
-        Optional<String> prefix = resolveValue(ATTR_PREFIX);
+        Optional<String> prefix = resolveStringByAttr(ATTR_PREFIX);
         ActivePrefixModelPath result = new ActivePrefixModelPath(prefix.orElse(null), currentModelPath);
         return result;
     }

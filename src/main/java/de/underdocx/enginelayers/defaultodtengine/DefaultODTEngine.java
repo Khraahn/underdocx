@@ -121,6 +121,7 @@ public class DefaultODTEngine implements Runnable {
         engine.setModelRoot(tree);
     }
 
+
     public void setModel(Object object) {
         engine.setModelRoot(new ReflectionModelNode(object));
     }
@@ -129,7 +130,18 @@ public class DefaultODTEngine implements Runnable {
         engine.setModelRoot(new ReflectionModelNode(object, resolver));
     }
 
+    public void pushVariable(String name, ModelNode tree) {
+        engine.pushVariable(name, tree);
+    }
 
+    public void pushVariable(String name, Object object) {
+        engine.pushVariable(name, new ReflectionModelNode(object));
+    }
+
+    public void pushVariable(String name, Object object, ReflectionModelNode.Resolver resolver) {
+        engine.pushVariable(name, new ReflectionModelNode(object, resolver));
+    }
+    
     @Override
     public void run() {
         engine.run();

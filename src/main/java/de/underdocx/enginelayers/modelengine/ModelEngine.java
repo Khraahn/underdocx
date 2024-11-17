@@ -34,7 +34,9 @@ import de.underdocx.enginelayers.modelengine.model.ModelNode;
 import de.underdocx.enginelayers.modelengine.model.simple.MapModelNode;
 import de.underdocx.enginelayers.modelengine.modelaccess.ModelAccess;
 import de.underdocx.enginelayers.modelengine.modelpath.ModelPath;
-import de.underdocx.tools.common.Convenience;
+import de.underdocx.enginelayers.modelengine.modelpath.elements.ModelPathElement;
+import de.underdocx.enginelayers.modelengine.modelpath.elements.PropertyModelPathElement;
+import de.underdocx.environment.UnderdocxExecutionException;
 import de.underdocx.tools.common.Pair;
 import org.w3c.dom.Node;
 
@@ -54,6 +56,10 @@ public class ModelEngine<C extends DocContainer<D>, D> extends BaseEngine {
     public void setModelRoot(ModelNode modelRoot) {
         this.modelRoot = modelRoot;
         this.currentModelPath = new ModelPath();
+    }
+
+    public void pushVariable(String varName, ModelNode value) {
+        new ModelEngineModelAccess().pushVariable(varName, value);
     }
 
     @Override
@@ -92,15 +98,26 @@ public class ModelEngine<C extends DocContainer<D>, D> extends BaseEngine {
         }
 
         public Optional<ModelNode> getVariable(String name) {
-            return Convenience.buildOptional(result -> {
-                Deque<ModelNode> stack = variableStacks.get(name);
-                if (stack != null) {
-                    result.value = stack.peek();
+            ModelPath path = new ModelPath(name);
+            ModelPathElement first = (path.getElements().size() > 0) ? path.getElements().get(0) : null;
+            if (first == null || !(first instanceof PropertyModelPathElement)) {
+                throw new UnderdocxExecutionException("To receive a variable first path element must be variable name");
+            }
+            Deque<ModelNode> stack = variableStacks.get(((PropertyModelPathElement) first).getProperty());
+            if (stack != null) {
+                ModelNode varValue = stack.peek();
+                if (varValue != null) {
+                    path.subPath(1);
+                    return path.interpret(varValue);
                 }
-            });
+            }
+            return Optional.empty();
         }
 
         public void pushVariable(String name, ModelNode value) {
+            if (name == null || name.isBlank() || name.contains(".") || name.contains("[") || name.contains("^") || name.contains("<")) {
+                throw new UnderdocxExecutionException("No model path syntax or empty values are allowed to store variables");
+            }
             Deque<ModelNode> stack = variableStacks.get(name);
             if (stack == null) {
                 stack = new LinkedList<>();

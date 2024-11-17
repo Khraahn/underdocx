@@ -59,14 +59,14 @@ public class VariableCommandHandler<C extends DocContainer<D>, D> extends Abstra
 
     private CommandHandlerResult handlePushCommand() {
         return Convenience.build(CommandHandlerResult.EXECUTED, result ->
-                resolveStringAttribute(KEY_ATTR).getOptionalValue().ifPresent(key ->
-                        resolveModelValue().ifPresent(modelValue ->
+                resolveStringByAttr(KEY_ATTR).ifPresent(key ->
+                        resolveNodeByAttr(VALUE_ATTR).ifPresent(modelValue ->
                                 modelAccess.pushVariable(key, modelValue))));
     }
 
     private CommandHandlerResult handlePopCommand() {
         return Convenience.build(CommandHandlerResult.EXECUTED, result ->
-                resolveStringAttribute(KEY_ATTR).getOptionalValue().ifPresent(key ->
+                resolveStringByAttr(KEY_ATTR).ifPresent(key ->
                         modelAccess.popVariable(key)));
     }
 
