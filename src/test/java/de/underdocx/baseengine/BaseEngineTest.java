@@ -38,6 +38,8 @@ import org.odftoolkit.odfdom.doc.OdfTextDocument;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.List;
 import java.util.Optional;
 
@@ -137,5 +139,21 @@ public class BaseEngineTest extends AbstractOdtTest {
         assertThat(xmlTree).isEqualTo("<root><p><x></x>Hallo <span>$name</span> :-)</p></root>");
     }
 
+    @Test
+    public void testHeaderFooter() throws IOException {
+        InputStream is = getResource("HeaderFooter.odt");
 
+
+        OdtContainer doc = new OdtContainer(is);
+        DefaultODTEngine engine = new DefaultODTEngine(doc);
+        engine.registerSimpleDollarReplacement("header", "A");
+        engine.registerSimpleDollarReplacement("footer", "B");
+        engine.registerSimpleDollarReplacement("content", "C");
+        engine.run();
+
+        assertContains(doc, "A");
+        assertContains(doc, "B");
+        assertContains(doc, "C");
+        assertNotContains(doc, "$");
+    }
 }

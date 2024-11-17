@@ -12,5 +12,5 @@
       - Verboten:
           - ${For $value:"entities"} ...
           - ${For $value:"entities", @as:"x"} ...
-  - Platzhalter auch aus Header und Footer sammeln
 - Optimierung: Kommandos die effektlos den ModelPfad setzen löschen
+- Löschen eines Seitenumbruchs durch Platzhalter-Löschung verhindern

@@ -30,30 +30,44 @@ import de.underdocx.tools.tree.enumerator.Enumerator;
 import org.odftoolkit.odfdom.dom.element.text.TextParagraphElementBase;
 import org.w3c.dom.Node;
 
+import java.util.Arrays;
+import java.util.Iterator;
 import java.util.function.Predicate;
 
 import static de.underdocx.tools.common.Convenience.*;
 
 public class ParagraphWalker implements Enumerator<TextParagraphElementBase> {
 
-    private final TreeWalker treeWalker;
+    private static final Predicate<TreeWalker.VisitState> paragraphFilter =
+            state -> state != null && state.isBeginVisit() && state.getNode() instanceof TextParagraphElementBase;
+
+    private final Iterator<TreeWalker> treeWalkers;
+    private TreeWalker currentTreeWalker;
     private final boolean skipChildren;
     private TextParagraphElementBase next;
 
     public ParagraphWalker(OdfContainer<?> doc, boolean skipParagraphChildNodes) {
-        Node node = doc.getContentDom();
-        this.treeWalker = new TreeWalker(node, node);
+        Node contentDom = doc.getContentDom();
+        Node styleDom = doc.getStylesDom();
+        this.treeWalkers = Arrays.asList(
+                new TreeWalker(styleDom, styleDom),
+                new TreeWalker(contentDom, contentDom)
+        ).iterator();
+        this.currentTreeWalker = treeWalkers.next();
         this.skipChildren = skipParagraphChildNodes;
         findNext();
     }
 
     private void findNext() {
         if (next != null && skipChildren) {
-            treeWalker.nextSkipChildren();
+            currentTreeWalker.nextSkipChildren();
             next = null;
         }
-        Predicate<TreeWalker.VisitState> p = state -> state != null && state.isBeginVisit() && state.getNode() instanceof TextParagraphElementBase;
-        next = (TextParagraphElementBase) getOrDefault(treeWalker.next(p), TreeWalker.VisitState::getNode, null);
+        next = (TextParagraphElementBase) getOrDefault(currentTreeWalker.next(paragraphFilter), TreeWalker.VisitState::getNode, null);
+        if (next == null && treeWalkers.hasNext()) {
+            currentTreeWalker = treeWalkers.next();
+            findNext();
+        }
     }
 
     @Override

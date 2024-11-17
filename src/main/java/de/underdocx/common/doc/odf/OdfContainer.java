@@ -31,6 +31,7 @@ import de.underdocx.tools.common.Regex;
 import org.apache.commons.io.IOUtils;
 import org.odftoolkit.odfdom.doc.OdfDocument;
 import org.odftoolkit.odfdom.dom.OdfContentDom;
+import org.odftoolkit.odfdom.dom.OdfStylesDom;
 import org.xml.sax.SAXException;
 
 import java.io.*;
@@ -58,6 +59,16 @@ public abstract class OdfContainer<T extends OdfDocument> extends AbstractDocCon
     public OdfContentDom getContentDom() {
         try {
             return getDocument().getContentDom();
+        } catch (SAXException e) {
+            throw new UnderdocxExecutionException(e);
+        } catch (IOException e) {
+            throw new UnderdocxExecutionException(e);
+        }
+    }
+
+    public OdfStylesDom getStylesDom() {
+        try {
+            return getDocument().getStylesDom();
         } catch (SAXException e) {
             throw new UnderdocxExecutionException(e);
         } catch (IOException e) {
