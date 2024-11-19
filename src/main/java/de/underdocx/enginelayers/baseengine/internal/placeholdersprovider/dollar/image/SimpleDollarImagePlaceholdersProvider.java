@@ -34,8 +34,8 @@ import de.underdocx.enginelayers.baseengine.PlaceholdersProvider;
 import de.underdocx.enginelayers.baseengine.internal.placeholdersprovider.dollar.SimpleDollarPlaceholdersProvider;
 import de.underdocx.tools.common.Convenience;
 import de.underdocx.tools.common.Pair;
-import de.underdocx.tools.odf.OdfNodeType;
 import de.underdocx.tools.odf.ParagraphByParagraphNodesEnumerator;
+import de.underdocx.tools.odf.constants.OdfElement;
 import de.underdocx.tools.tree.Nodes;
 import de.underdocx.tools.tree.enumerator.Enumerator;
 import org.odftoolkit.odfdom.doc.OdfTextDocument;
@@ -61,7 +61,7 @@ public class SimpleDollarImagePlaceholdersProvider implements EncapsulatedNodesE
     }
 
     private Optional<DrawImageElement> getImage(DrawFrameElement node) {
-        Optional<Node> child = Nodes.findFirstDescendantNode(node, OdfNodeType.IMAGE_ELEMENT.getElementName());
+        Optional<Node> child = Nodes.findFirstDescendantNode(node, OdfElement.IMAGE.getElementName());
         return child.map(c -> (DrawImageElement) c);
     }
 
@@ -84,7 +84,7 @@ public class SimpleDollarImagePlaceholdersProvider implements EncapsulatedNodesE
     @Override
     public List<Node> extractNodes(Node tree) {
         return Convenience.also(new ArrayList<Node>(), result -> {
-            Nodes.findDescendantNodes(tree, OdfNodeType.FRAME_ELEMENT.getElementName()).forEach(frame -> {
+            Nodes.findDescendantNodes(tree, OdfElement.FRAME.getElementName()).forEach(frame -> {
                 if (isEncapsulatedNode(frame)) result.add(frame);
             });
         });

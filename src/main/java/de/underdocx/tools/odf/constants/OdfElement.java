@@ -22,47 +22,46 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-package de.underdocx.tools.odf;
+package de.underdocx.tools.odf.constants;
 
-public enum OdfNodeType {
-    SPAN_ELEMENT("text:span"),
-    PARAGRAPH_ELEMENT("text:p"),
-    TAB_ELEMENT("text:tab"),
-    LINEBREAK_ELEMENT("text:lineBreak"),
-    A_ELEMENT("text:a"),
+public enum OdfElement {
+    SPAN(OdfNameSpace.TEXT, "span"),
+    PARAGRAPH(OdfNameSpace.TEXT, "p"),
+    TAB(OdfNameSpace.TEXT, "tab"),
+    LINEBREAK(OdfNameSpace.TEXT, "lineBreak"),
+    A(OdfNameSpace.TEXT, "a"),
 
-    SPACE_ELEMENT("text:s"),
-    SPACE_COUNT_ATTRIBUTE("text:c"),
+    SPACE(OdfNameSpace.TEXT, "s"),
 
-    TEXT_ELEMENT("office:text"),
+    TEXT(OdfNameSpace.OFFICE, "text"),
 
-    FRAME_ELEMENT("draw:frame"),
-    FRAME_NAME_ATTRIBUTE("draw:name"),
-    FRAME_X_ATTRIBUTE("svg:x"),
-    FRAME_Y_ATTRIBUTE("svg:y"),
-    FRAME_WIDTH_ATTRIBUTE("svg:width"),
-    FRAME_HEIGHT_ATTRIBUTE("svg:hight"),
+    FRAME(OdfNameSpace.DRAW, "frame"),
 
+    IMAGE(OdfNameSpace.DRAW, "image");
 
-    IMAGE_ELEMENT("draw:image"),
-    IMAGE_HREF_ATTRIBUTE("xlink:href");
-
-
+    private final String pureName;
+    private final OdfNameSpace ns;
     private final String name;
 
-    OdfNodeType(String name) {
-        this.name = name;
+    OdfElement(OdfNameSpace odfNameSpace, String name) {
+        this.pureName = name;
+        this.ns = odfNameSpace;
+        this.name = ns.getQualifiedName(pureName);
+    }
+
+    public OdfNameSpace getNs() {
+        return ns;
+    }
+
+    public String getPureName() {
+        return pureName;
     }
 
     public String getElementName() {
         return name;
     }
 
-    public String getPureName() {
-        int lastIndex = name.lastIndexOf(":");
-        return lastIndex >= 0 ? name.substring(lastIndex + 1) : name;
-    }
-
+    @Override
     public String toString() {
         return name;
     }

@@ -24,26 +24,31 @@ SOFTWARE.
 
 package de.underdocx.common.placeholder.basic.textnodeinterpreter;
 
-import de.underdocx.tools.odf.OdfNodeType;
+import de.underdocx.tools.odf.constants.OdfAttribute;
+import de.underdocx.tools.odf.constants.OdfElement;
 import de.underdocx.tools.tree.Nodes;
 import org.w3c.dom.Node;
 
 import java.util.Arrays;
 
-import static de.underdocx.tools.common.Convenience.buildString;
+import static de.underdocx.tools.common.Convenience.*;
 
 public abstract class AbstractOdfTextNodeInterpreter implements TextNodeInterpreter {
 
-    protected final String spanElementName = getNodeName(OdfNodeType.SPAN_ELEMENT);
-    protected final String tabElementName = getNodeName(OdfNodeType.TAB_ELEMENT);
-    protected final String lineBreakElementName = getNodeName(OdfNodeType.LINEBREAK_ELEMENT);
-    protected final String aElementName = getNodeName(OdfNodeType.A_ELEMENT);
-    protected final String sElementName = getNodeName(OdfNodeType.SPACE_ELEMENT);
-    protected final String pElementName = getNodeName(OdfNodeType.PARAGRAPH_ELEMENT);
-    protected final String cAttributeName = getNodeName(OdfNodeType.SPACE_COUNT_ATTRIBUTE);
+    protected final String spanElementName = getNodeName(OdfElement.SPAN);
+    protected final String tabElementName = getNodeName(OdfElement.TAB);
+    protected final String lineBreakElementName = getNodeName(OdfElement.LINEBREAK);
+    protected final String aElementName = getNodeName(OdfElement.A);
+    protected final String sElementName = getNodeName(OdfElement.SPACE);
+    protected final String pElementName = getNodeName(OdfElement.PARAGRAPH);
+    protected final String cAttributeName = getNodeName(OdfAttribute.SPACE_COUNT);
 
-    protected String getNodeName(OdfNodeType name) {
+    protected String getNodeName(OdfElement name) {
         return name.getElementName();
+    }
+
+    protected String getNodeName(OdfAttribute name) {
+        return name.getAttributeName();
     }
 
     protected boolean isOneOf(Node node, String... names) {

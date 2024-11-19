@@ -5,9 +5,12 @@ import de.underdocx.common.doc.odf.OdtContainer;
 import de.underdocx.common.placeholder.basic.textnodeinterpreter.AbstractOdfTextNodeInterpreter;
 import de.underdocx.common.placeholder.basic.textnodeinterpreter.TextNodeInterpreter;
 import de.underdocx.environment.UnderdocxEnv;
-import de.underdocx.tools.odf.OdfNodeType;
+import de.underdocx.tools.odf.OdfTools;
+import de.underdocx.tools.odf.constants.OdfAttribute;
+import de.underdocx.tools.odf.constants.OdfElement;
 import de.underdocx.tools.tree.Nodes;
 import org.odftoolkit.odfdom.doc.OdfTextDocument;
+import org.odftoolkit.odfdom.dom.element.text.TextParagraphElementBase;
 import org.odftoolkit.odfdom.incubator.search.TextNavigation;
 import org.odftoolkit.odfdom.incubator.search.TextSelection;
 import org.w3c.dom.Node;
@@ -62,6 +65,11 @@ public class AbstractOdtTest extends AbstractTest {
 
     protected Optional<Integer> getOrder(OdtContainer doc, String text1, String text2) {
         return getOrder(doc.getDocument(), text1, text2);
+    }
+
+    protected TextParagraphElementBase getParagraph(OdtContainer doc, String content) {
+        Optional<TextSelection> searchResult = search(doc.getDocument(), content);
+        return OdfTools.findOldestParagraph(searchResult.get().getElement()).get();
     }
 
 
@@ -121,9 +129,15 @@ public class AbstractOdtTest extends AbstractTest {
     protected static TextNodeInterpreter testTextNodeInterpreter = new AbstractOdfTextNodeInterpreter() {
 
         @Override
-        protected String getNodeName(OdfNodeType name) {
+        protected String getNodeName(OdfElement name) {
             return name.getPureName();
         }
+
+        @Override
+        protected String getNodeName(OdfAttribute name) {
+            return name.getPureName();
+        }
+
 
         @Override
         public Node createTextContainer(Node parent) {
@@ -135,6 +149,14 @@ public class AbstractOdtTest extends AbstractTest {
             Nodes.setNodeText(node, text);
         }
     };
+
+    protected OdtContainer readOdt(String name) {
+        try {
+            return new OdtContainer(getResource(name));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
 
     protected void show(DocContainer<?> doc) {
         File tmp = createTmpFile(doc.getFileExtension());

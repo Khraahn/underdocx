@@ -113,6 +113,17 @@ public class Nodes {
         }
     }
 
+    public static Optional<Node> findOldestAncestorNode(Node start, Predicate<Node> filter) {
+        List<Node> ancestors = reverse(getAncestors(start, null));
+        for (int i = 0; i < ancestors.size(); i++) {
+            if (filter == null || filter.test(ancestors.get(i))) {
+                return Optional.of(ancestors.get(i));
+            }
+        }
+        return Optional.empty();
+    }
+
+
     public static List<Node> getAncestors(Node node, Node limit) {
         ArrayList<Node> result = new ArrayList<>();
         if (node == limit) {

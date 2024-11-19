@@ -45,6 +45,10 @@ public class OdfTools {
                 && currentNode.getParentNode() instanceof OfficeTextElement);
     }
 
+    public static Optional<TextParagraphElementBase> findOldestParagraph(Node node) {
+        return Nodes.findOldestAncestorNode(node, currentNode -> currentNode instanceof TextParagraphElementBase).map(x -> (TextParagraphElementBase) x);
+    }
+
     public static Optional<Node> findOfficeText(Node node) {
         return Nodes.findAscendantNode(node, currentNode -> currentNode instanceof OfficeTextElement);
     }

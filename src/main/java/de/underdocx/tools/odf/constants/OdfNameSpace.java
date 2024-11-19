@@ -22,45 +22,34 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-package de.underdocx.tools.common;
+package de.underdocx.tools.odf.constants;
 
-import java.util.Objects;
-import java.util.Optional;
-import java.util.function.Supplier;
+public enum OdfNameSpace {
+    STYLE("style", "urn:oasis:names:tc:opendocument:xmlns:style:1.0"),
+    FO("fo", "urn:oasis:names:tc:opendocument:xmlns:xsl-fo-compatible:1.0"),
+    TEXT("text", "urn:oasis:names:tc:opendocument:xmlns:text:1.0"),
+    DRAW("draw", "urn:oasis:names:tc:opendocument:xmlns:drawing:1.0"),
+    SVG("svg", "urn:oasis:names:tc:opendocument:xmlns:svg-compatible:1.0"),
+    OFFICE("office", "urn:oasis:names:tc:opendocument:xmlns:office:1.0"),
+    XLINK("xlink", "http://www.w3.org/1999/xlink");
 
-public class Wrapper<T> implements Supplier<T> {
-    public T value;
+    private final String ns;
+    private final String uri;
 
-    public Wrapper() {
+    OdfNameSpace(String ns, String uri) {
+        this.ns = ns;
+        this.uri = uri;
+    }
+    
+    public String getNs() {
+        return ns;
     }
 
-    public Wrapper(T value) {
-        this.value = value;
+    public String getUri() {
+        return uri;
     }
 
-    public Optional<T> toOptional() {
-        return Optional.ofNullable(value);
-    }
-
-    public String toString() {
-        return String.valueOf(value);
-    }
-
-    @Override
-    public T get() {
-        return value;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Wrapper<?> wrapper = (Wrapper<?>) o;
-        return Objects.equals(value, wrapper.value);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hashCode(value);
+    public String getQualifiedName(String pureName) {
+        return getNs() + ":" + pureName;
     }
 }
