@@ -26,8 +26,10 @@ package de.underdocx.tools.odf.pagestyle;
 
 import de.underdocx.tools.odf.OdfTools;
 import de.underdocx.tools.odf.constants.OdfAttribute;
+import org.odftoolkit.odfdom.dom.element.OdfStylableElement;
 import org.odftoolkit.odfdom.dom.element.style.StyleParagraphPropertiesElement;
 import org.odftoolkit.odfdom.dom.element.style.StyleStyleElement;
+import org.odftoolkit.odfdom.dom.element.table.TableTableElement;
 import org.odftoolkit.odfdom.dom.element.text.TextParagraphElementBase;
 import org.odftoolkit.odfdom.dom.style.props.OdfStylePropertiesSet;
 import org.w3c.dom.Node;
@@ -37,26 +39,35 @@ import java.util.Optional;
 public class PageStyleWriter {
 
     public static void writePageStyle(Node node, PageStyle pageStyleToSet, boolean force) {
-        Optional<TextParagraphElementBase> ascendantParagraph = OdfTools.findOldestParagraph(node);
+        Optional<OdfStylableElement> ascendantParagraph = OdfTools.findOldestParagraphOrTable(node);
         if (ascendantParagraph.isPresent()) {
-            TextParagraphElementBase p = ascendantParagraph.get();
+            OdfStylableElement p = ascendantParagraph.get();
             StyleStyleElement style = p.getOrCreateUnqiueAutomaticStyle();
             PageStyle currentPageStyle = PageStyleReader.readNonRecursive(null, style);
-            if (force || pageStyleToSet.masterPage != null && currentPageStyle.masterPage == null) {
+            if (pageStyleToSet.masterPage != null && (force || currentPageStyle.masterPage == null)) {
                 OdfAttribute.STYLE_MASTER_PAGE_NAME.setAttributeNS(style, pageStyleToSet.masterPage.value);
             }
             StyleParagraphPropertiesElement paragraphProperties =
                     (StyleParagraphPropertiesElement) style
                             .getOrCreatePropertiesElement(OdfStylePropertiesSet.ParagraphProperties);
-            if (force || pageStyleToSet.breakBefore != null && currentPageStyle.breakBefore == null) {
+            if (pageStyleToSet.breakBefore != null && (force || currentPageStyle.breakBefore == null)) {
                 OdfAttribute.PARAGRAPH_PROPERTIES_BREAK_BEFORE.setAttributeNS(paragraphProperties, pageStyleToSet.breakBefore.value);
             }
-            if (force || pageStyleToSet.breakAfter != null && currentPageStyle.breakAfter == null) {
+            if (pageStyleToSet.breakAfter != null && (force || currentPageStyle.breakAfter == null)) {
                 OdfAttribute.PARAGRAPH_PROPERTIES_BREAK_AFTER.setAttributeNS(paragraphProperties, pageStyleToSet.breakAfter.value);
             }
-            if (force || pageStyleToSet.pageNumber != null && currentPageStyle.pageNumber == null) {
+            if (pageStyleToSet.pageNumber != null && (force || currentPageStyle.pageNumber == null)) {
                 OdfAttribute.PARAGRAPH_PROPERTIES_PAGE_NUMBER.setAttributeNS(paragraphProperties, pageStyleToSet.pageNumber.value);
             }
         }
+    }
+
+    public static boolean isPageStyleable(Node node) {
+        boolean result = node != null && (
+                node instanceof TableTableElement ||
+                        node instanceof TextParagraphElementBase || OdfTools.findOldestParagraphOrTable(node).isPresent()
+        );
+        System.out.println("jsakdöf: " + result + " for " + node);
+        return result;
     }
 }

@@ -28,11 +28,10 @@ import de.underdocx.tools.common.Convenience;
 import de.underdocx.tools.common.Wrapper;
 import de.underdocx.tools.odf.OdfTools;
 import de.underdocx.tools.odf.constants.OdfAttribute;
+import org.odftoolkit.odfdom.dom.element.OdfStylableElement;
 import org.odftoolkit.odfdom.dom.element.OdfStyleBase;
 import org.odftoolkit.odfdom.dom.element.OdfStylePropertiesBase;
-import org.odftoolkit.odfdom.dom.element.style.StyleParagraphPropertiesElement;
 import org.odftoolkit.odfdom.dom.element.style.StyleStyleElement;
-import org.odftoolkit.odfdom.dom.element.text.TextParagraphElementBase;
 import org.odftoolkit.odfdom.dom.style.props.OdfStylePropertiesSet;
 import org.odftoolkit.odfdom.incubator.doc.style.OdfStyle;
 import org.w3c.dom.Node;
@@ -43,9 +42,9 @@ public class PageStyleReader {
 
     public static PageStyle readPageStyle(Node node) {
         return Convenience.also(new PageStyle(), result -> {
-            Optional<TextParagraphElementBase> ascendantParagraph = OdfTools.findOldestParagraph(node);
+            Optional<OdfStylableElement> ascendantParagraph = OdfTools.findOldestParagraphOrTable(node);
             if (ascendantParagraph.isPresent()) {
-                TextParagraphElementBase p = ascendantParagraph.get();
+                OdfStylableElement p = ascendantParagraph.get();
                 OdfStyle style = p.getAutomaticStyle();
                 scanRecursive(result, style);
             }
@@ -69,26 +68,29 @@ public class PageStyleReader {
                 }
             }
             OdfStylePropertiesBase paragraphProperties = style.getPropertiesElement(OdfStylePropertiesSet.ParagraphProperties);
+            if (paragraphProperties == null) {
+                paragraphProperties = style.getPropertiesElement(OdfStylePropertiesSet.TableProperties);
+            }
             if (paragraphProperties != null) {
-                StyleParagraphPropertiesElement propertiesStyle = (StyleParagraphPropertiesElement) paragraphProperties;
-                String readBreakBefore = propertiesStyle.getFoBreakBeforeAttribute();
-                String readBreakAfter = propertiesStyle.getFoBreakAfterAttribute();
-                String readPageNumber = readPageNumber(propertiesStyle);
-                if (readBreakBefore != null && pageStyle.breakBefore == null) {
-                    pageStyle.breakBefore = new Wrapper<>(readBreakBefore);
-                }
-                if (readBreakAfter != null && pageStyle.breakAfter == null) {
-                    pageStyle.breakAfter = new Wrapper<>(readBreakAfter);
-                }
-                if (readPageNumber != null && pageStyle.pageNumber == null) {
-                    pageStyle.pageNumber = new Wrapper<>(readPageNumber);
-                }
+                String readPageNumber = OdfAttribute.PARAGRAPH_PROPERTIES_PAGE_NUMBER.getAttributeNS(paragraphProperties);
+                String readBreakBefore = OdfAttribute.PARAGRAPH_PROPERTIES_BREAK_BEFORE.getAttributeNS(paragraphProperties);
+                String readBreakAfter = OdfAttribute.PARAGRAPH_PROPERTIES_BREAK_AFTER.getAttributeNS(paragraphProperties);
+                fillPageStyle(pageStyle, readBreakBefore, readBreakAfter, readPageNumber);
             }
         }
         return pageStyle;
     }
 
-    private static String readPageNumber(StyleParagraphPropertiesElement propertiesStyle) {
-        return OdfAttribute.PARAGRAPH_PROPERTIES_PAGE_NUMBER.getAttributeNS(propertiesStyle);
+    private static void fillPageStyle(PageStyle pageStyle, String readBreakBefore, String readBreakAfter, String readPageNumber) {
+        if (readBreakBefore != null && pageStyle.breakBefore == null) {
+            pageStyle.breakBefore = new Wrapper<>(readBreakBefore);
+        }
+        if (readBreakAfter != null && pageStyle.breakAfter == null) {
+            pageStyle.breakAfter = new Wrapper<>(readBreakAfter);
+        }
+        if (readPageNumber != null && pageStyle.pageNumber == null) {
+            pageStyle.pageNumber = new Wrapper<>(readPageNumber);
+        }
     }
+
 }

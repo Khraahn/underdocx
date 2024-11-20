@@ -25,7 +25,9 @@ SOFTWARE.
 package de.underdocx.tools.odf;
 
 import de.underdocx.tools.tree.Nodes;
+import org.odftoolkit.odfdom.dom.element.OdfStylableElement;
 import org.odftoolkit.odfdom.dom.element.office.OfficeTextElement;
+import org.odftoolkit.odfdom.dom.element.table.TableTableElement;
 import org.odftoolkit.odfdom.dom.element.text.TextParagraphElementBase;
 import org.odftoolkit.odfdom.pkg.OdfFileDom;
 import org.w3c.dom.Node;
@@ -47,6 +49,10 @@ public class OdfTools {
 
     public static Optional<TextParagraphElementBase> findOldestParagraph(Node node) {
         return Nodes.findOldestAncestorNode(node, currentNode -> currentNode instanceof TextParagraphElementBase).map(x -> (TextParagraphElementBase) x);
+    }
+
+    public static Optional<OdfStylableElement> findOldestParagraphOrTable(Node node) {
+        return Nodes.findOldestAncestorNode(node, currentNode -> currentNode instanceof TextParagraphElementBase || currentNode instanceof TableTableElement).map(x -> (OdfStylableElement) x);
     }
 
     public static Optional<Node> findOfficeText(Node node) {

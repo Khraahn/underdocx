@@ -32,6 +32,9 @@ import de.underdocx.enginelayers.baseengine.modifiers.Modifier;
 import de.underdocx.tools.common.Convenience;
 import de.underdocx.tools.common.Wrapper;
 import de.underdocx.tools.odf.OdfTools;
+import de.underdocx.tools.odf.pagestyle.PageStyle;
+import de.underdocx.tools.odf.pagestyle.PageStyleReader;
+import de.underdocx.tools.odf.pagestyle.PageStyleWriter;
 import de.underdocx.tools.tree.nodepath.TextNodePath;
 import de.underdocx.tools.tree.nodepath.TreeNodeCollector;
 import org.w3c.dom.Node;
@@ -48,18 +51,17 @@ public class DeletePlaceholderModifier<C extends DocContainer<D>, P, D> implemen
     public static boolean modify(Node placeholderNode, DeletePlaceholderModifierData modifierData) {
         return Convenience.build(false, result -> {
             OdfTools.findAscendantParagraph(placeholderNode, false).ifPresent(p -> {
-                // TODO copy pageBreak info to next paragraph if requested
                 TextualPlaceholderToolkit.deletePlaceholder(placeholderNode);
                 if (modifierData.getDeleteStrategy() != DeletePlaceholderModifierData.Strategy.KEEP_PARAGRAPH) {
                     if (modifierData.getDeleteStrategy() == DeletePlaceholderModifierData.Strategy.DELETE_PARAGRAPH) {
-                        removeParagraph(result, p);
+                        removeParagraph(result, p, modifierData.copyPageStyle());
                     } else {
                         List<Node> paragraphNodes = new TreeNodeCollector(p, p, new ArrayList<>()).collect();
                         TextNodePath path = new TextNodePath(paragraphNodes, OdfTextNodeInterpreter.INSTANCE);
                         if (path.isTextOnly()) {
                             String textContent = path.fetchTextContent();
                             if (textContent.isEmpty() || (textContent.isBlank() && modifierData.getDeleteStrategy() == DeletePlaceholderModifierData.Strategy.DELETE_BLANK_PARAGRAPH)) {
-                                removeParagraph(result, p);
+                                removeParagraph(result, p, modifierData.copyPageStyle());
                             }
                         }
                     }
@@ -68,7 +70,28 @@ public class DeletePlaceholderModifier<C extends DocContainer<D>, P, D> implemen
         });
     }
 
-    private static void removeParagraph(Wrapper<Boolean> result, Node p) {
+    private static void removeParagraph(Wrapper<Boolean> result, Node p, boolean copyStyle) {
+        if (copyStyle) {
+            PageStyle style = PageStyleReader.readPageStyle(p);
+            if (style.breakAfter != null && style.breakAfter.value != null && !style.breakAfter.value.equals("auto")) {
+                Node prevP = p.getPreviousSibling();
+                while (prevP != null && !PageStyleWriter.isPageStyleable(prevP)) {
+                    prevP = p.getPreviousSibling();
+                }
+                if (PageStyleWriter.isPageStyleable(prevP)) {
+                    PageStyleWriter.writePageStyle(prevP, style, true);
+                }
+            } else {
+                Node nextP = p.getNextSibling();
+                while (nextP != null && !PageStyleWriter.isPageStyleable(nextP)) {
+                    nextP = p.getNextSibling();
+                }
+                if (PageStyleWriter.isPageStyleable(nextP)) {
+                    PageStyleWriter.writePageStyle(nextP, style, true);
+                }
+            }
+        }
+
         p.getParentNode().removeChild(p);
         result.value = true;
     }

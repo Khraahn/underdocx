@@ -26,6 +26,8 @@ package de.underdocx.commands.pagestyle;
 
 import de.underdocx.AbstractOdtTest;
 import de.underdocx.common.doc.odf.OdtContainer;
+import de.underdocx.enginelayers.defaultodtengine.DefaultODTEngine;
+import de.underdocx.enginelayers.modelengine.model.simple.MapModelNode;
 import de.underdocx.tools.common.Wrapper;
 import de.underdocx.tools.odf.pagestyle.PageStyle;
 import de.underdocx.tools.odf.pagestyle.PageStyleReader;
@@ -102,5 +104,24 @@ public class PageStyleReaderWriterTest extends AbstractOdtTest {
                 true);
 
         testStyledDoc(doc);
+    }
+
+    @Test
+    public void testBreaksAfterReplacement() {
+        OdtContainer doc = readOdt("PageStyle.odt");
+        String json = """
+                {
+                    "A": "A !",
+                    "B": "B !",
+                    "C": "C !",
+                    "D": "D !",
+                }
+                """;
+        DefaultODTEngine engine = new DefaultODTEngine(doc);
+        engine.setModel(new MapModelNode(json));
+        engine.run();
+        testStyledDoc(doc);
+        assertContains(doc, "!");
+        assertNoPlaceholders(doc);
     }
 }
