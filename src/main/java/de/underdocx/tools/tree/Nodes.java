@@ -233,6 +233,11 @@ public class Nodes {
         nodes.forEach(element -> element.getParentNode().removeChild(element));
     }
 
+    public static void deleteNode(Node node) {
+        if (node.getParentNode() != null)
+            node.getParentNode().removeChild(node);
+    }
+
     public static void deleteChildren(Node node) {
         deleteNodes(children(node));
     }
@@ -242,6 +247,10 @@ public class Nodes {
         node.appendChild(node.getOwnerDocument().createTextNode(text));
     }
 
+    public static void replaceNode(Node oldNode, Node newNode) {
+        insertBefore(oldNode, newNode);
+        oldNode.getParentNode().removeChild(oldNode);
+    }
 
 
 

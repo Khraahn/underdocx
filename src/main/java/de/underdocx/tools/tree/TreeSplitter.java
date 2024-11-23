@@ -24,5 +24,106 @@ SOFTWARE.
 
 package de.underdocx.tools.tree;
 
+import de.underdocx.common.placeholder.TextualPlaceholderToolkit;
+import de.underdocx.common.placeholder.basic.textnodeinterpreter.TextNodeInterpreter;
+import de.underdocx.tools.common.Wrapper;
+import de.underdocx.tools.tree.nodepath.TextNodePath;
+import org.w3c.dom.Node;
+
+import java.util.ArrayList;
+import java.util.List;
+
 public class TreeSplitter {
+
+    private final TextNodeInterpreter textNodeInterpreter;
+    private Node commonAncestor;
+    private Node nodeToSeparate;
+    private Node middleTree;
+    private Node leftTree;
+    private Node leftNode;
+    private Node rightTree;
+    private Node rightNode;
+    private Node next;
+    private Node previous;
+
+
+    public static void split(Node nodeToSeparate, Node commonAncestor, TextNodeInterpreter textNodeInterpreter) {
+        new TreeSplitter(nodeToSeparate, commonAncestor, textNodeInterpreter);
+    }
+
+    private TreeSplitter(Node nodeToSeparate, Node commonAncestor, TextNodeInterpreter textNodeInterpreter) {
+        this.textNodeInterpreter = textNodeInterpreter;
+        this.nodeToSeparate = nodeToSeparate;
+        this.commonAncestor = commonAncestor;
+
+        List<Node> pathToCommonAncestor = Nodes.getAncestors(nodeToSeparate, commonAncestor);
+        middleTree = pathToCommonAncestor.get(pathToCommonAncestor.size() - 2);
+
+        leftTree = TextualPlaceholderToolkit.clonePlaceholder(nodeToSeparate, true);
+        Nodes.insertNode(middleTree, leftTree, true);
+
+        rightTree = TextualPlaceholderToolkit.clonePlaceholder(nodeToSeparate, false);
+        Nodes.insertNode(middleTree, rightTree, false);
+
+        next = nodeToSeparate.getParentNode();
+        previous = nodeToSeparate;
+
+        leftNode = leftTree;
+        rightNode = rightTree;
+
+        nextStep();
+        deleteNodesOrTrees();
+    }
+
+    private void nextStep() {
+        if (next == commonAncestor) return;
+        Node nextLeft = Nodes.cloneNode(next, next, false, false);
+        Node nextRight = Nodes.cloneNode(next, next, false, false);
+        replaceAndMakeChild(leftTree, nextLeft);
+        replaceAndMakeChild(rightTree, nextRight);
+        leftTree = nextLeft;
+        rightTree = nextRight;
+
+        Wrapper<Boolean> foundPlaceholderAncestor = new Wrapper<>(false);
+        List<Node> leftChildren = new ArrayList<>();
+        List<Node> rightChildren = new ArrayList<>();
+        Nodes.children(next).forEach(child -> {
+            if (child == previous) {
+                foundPlaceholderAncestor.value = true;
+            } else {
+                if (foundPlaceholderAncestor.value) {
+                    rightChildren.add(child);
+                } else {
+                    leftChildren.add(child);
+                }
+            }
+        });
+        Nodes.addChildren(leftTree, leftChildren, true);
+        Nodes.addChildren(rightTree, rightChildren, false);
+
+        previous = next;
+        next = next.getParentNode();
+        nextStep();
+    }
+
+    private void replaceAndMakeChild(Node oldNode, Node newNode) {
+        Nodes.replaceNode(oldNode, newNode);
+        newNode.appendChild(oldNode);
+    }
+
+    private void deleteNodesOrTrees() {
+        Nodes.deleteNode(leftNode);
+        Nodes.deleteNode(rightNode);
+        if (isBlank(leftTree)) {
+            Nodes.deleteNode(leftTree);
+        }
+        if (isBlank(rightTree)) {
+            Nodes.deleteNode(rightTree);
+        }
+    }
+
+    private boolean isBlank(Node node) {
+        return TextNodePath.isBlank(node, textNodeInterpreter);
+    }
+
 }

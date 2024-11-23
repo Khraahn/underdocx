@@ -26,6 +26,7 @@ package de.underdocx.common.placeholder;
 
 import de.underdocx.common.codec.Codec;
 import de.underdocx.environment.UnderdocxExecutionException;
+import de.underdocx.tools.common.Pair;
 import de.underdocx.tools.tree.Nodes;
 import org.w3c.dom.Node;
 
@@ -33,8 +34,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.function.Predicate;
 
-import static de.underdocx.tools.common.Convenience.filter;
-import static de.underdocx.tools.common.Convenience.first;
+import static de.underdocx.tools.common.Convenience.*;
 
 public class TextualPlaceholderToolkit<P> {
     private final EncapsulatedNodesExtractor extractor;
@@ -79,6 +79,10 @@ public class TextualPlaceholderToolkit<P> {
 
     public static Node clonePlaceholder(Node placeholder, boolean insertBefore) {
         return Nodes.cloneNode(placeholder, placeholder, insertBefore, true);
+    }
+
+    public static Pair<Node, Node> clonePlaceholder(Node placeholder) {
+        return new Pair<>(placeholder, clonePlaceholder(placeholder, false));
     }
 
     public List<Node> findPlaceholders(Node tree, Predicate<P> filter) {

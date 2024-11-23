@@ -85,12 +85,17 @@ public abstract class AbstractOdfTextNodeInterpreter implements TextNodeInterpre
 
     @Override
     public boolean isPlainTextContainerType(Node node) {
-        return isOneOf(node, sElementName, tabElementName, lineBreakElementName);
+        return isOneOf(node, spanElementName, aElementName);
     }
 
     @Override
     public boolean isPartialTextContainerType(Node node) {
         return is(node, pElementName);
+    }
+
+    @Override
+    public boolean isTextOnlyType(Node node) {
+        return isPlainTextContainerType(node) || isPlainTextType(node);
     }
 
     @Override
