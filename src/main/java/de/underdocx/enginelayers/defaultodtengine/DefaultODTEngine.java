@@ -66,6 +66,7 @@ public class DefaultODTEngine implements Runnable {
         engine.registerCommandHandler(parameters, new ShortVarStringCommandHandler());
         engine.registerCommandHandler(parameters, new VariableCommandHandler());
         engine.registerCommandHandler(parameters, new ForCommandHandler());
+        engine.registerCommandHandler(parameters, new DateCommandHandler());
     }
 
     public DefaultODTEngine(OdtContainer doc) {

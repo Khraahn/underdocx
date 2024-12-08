@@ -57,7 +57,7 @@ public class MissingDataCommandModule<C extends DocContainer<D>, D, M> extends A
         MissingDataConfig config = interpreter.interpretAttributes(selection.getPlaceholderData().getJson(), configuration.getMissingDataConfig());
         return switch (value.type) {
             case RESOLVED -> handleResolved(config, value);
-            case UNRESOLVED_MISSING_ATTR, UNRESOLVED_INVALID_ATTR_VALUE ->
+            case UNRESOLVED_MISSING_ATTR, UNRESOLVED_INVALID_VALUE ->
                     react(config, config.getStrategy(MissingDataSzenario.ERROR));
             case UNRESOLVED_MISSING_VALUE -> react(config, config.getStrategy(MissingDataSzenario.NULL));
         };

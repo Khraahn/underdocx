@@ -48,7 +48,7 @@ public class DataPickerResult<T> {
 
     public enum ResultType {
         RESOLVED(true), // value received, null value might be valid
-        UNRESOLVED_INVALID_ATTR_VALUE(false), // For example invalid ModelPath syntax
+        UNRESOLVED_INVALID_VALUE(false), // For example invalid ModelPath syntax
         UNRESOLVED_MISSING_ATTR(false), // For example mandatory "@value" attribute is missing
         UNRESOLVED_MISSING_VALUE(false); // For example model does not contain requiested data
 
@@ -78,7 +78,7 @@ public class DataPickerResult<T> {
     }
 
     public static <T> DataPickerResult<T> unresolvedInvalidAttrValue(ResultSource source) {
-        return new DataPickerResult<>(ResultType.UNRESOLVED_INVALID_ATTR_VALUE, source, null);
+        return new DataPickerResult<>(ResultType.UNRESOLVED_INVALID_VALUE, source, null);
     }
 
     public static <T> DataPickerResult<T> unresolvedMissingAttr(ResultSource source) {
