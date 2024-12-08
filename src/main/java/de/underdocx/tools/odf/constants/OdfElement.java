@@ -28,7 +28,7 @@ public enum OdfElement {
     SPAN(OdfNameSpace.TEXT, "span"),
     PARAGRAPH(OdfNameSpace.TEXT, "p"),
     TAB(OdfNameSpace.TEXT, "tab"),
-    LINEBREAK(OdfNameSpace.TEXT, "lineBreak"),
+    LINEBREAK(OdfNameSpace.TEXT, "line-break"),
     A(OdfNameSpace.TEXT, "a"),
 
     SPACE(OdfNameSpace.TEXT, "s"),

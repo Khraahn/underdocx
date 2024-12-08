@@ -156,4 +156,19 @@ public class BaseEngineTest extends AbstractOdtTest {
         assertContains(doc, "C");
         assertNotContains(doc, "$");
     }
+
+    @Test
+    public void testSoftLineBreakPlaceholder() throws IOException {
+        InputStream is = getResource("SoftLineBreakPlaceholder.odt");
+
+        OdtContainer doc = new OdtContainer(is);
+        DefaultODTEngine engine = new DefaultODTEngine(doc);
+        engine.run();
+
+        show(doc);
+
+        assertContains(doc, "A Test B");
+        assertNoPlaceholders(doc);
+
+    }
 }
