@@ -24,6 +24,8 @@ SOFTWARE.
 
 package de.underdocx.common.doc;
 
+import de.underdocx.environment.UnderdocxEnv;
+
 import java.io.*;
 
 public interface DocContainer<D> {
@@ -43,13 +45,39 @@ public interface DocContainer<D> {
     void save(OutputStream os) throws IOException;
 
     default void save(File file) throws IOException {
+        UnderdocxEnv.getInstance().logger.trace("Saving tmp file: " + file);
         try (FileOutputStream fos = new FileOutputStream(file)) {
             save(fos);
         }
     }
 
-    String createURI(Long lifetime) throws IOException;
-
     String getFileExtension();
+
+    default File createTmpFile() throws IOException {
+        return createTmpFile("tmp_", true, null);
+    }
+
+    default File createTmpFile(Long lifetime) throws IOException {
+        return createTmpFile("tmp_", true, lifetime);
+    }
+
+    default void createDebugFile(String prefix) {
+        try {
+            createTmpFile(System.currentTimeMillis() + prefix, false, null);
+        } catch (IOException e) {
+            UnderdocxEnv.getInstance().logger.error(e);
+        }
+    }
+
+
+    File createTmpFile(String prefix, boolean deleteOnExit, Long lifetime) throws IOException;
+
+    default String createURI(Long lifetime) throws IOException {
+        return createTmpFile(lifetime).toURI().toString();
+    }
+
+    default String createURI() throws IOException {
+        return createURI(null);
+    }
 
 }

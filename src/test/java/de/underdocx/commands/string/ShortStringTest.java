@@ -99,7 +99,7 @@ public class ShortStringTest extends AbstractOdtTest {
         assertContains(doc, "B Test0 B");
         assertContains(doc, "C attX1 C");
         assertContains(doc, "D  D");
-        assertContains(doc, "E 42.0 E");
+        assertContains(doc, "E 42 E");
         assertNoPlaceholders(doc);
     }
 }

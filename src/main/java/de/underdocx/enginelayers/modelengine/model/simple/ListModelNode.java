@@ -60,5 +60,8 @@ public class ListModelNode extends AbstractPredefinedModelNode<List<AbstractMode
         containedValue.add(node);
     }
 
-
+    @Override
+    public int getSize() {
+        return containedValue.size();
+    }
 }

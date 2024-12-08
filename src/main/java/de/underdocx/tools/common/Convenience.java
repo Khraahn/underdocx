@@ -24,10 +24,13 @@ SOFTWARE.
 
 package de.underdocx.tools.common;
 
+import de.underdocx.environment.UnderdocxExecutionException;
+
 import java.util.*;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 public class Convenience {
@@ -101,6 +104,18 @@ public class Convenience {
 
     public static <I, R> R getOrDefault(Optional<I> value, Function<I, R> provider, R defaultValue) {
         return (value == null || value.isEmpty()) ? defaultValue : provider.apply(value.get());
+    }
+
+    public static <R, X extends RuntimeException> R getOrThrow(Optional<R> value, Supplier<X> exceptionProvider) {
+        if (value.isPresent()) {
+            return value.get();
+        } else {
+            throw exceptionProvider.get();
+        }
+    }
+
+    public static <R> R getOrThrow(Optional<R> value, String message) {
+        return getOrThrow(value, () -> new UnderdocxExecutionException(message));
     }
 
     public static <T> T ifNotNull(T value, Consumer<T> consumer) {

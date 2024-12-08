@@ -34,8 +34,11 @@ import de.underdocx.enginelayers.defaultodtengine.commands.internal.attrinterpre
 import de.underdocx.enginelayers.defaultodtengine.commands.internal.attrinterpreter.missingdata.MissingDataSzenario;
 import de.underdocx.enginelayers.defaultodtengine.commands.internal.datapicker.DataPickerResult;
 import de.underdocx.enginelayers.defaultodtengine.commands.internal.modifiermodule.AbstractCommandModule;
+import de.underdocx.enginelayers.defaultodtengine.modifiers.deletearea.DeleteAreaModifier;
 import de.underdocx.enginelayers.parameterengine.ParametersPlaceholderData;
 import de.underdocx.environment.UnderdocxExecutionException;
+import de.underdocx.tools.common.Pair;
+import org.w3c.dom.Node;
 
 public class MissingDataCommandModule<C extends DocContainer<D>, D, M> extends AbstractCommandModule<C, ParametersPlaceholderData, D, MissingDataCommandModuleResult<M>, MissingDataCommandModuleConfig<M>> {
 
@@ -64,7 +67,7 @@ public class MissingDataCommandModule<C extends DocContainer<D>, D, M> extends A
         if (configuration.getIsEmptyPredicate().test(value.value)) {
             return react(config, config.getStrategy(MissingDataSzenario.EMPTY));
         } else {
-            return new MissingDataCommandModuleResult(value.value);
+            return new MissingDataCommandModuleResult(value.value, value.source);
         }
     }
 
@@ -85,7 +88,7 @@ public class MissingDataCommandModule<C extends DocContainer<D>, D, M> extends A
             case DELETE_PLACEHOLDER_DELETE_PARAGRAPH -> new DeletePlaceholderModifier<C, ParametersPlaceholderData, D>()
                     .modify(selection, new DeletePlaceholderModifierData.Simple(
                             DeletePlaceholderModifierData.Strategy.DELETE_PARAGRAPH, true));
-            case DELETE_PLACEHOLDER_DELETE_AREA -> deleteArea();
+            case DELETE_PLACEHOLDER_DELETE_AREA -> deleteAreaOdf();
             case KEEP_PLACEHOLDER -> {/* Nothing to do*/}
             default -> throw new UnderdocxExecutionException("Unexpected Strategy: " + strategy);
         }
@@ -101,7 +104,9 @@ public class MissingDataCommandModule<C extends DocContainer<D>, D, M> extends A
         }
     }
 
-    private void deleteArea() {
-        throw new UnsupportedOperationException("Not yet implemented");
+    private void deleteAreaOdf() {
+        Node endNode = configuration.getAreaEnd();
+        DeleteAreaModifier.deleteArea(() -> new Pair<>(selection.getNode(), endNode));
+
     }
 }

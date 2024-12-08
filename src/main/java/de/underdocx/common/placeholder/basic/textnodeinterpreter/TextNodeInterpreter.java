@@ -76,4 +76,5 @@ public interface TextNodeInterpreter {
     Node createTextContainer(Node parent);
 
     void setNodeText(Node node, String text);
+
 }

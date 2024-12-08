@@ -143,13 +143,22 @@ public class JsonCodec implements Codec<JsonNode> {
 
     public Object getAsObject(JsonNode node) {
         JsonNodeType type = node.getNodeType();
-        return switch (type) {
+        Object result = switch (type) {
             case BOOLEAN -> node.asBoolean();
-            case NUMBER -> node.isLong() ? node.asLong() : (node.isInt() ? node.asInt() : node.asDouble());
+            case NUMBER -> {
+                if (node.isLong()) {
+                    yield Long.valueOf(node.asLong());
+                }
+                if (node.isInt()) {
+                    yield Integer.valueOf(node.asInt());
+                }
+                yield Double.valueOf(node.asDouble());
+            }
             case STRING -> node.asText();
             case ARRAY -> getAsList(node);
             case OBJECT -> getAsObject(node);
             default -> null;
         };
+        return result;
     }
 }

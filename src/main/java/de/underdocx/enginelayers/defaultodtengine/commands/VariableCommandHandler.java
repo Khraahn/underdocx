@@ -38,7 +38,9 @@ import java.util.Optional;
 
 public class VariableCommandHandler<C extends DocContainer<D>, D> extends AbstractTextualCommandHandler<C, D> implements EngineListener<C, D> {
 
-    public static final Regex KEYS = new Regex("Pop|Push");
+    public static final String KEY_POP = "Pop";
+    public static final String KEY_PUSH = "Push";
+    public static final Regex KEYS = new Regex(KEY_POP + "|" + KEY_PUSH);
 
     public static final String KEY_ATTR = "key";
     public static final String VALUE_ATTR = "value";
@@ -77,4 +79,5 @@ public class VariableCommandHandler<C extends DocContainer<D>, D> extends Abstra
             return placeholderData.isPresent() && KEYS.matches(placeholderData.get().getKey());
         }).forEach(placeholderNode -> DeletePlaceholderModifier.modify(placeholderNode, DeletePlaceholderModifierData.DEFAULT));
     }
+    
 }

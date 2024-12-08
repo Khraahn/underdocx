@@ -66,8 +66,11 @@ public abstract class AbstractDocContainer<D> implements DocContainer<D> {
         this.doc = doc;
     }
 
-    public File createTmpFile(Long lifetime) throws IOException {
-        File tmpFile = Files.createTempFile("tmpUri_", "." + getFileExtension()).toFile();
+    public File createTmpFile(String prefix, boolean deleteOnExit, Long lifetime) throws IOException {
+        File tmpFile = Files.createTempFile(prefix, "." + getFileExtension()).toFile();
+        if (deleteOnExit) {
+            tmpFile.deleteOnExit();
+        }
         if (lifetime != null) {
             new Timer().schedule(new TimerTask() {
                 @Override
@@ -76,12 +79,8 @@ public abstract class AbstractDocContainer<D> implements DocContainer<D> {
                 }
             }, lifetime);
         }
+        save(tmpFile);
         return tmpFile;
-    }
-
-    @Override
-    public String createURI(Long lifetime) throws IOException {
-        return createTmpFile(lifetime).toURI().toString();
     }
 
 

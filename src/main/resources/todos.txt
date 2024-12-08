@@ -1,15 +1,10 @@
 - 0.4.0
     - Schleifen
-      - ${For @value:"entities", $as:"subEntity"}
-           ${For $value:"subEntity", $as:"x"} ${$x} ${EndIf}
-        ${EndFor}
-      - ${For @value:"entities", @as:"subEntity"}
-           ${For @value:"subEntity", @as:"x"} ${@x} ${EndIf}
-        ${EndFor}
-      - ${For @value:"entities"}
-          ${@}
-        ${EndFor}
-      - Verboten:
-          - ${For $value:"entities"} ...
-          - ${For $value:"entities", @as:"x"} ...
-- Optimierung: Kommandos die effektlos den ModelPfad setzen löschen
+- Optimierung:
+  - Kommandos die effektlos den ModelPfad setzen löschen
+  - Effektlose Pop/Push Sequencen löschen
+  - Schleifen etc möglichst unmittelbar und direkt mit W2C API
+  - Bei Imports tote Styles vermeiden, entfernen
+
+
+

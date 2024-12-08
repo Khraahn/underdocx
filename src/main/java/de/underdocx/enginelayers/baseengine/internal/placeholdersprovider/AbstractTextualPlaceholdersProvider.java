@@ -46,7 +46,8 @@ public abstract class AbstractTextualPlaceholdersProvider<C extends OdfContainer
 
     @Override
     public Enumerator<Node> getPlaceholders() {
-        return new ParagraphByParagraphNodesEnumerator(doc, p -> toolkit.extractPlaceholders(p), true);
+        ParagraphByParagraphNodesEnumerator result = new ParagraphByParagraphNodesEnumerator(doc, p -> toolkit.extractPlaceholders(p), true);
+        return result;
     }
 
 

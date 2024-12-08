@@ -58,7 +58,7 @@ public class DeletePlaceholderModifier<C extends DocContainer<D>, P, D> implemen
                     } else {
                         List<Node> paragraphNodes = new TreeNodeCollector(p, p, new ArrayList<>()).collect();
                         TextNodePath path = new TextNodePath(paragraphNodes, OdfTextNodeInterpreter.INSTANCE);
-                        if (path.isTextOnly()) {
+                        if (path.isTextRealtedOnly()) {
                             String textContent = path.fetchTextContent();
                             if (textContent.isEmpty() || (textContent.isBlank() && modifierData.getDeleteStrategy() == DeletePlaceholderModifierData.Strategy.DELETE_BLANK_PARAGRAPH)) {
                                 removeParagraph(result, p, modifierData.copyPageStyle());

@@ -22,35 +22,26 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-package de.underdocx.enginelayers.defaultodtengine.commands.internal.modifiermodule.missingdata;
+package de.underdocx.enginelayers.defaultodtengine.modifiers.internal;
 
-import de.underdocx.enginelayers.defaultodtengine.commands.internal.datapicker.DataPickerResult;
+import de.underdocx.tools.common.Pair;
+import org.w3c.dom.Node;
 
-public class MissingDataCommandModuleResult<M> {
+public interface AreaModifierData {
 
-    public enum MissingDataCommandModuleResultType {
-        STRATEGY_EXECUTED,
-        VALUE_RECEIVED,
-        SKIP
-    }
+    Pair<Node, Node> getAreaPlaceholderNodes();
 
-    public M value = null;
-    public DataPickerResult.ResultSource source;
+    class BaseAreaModifierData implements AreaModifierData {
 
-    public MissingDataCommandModuleResultType resultType;
+        private final Pair<Node, Node> area;
+        
+        public BaseAreaModifierData(Pair<Node, Node> area) {
+            this.area = area;
+        }
 
-    public MissingDataCommandModuleResult(M value, DataPickerResult.ResultSource source) {
-        this.value = value;
-        this.resultType = MissingDataCommandModuleResultType.VALUE_RECEIVED;
-        this.source = source;
-    }
-
-    public MissingDataCommandModuleResult(MissingDataCommandModuleResultType type) {
-        this.resultType = MissingDataCommandModuleResultType.STRATEGY_EXECUTED;
-    }
-
-    public MissingDataCommandModuleResult(MissingDataCommandModuleResultType type, M value) {
-        this.resultType = type;
-        this.value = value;
+        @Override
+        public Pair<Node, Node> getAreaPlaceholderNodes() {
+            return area;
+        }
     }
 }

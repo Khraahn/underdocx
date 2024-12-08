@@ -22,35 +22,33 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-package de.underdocx.enginelayers.defaultodtengine.commands.internal.modifiermodule.missingdata;
+package de.underdocx.enginelayers.defaultodtengine.modifiers.forloop;
 
-import de.underdocx.enginelayers.defaultodtengine.commands.internal.datapicker.DataPickerResult;
+import de.underdocx.enginelayers.defaultodtengine.modifiers.internal.AreaModifierData;
+import de.underdocx.enginelayers.parameterengine.ParametersPlaceholderData;
+import de.underdocx.tools.common.Pair;
+import org.w3c.dom.Node;
 
-public class MissingDataCommandModuleResult<M> {
+import java.util.List;
 
-    public enum MissingDataCommandModuleResultType {
-        STRATEGY_EXECUTED,
-        VALUE_RECEIVED,
-        SKIP
-    }
+public interface ForModifierData extends AreaModifierData {
 
-    public M value = null;
-    public DataPickerResult.ResultSource source;
+    int getRepeats();
 
-    public MissingDataCommandModuleResultType resultType;
+    Pair<List<ParametersPlaceholderData>, List<ParametersPlaceholderData>> getNodeReplacement(int index);
 
-    public MissingDataCommandModuleResult(M value, DataPickerResult.ResultSource source) {
-        this.value = value;
-        this.resultType = MissingDataCommandModuleResultType.VALUE_RECEIVED;
-        this.source = source;
-    }
+    abstract class AbstractForModifiedData extends BaseAreaModifierData implements ForModifierData {
 
-    public MissingDataCommandModuleResult(MissingDataCommandModuleResultType type) {
-        this.resultType = MissingDataCommandModuleResultType.STRATEGY_EXECUTED;
-    }
+        private final int max;
 
-    public MissingDataCommandModuleResult(MissingDataCommandModuleResultType type, M value) {
-        this.resultType = type;
-        this.value = value;
+        public AbstractForModifiedData(Pair<Node, Node> area, int max) {
+            super(area);
+            this.max = max;
+        }
+
+        @Override
+        public int getRepeats() {
+            return max;
+        }
     }
 }

@@ -28,10 +28,6 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
-import java.util.Optional;
-
-import static de.underdocx.tools.common.Convenience.*;
-
 
 public interface ParametersPlaceholderData {
 
@@ -47,46 +43,9 @@ public interface ParametersPlaceholderData {
 
     void addStringAttribute(String property, String value);
 
-    @Deprecated
-    // Use AbstractAttributeInterpreter
-    default boolean hasAttribute(String property) {
-        return getJson() != null && getJson().has(property);
-    }
+    void addAttribute(String property, JsonNode attributeValue);
 
-    @Deprecated
-    // Use AbstractAttributeInterpreter
-    default boolean hasNotNullAttribute(String property) {
-        return getJson() != null && getJson().hasNonNull(property);
-    }
-
-    @Deprecated
-    // Use AbstractAttributeInterpreter
-    default Optional<String> getStringAttribute(String property) {
-        return buildOptional(w -> ifNotNull(getJson(),
-                json -> ifIs(json.get(property), jp -> jp != null && jp.isTextual(), jp -> w.value = jp.asText())));
-    }
-
-    @Deprecated
-    // Use AbstractAttributeInterpreter
-    default Optional<Integer> getIntegerAttribute(String property) {
-        return buildOptional(w -> ifNotNull(getJson(),
-                json -> ifIs(json.get(property), jp -> jp != null && jp.isInt(), jp -> w.value = jp.asInt())));
-    }
-
-    @Deprecated
-    // Use AbstractAttributeInterpreter
-    default Optional<Double> getDoubleAttribute(String property) {
-        return buildOptional(w -> ifNotNull(getJson(),
-                json -> ifIs(json.get(property), jp -> jp != null && jp.isDouble(), jp -> w.value = jp.asDouble())));
-    }
-
-    @Deprecated
-    // Use AbstractAttributeInterpreter
-    default Optional<Boolean> getBooleanAttribute(String property) {
-        return buildOptional(w -> ifNotNull(getJson(),
-                json -> ifIs(json.get(property), jp -> jp != null && jp.isBoolean(), jp -> w.value = jp.asBoolean())));
-    }
-
+    void addIntAttribute(String property, int value);
 
     class Simple implements ParametersPlaceholderData {
         private String key;
@@ -126,6 +85,19 @@ public interface ParametersPlaceholderData {
             ((ObjectNode) json).put(property, value);
         }
 
+        @Override
+        public void addIntAttribute(String property, int value) {
+            JsonNode json = ((ObjectNode) getJson());
+            if (json == null) {
+                json = JsonNodeFactory.instance.objectNode();
+            }
+            ((ObjectNode) json).put(property, value);
+        }
+
+        @Override
+        public void addAttribute(String property, JsonNode attributeValue) {
+            ((ObjectNode) json).put(property, attributeValue);
+        }
 
         @Override
         public String getKey() {

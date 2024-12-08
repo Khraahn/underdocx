@@ -22,35 +22,12 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-package de.underdocx.enginelayers.defaultodtengine.commands.internal.modifiermodule.missingdata;
+package de.underdocx.enginelayers.defaultodtengine.modifiers.internal;
 
-import de.underdocx.enginelayers.defaultodtengine.commands.internal.datapicker.DataPickerResult;
+import de.underdocx.common.doc.DocContainer;
+import de.underdocx.enginelayers.modelengine.MSelection;
 
-public class MissingDataCommandModuleResult<M> {
+public interface MModifier<C extends DocContainer<D>, P, D, M> {
 
-    public enum MissingDataCommandModuleResultType {
-        STRATEGY_EXECUTED,
-        VALUE_RECEIVED,
-        SKIP
-    }
-
-    public M value = null;
-    public DataPickerResult.ResultSource source;
-
-    public MissingDataCommandModuleResultType resultType;
-
-    public MissingDataCommandModuleResult(M value, DataPickerResult.ResultSource source) {
-        this.value = value;
-        this.resultType = MissingDataCommandModuleResultType.VALUE_RECEIVED;
-        this.source = source;
-    }
-
-    public MissingDataCommandModuleResult(MissingDataCommandModuleResultType type) {
-        this.resultType = MissingDataCommandModuleResultType.STRATEGY_EXECUTED;
-    }
-
-    public MissingDataCommandModuleResult(MissingDataCommandModuleResultType type, M value) {
-        this.resultType = type;
-        this.value = value;
-    }
+    boolean modify(MSelection<C, P, D> selection, M modifierData);
 }

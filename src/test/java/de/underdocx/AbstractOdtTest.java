@@ -56,7 +56,7 @@ public class AbstractOdtTest extends AbstractTest {
     protected Optional<Integer> getOrder(OdfTextDocument doc, String text1, String text2) {
         return buildOptional(result -> {
             if (containsText(doc, text1) && containsText(doc, text2)) {
-                Pattern regex = Pattern.compile(Pattern.quote(text1) + " | " + Pattern.quote(text2));
+                Pattern regex = Pattern.compile(Pattern.quote(text1) + "|" + Pattern.quote(text2));
                 Optional<TextSelection> searchResult = search(doc, regex);
                 searchResult.ifPresent(selection -> result.value = selection.getText().equals(text1) ? -1 : 1);
             }
@@ -111,7 +111,7 @@ public class AbstractOdtTest extends AbstractTest {
     }
 
     protected void assertOrder(OdtContainer doc, String... texts) {
-        assertOrder(doc, texts);
+        assertOrder(doc.getDocument(), texts);
     }
 
     protected void assertNoPlaceholders(OdtContainer doc) {

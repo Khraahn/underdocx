@@ -128,7 +128,7 @@ public class ModelEngine<C extends DocContainer<D>, D> extends BaseEngine {
 
         @Override
         public Pair<String, Optional<ModelNode>> interpret(String suffix, boolean setAsCurrent) {
-            ModelPath p = setAsCurrent ? currentModelPath : new ModelPath(currentModelPath);
+            ModelPath p = setAsCurrent ? currentModelPath : currentModelPath.clone();
             p.interpret(suffix);
             Optional<ModelNode> subNode = p.interpret(modelRoot);
             return new Pair<>(p.toString(), subNode);

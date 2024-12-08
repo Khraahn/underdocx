@@ -65,6 +65,7 @@ public class DefaultODTEngine implements Runnable {
         engine.registerCommandHandler(parameters, new ShortModelStringCommandHandler());
         engine.registerCommandHandler(parameters, new ShortVarStringCommandHandler());
         engine.registerCommandHandler(parameters, new VariableCommandHandler());
+        engine.registerCommandHandler(parameters, new ForCommandHandler());
     }
 
     public DefaultODTEngine(OdtContainer doc) {
@@ -141,7 +142,7 @@ public class DefaultODTEngine implements Runnable {
     public void pushVariable(String name, Object object, ReflectionModelNode.Resolver resolver) {
         engine.pushVariable(name, new ReflectionModelNode(object, resolver));
     }
-    
+
     @Override
     public void run() {
         engine.run();

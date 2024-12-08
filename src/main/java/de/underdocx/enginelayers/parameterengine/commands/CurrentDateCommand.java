@@ -28,11 +28,14 @@ import de.underdocx.common.doc.DocContainer;
 import de.underdocx.enginelayers.baseengine.CommandHandler;
 import de.underdocx.enginelayers.baseengine.Selection;
 import de.underdocx.enginelayers.baseengine.modifiers.stringmodifier.ReplaceWithTextModifier;
+import de.underdocx.enginelayers.defaultodtengine.commands.internal.attrinterpreter.PredefinedAttributesInterpreter;
+import de.underdocx.enginelayers.defaultodtengine.commands.internal.attrinterpreter.single.AttributeInterpreterFactory;
 import de.underdocx.enginelayers.parameterengine.ParametersPlaceholderData;
 import de.underdocx.tools.common.Convenience;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Optional;
 
 public class CurrentDateCommand<C extends DocContainer<D>, D> implements CommandHandler<C, ParametersPlaceholderData, D> {
     @Override
@@ -40,7 +43,9 @@ public class CurrentDateCommand<C extends DocContainer<D>, D> implements Command
         return Convenience.build(CommandHandlerResult.IGNORED, result -> {
             ParametersPlaceholderData placeholderData = selection.getPlaceholderData();
             if (placeholderData.getKey().equals("CurrentDate")) {
-                String format = (placeholderData.getStringAttribute("format")).orElse("yyyy-mm-dd");
+                PredefinedAttributesInterpreter<Optional<String>> formatReader
+                        = AttributeInterpreterFactory.createStringAttributeInterpreter("format");
+                String format = formatReader.interpretAttributes(placeholderData.getJson()).orElse("yyyy-mm-dd");
                 String dateText = new SimpleDateFormat(format).format(new Date());
                 result.value = CommandHandlerResult.mapToExecuted(new ReplaceWithTextModifier().modify(selection, dateText));
             }

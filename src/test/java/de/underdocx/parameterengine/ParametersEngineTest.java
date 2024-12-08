@@ -29,6 +29,7 @@ import de.underdocx.common.doc.odf.OdtContainer;
 import de.underdocx.enginelayers.baseengine.CommandHandler;
 import de.underdocx.enginelayers.baseengine.modifiers.stringmodifier.ReplaceWithTextModifier;
 import de.underdocx.enginelayers.defaultodtengine.DefaultODTEngine;
+import de.underdocx.enginelayers.defaultodtengine.commands.internal.attrinterpreter.AttributesInterpreter;
 import de.underdocx.enginelayers.parameterengine.ParametersPlaceholderData;
 import org.junit.jupiter.api.Test;
 import org.odftoolkit.odfdom.doc.OdfTextDocument;
@@ -41,7 +42,7 @@ public class ParametersEngineTest extends AbstractOdtTest {
         DefaultODTEngine engine = new DefaultODTEngine(doc);
         engine.registerParametersCommandHandler(
                 selection -> {
-                    String text = selection.getPlaceholderData().getStringAttribute("att1").get();
+                    String text = AttributesInterpreter.getStringAttribute(selection.getPlaceholderData().getJson(), "att1").get();
                     new ReplaceWithTextModifier<OdtContainer, ParametersPlaceholderData, OdfTextDocument>().modify(selection, text);
                     return CommandHandler.CommandHandlerResult.EXECUTED;
                 });

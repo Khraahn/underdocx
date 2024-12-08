@@ -67,7 +67,6 @@ public class PageStyleWriter {
                 node instanceof TableTableElement ||
                         node instanceof TextParagraphElementBase || OdfTools.findOldestParagraphOrTable(node).isPresent()
         );
-        System.out.println("jsakdöf: " + result + " for " + node);
         return result;
     }
 }

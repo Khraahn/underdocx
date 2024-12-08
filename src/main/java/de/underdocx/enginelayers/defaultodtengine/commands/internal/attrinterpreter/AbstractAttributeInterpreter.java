@@ -28,8 +28,6 @@ import com.fasterxml.jackson.databind.JsonNode;
 
 import java.util.Optional;
 
-import static de.underdocx.tools.common.Convenience.*;
-
 public abstract class AbstractAttributeInterpreter<R, C> implements AttributesInterpreter<R, C> {
 
     protected C configuration;
@@ -46,36 +44,32 @@ public abstract class AbstractAttributeInterpreter<R, C> implements AttributesIn
     protected abstract R interpretAttributes();
 
     protected Optional<String> getStringAttribute(String property) {
-        return buildOptional(w -> ifNotNull(attributes,
-                json -> ifIs(json.get(property), jp -> jp != null && jp.isTextual(), jp -> w.value = jp.asText())));
-    }
-
-    protected Optional<Integer> getIntegerAttribute(String property) {
-        return buildOptional(w -> ifNotNull(attributes,
-                json -> ifIs(json.get(property), jp -> jp != null && jp.isInt(), jp -> w.value = jp.asInt())));
-    }
-
-    protected Optional<Double> getDoubleAttribute(String property) {
-        return buildOptional(w -> ifNotNull(attributes,
-                json -> ifIs(json.get(property), jp -> jp != null && jp.isDouble(), jp -> w.value = jp.asDouble())));
-    }
-
-    protected Optional<Boolean> getBooleanAttribute(String property) {
-        return buildOptional(w -> ifNotNull(attributes,
-                json -> ifIs(json.get(property), jp -> jp != null && jp.isBoolean(), jp -> w.value = jp.asBoolean())));
+        return AttributesInterpreter.getStringAttribute(attributes, property);
     }
 
     protected Optional<JsonNode> getComplexAttribute(String property) {
-        return buildOptional(w -> ifNotNull(attributes,
-                json -> ifIs(json.get(property), jp -> jp != null, jp -> w.value = jp)));
+        return AttributesInterpreter.getComplexAttribute(attributes, property);
+    }
+
+
+    protected Optional<Integer> getIntegerAttribute(String property) {
+        return AttributesInterpreter.getIntegerAttribute(attributes, property);
+    }
+
+    protected Optional<Double> getDoubleAttribute(String property) {
+        return AttributesInterpreter.getDoubleAttribute(attributes, property);
+    }
+
+    protected Optional<Boolean> getBooleanAttribute(String property) {
+        return AttributesInterpreter.getBooleanAttribute(attributes, property);
     }
 
     protected boolean hasAttribute(String property) {
-        return attributes != null && attributes.has(property);
+        return AttributesInterpreter.hasAttribute(attributes, property);
     }
 
     protected boolean hasNotNullAttribute(String property) {
-        return attributes != null && attributes.hasNonNull(property);
+        return AttributesInterpreter.hasNotNullAttribute(attributes, property);
     }
 
 }

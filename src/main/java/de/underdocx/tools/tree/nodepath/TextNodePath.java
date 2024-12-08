@@ -78,6 +78,10 @@ public class TextNodePath {
         return all(path, textNodeInterpreter::isTextOnlyType);
     }
 
+    public boolean isTextRealtedOnly() {
+        return all(path, textNodeInterpreter::isTextRelatedType);
+    }
+
     public Optional<String> getNodeText(int index) {
         return Optional.ofNullable(textNodeInterpreter.getText(path.get(index)));
     }
@@ -170,11 +174,12 @@ public class TextNodePath {
     }
 
     public boolean isBlank() {
-        return isTextOnly() && fetchTextContent().isBlank();
+        return isTextRealtedOnly() && fetchTextContent().isBlank();
     }
 
     public static boolean isBlank(Node tree, TextNodeInterpreter textNodeInterpreter) {
-        return new TextNodePath(new TreeNodeCollector(tree, tree).collect(), textNodeInterpreter).isBlank();
+        List<Node> nodes = new TreeNodeCollector(tree, tree).collect();
+        return new TextNodePath(nodes, textNodeInterpreter).isBlank();
     }
 
     public static String fetchTextContent(Node tree, TextNodeInterpreter textNodeInterpreter) {

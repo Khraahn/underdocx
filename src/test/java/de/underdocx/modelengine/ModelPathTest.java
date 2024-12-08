@@ -24,7 +24,9 @@ SOFTWARE.
 
 package de.underdocx.modelengine;
 
-import de.underdocx.AbstractTest;
+import de.underdocx.AbstractOdtTest;
+import de.underdocx.common.doc.odf.OdtContainer;
+import de.underdocx.enginelayers.defaultodtengine.DefaultODTEngine;
 import de.underdocx.enginelayers.modelengine.model.ModelNode;
 import de.underdocx.enginelayers.modelengine.model.simple.MapModelNode;
 import de.underdocx.enginelayers.modelengine.modelpath.ActivePrefixModelPath;
@@ -35,7 +37,7 @@ import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class ModelPathTest extends AbstractTest {
+public class ModelPathTest extends AbstractOdtTest {
 
     @Test
     public void testModelPath() {
@@ -111,6 +113,24 @@ public class ModelPathTest extends AbstractTest {
         testPath = path.clone();
         testPath.interpret("<d");
         Assertions.assertThat(testPath.toString()).isEqualTo("a.d");
+    }
+
+    @Test
+    public void testSetModelPrefix() {
+        String jsonString = """
+                {
+                  aList:["A", "B", "C"]
+                }
+                """;
+        String documentStr = "" +
+                "${Model value:\"aList\", activeModelPathPrefix:\"element\" } \n" +
+                "${String @value:\"element[1]\"}                              \n";
+        OdtContainer doc = new OdtContainer(documentStr);
+        DefaultODTEngine engine = new DefaultODTEngine(doc);
+        engine.setModel(new MapModelNode(jsonString));
+        engine.run();
+        assertContains(doc, "B");
+        assertNoPlaceholders(doc);
     }
 
 }

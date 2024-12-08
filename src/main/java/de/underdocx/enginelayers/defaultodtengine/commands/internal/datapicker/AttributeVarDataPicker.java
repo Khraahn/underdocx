@@ -25,9 +25,9 @@ SOFTWARE.
 package de.underdocx.enginelayers.defaultodtengine.commands.internal.datapicker;
 
 import de.underdocx.enginelayers.defaultodtengine.commands.internal.attrinterpreter.AttributesInterpreter;
-import de.underdocx.enginelayers.defaultodtengine.commands.internal.attrinterpreter.accesstype.AccessStringAttributeInterpreter;
 import de.underdocx.enginelayers.defaultodtengine.commands.internal.attrinterpreter.accesstype.AccessType;
 import de.underdocx.enginelayers.defaultodtengine.commands.internal.attrinterpreter.accesstype.AccessTypeInterpreter;
+import de.underdocx.enginelayers.defaultodtengine.commands.internal.attrinterpreter.single.AttributeInterpreterFactory;
 import de.underdocx.enginelayers.modelengine.model.ModelNode;
 
 import java.util.Optional;
@@ -35,7 +35,7 @@ import java.util.Optional;
 public class AttributeVarDataPicker extends AbstractDataPicker<ModelNode, String> {
 
     public AttributeVarDataPicker() {
-        this(new AccessTypeInterpreter(), new AccessStringAttributeInterpreter());
+        this(new AccessTypeInterpreter(), AttributeInterpreterFactory.createStringAttributeInterpreter());
     }
 
     public AttributeVarDataPicker(

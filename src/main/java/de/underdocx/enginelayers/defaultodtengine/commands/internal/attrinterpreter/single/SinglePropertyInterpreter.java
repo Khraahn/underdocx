@@ -22,28 +22,35 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-package de.underdocx.enginelayers.defaultodtengine.commands.internal.attrinterpreter.accesstype;
+package de.underdocx.enginelayers.defaultodtengine.commands.internal.attrinterpreter.single;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import de.underdocx.enginelayers.defaultodtengine.commands.internal.attrinterpreter.AbstractAttributeInterpreter;
+import de.underdocx.enginelayers.defaultodtengine.commands.internal.attrinterpreter.accesstype.AccessTypeInterpreter;
 
-public class AccessTypeInterpreter extends AbstractAttributeInterpreter<AccessType, String> {
+import java.util.Optional;
+import java.util.function.BiFunction;
 
-    public static AccessTypeInterpreter DEFAULT = new AccessTypeInterpreter();
+public class SinglePropertyInterpreter<R> extends AbstractAttributeInterpreter<Optional<R>, String> {
+
+    private final boolean ignoreAccessType;
+    private final BiFunction<JsonNode, String, Optional<R>> function;
+
+    SinglePropertyInterpreter(boolean ignoreAccessType, BiFunction<JsonNode, String, Optional<R>> function) {
+        this.ignoreAccessType = ignoreAccessType;
+        this.function = function;
+    }
+
+    SinglePropertyInterpreter(BiFunction<JsonNode, String, Optional<R>> function) {
+        this(true, function);
+    }
 
     @Override
-    protected AccessType interpretAttributes() {
-        AccessType accessType = null;
-        if (configuration != null && hasAttribute(AccessType.ACCESS_MODEL_BY_NAME.rename(configuration))) {
-            accessType = AccessType.ACCESS_MODEL_BY_NAME;
-        } else if (configuration != null && hasAttribute(AccessType.ACCESS_VARIABLE_BY_NAME.rename(configuration))) {
-            accessType = AccessType.ACCESS_VARIABLE_BY_NAME;
-        } else if (configuration != null && hasAttribute(configuration)) {
-            accessType = AccessType.ACCESS_ATTR_VALUE;
-        } else if (configuration == null) {
-            accessType = AccessType.ACCESS_CURRENT_MODEL_NODE;
+    protected Optional<R> interpretAttributes() {
+        if (ignoreAccessType) {
+            return function.apply(attributes, AccessTypeInterpreter.DEFAULT.interpretAttributes(attributes, configuration).rename(configuration));
         } else {
-            accessType = AccessType.MISSING_ACCESS;
+            return function.apply(attributes, configuration);
         }
-        return accessType;
     }
 }

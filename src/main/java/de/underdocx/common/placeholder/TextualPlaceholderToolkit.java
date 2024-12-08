@@ -25,11 +25,12 @@ SOFTWARE.
 package de.underdocx.common.placeholder;
 
 import de.underdocx.common.codec.Codec;
+import de.underdocx.common.placeholder.basic.textnodeinterpreter.TextNodeInterpreter;
 import de.underdocx.environment.UnderdocxExecutionException;
-import de.underdocx.tools.common.Pair;
 import de.underdocx.tools.tree.Nodes;
 import org.w3c.dom.Node;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Predicate;
@@ -81,8 +82,16 @@ public class TextualPlaceholderToolkit<P> {
         return Nodes.cloneNode(placeholder, placeholder, insertBefore, true);
     }
 
-    public static Pair<Node, Node> clonePlaceholder(Node placeholder) {
-        return new Pair<>(placeholder, clonePlaceholder(placeholder, false));
+    public static List<Node> clonePlaceholder(Node node, int count) {
+        return also(new ArrayList<>(), nodes -> {
+            nodes.add(node);
+            Node last = node;
+            for (int i = 1; i < count; i++) {
+                Node clone = clonePlaceholder(last, false);
+                nodes.add(clone);
+                last = clone;
+            }
+        });
     }
 
     public List<Node> findPlaceholders(Node tree, Predicate<P> filter) {
@@ -92,5 +101,9 @@ public class TextualPlaceholderToolkit<P> {
     public Optional<Node> findFirstPlaceholder(Node tree, Predicate<P> filter) {
         List<Node> list = findPlaceholders(tree, filter);
         return list.isEmpty() ? Optional.empty() : Optional.of(first(list));
+    }
+
+    public TextNodeInterpreter getTextNodeInterpreter() {
+        return extractor.getTextNodeInterpreter();
     }
 }

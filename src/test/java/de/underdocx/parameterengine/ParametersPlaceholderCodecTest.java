@@ -25,6 +25,7 @@ SOFTWARE.
 package de.underdocx.parameterengine;
 
 import de.underdocx.AbstractTest;
+import de.underdocx.enginelayers.defaultodtengine.commands.internal.attrinterpreter.AttributesInterpreter;
 import de.underdocx.enginelayers.parameterengine.ParametersPlaceholderData;
 import de.underdocx.enginelayers.parameterengine.internal.ParametersPlaceholderCodec;
 import org.junit.jupiter.api.Test;
@@ -49,7 +50,7 @@ public class ParametersPlaceholderCodecTest extends AbstractTest {
         ParametersPlaceholderCodec codec = new ParametersPlaceholderCodec();
         ParametersPlaceholderData parsed = codec.parse("${Test    abc :\"DEF\"}").get();
         assertThat(parsed.getKey()).isEqualTo("Test");
-        assertThat(parsed.getStringAttribute("abc").get()).isEqualTo("DEF");
+        assertThat(AttributesInterpreter.getStringAttribute(parsed.getJson(), "abc").get()).isEqualTo("DEF");
         String text = codec.getTextContent(parsed);
         assertThat(text).isEqualTo("${Test \"abc\":\"DEF\"}");
     }

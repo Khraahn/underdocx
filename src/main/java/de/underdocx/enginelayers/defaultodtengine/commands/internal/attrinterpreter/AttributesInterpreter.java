@@ -26,9 +26,50 @@ package de.underdocx.enginelayers.defaultodtengine.commands.internal.attrinterpr
 
 import com.fasterxml.jackson.databind.JsonNode;
 
+import java.util.Optional;
+
+import static de.underdocx.tools.common.Convenience.*;
+
 public interface AttributesInterpreter<R, C> {
 
     R interpretAttributes(JsonNode attributes, C configuration);
 
+    default PredefinedAttributesInterpreter<R> asPredefined(C configuration) {
+        return attributes -> AttributesInterpreter.this.interpretAttributes(attributes, configuration);
+    }
 
+    static Optional<String> getStringAttribute(JsonNode attributes, String property) {
+        return buildOptional(w -> ifNotNull(attributes,
+                json -> ifIs(json.get(property), jp -> jp != null && jp.isTextual(), jp -> w.value = jp.asText())));
+    }
+
+
+    static Optional<JsonNode> getComplexAttribute(JsonNode attributes, String property) {
+        return buildOptional(w -> ifNotNull(attributes,
+                json -> ifIs(json.get(property), jp -> jp != null, jp -> w.value = jp)));
+    }
+
+
+    static Optional<Integer> getIntegerAttribute(JsonNode attributes, String property) {
+        return buildOptional(w -> ifNotNull(attributes,
+                json -> ifIs(json.get(property), jp -> jp != null && jp.isInt(), jp -> w.value = jp.asInt())));
+    }
+
+    static Optional<Double> getDoubleAttribute(JsonNode attributes, String property) {
+        return buildOptional(w -> ifNotNull(attributes,
+                json -> ifIs(json.get(property), jp -> jp != null && jp.isDouble(), jp -> w.value = jp.asDouble())));
+    }
+
+    static Optional<Boolean> getBooleanAttribute(JsonNode attributes, String property) {
+        return buildOptional(w -> ifNotNull(attributes,
+                json -> ifIs(json.get(property), jp -> jp != null && jp.isBoolean(), jp -> w.value = jp.asBoolean())));
+    }
+
+    static boolean hasAttribute(JsonNode attributes, String property) {
+        return attributes != null && attributes.has(property);
+    }
+
+    static boolean hasNotNullAttribute(JsonNode attributes, String property) {
+        return attributes != null && attributes.hasNonNull(property);
+    }
 }

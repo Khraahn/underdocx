@@ -55,12 +55,14 @@ public class OdfTools {
         return Nodes.findOldestAncestorNode(node, currentNode -> currentNode instanceof TextParagraphElementBase || currentNode instanceof TableTableElement).map(x -> (OdfStylableElement) x);
     }
 
-    public static Optional<Node> findOfficeText(Node node) {
-        return Nodes.findAscendantNode(node, currentNode -> currentNode instanceof OfficeTextElement);
-    }
+    public static Optional<Node> findOldestParagraphOrTableParent(Node node) {
+        Optional<OdfStylableElement> p = findOldestParagraphOrTable(node);
+        if (p.isPresent()) {
+            return Optional.ofNullable(p.get().getParentNode());
+        } else {
+            return Optional.empty();
+        }
 
-    public static Optional<Node> findOfficeTextDescendant(Node node) {
-        return Nodes.findAscendantNode(node, currentNode -> currentNode.getParentNode() instanceof OfficeTextElement);
     }
 
 

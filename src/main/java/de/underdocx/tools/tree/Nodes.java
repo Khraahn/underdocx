@@ -123,6 +123,16 @@ public class Nodes {
         return Optional.empty();
     }
 
+    public static Optional<Node> findAncestorChild(Node nodeToStart, Node ancestorNode) {
+        Node currentParent = nodeToStart.getParentNode();
+        Node currentChild = nodeToStart;
+        while (currentParent != null && currentParent != ancestorNode) {
+            currentParent = currentParent.getParentNode();
+            currentChild = currentChild.getParentNode();
+        }
+        return currentParent == null ? Optional.empty() : Optional.of(currentChild);
+    }
+
 
     public static List<Node> getAncestors(Node node, Node limit) {
         ArrayList<Node> result = new ArrayList<>();
@@ -279,8 +289,13 @@ public class Nodes {
 
     public static List<Node> cloneNodes(Node refNode, List<Node> toClone, boolean insertBefore, boolean deepClone) {
         return buildList(result -> {
-            toClone.forEach(element -> result.add(cloneNode(refNode, element, false, deepClone)));
-            insertNodes(refNode, result, insertBefore);
+            Node currentRefNode = refNode;
+            List<Node> orderedNodesToClone = insertBefore ? reverse(toClone) : toClone;
+            for (Node currentNodeToClone : orderedNodesToClone) {
+                Node clonedNode = cloneNode(currentRefNode, currentNodeToClone, insertBefore, deepClone);
+                currentRefNode = clonedNode;
+                result.add(clonedNode);
+            }
         });
 
     }
