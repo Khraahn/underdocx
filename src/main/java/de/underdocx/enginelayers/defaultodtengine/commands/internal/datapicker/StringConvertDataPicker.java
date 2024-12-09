@@ -48,6 +48,13 @@ public class StringConvertDataPicker implements ExtendedDataPicker<String> {
         this.dataPicker = dataPicker;
     }
 
+    public StringConvertDataPicker(
+            ExtendedDataPicker<ModelNode> dataPicker
+    ) {
+        this.converter = new DefaultModel2StringConverter();
+        this.dataPicker = dataPicker;
+    }
+
     public DataPickerResult<String> pickData(String name, ModelAccess modelAccess, JsonNode attributes) {
         DataPickerResult<ModelNode> tmpResult = dataPicker.pickData(name, modelAccess, attributes);
         if (!tmpResult.isResolved()) {

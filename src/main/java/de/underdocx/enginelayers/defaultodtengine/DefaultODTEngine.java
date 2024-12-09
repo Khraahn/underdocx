@@ -60,13 +60,14 @@ public class DefaultODTEngine implements Runnable {
 
     protected void registerDefaultCommandHandlers() {
         engine.registerCommandHandler(parameters, new CurrentDateCommand<>());
-        engine.registerCommandHandler(parameters, new ModelCommandHandler());
-        engine.registerCommandHandler(parameters, new StringCommandHandler());
-        engine.registerCommandHandler(parameters, new ShortModelStringCommandHandler());
-        engine.registerCommandHandler(parameters, new ShortVarStringCommandHandler());
-        engine.registerCommandHandler(parameters, new VariableCommandHandler());
-        engine.registerCommandHandler(parameters, new ForCommandHandler());
-        engine.registerCommandHandler(parameters, new DateCommandHandler());
+        engine.registerCommandHandler(parameters, new ModelCommandHandler<>());
+        engine.registerCommandHandler(parameters, new StringCommandHandler<>());
+        engine.registerCommandHandler(parameters, new ShortModelStringCommandHandler<>());
+        engine.registerCommandHandler(parameters, new ShortVarStringCommandHandler<>());
+        engine.registerCommandHandler(parameters, new VariableCommandHandler<>());
+        engine.registerCommandHandler(parameters, new ForCommandHandler<>());
+        engine.registerCommandHandler(parameters, new DateCommandHandler<>());
+        engine.registerCommandHandler(parameters, new CounterCommandHandler<>());
     }
 
     public DefaultODTEngine(OdtContainer doc) {

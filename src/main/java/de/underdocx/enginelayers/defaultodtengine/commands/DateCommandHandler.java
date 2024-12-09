@@ -50,17 +50,21 @@ public class DateCommandHandler<C extends DocContainer<D>, D> extends AbstractSt
             DataPickerResult<ModelNode> rawResult = new AttributeNodeDataPicker().pickData(name, modelAccess, jsonNode);
             if (rawResult.isResolved()) {
                 if (rawResult.value != null && rawResult.value.getValue() instanceof String) {
-                    String dateString = rawResult.value.getValue().toString();
-                    DateTimeFormatter inputFormatter = DateTimeFormatter.ofPattern(inFormat);
-                    LocalDate date = LocalDate.parse(dateString, inputFormatter);
-                    DateTimeFormatter outFormatter = DateTimeFormatter.ofPattern(outFormat);
-                    String result = date.format(outFormatter);
-                    return new DataPickerResult<>(
-                            DataPickerResult.ResultType.RESOLVED,
-                            rawResult.source,
-                            new LeafModelNode<>(result));
+                    if (rawResult.value != null && rawResult.value.getValue() instanceof String) {
+                        String dateString = rawResult.value.getValue().toString();
+                        DateTimeFormatter inputFormatter = DateTimeFormatter.ofPattern(inFormat);
+                        LocalDate date = LocalDate.parse(dateString, inputFormatter);
+                        DateTimeFormatter outFormatter = DateTimeFormatter.ofPattern(outFormat);
+                        String result = date.format(outFormatter);
+                        return new DataPickerResult<>(
+                                DataPickerResult.ResultType.RESOLVED,
+                                rawResult.source,
+                                new LeafModelNode<>(result));
+                    } else {
+                        return new DataPickerResult<>(DataPickerResult.ResultType.UNRESOLVED_INVALID_VALUE, rawResult.source, null);
+                    }
                 } else {
-                    return new DataPickerResult<>(DataPickerResult.ResultType.UNRESOLVED_INVALID_VALUE, rawResult.source, null);
+                    return new DataPickerResult<>(DataPickerResult.ResultType.UNRESOLVED_MISSING_VALUE, rawResult.source, null);
                 }
             }
             return rawResult;
