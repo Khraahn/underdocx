@@ -164,9 +164,6 @@ public class BaseEngineTest extends AbstractOdtTest {
         OdtContainer doc = new OdtContainer(is);
         DefaultODTEngine engine = new DefaultODTEngine(doc);
         engine.run();
-
-        show(doc);
-
         assertContains(doc, "A Test B");
         assertNoPlaceholders(doc);
 

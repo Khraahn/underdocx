@@ -64,6 +64,9 @@ public class MissingDataCommandModule<C extends DocContainer<D>, D, M> extends A
     }
 
     private MissingDataCommandModuleResult<M> handleResolved(MissingDataConfig config, DataPickerResult<M> value) {
+        if (value.value == null) {
+            return react(config, config.getStrategy(MissingDataSzenario.NULL));
+        }
         if (configuration.getIsEmptyPredicate().test(value.value)) {
             return react(config, config.getStrategy(MissingDataSzenario.EMPTY));
         } else {

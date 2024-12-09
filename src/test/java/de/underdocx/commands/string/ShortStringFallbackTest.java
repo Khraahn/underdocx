@@ -22,39 +22,26 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-package de.underdocx.demo;
+package de.underdocx.commands.string;
 
 import de.underdocx.AbstractOdtTest;
 import de.underdocx.common.doc.odf.OdtContainer;
 import de.underdocx.enginelayers.defaultodtengine.DefaultODTEngine;
-import de.underdocx.environment.UnderdocxEnv;
 import org.junit.jupiter.api.Test;
 
-import java.io.FileOutputStream;
 import java.io.InputStream;
-import java.io.OutputStream;
 
-public class Demo_0_4_0_Test extends AbstractOdtTest {
+public class ShortStringFallbackTest extends AbstractOdtTest {
 
     @Test
-    public void testDemoDoc() throws Exception {
-        InputStream is = getResource("demo0.4.0.odt");
-        String imageURL = createTmpUri(getResource("smile.png"), "png");
-        OutputStream os = new FileOutputStream(createFileInTempDir("demo0.4.0out.odt"));
-
+    public void testFallback() throws Exception {
+        InputStream is = getResource("ShortStringFallback.odt");
 
         OdtContainer doc = new OdtContainer(is);
         DefaultODTEngine engine = new DefaultODTEngine(doc);
-        engine.registerSimpleDollarImageReplacement("image", imageURL, true);
         engine.run();
-//        show(doc);
-        doc.save(os);
-
-        if (UnderdocxEnv.isLibreOfficeInstalled()) {
-            OutputStream pos = new FileOutputStream(createFileInTempDir("demo0.4.0out.pdf"));
-            doc.writePDF(pos);
-        }
-
+        //show(doc);
+        assertContains(doc, "unknown");
         assertNoPlaceholders(doc);
     }
 
