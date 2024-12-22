@@ -30,6 +30,8 @@ import de.underdocx.enginelayers.baseengine.internal.PlaceholdersEnumerator;
 import de.underdocx.enginelayers.baseengine.internal.SelectionImpl;
 import de.underdocx.enginelayers.baseengine.modifiers.EngineListener;
 import de.underdocx.environment.UnderdocxEnv;
+import de.underdocx.environment.err.Problem;
+import de.underdocx.environment.err.Problems;
 import de.underdocx.tools.common.Pair;
 import de.underdocx.tools.tree.enumerator.LookAheadEnumerator;
 import de.underdocx.tools.tree.enumerator.SimpleLookAheadEnumerator;
@@ -41,15 +43,15 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Optional;
 
 import static de.underdocx.tools.common.Convenience.*;
 
-public class BaseEngine<C extends DocContainer<D>, D> implements Runnable {
+public class BaseEngine<C extends DocContainer<D>, D> {
 
     protected final C doc;
 
     protected int step = 0;
-    protected boolean errDetected = false;
     protected boolean rescan = true;
 
     protected ArrayListValuedHashMap<PlaceholdersProvider<C, ?, D>, CommandHandler<C, ?, D>> registry = new ArrayListValuedHashMap<>();
@@ -73,7 +75,16 @@ public class BaseEngine<C extends DocContainer<D>, D> implements Runnable {
     protected CommandHandler.CommandHandlerResult findAndExecCommandHandler(PlaceholdersProvider<C, ?, D> provider, Selection<C, ?, D> selection) {
         return build(CommandHandler.CommandHandlerResult.IGNORED, result -> {
             for (CommandHandler<C, ?, D> commandHandler : registry.get(provider)) {
-                result.value = commandHandler.tryExecuteCommand((Selection) selection);
+                try {
+                    result.value = commandHandler.tryExecuteCommand((Selection) selection);
+                } catch (Exception e) {
+                    Problems.COMMAND_HANDLER_FAILED
+                            .toProblem()
+                            .command(commandHandler)
+                            .node(selection.getNode())
+                            .handle(e)
+                            .fire();
+                }
                 if (result.value != CommandHandler.CommandHandlerResult.IGNORED) {
                     UnderdocxEnv.getInstance().logger.trace("Step " + step + ": commandHandler " + commandHandler + " has been executed, rescan: " + rescan + ", (changed) node: " + selection.getNode());
                     break;
@@ -101,38 +112,45 @@ public class BaseEngine<C extends DocContainer<D>, D> implements Runnable {
         }
     }
 
-    public void run() {
+    public Optional<Problem> run() {
+        Problem detectedError = null;
         try {
             runUncatched();
         } catch (Exception e) {
-            errDetected("Exception during engine execution", e);
+            UnderdocxEnv.getInstance().logger.error(e);
+            detectedError = Problems.UNEXPECTED_EXCEPION_CAUGHT.toProblem().handle(e);
         }
+        if (detectedError != null && UnderdocxEnv.getInstance().appendErrorReport) {
+            doc.appendText(
+                    "\n---------------------------\n" +
+                            "Problem Report: \n" +
+                            "---------------------------\n" +
+                            detectedError);
+        }
+        return Optional.ofNullable(detectedError);
     }
 
-    protected void errDetected(String message, Exception e) {
-        UnderdocxEnv.getInstance().logger.error(message, e);
-        errDetected = true;
-    }
 
     protected void reactOnExecutionResult(CommandHandler.CommandHandlerResult executionResult, Selection<C, ?, D> selection) {
         switch (executionResult) {
-            case IGNORED -> errDetected("No Command handler found four " + selection.getNode(), null);
+            case IGNORED ->
+                    UnderdocxEnv.getInstance().logger.warn("No Command handler found four " + selection.getNode(), null);
             case EXECUTED -> stepExecuted(selection);
             case EXECUTED_RESCAN_REQUIRED -> {
                 stepExecuted(selection);
                 rescan = true;
             }
-            default -> errDetected("Unexpected command result", null);
+            default -> Problems.UNEXPECTED_TYPE_DETECTED.fireValue(executionResult.name());
         }
     }
 
     protected void runUncatched() {
-        while (rescan && !errDetected) {
+        while (rescan) {
             LookAheadEnumerator<Pair<PlaceholdersProvider<C, ?, D>, Node>> enumerator = createPlaceholdersEnumerator();
             List<Node> visited = new ArrayList<>();
             rescan = false;
             EngineAccess<C, D> engineAccess = new EngineAccessImpl<>(listeners, () -> rescan = true, enumerator, visited);
-            while (!rescan && !errDetected && enumerator.hasNext()) {
+            while (!rescan && enumerator.hasNext()) {
                 step++;
                 Pair<PlaceholdersProvider<C, ?, D>, Node> placeholder = enumerator.next();
                 Selection<C, ?, D> selection = createSelection(placeholder.left, placeholder.right, engineAccess);
@@ -142,7 +160,7 @@ public class BaseEngine<C extends DocContainer<D>, D> implements Runnable {
             }
 
             listeners.forEach(listener -> {
-                if (!errDetected && !rescan) {
+                if (!rescan) {
                     listener.eodReached(doc, engineAccess);
                 }
             });

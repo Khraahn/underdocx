@@ -48,7 +48,7 @@ import de.underdocx.enginelayers.defaultodtengine.modifiers.forloop.ForModifierD
 import de.underdocx.enginelayers.defaultodtengine.modifiers.forloop.ForMofifier;
 import de.underdocx.enginelayers.modelengine.model.ModelNode;
 import de.underdocx.enginelayers.parameterengine.ParametersPlaceholderData;
-import de.underdocx.environment.UnderdocxExecutionException;
+import de.underdocx.environment.err.Problems;
 import de.underdocx.tools.common.Pair;
 import de.underdocx.tools.common.Regex;
 import org.w3c.dom.Node;
@@ -101,7 +101,7 @@ public class ForCommandHandler<C extends DocContainer<D>, D> extends AbstractTex
         }
         Optional<Pair<SelectedNode<ParametersPlaceholderData>, SelectedNode<ParametersPlaceholderData>>> area =
                 AreaTools.findArea(selection.getEngineAccess().lookAhead(null), selection, END_KEY);
-        endNode = getOrThrow(area, "invalid loop structure").right.getNode();
+        endNode = Problems.INVALID_PLACEHOLDER_STRUCTURE.get(area, "EndFor").right.getNode();
         MissingDataCommandModuleResult<ModelNode> missingResult =
                 new MissingDataCommandModule<C, D, ModelNode>(
                         getMissingDataModuleConfig(endNode)
@@ -123,10 +123,14 @@ public class ForCommandHandler<C extends DocContainer<D>, D> extends AbstractTex
     }
 
     private void checkAsAttr() {
-        if (source == ResultSource.UNKNOWN) throw new UnderdocxExecutionException("Unknown node source");
+        if (source == ResultSource.UNKNOWN) {
+            Problems.UNEXPECTED_TYPE_DETECTED.fireProperty(source.name());
+        }
         if ((source == ResultSource.ATTR_VALUE || source == ResultSource.VAR) &&
                 asAttributeType != AccessType.ACCESS_VARIABLE_BY_NAME
-        ) throw new UnderdocxExecutionException("loops over non model lists must use $as attribute");
+        ) {
+            Problems.MISSING_VALUE.fireProperty("$as");
+        }
     }
 
     private MissingDataCommandModuleConfig<ModelNode> getMissingDataModuleConfig(Node endNode) {
@@ -184,12 +188,11 @@ public class ForCommandHandler<C extends DocContainer<D>, D> extends AbstractTex
                             case ACCESS_VARIABLE_BY_NAME -> m2v();
                             case ACCESS_MODEL_BY_NAME -> m2m();
                             case MISSING_ACCESS -> m2n();
-                            default -> throw new UnderdocxExecutionException("Unexpected Loop condition");
+                            default -> Problems.UNEXPECTED_LOOP_CONDITION.fire();
                         }
                     }
-                    case UNKNOWN -> throw new UnderdocxExecutionException("Unexpected Loop condition");
+                    case UNKNOWN -> Problems.UNEXPECTED_LOOP_CONDITION.fire();
                 }
-                ;
                 return replaceData;
             }
         };

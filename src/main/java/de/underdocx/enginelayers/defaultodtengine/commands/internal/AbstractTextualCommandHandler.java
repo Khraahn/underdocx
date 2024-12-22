@@ -32,7 +32,7 @@ import de.underdocx.enginelayers.defaultodtengine.commands.internal.datapicker.S
 import de.underdocx.enginelayers.modelengine.model.ModelNode;
 import de.underdocx.enginelayers.parameterengine.ParametersPlaceholderData;
 import de.underdocx.enginelayers.parameterengine.internal.ParametersPlaceholderCodec;
-import de.underdocx.environment.UnderdocxExecutionException;
+import de.underdocx.environment.err.Problems;
 import de.underdocx.tools.common.Convenience;
 import de.underdocx.tools.common.Pair;
 import de.underdocx.tools.common.Regex;
@@ -63,7 +63,7 @@ public abstract class AbstractTextualCommandHandler<C extends DocContainer<D>, D
 
     @Override
     protected CommandHandlerResult tryExecuteCommand() {
-        this.placeholderToolkit = UnderdocxExecutionException.expect(selection.getPlaceholderToolkit());
+        this.placeholderToolkit = Problems.MISSING_VALUE.get(selection.getPlaceholderToolkit(), "placeholderToolkit");
         if (allowedKeys == null || allowedKeys.matches(placeholderData.getKey())) {
             return tryExecuteTextualCommand();
         } else {
@@ -76,7 +76,7 @@ public abstract class AbstractTextualCommandHandler<C extends DocContainer<D>, D
             if (node.getParentNode() != null && node.getOwnerDocument() != null) {
                 String content = node.getTextContent();
                 if (content != null) {
-                    ParametersPlaceholderCodec.INSTANCE.parse(content).ifPresent(data -> w.value = data);
+                    ParametersPlaceholderCodec.INSTANCE.tryParse(content).ifPresent(data -> w.value = data);
                 }
             }
         });

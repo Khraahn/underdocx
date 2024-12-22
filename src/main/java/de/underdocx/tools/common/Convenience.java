@@ -24,8 +24,6 @@ SOFTWARE.
 
 package de.underdocx.tools.common;
 
-import de.underdocx.environment.UnderdocxExecutionException;
-
 import java.util.*;
 import java.util.function.Consumer;
 import java.util.function.Function;
@@ -112,10 +110,6 @@ public class Convenience {
         } else {
             throw exceptionProvider.get();
         }
-    }
-
-    public static <R> R getOrThrow(Optional<R> value, String message) {
-        return getOrThrow(value, () -> new UnderdocxExecutionException(message));
     }
 
     public static <T> T ifNotNull(T value, Consumer<T> consumer) {

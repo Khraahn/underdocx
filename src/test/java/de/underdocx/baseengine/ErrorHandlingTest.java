@@ -22,36 +22,35 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-package de.underdocx.modelengine;
+package de.underdocx.baseengine;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import de.underdocx.AbstractTest;
-import de.underdocx.common.codec.JsonCodec;
-import de.underdocx.enginelayers.modelengine.model.ModelNode;
+import de.underdocx.AbstractOdtTest;
+import de.underdocx.common.doc.odf.OdtContainer;
+import de.underdocx.enginelayers.defaultodtengine.DefaultODTEngine;
 import de.underdocx.enginelayers.modelengine.model.simple.MapModelNode;
-import de.underdocx.tools.common.Convenience;
+import de.underdocx.environment.err.Problem;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-public class SimpleModelTest extends AbstractTest {
+public class ErrorHandlingTest extends AbstractOdtTest {
 
     @Test
-    public void testJsonRead() {
+    public void testErrorReport() {
         String jsonString = """
-                {
-                  "a": "Hello World",
-                  "b": ["Item1", "Item2"],
-                  "c": {
-                    "d": "Jon Doe"
-                  }
-                }                
+                {"a":"Test"}
                 """;
-        ModelNode model = new MapModelNode(jsonString);
-        String newJsonString = model.toString();
-        Convenience.also(new JsonCodec(), codec -> {
-            JsonNode parsed = codec.tryParse(newJsonString).get();
-            String toCheck = codec.getTextContent(parsed);
-            Assertions.assertThat(toCheck).isEqualTo("{\"a\":\"Hello World\",\"b\":[\"Item1\",\"Item2\"],\"c\":{\"d\":\"Jon Doe\"}}");
-        });
+        String documentStr = "" +
+                "A ${@b onNull:\"fallback\" fallback \"hugo\"} A          \n" + // A hugo A
+                "";
+        OdtContainer doc = new OdtContainer(documentStr);
+        DefaultODTEngine engine = new DefaultODTEngine(doc);
+        engine.setModel(new MapModelNode(jsonString));
+        Problem error = engine.run().get();
+        //show(doc);
+        Assertions.assertThat(error).isNotNull();
+        Assertions.assertThat(error.toString()).contains("Can't parse placeholder");
+        Assertions.assertThat(error.toString()).contains("expecting comma to separate Object entries");
+        assertContains(doc, "Can't parse placeholder");
+        assertContains(doc, "expecting comma to separate Object entries");
     }
 }

@@ -39,7 +39,8 @@ import de.underdocx.enginelayers.modelengine.model.simple.ReflectionModelNode;
 import de.underdocx.enginelayers.parameterengine.ParametersPlaceholderData;
 import de.underdocx.enginelayers.parameterengine.ParametersPlaceholderProvider;
 import de.underdocx.enginelayers.parameterengine.commands.CurrentDateCommand;
-import de.underdocx.environment.UnderdocxExecutionException;
+import de.underdocx.environment.err.Problem;
+import de.underdocx.environment.err.Problems;
 import de.underdocx.tools.common.Regex;
 import org.odftoolkit.odfdom.doc.OdfTextDocument;
 
@@ -49,7 +50,7 @@ import java.util.Optional;
 import java.util.function.Function;
 import java.util.regex.Pattern;
 
-public class DefaultODTEngine implements Runnable {
+public class DefaultODTEngine {
 
     private final SimpleDollarImagePlaceholdersProvider simpleDollarImage;
     private final SimpleDollarPlaceholdersProvider<OdtContainer, OdfTextDocument> simpleDollar;
@@ -114,7 +115,7 @@ public class DefaultODTEngine implements Runnable {
                     try {
                         return new Regex(pattern).matches(variableName) ? Optional.of(new URL(imageURL)) : Optional.empty();
                     } catch (MalformedURLException e) {
-                        throw new UnderdocxExecutionException(e);
+                        return Problems.INVALID_VALUE.toProblem().value(imageURL).exception(e).fire();
                     }
                 }, keepWidth
         );
@@ -145,8 +146,8 @@ public class DefaultODTEngine implements Runnable {
         engine.pushVariable(name, new ReflectionModelNode(object, resolver));
     }
 
-    @Override
-    public void run() {
-        engine.run();
+
+    public Optional<Problem> run() {
+        return engine.run();
     }
 }

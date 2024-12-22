@@ -37,7 +37,7 @@ public class ParametersPlaceholderCodecTest extends AbstractTest {
     @Test
     public void testSingleKey() {
         ParametersPlaceholderCodec codec = new ParametersPlaceholderCodec();
-        ParametersPlaceholderData parsed = codec.parse("${ Test }").get();
+        ParametersPlaceholderData parsed = codec.tryParse("${ Test }").get();
         assertThat(parsed.getKey()).isEqualTo("Test");
         assertThat(parsed.getJson()).isNull();
         String text = codec.getTextContent(parsed);
@@ -48,7 +48,7 @@ public class ParametersPlaceholderCodecTest extends AbstractTest {
     @Test
     public void testKeyAndJson() {
         ParametersPlaceholderCodec codec = new ParametersPlaceholderCodec();
-        ParametersPlaceholderData parsed = codec.parse("${Test    abc :\"DEF\"}").get();
+        ParametersPlaceholderData parsed = codec.tryParse("${Test    abc :\"DEF\"}").get();
         assertThat(parsed.getKey()).isEqualTo("Test");
         assertThat(AttributesInterpreter.getStringAttribute(parsed.getJson(), "abc").get()).isEqualTo("DEF");
         String text = codec.getTextContent(parsed);
@@ -58,7 +58,7 @@ public class ParametersPlaceholderCodecTest extends AbstractTest {
     @Test
     public void testAddAttr() {
         ParametersPlaceholderCodec codec = new ParametersPlaceholderCodec();
-        ParametersPlaceholderData parsed = codec.parse("${Test abc:\"DEF\"}").get();
+        ParametersPlaceholderData parsed = codec.tryParse("${Test abc:\"DEF\"}").get();
         parsed.addStringAttribute("id", "42");
         String text = codec.getTextContent(parsed);
         assertThat(text).isEqualTo("${Test \"abc\":\"DEF\",\"id\":\"42\"}");

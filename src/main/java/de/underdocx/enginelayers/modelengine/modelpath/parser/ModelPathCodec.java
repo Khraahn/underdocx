@@ -27,25 +27,18 @@ package de.underdocx.enginelayers.modelengine.modelpath.parser;
 import de.underdocx.common.codec.Codec;
 import de.underdocx.enginelayers.modelengine.modelpath.ModelPath;
 import de.underdocx.enginelayers.modelengine.modelpath.elements.*;
-import de.underdocx.environment.UnderdocxEnv;
 import de.underdocx.tools.common.Convenience;
 import de.underdocx.tools.common.Wrapper;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.StringTokenizer;
 
 public class ModelPathCodec implements Codec<ModelPath> {
-
+    
     @Override
-    public Optional<ModelPath> parse(String string) {
-        try {
-            return Optional.of(new ModelPath(ModelPathParser.parse(string)));
-        } catch (ModelPathParseException e) {
-            UnderdocxEnv.getInstance().logger.error(e);
-            return Optional.empty();
-        }
+    public ModelPath parse(String string) throws ModelPathParseException {
+        return new ModelPath(ModelPathParser.parse(string));
     }
 
     @Override

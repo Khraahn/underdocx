@@ -27,7 +27,7 @@ package de.underdocx.enginelayers.modelengine.modelpath;
 import de.underdocx.enginelayers.modelengine.model.ModelNode;
 import de.underdocx.enginelayers.modelengine.modelpath.elements.ModelPathElement;
 import de.underdocx.enginelayers.modelengine.modelpath.parser.ModelPathCodec;
-import de.underdocx.environment.UnderdocxExecutionException;
+import de.underdocx.environment.err.Problems;
 import de.underdocx.tools.common.Convenience;
 
 import java.util.ArrayList;
@@ -52,9 +52,7 @@ public class ModelPath {
     }
 
     public ModelPath(String toParse) {
-        this.elements.addAll(codec.parse(toParse).orElseThrow(
-                () -> new UnderdocxExecutionException("can't parse modelpath: " + toParse)
-        ).getElements());
+        this.elements = Problems.CODEC_PARSE_ERROR.exec(() -> codec.parse(toParse), null, toParse).getElements();
     }
 
     public List<ModelPathElement> getElements() {

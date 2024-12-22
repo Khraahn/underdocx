@@ -36,7 +36,7 @@ import de.underdocx.enginelayers.defaultodtengine.commands.internal.datapicker.D
 import de.underdocx.enginelayers.defaultodtengine.commands.internal.modifiermodule.AbstractCommandModule;
 import de.underdocx.enginelayers.defaultodtengine.modifiers.deletearea.DeleteAreaModifier;
 import de.underdocx.enginelayers.parameterengine.ParametersPlaceholderData;
-import de.underdocx.environment.UnderdocxExecutionException;
+import de.underdocx.environment.err.Problems;
 import de.underdocx.tools.common.Pair;
 import org.w3c.dom.Node;
 
@@ -78,7 +78,7 @@ public class MissingDataCommandModule<C extends DocContainer<D>, D, M> extends A
         switch (strategy) {
             case SKIP ->
                     new MissingDataCommandModuleResult<>(MissingDataCommandModuleResult.MissingDataCommandModuleResultType.SKIP);
-            case FAIL -> throw new UnderdocxExecutionException("Failed to resolve: " + selection.getNode());
+            case FAIL -> Problems.MISSING_VALUE.fireProperty("" + selection.getNode());
             case EMPTY -> new ReplaceWithTextModifier<C, ParametersPlaceholderData, D>().modify(selection, "");
             case FALLBACK -> tryFallback(config);
             case DELETE_PLACEHOLDER_KEEP_PARAGRAPH -> new DeletePlaceholderModifier<C, ParametersPlaceholderData, D>()
@@ -93,18 +93,14 @@ public class MissingDataCommandModule<C extends DocContainer<D>, D, M> extends A
                             DeletePlaceholderModifierData.Strategy.DELETE_PARAGRAPH, true));
             case DELETE_PLACEHOLDER_DELETE_AREA -> deleteAreaOdf();
             case KEEP_PLACEHOLDER -> {/* Nothing to do*/}
-            default -> throw new UnderdocxExecutionException("Unexpected Strategy: " + strategy);
+            default -> Problems.UNEXPECTED_TYPE_DETECTED.fireValue(strategy.name());
         }
         return new MissingDataCommandModuleResult<>(MissingDataCommandModuleResult.MissingDataCommandModuleResultType.STRATEGY_EXECUTED);
     }
 
     private void tryFallback(MissingDataConfig config) {
-        String fallback = config.fallback;
-        if (fallback == null) {
-            throw new UnderdocxExecutionException("Fallback strategy failed, fallback missing or invalid");
-        } else {
-            new ReplaceWithTextModifier<C, ParametersPlaceholderData, D>().modify(selection, fallback);
-        }
+        String fallback = Problems.MISSING_VALUE.notNull(config.fallback, "fallback");
+        new ReplaceWithTextModifier<C, ParametersPlaceholderData, D>().modify(selection, fallback);
     }
 
     private void deleteAreaOdf() {

@@ -24,13 +24,11 @@ SOFTWARE.
 
 package de.underdocx.enginelayers.parameterengine.internal;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import de.underdocx.common.codec.Codec;
 import de.underdocx.common.codec.JsonCodec;
 import de.underdocx.enginelayers.parameterengine.ParametersPlaceholderData;
-
-import java.util.Optional;
-
-import static de.underdocx.tools.common.Convenience.buildOptional;
+import de.underdocx.environment.err.Problems;
 
 public class ParametersPlaceholderCodec implements Codec<ParametersPlaceholderData> {
 
@@ -38,20 +36,21 @@ public class ParametersPlaceholderCodec implements Codec<ParametersPlaceholderDa
     public final static ParametersPlaceholderCodec INSTANCE = new ParametersPlaceholderCodec();
 
     @Override
-    public Optional<ParametersPlaceholderData> parse(String string) {
-        return buildOptional(w -> {
-            if (string.startsWith("${") && string.endsWith("}") && string.length() > 3) {
-                String trimmedContent = string.substring(2, string.length() - 1).trim();
-                int spaceIndex = trimmedContent.indexOf(' ');
-                if (spaceIndex >= 0) {
-                    final String key = trimmedContent.substring(0, spaceIndex).trim();
-                    final String jsonString = "{" + trimmedContent.substring(spaceIndex).trim() + "}";
-                    JSON_CODEC.parse(jsonString).ifPresent(json -> w.value = new ParametersPlaceholderData.Simple(key, json));
-                } else {
-                    w.value = new ParametersPlaceholderData.Simple(trimmedContent, null);
-                }
+    public ParametersPlaceholderData parse(String string) throws Exception {
+        if (string.startsWith("${") && string.endsWith("}") && string.length() > 3) {
+            String trimmedContent = string.substring(2, string.length() - 1).trim();
+            int spaceIndex = trimmedContent.indexOf(' ');
+            if (spaceIndex >= 0) {
+                final String key = trimmedContent.substring(0, spaceIndex).trim();
+                final String jsonString = "{" + trimmedContent.substring(spaceIndex).trim() + "}";
+                JsonNode json = JSON_CODEC.parse(jsonString);
+                return new ParametersPlaceholderData.Simple(key, json);
+            } else {
+                return new ParametersPlaceholderData.Simple(trimmedContent, null);
             }
-        });
+        } else {
+            return Problems.PLACEHOLDER_PARSE_ERROR.fireValue(string);
+        }
     }
 
     @Override

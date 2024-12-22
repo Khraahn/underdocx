@@ -45,5 +45,9 @@ public interface CommandHandler<C extends DocContainer<D>, P, D> {
 
     CommandHandlerResult tryExecuteCommand(Selection<C, P, D> selection);
 
+    default String getName() {
+        return this.getClass().getSimpleName();
+    }
+
 
 }

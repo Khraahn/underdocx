@@ -25,7 +25,7 @@ SOFTWARE.
 package de.underdocx.common.doc.odf;
 
 import de.underdocx.environment.UnderdocxEnv;
-import de.underdocx.environment.UnderdocxExecutionException;
+import de.underdocx.environment.err.Problems;
 import org.odftoolkit.odfdom.doc.OdfTextDocument;
 import org.odftoolkit.odfdom.dom.element.office.OfficeTextElement;
 
@@ -34,7 +34,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
-import static de.underdocx.tools.common.Convenience.also;
+import static de.underdocx.tools.common.Convenience.*;
 
 public class OdtContainer extends OdfContainer<OdfTextDocument> {
 
@@ -73,7 +73,7 @@ public class OdtContainer extends OdfContainer<OdfTextDocument> {
         try {
             return getDocument().getContentRoot();
         } catch (Exception e) {
-            throw new UnderdocxExecutionException(e);
+            return Problems.ODF_FRAMEWORK_OPERARTION_EXCEPTION.fire(e);
         }
     }
 
@@ -101,20 +101,22 @@ public class OdtContainer extends OdfContainer<OdfTextDocument> {
         }
     }
 
-    public static OdtContainer createDocument(String content) {
-        return also(new OdtContainer(), result -> {
-            try {
-                String[] lines = content.split("\\r?\\n|\\r");
-                for (int i = 0; i < lines.length; i++) {
-                    if (i != 0) {
-                        result.getDocument().newParagraph();
-                    }
-                    result.getDocument().addText(lines[i]);
+    public void appendText(String content) {
+        try {
+            String[] lines = content.split("\\r?\\n|\\r");
+            for (int i = 0; i < lines.length; i++) {
+                if (i != 0) {
+                    this.getDocument().newParagraph();
                 }
-            } catch (Exception e) {
-                throw new UnderdocxExecutionException(e);
+                this.getDocument().addText(lines[i]);
             }
-        });
+        } catch (Exception e) {
+            Problems.ODF_FRAMEWORK_OPERARTION_EXCEPTION.fire(e);
+        }
+    }
+
+    public static OdtContainer createDocument(String content) {
+        return also(new OdtContainer(), result -> result.appendText(content));
     }
 
 }

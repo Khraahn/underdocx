@@ -24,35 +24,23 @@ SOFTWARE.
 
 package de.underdocx.common.codec;
 
-import de.underdocx.environment.UnderdocxExecutionException;
+import de.underdocx.environment.UnderdocxEnv;
 
 import java.util.Optional;
 
 public interface Codec<P> {
+    
+    default Optional<P> tryParse(String string) {
+        try {
+            return Optional.ofNullable(parse(string));
+        } catch (Exception e) {
+            UnderdocxEnv.getInstance().logger.warn(e);
+            return Optional.empty();
+        }
+    }
 
-    Optional<P> parse(String string);
+    P parse(String string) throws Exception;
 
     String getTextContent(P data);
 
-
-    class PlaceholderParseException extends UnderdocxExecutionException {
-        public PlaceholderParseException() {
-        }
-
-        public PlaceholderParseException(String message) {
-            super(message);
-        }
-
-        public PlaceholderParseException(String message, Throwable cause) {
-            super(message, cause);
-        }
-
-        public PlaceholderParseException(Throwable cause) {
-            super(cause);
-        }
-
-        public PlaceholderParseException(String message, Throwable cause, boolean enableSuppression, boolean writableStackTrace) {
-            super(message, cause, enableSuppression, writableStackTrace);
-        }
-    }
 }

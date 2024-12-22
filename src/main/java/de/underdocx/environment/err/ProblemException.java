@@ -22,48 +22,21 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-package de.underdocx.enginelayers.baseengine.internal.placeholdersprovider.dollar.image;
+package de.underdocx.environment.err;
 
-import de.underdocx.environment.err.Problems;
-import de.underdocx.tools.common.Pair;
+/**
+ * A {@link RuntimeException} that contains a {@link Problem} instance for further details
+ */
+public class ProblemException extends RuntimeException {
 
-import javax.imageio.ImageIO;
-import java.awt.image.BufferedImage;
-import java.io.IOException;
-import java.net.URL;
+    private final Problem problem;
 
-public interface SimpleDollarImagePlaceholderData {
-
-    String getWidthUnit();
-
-    String getWidthAttr();
-
-    String getHeightAttr();
-
-    String getName();
-
-    String getVariableName();
-
-    double getWidthValue();
-
-    String getHeightUnit();
-
-    double getHeightValue();
-
-    void setWidth(double value, String unit);
-
-    void setHeight(double value, String unit);
-
-    void exchangeImage(URL imageUrl);
-
-    static Pair<Double, Double> getDimension(URL url) {
-        try {
-            BufferedImage bufferedImage = ImageIO.read(url);
-            return new Pair<>((double) bufferedImage.getWidth(), (double) bufferedImage.getHeight());
-        } catch (IOException e) {
-            return Problems.IO_EXCEPTION.fire(e);
-        }
+    public ProblemException(Problem problem) {
+        super(problem.description, problem.exception);
+        this.problem = problem;
     }
 
-
+    public Problem getProblem() {
+        return problem;
+    }
 }

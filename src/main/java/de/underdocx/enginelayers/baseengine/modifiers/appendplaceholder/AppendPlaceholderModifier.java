@@ -28,7 +28,7 @@ import de.underdocx.common.doc.odf.OdtContainer;
 import de.underdocx.common.placeholder.TextualPlaceholderToolkit;
 import de.underdocx.enginelayers.baseengine.Selection;
 import de.underdocx.enginelayers.baseengine.modifiers.Modifier;
-import de.underdocx.environment.UnderdocxExecutionException;
+import de.underdocx.environment.err.Problems;
 import de.underdocx.tools.common.Convenience;
 import org.odftoolkit.odfdom.doc.OdfTextDocument;
 import org.odftoolkit.odfdom.incubator.doc.text.OdfTextParagraph;
@@ -46,7 +46,7 @@ public class AppendPlaceholderModifier<P> implements Modifier<OdtContainer, P, O
                     newParagraph.appendChild(clone);
                     result.value = true;
                 } catch (Exception e) {
-                    throw new UnderdocxExecutionException(e);
+                    Problems.ODF_FRAMEWORK_OPERARTION_EXCEPTION.toProblem().handle(e).fire();
                 }
             });
         });

@@ -26,7 +26,7 @@ package de.underdocx.common.placeholder;
 
 import de.underdocx.common.codec.Codec;
 import de.underdocx.common.placeholder.basic.textnodeinterpreter.TextNodeInterpreter;
-import de.underdocx.environment.UnderdocxExecutionException;
+import de.underdocx.environment.err.Problems;
 import de.underdocx.tools.tree.Nodes;
 import org.w3c.dom.Node;
 
@@ -59,7 +59,8 @@ public class TextualPlaceholderToolkit<P> {
     }
 
     public P parsePlaceholder(Node placeholder) {
-        return UnderdocxExecutionException.expect(codec.parse(getText(placeholder)));
+        String text = getText(placeholder);
+        return Problems.PLACEHOLDER_PARSE_ERROR.exec(() -> codec.parse(text), null, text);
     }
 
     public void setPlaceholder(Node placeholder, P data) {

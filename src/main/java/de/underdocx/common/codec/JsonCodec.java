@@ -30,7 +30,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.JsonNodeType;
 import de.underdocx.environment.UnderdocxEnv;
-import de.underdocx.environment.UnderdocxExecutionException;
+import de.underdocx.environment.err.Problems;
 import de.underdocx.tools.common.Convenience;
 import org.apache.commons.io.IOUtils;
 
@@ -58,16 +58,10 @@ public class JsonCodec implements Codec<JsonNode> {
         this.exchangeQuotes = exchangeQuotes;
         this.mapper = createMapper();
     }
-
+    
     @Override
-    public Optional<JsonNode> parse(String string) {
-        return Convenience.buildOptional(w -> {
-            try {
-                w.value = mapper.readTree(checkQuotes(string));
-            } catch (JsonProcessingException e) {
-                UnderdocxEnv.getInstance().logger.warn(e);
-            }
-        });
+    public JsonNode parse(String string) throws JsonProcessingException {
+        return mapper.readTree(checkQuotes(string));
     }
 
     private ObjectMapper createMapper() {
@@ -103,7 +97,7 @@ public class JsonCodec implements Codec<JsonNode> {
                 return mapper.writeValueAsString(data);
             }
         } catch (JsonProcessingException e) {
-            throw new UnderdocxExecutionException(e);
+            return Problems.CODEC_ERROR.fire(e);
         }
     }
 
@@ -117,7 +111,7 @@ public class JsonCodec implements Codec<JsonNode> {
     }
 
     public Optional<Map<String, Object>> getAsMap(String data) {
-        return Convenience.buildOptional(w -> parse(data).ifPresent(json -> w.value = getAsMap(json)));
+        return Convenience.buildOptional(w -> tryParse(data).ifPresent(json -> w.value = getAsMap(json)));
     }
 
     public Optional<Map<String, Object>> getAsMap(InputStream is) {

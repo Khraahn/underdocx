@@ -24,7 +24,7 @@ SOFTWARE.
 
 package de.underdocx.common.placeholder.basic.textnodeinterpreter;
 
-import de.underdocx.environment.UnderdocxExecutionException;
+import de.underdocx.environment.err.Problems;
 import de.underdocx.tools.odf.OdfTools;
 import de.underdocx.tools.tree.Nodes;
 import org.odftoolkit.odfdom.dom.element.text.TextSpanElement;
@@ -32,7 +32,7 @@ import org.odftoolkit.odfdom.incubator.doc.text.OdfWhitespaceProcessor;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
-import static de.underdocx.tools.common.Convenience.also;
+import static de.underdocx.tools.common.Convenience.*;
 
 public class OdfTextNodeInterpreter extends AbstractOdfTextNodeInterpreter {
 
@@ -50,7 +50,7 @@ public class OdfTextNodeInterpreter extends AbstractOdfTextNodeInterpreter {
         try {
             return also(new TextSpanElement(OdfTools.getFileDom(parent)), parent::appendChild);
         } catch (Exception e) {
-            throw new UnderdocxExecutionException(e);
+            return Problems.ODF_FRAMEWORK_OPERARTION_EXCEPTION.fire(e);
         }
 
     }

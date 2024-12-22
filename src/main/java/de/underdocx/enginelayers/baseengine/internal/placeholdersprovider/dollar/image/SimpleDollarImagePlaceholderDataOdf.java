@@ -25,7 +25,7 @@ SOFTWARE.
 package de.underdocx.enginelayers.baseengine.internal.placeholdersprovider.dollar.image;
 
 import de.underdocx.common.doc.odf.OdfContainer;
-import de.underdocx.environment.UnderdocxExecutionException;
+import de.underdocx.environment.err.Problems;
 import de.underdocx.tools.common.Pair;
 import de.underdocx.tools.common.Regex;
 import de.underdocx.tools.odf.OdfLengthUnit;
@@ -111,7 +111,7 @@ public class SimpleDollarImagePlaceholderDataOdf implements SimpleDollarImagePla
             setName(packagePath);
             // TODO set mimetype? String mimeType = OdfFileEntry.getMediaTypeString(imageUri.toString());
         } catch (Exception e) {
-            throw new UnderdocxExecutionException(e);
+            Problems.ODF_FRAMEWORK_OPERARTION_EXCEPTION.fire(e);
         }
     }
 
@@ -120,7 +120,7 @@ public class SimpleDollarImagePlaceholderDataOdf implements SimpleDollarImagePla
             BufferedImage bufferedImage = ImageIO.read(url);
             return new Pair<>((double) bufferedImage.getWidth(), (double) bufferedImage.getHeight());
         } catch (IOException e) {
-            throw new UnderdocxExecutionException(e);
+            return Problems.IO_EXCEPTION.fire(e);
         }
     }
 

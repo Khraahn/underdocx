@@ -32,10 +32,9 @@ import de.underdocx.common.placeholder.basic.extraction.RegexExtractor;
 import de.underdocx.common.placeholder.basic.textnodeinterpreter.OdfTextNodeInterpreter;
 import de.underdocx.common.placeholder.basic.textnodeinterpreter.TextNodeInterpreter;
 import de.underdocx.enginelayers.baseengine.internal.placeholdersprovider.AbstractTextualPlaceholdersProvider;
+import de.underdocx.environment.err.Problems;
 import de.underdocx.tools.common.Regex;
 import org.odftoolkit.odfdom.doc.OdfDocument;
-
-import java.util.Optional;
 
 public class SimpleDollarPlaceholdersProvider<C extends OdfContainer<D>, D extends OdfDocument> extends AbstractTextualPlaceholdersProvider<C, String, D> {
 
@@ -43,10 +42,11 @@ public class SimpleDollarPlaceholdersProvider<C extends OdfContainer<D>, D exten
     public static final EncapsulatedNodesExtractor defaultExtractor = createExtractor(new OdfTextNodeInterpreter());
     public static final Codec<String> codec = new Codec<>() {
         @Override
-        public Optional<String> parse(String string) {
+        public String parse(String string) {
             if (string.startsWith("$"))
-                return Optional.of(string.substring(1));
-            else return Optional.empty();
+                return string.substring(1);
+            else
+                return Problems.PLACEHOLDER_PARSE_ERROR.fireValue(string);
         }
 
         @Override

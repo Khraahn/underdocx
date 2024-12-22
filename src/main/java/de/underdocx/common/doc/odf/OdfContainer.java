@@ -26,7 +26,7 @@ package de.underdocx.common.doc.odf;
 
 import de.underdocx.common.doc.AbstractDocContainer;
 import de.underdocx.environment.UnderdocxEnv;
-import de.underdocx.environment.UnderdocxExecutionException;
+import de.underdocx.environment.err.Problems;
 import de.underdocx.tools.common.Regex;
 import org.apache.commons.io.IOUtils;
 import org.odftoolkit.odfdom.doc.OdfDocument;
@@ -60,9 +60,9 @@ public abstract class OdfContainer<T extends OdfDocument> extends AbstractDocCon
         try {
             return getDocument().getContentDom();
         } catch (SAXException e) {
-            throw new UnderdocxExecutionException(e);
+            return Problems.ODF_FRAMEWORK_OPERARTION_EXCEPTION.fire(e);
         } catch (IOException e) {
-            throw new UnderdocxExecutionException(e);
+            return Problems.ODF_FRAMEWORK_OPERARTION_EXCEPTION.fire(e);
         }
     }
 
@@ -70,16 +70,15 @@ public abstract class OdfContainer<T extends OdfDocument> extends AbstractDocCon
         try {
             return getDocument().getStylesDom();
         } catch (SAXException e) {
-            throw new UnderdocxExecutionException(e);
+            return Problems.ODF_FRAMEWORK_OPERARTION_EXCEPTION.fire(e);
         } catch (IOException e) {
-            throw new UnderdocxExecutionException(e);
+            return Problems.ODF_FRAMEWORK_OPERARTION_EXCEPTION.fire(e);
         }
     }
 
     public void writePDF(OutputStream os) throws IOException {
         try {
-            String libreOffice = UnderdocxEnv.getInstance().libreOfficeExecutable;
-            UnderdocxExecutionException.expect(libreOffice, "Ensure environment variable LIBREOFFICE is set to LibreOffice executable");
+            String libreOffice = Problems.LIBREOFFICE_ENV_NOT_SET.notNull(UnderdocxEnv.getInstance().libreOfficeExecutable, "LIBREOFFICE");
             File tmpOdtFile = this.createTmpFile(1000L * 60L * 5L);
             save(tmpOdtFile);
             File tmpDir = tmpOdtFile.getParentFile();

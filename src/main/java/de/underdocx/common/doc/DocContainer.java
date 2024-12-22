@@ -80,4 +80,6 @@ public interface DocContainer<D> {
         return createURI(null);
     }
 
+    void appendText(String content);
+
 }
