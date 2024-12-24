@@ -127,6 +127,9 @@ public class BaseEngine<C extends DocContainer<D>, D> {
                             "---------------------------\n" +
                             detectedError);
         }
+        if (detectedError != null) {
+            UnderdocxEnv.getInstance().logger.error(detectedError.toString());
+        }
         return Optional.ofNullable(detectedError);
     }
 

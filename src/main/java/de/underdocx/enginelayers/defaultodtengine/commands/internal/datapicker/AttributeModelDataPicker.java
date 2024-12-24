@@ -26,7 +26,7 @@ package de.underdocx.enginelayers.defaultodtengine.commands.internal.datapicker;
 
 import de.underdocx.enginelayers.defaultodtengine.commands.internal.attrinterpreter.AttributesInterpreter;
 import de.underdocx.enginelayers.defaultodtengine.commands.internal.attrinterpreter.accesstype.AccessType;
-import de.underdocx.enginelayers.defaultodtengine.commands.internal.attrinterpreter.accesstype.AccessTypeInterpreter;
+import de.underdocx.enginelayers.defaultodtengine.commands.internal.attrinterpreter.accesstype.AccessTypeJsonNameInterpreter;
 import de.underdocx.enginelayers.defaultodtengine.commands.internal.attrinterpreter.single.AttributeInterpreterFactory;
 import de.underdocx.enginelayers.modelengine.model.ModelNode;
 
@@ -37,7 +37,11 @@ public class AttributeModelDataPicker extends AbstractDataPicker<ModelNode, Stri
     private ModelNameDataPicker nameDataPicker = new ModelNameDataPicker();
 
     public AttributeModelDataPicker() {
-        this(new AccessTypeInterpreter(), AttributeInterpreterFactory.createStringAttributeInterpreter());
+        this(new AccessTypeJsonNameInterpreter(), AttributeInterpreterFactory.createStringAttributeInterpreter(true));
+    }
+
+    public AttributeModelDataPicker(AttributesInterpreter<AccessType, String> typeInterpreter) {
+        this(typeInterpreter, AttributeInterpreterFactory.createStringAttributeInterpreter(true));
     }
 
     public AttributeModelDataPicker(

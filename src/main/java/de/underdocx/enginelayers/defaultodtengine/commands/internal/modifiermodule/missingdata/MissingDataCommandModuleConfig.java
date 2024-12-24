@@ -42,6 +42,10 @@ public interface MissingDataCommandModuleConfig<M> {
         return null;
     }
 
+    default Node getCommonAncestor() {
+        return null;
+    }
+
     Predicate<M> getIsEmptyPredicate();
 
 }

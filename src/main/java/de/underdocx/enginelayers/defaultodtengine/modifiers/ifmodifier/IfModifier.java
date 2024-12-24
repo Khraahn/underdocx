@@ -22,36 +22,34 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-package de.underdocx.enginelayers.defaultodtengine.modifiers.deletearea;
+package de.underdocx.enginelayers.defaultodtengine.modifiers.ifmodifier;
 
 import de.underdocx.common.doc.DocContainer;
-import de.underdocx.common.placeholder.basic.textnodeinterpreter.OdfTextNodeInterpreter;
+import de.underdocx.enginelayers.baseengine.modifiers.deleteplaceholder.DeletePlaceholderModifier;
+import de.underdocx.enginelayers.baseengine.modifiers.deleteplaceholder.DeletePlaceholderModifierData;
+import de.underdocx.enginelayers.defaultodtengine.modifiers.deletearea.DeleteAreaModifier;
 import de.underdocx.enginelayers.defaultodtengine.modifiers.internal.AbstractAreaModifier;
 import de.underdocx.enginelayers.defaultodtengine.modifiers.internal.AreaModifierWithCommonAncestorData;
 import de.underdocx.enginelayers.parameterengine.ParametersPlaceholderData;
-import de.underdocx.tools.common.Pair;
-import de.underdocx.tools.tree.Nodes;
-import de.underdocx.tools.tree.TreeSplitter;
 import org.w3c.dom.Node;
 
-public class DeleteAreaModifier<C extends DocContainer<D>, D> extends AbstractAreaModifier<C, ParametersPlaceholderData, D, AreaModifierWithCommonAncestorData> {
+public class IfModifier<C extends DocContainer<D>, D> extends AbstractAreaModifier<C, ParametersPlaceholderData, D, IfModifierData> {
 
     @Override
-    protected Node getCommonAncestorNode(AreaModifierWithCommonAncestorData modifierData) {
-        return modifierData.getCommonAncestor();
+    protected Node getCommonAncestorNode(IfModifierData modifierData) {
+        return COMMON_ANCESTOR_NEAREST.apply(modifierData.getAreaPlaceholderNodes().left, modifierData.getAreaPlaceholderNodes().right);
     }
 
     @Override
     protected boolean modify() {
-        Nodes.deleteNodes(getAreaNodes());
+        if (modifierData.isMatch()) {
+            DeletePlaceholderModifier.modify(area.left, DeletePlaceholderModifierData.DEFAULT);
+            DeletePlaceholderModifier.modify(area.right, DeletePlaceholderModifierData.DEFAULT);
+        } else {
+            DeleteAreaModifier.deleteArea(new AreaModifierWithCommonAncestorData.DefaultAreaModifierWithCommonAncestorData(
+                    area, getCommonAncestorNode(modifierData)
+            ));
+        }
         return true;
-    }
-
-    public static void deleteArea(AreaModifierWithCommonAncestorData modifierData) {
-        Pair<Node, Node> a = modifierData.getAreaPlaceholderNodes();
-        Node ancestor = modifierData.getCommonAncestor();
-        TreeSplitter.split(a.left, ancestor, OdfTextNodeInterpreter.INSTANCE);
-        TreeSplitter.split(a.right, ancestor, OdfTextNodeInterpreter.INSTANCE);
-        Nodes.deleteNodes(Nodes.getSiblings(a.left, a.right));
     }
 }

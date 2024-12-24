@@ -6,6 +6,7 @@ import de.underdocx.common.placeholder.basic.textnodeinterpreter.AbstractOdfText
 import de.underdocx.common.placeholder.basic.textnodeinterpreter.TextNodeInterpreter;
 import de.underdocx.environment.UnderdocxEnv;
 import de.underdocx.tools.odf.OdfTools;
+import de.underdocx.tools.odf.ParagraphWalker;
 import de.underdocx.tools.odf.constants.OdfAttribute;
 import de.underdocx.tools.odf.constants.OdfElement;
 import de.underdocx.tools.tree.Nodes;
@@ -117,6 +118,20 @@ public class AbstractOdtTest extends AbstractTest {
     protected void assertNoPlaceholders(OdtContainer doc) {
         assertThat(search(doc.getDocument(), Pattern.compile("\\$\\{.*\\}")).isPresent()).isFalse();
         assertThat(search(doc.getDocument(), Pattern.compile("\\$\\.*")).isPresent()).isFalse();
+    }
+
+    protected int countParagraphs(OdtContainer doc) {
+        int counter = 0;
+        ParagraphWalker walker = new ParagraphWalker(doc, true);
+        while (walker.hasNext()) {
+            counter++;
+            walker.next();
+        }
+        return counter;
+    }
+
+    protected void assertParagraphsCount(OdtContainer doc, int expectation) {
+        assertThat(countParagraphs(doc)).isEqualTo(expectation);
     }
 
     /*

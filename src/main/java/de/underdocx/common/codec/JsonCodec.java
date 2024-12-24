@@ -58,7 +58,7 @@ public class JsonCodec implements Codec<JsonNode> {
         this.exchangeQuotes = exchangeQuotes;
         this.mapper = createMapper();
     }
-    
+
     @Override
     public JsonNode parse(String string) throws JsonProcessingException {
         return mapper.readTree(checkQuotes(string));
@@ -150,7 +150,7 @@ public class JsonCodec implements Codec<JsonNode> {
             }
             case STRING -> node.asText();
             case ARRAY -> getAsList(node);
-            case OBJECT -> getAsObject(node);
+            case OBJECT -> getAsMap(node);
             default -> null;
         };
         return result;

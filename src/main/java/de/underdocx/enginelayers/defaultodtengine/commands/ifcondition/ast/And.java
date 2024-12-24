@@ -22,27 +22,24 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-package de.underdocx.enginelayers.defaultodtengine.commands.internal.attrinterpreter.accesstype;
+package de.underdocx.enginelayers.defaultodtengine.commands.ifcondition.ast;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import de.underdocx.common.codec.JsonCodec;
-import de.underdocx.enginelayers.defaultodtengine.commands.internal.attrinterpreter.AbstractAttributeInterpreter;
-import de.underdocx.enginelayers.modelengine.model.ModelNode;
-import de.underdocx.enginelayers.modelengine.model.simple.AbstractPredefinedModelNode;
+import de.underdocx.environment.err.Problems;
+import de.underdocx.tools.common.Pair;
 
-import java.util.Optional;
+import java.util.function.Function;
 
-public class AccessNodeAttributeInterpreter extends AbstractAttributeInterpreter<Optional<ModelNode>, String> {
-
-
+public class And extends ConditionElement {
     @Override
-    protected Optional<ModelNode> interpretAttributes() {
-        Optional<JsonNode> attrValue = getComplexAttribute(configuration);
-        if (attrValue.isPresent()) {
-            JsonNode json = attrValue.get();
-            Object obj = new JsonCodec().getAsObject(json);
-            return Optional.of(AbstractPredefinedModelNode.createRootNode(obj));
+    public boolean eval(Function<Pair<String, Object>, Boolean> valueProvider) {
+        Problems.INVALID_IF_CONDITION.checkNot(elements.isEmpty(), "and", null);
+        boolean result = true;
+        for (ConditionElement element : elements) {
+            if (!element.eval(valueProvider)) {
+                result = false;
+                break;
+            }
         }
-        return Optional.empty();
+        return result;
     }
 }

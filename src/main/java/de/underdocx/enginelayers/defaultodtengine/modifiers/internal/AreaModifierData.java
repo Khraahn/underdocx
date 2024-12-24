@@ -34,7 +34,7 @@ public interface AreaModifierData {
     class BaseAreaModifierData implements AreaModifierData {
 
         private final Pair<Node, Node> area;
-        
+
         public BaseAreaModifierData(Pair<Node, Node> area) {
             this.area = area;
         }

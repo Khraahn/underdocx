@@ -41,8 +41,9 @@ public enum Problems implements Problematic {
     CODEC_ERROR("Can't encode or decode a string or object"),
     CODEC_PARSE_ERROR("Can't parse string, syntax error"),
     IO_EXCEPTION("An IO Exception has been caught, failed to load or save a resource"),
-    ODF_FRAMEWORK_OPERARTION_EXCEPTION("An unexpected exception occurred accessing an ODF document ");
-
+    ODF_FRAMEWORK_OPERARTION_EXCEPTION("An unexpected exception occurred accessing an ODF document "),
+    INVALID_IF_CONDITION("If command contains an invalid structure or invalid values"),
+    ;
 
     private String description = null;
 

@@ -76,8 +76,9 @@ public class Convenience {
 
 
     public static <E> List<E> reverse(List<E> list) {
-        Collections.reverse(new ArrayList<>(list));
-        return list;
+        List<E> newlist = new ArrayList<>(list);
+        Collections.reverse(newlist);
+        return newlist;
     }
 
     public static <T> List<T> filter(Collection<T> collection, Predicate<T> predicate) {

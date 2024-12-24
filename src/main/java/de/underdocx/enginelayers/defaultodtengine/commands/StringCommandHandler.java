@@ -28,7 +28,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import de.underdocx.common.doc.DocContainer;
 import de.underdocx.enginelayers.defaultodtengine.commands.internal.AbstractStringCommandHandler;
 import de.underdocx.enginelayers.defaultodtengine.commands.internal.attrinterpreter.accesstype.AccessType;
-import de.underdocx.enginelayers.defaultodtengine.commands.internal.attrinterpreter.accesstype.AccessTypeInterpreter;
+import de.underdocx.enginelayers.defaultodtengine.commands.internal.attrinterpreter.accesstype.AccessTypeJsonNameInterpreter;
 import de.underdocx.enginelayers.defaultodtengine.commands.internal.datapicker.PredefinedDataPicker;
 import de.underdocx.enginelayers.defaultodtengine.commands.internal.datapicker.StringConvertDataPicker;
 import de.underdocx.enginelayers.defaultodtengine.commands.internal.modifiermodule.stringoutput.StringOutputModuleConfig;
@@ -42,7 +42,7 @@ public class StringCommandHandler<C extends DocContainer<D>, D> extends Abstract
     PredefinedDataPicker<String> directDataPicker = new StringConvertDataPicker().asPredefined(null);
     PredefinedDataPicker<String> valueDataPicker = new StringConvertDataPicker().asPredefined("value");
     Predicate<JsonNode> isDirectAccess = jsonNode ->
-            (AccessTypeInterpreter.DEFAULT.interpretAttributes(jsonNode, "value") == AccessType.MISSING_ACCESS);
+            (AccessTypeJsonNameInterpreter.DEFAULT.interpretAttributes(jsonNode, "value") == AccessType.MISSING_ACCESS);
 
     public final static Regex KEYS = new Regex(Pattern.quote("String"));
 

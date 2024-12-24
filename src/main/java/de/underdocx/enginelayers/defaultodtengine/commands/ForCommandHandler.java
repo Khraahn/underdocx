@@ -31,7 +31,7 @@ import de.underdocx.enginelayers.defaultodtengine.commands.internal.AbstractText
 import de.underdocx.enginelayers.defaultodtengine.commands.internal.AreaTools;
 import de.underdocx.enginelayers.defaultodtengine.commands.internal.attrinterpreter.PredefinedAttributesInterpreter;
 import de.underdocx.enginelayers.defaultodtengine.commands.internal.attrinterpreter.accesstype.AccessType;
-import de.underdocx.enginelayers.defaultodtengine.commands.internal.attrinterpreter.accesstype.AccessTypeInterpreter;
+import de.underdocx.enginelayers.defaultodtengine.commands.internal.attrinterpreter.accesstype.AccessTypeJsonNameInterpreter;
 import de.underdocx.enginelayers.defaultodtengine.commands.internal.attrinterpreter.missingdata.MissingDataConfig;
 import de.underdocx.enginelayers.defaultodtengine.commands.internal.attrinterpreter.missingdata.MissingDataStrategy;
 import de.underdocx.enginelayers.defaultodtengine.commands.internal.attrinterpreter.missingdata.MissingDataSzenario;
@@ -51,6 +51,7 @@ import de.underdocx.enginelayers.parameterengine.ParametersPlaceholderData;
 import de.underdocx.environment.err.Problems;
 import de.underdocx.tools.common.Pair;
 import de.underdocx.tools.common.Regex;
+import de.underdocx.tools.odf.OdfTools;
 import org.w3c.dom.Node;
 
 import java.util.ArrayList;
@@ -113,7 +114,7 @@ public class ForCommandHandler<C extends DocContainer<D>, D> extends AbstractTex
                 source = missingResult.source;
                 listNode = missingResult.value;
                 attributes = placeholderData.getJson();
-                asAttributeType = AccessTypeInterpreter.DEFAULT.interpretAttributes(placeholderData.getJson(), AS_ATTR);
+                asAttributeType = AccessTypeJsonNameInterpreter.DEFAULT.interpretAttributes(placeholderData.getJson(), AS_ATTR);
                 checkAsAttr();
                 asAttrValue = getAsStrAttr.interpretAttributes(placeholderData.getJson()).orElse(null);
                 new ForMofifier<C, D>().modify(selection, createModifierData());
@@ -167,6 +168,11 @@ public class ForCommandHandler<C extends DocContainer<D>, D> extends AbstractTex
             @Override
             public Node getAreaEnd() {
                 return endNode;
+            }
+
+            @Override
+            public Node getCommonAncestor() {
+                return OdfTools.findOldestParagraphOrTable(getAreaEnd()).get();
             }
         };
     }

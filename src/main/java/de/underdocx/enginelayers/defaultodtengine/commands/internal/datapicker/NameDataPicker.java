@@ -24,45 +24,34 @@ SOFTWARE.
 
 package de.underdocx.enginelayers.defaultodtengine.commands.internal.datapicker;
 
-import de.underdocx.enginelayers.defaultodtengine.commands.internal.attrinterpreter.AttributesInterpreter;
 import de.underdocx.enginelayers.defaultodtengine.commands.internal.attrinterpreter.accesstype.AccessType;
-import de.underdocx.enginelayers.defaultodtengine.commands.internal.attrinterpreter.accesstype.AccessTypeJsonNameInterpreter;
+import de.underdocx.enginelayers.defaultodtengine.commands.internal.attrinterpreter.accesstype.AccessTypeNameInterpreter;
 import de.underdocx.enginelayers.modelengine.model.ModelNode;
 
 /**
- * This is a {@link DataPicker} that resolves a value from model, variable registry or from json attrobute.
- * It analyses the prefix of the json attribute to find out the
- * source of the value (e.g. "value", "$value", "@value").
- * If source is model or variable registry, the attribute value is used as new name to look up for the value
- * Depending on used prefix this {@link DataPicker} calls {@link AttributeModelDataPicker},
- * {@link AttributeVarDataPicker} or {@link AttributeValueDataPicker}
- * <p>
- * Examples:
- * pick("x") and json x:"y" => returns y
- * pick("x") and json $x:"y" => returns value of registered variable y
- * pick("x") and json @x:"y" => returns value of model path y
+ * A {@link DataPicker} that uses the provided name to lookup in model or variable registry.
+ * The names prefix character is used to determine the {@link AccessType} by using the {@link AccessTypeNameInterpreter}
+ * JSON attributes are ignored when "$" or "@" are used as name prefix, when no prefix is used the
+ * attribute value of the attribute with the same name is returned, e.g.:
+ * pickData("$x") returns the value of the registered variable "x". All JSON attributes are ignored
+ * pickData("@x") returns the model value of the path "x". All JSON attributes are ignored
+ * pickData("x") return the value of the JSON attribute "x".
  */
-public class AttributeNodeDataPicker extends AbstractDataPicker<ModelNode, String> {
+public class NameDataPicker extends AbstractDataPicker<ModelNode, String> {
 
-    public AttributeNodeDataPicker() {
-        this(new AccessTypeJsonNameInterpreter());
-    }
-
-    public AttributeNodeDataPicker(
-            AttributesInterpreter<AccessType, String> typeInterpreter
-    ) {
-        super(typeInterpreter, null);
+    public NameDataPicker() {
+        super(new AccessTypeNameInterpreter(), null);
     }
 
     @Override
     protected DataPickerResult<ModelNode> pickData(String name) {
         AccessType accessType = typeInterpreter.interpretAttributes(attributes, name);
+        String pureName = AccessType.getPureName(name);
         return switch (accessType) {
             case ACCESS_CURRENT_MODEL_NODE, ACCESS_MODEL_BY_NAME ->
-                    new AttributeModelDataPicker(typeInterpreter).pickData(name, model, attributes);
+                    new ModelNameDataPicker().pickData(pureName, model, attributes);
             case ACCESS_ATTR_VALUE -> new AttributeValueDataPicker(typeInterpreter).pickData(name, model, attributes);
-            case ACCESS_VARIABLE_BY_NAME ->
-                    new AttributeVarDataPicker(typeInterpreter).pickData(name, model, attributes);
+            case ACCESS_VARIABLE_BY_NAME -> new VarNameDataPicker().pickData(pureName, model, attributes);
             case MISSING_ACCESS -> DataPickerResult.unresolvedMissingAttr(DataPickerResult.ResultSource.UNKNOWN);
         };
     }

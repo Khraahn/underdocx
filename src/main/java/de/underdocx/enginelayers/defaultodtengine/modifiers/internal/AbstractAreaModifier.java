@@ -39,25 +39,29 @@ import java.util.function.BiFunction;
 
 public abstract class AbstractAreaModifier<C extends DocContainer<D>, P, D, M extends AreaModifierData> implements MModifier<C, P, D, M> {
 
+    protected static final BiFunction<Node, Node, Node> COMMON_ANCESTOR_P_OR_TABLE_PARENT =
+            (first, second) -> OdfTools.findOldestParagraphOrTableParent(first).get();
+    protected static final BiFunction<Node, Node, Node> COMMON_ANCESTOR_NEAREST =
+            (first, second) -> Nodes.findCommonAncestor(first, second).get();
+
+
     protected MSelection<C, P, D> selection;
     protected M modifierData;
-    protected BiFunction<Node, Node, Node> commonAncestorProvider;
     protected Pair<Node, Node> area;
 
-    public AbstractAreaModifier(BiFunction<Node, Node, Node> commonAncestorProvider) {
-        this.commonAncestorProvider = commonAncestorProvider;
-    }
 
     public AbstractAreaModifier() {
-        this.commonAncestorProvider = (first, second) ->
-                OdfTools.findOldestParagraphOrTableParent(first).get();
+    }
+
+    protected Node getCommonAncestorNode(M modifierData) {
+        return COMMON_ANCESTOR_P_OR_TABLE_PARENT.apply(modifierData.getAreaPlaceholderNodes().left, modifierData.getAreaPlaceholderNodes().right);
     }
 
     @Override
     public boolean modify(MSelection<C, P, D> selection, M modifierData) {
         this.selection = selection;
         this.modifierData = modifierData;
-        Node commonAncestor = commonAncestorProvider.apply(modifierData.getAreaPlaceholderNodes().left, modifierData.getAreaPlaceholderNodes().right);
+        Node commonAncestor = getCommonAncestorNode(modifierData);
         Pair<Node, Node> placeholderArea = modifierData.getAreaPlaceholderNodes();
         if (splitTrees()) {
             TreeSplitter.split(placeholderArea.left, commonAncestor, getTextNodeInterpreter());

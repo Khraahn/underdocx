@@ -42,11 +42,8 @@ import java.util.Optional;
 
 public abstract class AbstractTextualCommandHandler<C extends DocContainer<D>, D> extends AbstractCommandHandler<C, ParametersPlaceholderData, D> {
 
-    protected Regex allowedKeys = null;
+    protected Regex allowedKeys;
     protected TextualPlaceholderToolkit<ParametersPlaceholderData> placeholderToolkit = null;
-
-    protected AbstractTextualCommandHandler() {
-    }
 
     protected AbstractTextualCommandHandler(Regex keys) {
         this.allowedKeys = keys;

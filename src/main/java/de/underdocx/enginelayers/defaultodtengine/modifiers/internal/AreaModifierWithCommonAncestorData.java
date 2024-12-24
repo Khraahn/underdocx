@@ -22,16 +22,27 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-package de.underdocx.enginelayers.defaultodtengine.commands.internal.attrinterpreter.accesstype;
+package de.underdocx.enginelayers.defaultodtengine.modifiers.internal;
 
-import de.underdocx.enginelayers.defaultodtengine.commands.internal.attrinterpreter.AbstractAttributeInterpreter;
+import de.underdocx.tools.common.Pair;
+import org.w3c.dom.Node;
 
-import java.util.Optional;
+public interface AreaModifierWithCommonAncestorData extends AreaModifierData {
 
-public class AccessStringAttributeInterpreter extends AbstractAttributeInterpreter<Optional<String>, String> {
+    Node getCommonAncestor();
 
-    @Override
-    protected Optional<String> interpretAttributes() {
-        return getStringAttribute(configuration);
+    class DefaultAreaModifierWithCommonAncestorData extends BaseAreaModifierData implements AreaModifierWithCommonAncestorData {
+
+        private final Node commonAncestor;
+
+        public DefaultAreaModifierWithCommonAncestorData(Pair<Node, Node> area, Node commonAncestor) {
+            super(area);
+            this.commonAncestor = commonAncestor;
+        }
+
+        @Override
+        public Node getCommonAncestor() {
+            return commonAncestor;
+        }
     }
 }

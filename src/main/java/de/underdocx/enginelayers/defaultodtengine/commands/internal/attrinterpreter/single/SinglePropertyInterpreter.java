@@ -26,7 +26,7 @@ package de.underdocx.enginelayers.defaultodtengine.commands.internal.attrinterpr
 
 import com.fasterxml.jackson.databind.JsonNode;
 import de.underdocx.enginelayers.defaultodtengine.commands.internal.attrinterpreter.AbstractAttributeInterpreter;
-import de.underdocx.enginelayers.defaultodtengine.commands.internal.attrinterpreter.accesstype.AccessTypeInterpreter;
+import de.underdocx.enginelayers.defaultodtengine.commands.internal.attrinterpreter.accesstype.AccessTypeJsonNameInterpreter;
 
 import java.util.Optional;
 import java.util.function.BiFunction;
@@ -48,7 +48,7 @@ public class SinglePropertyInterpreter<R> extends AbstractAttributeInterpreter<O
     @Override
     protected Optional<R> interpretAttributes() {
         if (ignoreAccessType) {
-            return function.apply(attributes, AccessTypeInterpreter.DEFAULT.interpretAttributes(attributes, configuration).rename(configuration));
+            return function.apply(attributes, AccessTypeJsonNameInterpreter.DEFAULT.interpretAttributes(attributes, configuration).rename(configuration));
         } else {
             return function.apply(attributes, configuration);
         }

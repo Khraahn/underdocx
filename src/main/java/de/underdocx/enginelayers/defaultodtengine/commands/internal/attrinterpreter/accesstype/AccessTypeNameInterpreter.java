@@ -26,18 +26,28 @@ package de.underdocx.enginelayers.defaultodtengine.commands.internal.attrinterpr
 
 import de.underdocx.enginelayers.defaultodtengine.commands.internal.attrinterpreter.AbstractAttributeInterpreter;
 
-public class AccessTypeInterpreter extends AbstractAttributeInterpreter<AccessType, String> {
+/**
+ * A {@link de.underdocx.enginelayers.defaultodtengine.commands.internal.attrinterpreter.AttributesInterpreter}
+ * that returns a {@link AccessType} according to the prefix of the provided name, independent from json.
+ * For example:
+ * interpreteAttribute("a") returns AccessType.ACCESS_ATTR_VALUE,
+ * interpreteAttribute("$a") returns AccessType.ACCESS_VARIABLE_BY_NAME,
+ * interpreteAttribute("@a") returns AccessType.ACCESS_MODEL_BY_NAME,
+ *
+ * @see AccessTypeJsonNameInterpreter
+ */
+public class AccessTypeNameInterpreter extends AbstractAttributeInterpreter<AccessType, String> {
 
-    public static AccessTypeInterpreter DEFAULT = new AccessTypeInterpreter();
+    public static AccessTypeNameInterpreter DEFAULT = new AccessTypeNameInterpreter();
 
     @Override
     protected AccessType interpretAttributes() {
         AccessType accessType = null;
-        if (configuration != null && hasAttribute(AccessType.ACCESS_MODEL_BY_NAME.rename(configuration))) {
+        if (configuration != null && configuration.equals(AccessType.ACCESS_MODEL_BY_NAME.rename(configuration))) {
             accessType = AccessType.ACCESS_MODEL_BY_NAME;
-        } else if (configuration != null && hasAttribute(AccessType.ACCESS_VARIABLE_BY_NAME.rename(configuration))) {
+        } else if (configuration != null && configuration.equals(AccessType.ACCESS_VARIABLE_BY_NAME.rename(configuration))) {
             accessType = AccessType.ACCESS_VARIABLE_BY_NAME;
-        } else if (configuration != null && hasAttribute(configuration)) {
+        } else if (configuration != null && configuration.equals(configuration)) {
             accessType = AccessType.ACCESS_ATTR_VALUE;
         } else if (configuration == null) {
             accessType = AccessType.ACCESS_CURRENT_MODEL_NODE;

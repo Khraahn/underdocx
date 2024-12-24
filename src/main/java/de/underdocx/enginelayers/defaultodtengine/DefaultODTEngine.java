@@ -69,6 +69,7 @@ public class DefaultODTEngine {
         engine.registerCommandHandler(parameters, new ForCommandHandler<>());
         engine.registerCommandHandler(parameters, new DateCommandHandler<>());
         engine.registerCommandHandler(parameters, new CounterCommandHandler<>());
+        engine.registerCommandHandler(parameters, new IfCommandHandler<>());
     }
 
     public DefaultODTEngine(OdtContainer doc) {

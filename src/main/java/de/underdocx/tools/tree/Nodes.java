@@ -147,6 +147,20 @@ public class Nodes {
         return result;
     }
 
+    public static Optional<Node> findCommonAncestor(Node node1, Node node2) {
+        Node currentCommon = null;
+        List<Node> path1 = reverse(getAncestors(node1, null));
+        List<Node> path2 = reverse(getAncestors(node2, null));
+        for (int i = 0; i < Math.min(path1.size(), path2.size()); i++) {
+            if (path1.get(i) == path2.get(i)) {
+                currentCommon = path1.get(i);
+            } else {
+                return Optional.ofNullable(currentCommon);
+            }
+        }
+        return Optional.empty();
+    }
+
     public static List<Node> getSiblings(Node firstNode, Node limit) {
         return buildList(result -> {
             Node current = null;

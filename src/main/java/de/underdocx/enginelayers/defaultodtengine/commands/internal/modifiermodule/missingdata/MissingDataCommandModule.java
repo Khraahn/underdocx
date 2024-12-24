@@ -35,6 +35,7 @@ import de.underdocx.enginelayers.defaultodtengine.commands.internal.attrinterpre
 import de.underdocx.enginelayers.defaultodtengine.commands.internal.datapicker.DataPickerResult;
 import de.underdocx.enginelayers.defaultodtengine.commands.internal.modifiermodule.AbstractCommandModule;
 import de.underdocx.enginelayers.defaultodtengine.modifiers.deletearea.DeleteAreaModifier;
+import de.underdocx.enginelayers.defaultodtengine.modifiers.internal.AreaModifierWithCommonAncestorData;
 import de.underdocx.enginelayers.parameterengine.ParametersPlaceholderData;
 import de.underdocx.environment.err.Problems;
 import de.underdocx.tools.common.Pair;
@@ -105,7 +106,10 @@ public class MissingDataCommandModule<C extends DocContainer<D>, D, M> extends A
 
     private void deleteAreaOdf() {
         Node endNode = configuration.getAreaEnd();
-        DeleteAreaModifier.deleteArea(() -> new Pair<>(selection.getNode(), endNode));
-
+        Node commonAncestor = configuration.getCommonAncestor();
+        DeleteAreaModifier.deleteArea(
+                new AreaModifierWithCommonAncestorData.DefaultAreaModifierWithCommonAncestorData(
+                        new Pair<>(selection.getNode(), endNode),
+                        commonAncestor));
     }
 }

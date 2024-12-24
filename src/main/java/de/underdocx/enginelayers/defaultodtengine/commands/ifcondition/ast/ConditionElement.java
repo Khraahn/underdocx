@@ -22,26 +22,34 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-package de.underdocx.enginelayers.defaultodtengine.commands.internal.datapicker;
+package de.underdocx.enginelayers.defaultodtengine.commands.ifcondition.ast;
 
-import java.util.Optional;
+import de.underdocx.tools.common.Convenience;
+import de.underdocx.tools.common.Pair;
 
-/**
- * A {@link DataPicker} is responsible to look up for a value by a given name.
- * There a multiple implementation who this lookup is realized.
- * It returns a {@link DataPickerResult} that contains the resolved value and additional data about
- * the source or problem details
- * <p>
- * Most important is {@link AttributeNodeDataPicker}
- *
- * @param <T>
- */
-public interface DataPicker<T> {
+import java.util.ArrayList;
+import java.util.List;
+import java.util.function.Function;
 
-    DataPickerResult<T> pickData(String name);
+public abstract class ConditionElement {
+    public List<ConditionElement> elements;
 
-    default Optional<T> getData(String name) {
-        return pickData(name).getOptionalValue();
+    public ConditionElement(ConditionElement conditionElement) {
+        this.elements = Convenience.buildList(result -> result.add(conditionElement));
     }
+
+    public ConditionElement(List<ConditionElement> conditionElements) {
+        this.elements = conditionElements;
+    }
+
+    public ConditionElement() {
+        this.elements = new ArrayList<>();
+    }
+
+    public void add(ConditionElement conditionElement) {
+        this.elements.add(conditionElement);
+    }
+
+    public abstract boolean eval(Function<Pair<String, Object>, Boolean> valueProvider);
 
 }

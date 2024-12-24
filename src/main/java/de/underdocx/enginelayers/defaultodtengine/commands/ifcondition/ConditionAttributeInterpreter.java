@@ -22,26 +22,24 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-package de.underdocx.enginelayers.defaultodtengine.commands.internal.datapicker;
+package de.underdocx.enginelayers.defaultodtengine.commands.ifcondition;
 
-import java.util.Optional;
+import com.fasterxml.jackson.databind.JsonNode;
+import de.underdocx.enginelayers.defaultodtengine.commands.internal.attrinterpreter.AttributesInterpreter;
+import de.underdocx.tools.common.Pair;
+
+import java.util.function.Function;
 
 /**
- * A {@link DataPicker} is responsible to look up for a value by a given name.
- * There a multiple implementation who this lookup is realized.
- * It returns a {@link DataPickerResult} that contains the resolved value and additional data about
- * the source or problem details
- * <p>
- * Most important is {@link AttributeNodeDataPicker}
- *
- * @param <T>
+ * A {@link AttributesInterpreter} that uses the {@link ConditionASTAttributeInterpreter}
+ * to build an object structure and uses
+ * a valueProvider function to evaluate the condition
  */
-public interface DataPicker<T> {
+public class ConditionAttributeInterpreter implements AttributesInterpreter<Boolean, Function<Pair<String, Object>, Boolean>> {
+    private ConditionASTAttributeInterpreter astAttributeInterpreter = new ConditionASTAttributeInterpreter();
 
-    DataPickerResult<T> pickData(String name);
-
-    default Optional<T> getData(String name) {
-        return pickData(name).getOptionalValue();
+    @Override
+    public Boolean interpretAttributes(JsonNode attributes, Function<Pair<String, Object>, Boolean> valueProvider) {
+        return astAttributeInterpreter.interpretAttributes(attributes, null).eval(valueProvider);
     }
-
 }

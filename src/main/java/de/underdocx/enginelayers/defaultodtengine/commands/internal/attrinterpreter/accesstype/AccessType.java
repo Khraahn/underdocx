@@ -27,7 +27,7 @@ public enum AccessType {
         return ACCESS_ATTR_VALUE;
     }
 
-    public String getPureName(String propertyName) {
+    public static String getPureName(String propertyName) {
         String result = propertyName;
         if (propertyName.startsWith(ACCESS_MODEL_BY_NAME.prefix) || propertyName.startsWith(ACCESS_VARIABLE_BY_NAME.prefix)) {
             result = result.substring(1);

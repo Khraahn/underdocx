@@ -22,26 +22,26 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-package de.underdocx.enginelayers.defaultodtengine.commands.internal.datapicker;
+package de.underdocx.enginelayers.defaultodtengine.commands.ifcondition.ast;
 
-import java.util.Optional;
+import de.underdocx.environment.err.Problems;
+import de.underdocx.tools.common.Pair;
 
-/**
- * A {@link DataPicker} is responsible to look up for a value by a given name.
- * There a multiple implementation who this lookup is realized.
- * It returns a {@link DataPickerResult} that contains the resolved value and additional data about
- * the source or problem details
- * <p>
- * Most important is {@link AttributeNodeDataPicker}
- *
- * @param <T>
- */
-public interface DataPicker<T> {
+import java.util.function.Function;
 
-    DataPickerResult<T> pickData(String name);
+public class Comparison extends ConditionElement {
 
-    default Optional<T> getData(String name) {
-        return pickData(name).getOptionalValue();
+    private final String path;
+    private final Object value;
+
+    public Comparison(String path, Object value) {
+        this.path = path;
+        this.value = value;
     }
 
+    @Override
+    public boolean eval(Function<Pair<String, Object>, Boolean> valueProvider) {
+        Problems.INVALID_IF_CONDITION.check(elements.isEmpty(), path, null);
+        return valueProvider.apply(new Pair<>(path, value));
+    }
 }
