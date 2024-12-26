@@ -43,7 +43,8 @@ public enum Problems implements Problematic {
     IO_EXCEPTION("An IO Exception has been caught, failed to load or save a resource"),
     ODF_FRAMEWORK_OPERARTION_EXCEPTION("An unexpected exception occurred accessing an ODF document "),
     INVALID_IF_CONDITION("If command contains an invalid structure or invalid values"),
-    ;
+    CANT_FIND_DOM_ELEMENT("a certain required DOM node can't be found"),
+    PLACEHOLDER_TOOLKIT_MISSING("placeholder toolkit instance is missing");
 
     private String description = null;
 

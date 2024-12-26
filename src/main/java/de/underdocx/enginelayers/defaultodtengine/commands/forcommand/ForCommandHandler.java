@@ -22,21 +22,22 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-package de.underdocx.environment.err;
+package de.underdocx.enginelayers.defaultodtengine.commands.forcommand;
 
-/**
- * A {@link RuntimeException} that contains a {@link Problem} instance for further details
- */
-public class ProblemException extends RuntimeException {
+import com.fasterxml.jackson.databind.JsonNode;
+import de.underdocx.common.doc.DocContainer;
+import de.underdocx.enginelayers.defaultodtengine.modifiers.formodifier.ForModifierData;
+import de.underdocx.enginelayers.defaultodtengine.modifiers.formodifier.ForMofifier;
 
-    private final Problem problem;
 
-    public ProblemException(Problem problem) {
-        super(problem.getSingleLineReport(), problem.exception);
-        this.problem = problem;
+public class ForCommandHandler<C extends DocContainer<D>, D> extends AbstractForCommandHandler<C, D> {
+    @Override
+    protected void callModifier(ForModifierData forModifierData) {
+        new ForMofifier<C, D>().modify(selection, forModifierData);
     }
 
-    public Problem getProblem() {
-        return problem;
+    @Override
+    protected boolean isResponsible(JsonNode attributes) {
+        return !attributes.has(TABLEROW_ATTR) && !attributes.has(LISTITEM_ATTR);
     }
 }

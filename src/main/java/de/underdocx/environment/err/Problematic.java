@@ -24,6 +24,7 @@ SOFTWARE.
 
 package de.underdocx.environment.err;
 
+import java.util.Collection;
 import java.util.Optional;
 import java.util.concurrent.Callable;
 
@@ -72,6 +73,20 @@ public interface Problematic {
 
     default <T> T notNull(T value, String missingProperty, String failedValue) {
         if (value == null) {
+            toProblem().property(missingProperty).value(failedValue).fire();
+        }
+        return value;
+    }
+
+    default <T extends Collection<X>, X> T notNullOrEmpty(T value, String missingProperty) {
+        if (value == null || value.isEmpty()) {
+            toProblem().property(missingProperty).fire();
+        }
+        return value;
+    }
+
+    default <T extends Collection<X>, X> T notNullOrEmpty(T value, String missingProperty, String failedValue) {
+        if (value == null || value.isEmpty()) {
             toProblem().property(missingProperty).value(failedValue).fire();
         }
         return value;

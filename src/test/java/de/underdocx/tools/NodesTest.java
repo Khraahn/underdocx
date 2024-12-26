@@ -28,7 +28,7 @@ public class NodesTest extends AbstractTest {
     @Test
     public void testGetAncestors() {
         Node d = Nodes.findFirstDescendantNode(xml1, "d").get();
-        Node a = Nodes.findDescendantNodes(xml1, "a").get(0);
+        Node a = Nodes.findDescendantNodes(xml1, "a", true).get(0);
         List<Node> path = Nodes.getAncestors(d, a);
         assertThat(path.size()).isEqualTo(3);
         assertThat(namesOf(path)).isEqualTo(listOf("d", "b", "a"));

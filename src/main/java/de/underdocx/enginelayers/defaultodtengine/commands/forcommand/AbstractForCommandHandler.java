@@ -22,11 +22,13 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-package de.underdocx.enginelayers.defaultodtengine.commands;
+package de.underdocx.enginelayers.defaultodtengine.commands.forcommand;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import de.underdocx.common.doc.DocContainer;
 import de.underdocx.enginelayers.baseengine.SelectedNode;
+import de.underdocx.enginelayers.defaultodtengine.commands.ModelCommandHandler;
+import de.underdocx.enginelayers.defaultodtengine.commands.VariableCommandHandler;
 import de.underdocx.enginelayers.defaultodtengine.commands.internal.AbstractTextualCommandHandler;
 import de.underdocx.enginelayers.defaultodtengine.commands.internal.AreaTools;
 import de.underdocx.enginelayers.defaultodtengine.commands.internal.attrinterpreter.PredefinedAttributesInterpreter;
@@ -38,14 +40,12 @@ import de.underdocx.enginelayers.defaultodtengine.commands.internal.attrinterpre
 import de.underdocx.enginelayers.defaultodtengine.commands.internal.attrinterpreter.single.AttributeInterpreterFactory;
 import de.underdocx.enginelayers.defaultodtengine.commands.internal.datapicker.AttributeNodeDataPicker;
 import de.underdocx.enginelayers.defaultodtengine.commands.internal.datapicker.DataPickerResult;
-import de.underdocx.enginelayers.defaultodtengine.commands.internal.datapicker.DataPickerResult.ResultSource;
 import de.underdocx.enginelayers.defaultodtengine.commands.internal.datapicker.ExtendedDataPicker;
 import de.underdocx.enginelayers.defaultodtengine.commands.internal.datapicker.PredefinedDataPicker;
 import de.underdocx.enginelayers.defaultodtengine.commands.internal.modifiermodule.missingdata.MissingDataCommandModule;
 import de.underdocx.enginelayers.defaultodtengine.commands.internal.modifiermodule.missingdata.MissingDataCommandModuleConfig;
 import de.underdocx.enginelayers.defaultodtengine.commands.internal.modifiermodule.missingdata.MissingDataCommandModuleResult;
-import de.underdocx.enginelayers.defaultodtengine.modifiers.forloop.ForModifierData;
-import de.underdocx.enginelayers.defaultodtengine.modifiers.forloop.ForMofifier;
+import de.underdocx.enginelayers.defaultodtengine.modifiers.formodifier.ForModifierData;
 import de.underdocx.enginelayers.modelengine.model.ModelNode;
 import de.underdocx.enginelayers.parameterengine.ParametersPlaceholderData;
 import de.underdocx.environment.err.Problems;
@@ -61,8 +61,7 @@ import java.util.function.Predicate;
 
 import static de.underdocx.tools.common.Convenience.*;
 
-
-public class ForCommandHandler<C extends DocContainer<D>, D> extends AbstractTextualCommandHandler<C, D> {
+public abstract class AbstractForCommandHandler<C extends DocContainer<D>, D> extends AbstractTextualCommandHandler<C, D> {
 
     public static final String BEGIN_KEY = "For";
     public static final String END_KEY = "EndFor";
@@ -70,34 +69,40 @@ public class ForCommandHandler<C extends DocContainer<D>, D> extends AbstractTex
 
     public static final String VALUE_ATTR = "value";
     public static final String AS_ATTR = "as";
+    public static final String TABLEROW_ATTR = "tablerow";
+    public static final String LISTITEM_ATTR = "listitem";
 
-    private static final PredefinedAttributesInterpreter<Optional<String>> getValueStringAttr = AttributeInterpreterFactory.createStringAttributeInterpreter(VALUE_ATTR);
-    private static final PredefinedAttributesInterpreter<Optional<JsonNode>> getValueJsonAttr = AttributeInterpreterFactory.createJsonAttributeInterpreter(VALUE_ATTR);
-    private static final PredefinedAttributesInterpreter<Optional<String>> getAsStrAttr = AttributeInterpreterFactory.createStringAttributeInterpreter(AS_ATTR);
+    protected static final PredefinedAttributesInterpreter<Optional<String>> getValueStringAttr = AttributeInterpreterFactory.createStringAttributeInterpreter(VALUE_ATTR);
+    protected static final PredefinedAttributesInterpreter<Optional<JsonNode>> getValueJsonAttr = AttributeInterpreterFactory.createJsonAttributeInterpreter(VALUE_ATTR);
+    protected static final PredefinedAttributesInterpreter<Optional<String>> getAsStrAttr = AttributeInterpreterFactory.createStringAttributeInterpreter(AS_ATTR);
 
     public static final String INDEX = "index";
 
+    // ---------------------------------------
 
-    private Node endNode;
+    protected Node endNode;
 
-    private AccessType asAttributeType;
-    private String asAttrValue;
+    protected AccessType asAttributeType;
+    protected String asAttrValue;
 
-    private ModelNode listNode;
-    private ResultSource source;
+    protected ModelNode listNode;
+    protected DataPickerResult.ResultSource source;
 
-    private JsonNode attributes;
-    private int index;
-    private Pair<List<ParametersPlaceholderData>, List<ParametersPlaceholderData>> replaceData;
+    protected JsonNode attributes;
+    protected int index;
+    protected Pair<List<ParametersPlaceholderData>, List<ParametersPlaceholderData>> replaceData;
 
+    // ---------------------------------------
 
-    public ForCommandHandler() {
+    protected AbstractForCommandHandler() {
         super(KEYS);
     }
 
+
     @Override
     protected CommandHandlerResult tryExecuteTextualCommand() {
-        if (selection.getPlaceholderData().getKey().equals(END_KEY)) {
+        attributes = placeholderData.getJson();
+        if (selection.getPlaceholderData().getKey().equals(END_KEY) || !isResponsible(attributes)) {
             return CommandHandlerResult.IGNORED;
         }
         Optional<Pair<SelectedNode<ParametersPlaceholderData>, SelectedNode<ParametersPlaceholderData>>> area =
@@ -113,21 +118,25 @@ public class ForCommandHandler<C extends DocContainer<D>, D> extends AbstractTex
             case VALUE_RECEIVED -> {
                 source = missingResult.source;
                 listNode = missingResult.value;
-                attributes = placeholderData.getJson();
                 asAttributeType = AccessTypeJsonNameInterpreter.DEFAULT.interpretAttributes(placeholderData.getJson(), AS_ATTR);
                 checkAsAttr();
                 asAttrValue = getAsStrAttr.interpretAttributes(placeholderData.getJson()).orElse(null);
-                new ForMofifier<C, D>().modify(selection, createModifierData());
+                //new ForMofifier<C, D>().modify(selection, createModifierData());
+                callModifier(createModifierData());
                 yield CommandHandlerResult.EXECUTED_RESCAN_REQUIRED;
             }
         };
     }
 
+    protected abstract void callModifier(ForModifierData forModifierData);
+
+    protected abstract boolean isResponsible(JsonNode attributes);
+
     private void checkAsAttr() {
-        if (source == ResultSource.UNKNOWN) {
+        if (source == DataPickerResult.ResultSource.UNKNOWN) {
             Problems.UNEXPECTED_TYPE_DETECTED.fireProperty(source.name());
         }
-        if ((source == ResultSource.ATTR_VALUE || source == ResultSource.VAR) &&
+        if ((source == DataPickerResult.ResultSource.ATTR_VALUE || source == DataPickerResult.ResultSource.VAR) &&
                 asAttributeType != AccessType.ACCESS_VARIABLE_BY_NAME
         ) {
             Problems.MISSING_VALUE.fireProperty("$as");
@@ -184,7 +193,7 @@ public class ForCommandHandler<C extends DocContainer<D>, D> extends AbstractTex
                 listNode.getSize()) {
             @Override
             public Pair<List<ParametersPlaceholderData>, List<ParametersPlaceholderData>> getNodeReplacement(int index) {
-                ForCommandHandler.this.index = index;
+                AbstractForCommandHandler.this.index = index;
                 replaceData = new Pair<>(new ArrayList<>(), new ArrayList<>());
                 switch (source) {
                     case ATTR_VALUE -> a2v();
@@ -445,3 +454,4 @@ public class ForCommandHandler<C extends DocContainer<D>, D> extends AbstractTex
 
         => Verboten
  */
+

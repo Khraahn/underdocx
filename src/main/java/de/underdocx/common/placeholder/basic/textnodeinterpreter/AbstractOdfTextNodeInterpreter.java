@@ -44,7 +44,7 @@ public abstract class AbstractOdfTextNodeInterpreter implements TextNodeInterpre
     protected final String cAttributeName = getNodeName(OdfAttribute.SPACE_COUNT);
 
     protected String getNodeName(OdfElement name) {
-        return name.getElementName();
+        return name.getQualifiedName();
     }
 
     protected String getNodeName(OdfAttribute name) {

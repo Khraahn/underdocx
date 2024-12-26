@@ -32,6 +32,8 @@ import de.underdocx.enginelayers.baseengine.commands.SimpleReplaceFunctionComman
 import de.underdocx.enginelayers.baseengine.internal.placeholdersprovider.dollar.SimpleDollarPlaceholdersProvider;
 import de.underdocx.enginelayers.baseengine.internal.placeholdersprovider.dollar.image.SimpleDollarImagePlaceholdersProvider;
 import de.underdocx.enginelayers.defaultodtengine.commands.*;
+import de.underdocx.enginelayers.defaultodtengine.commands.forcommand.ForCommandHandler;
+import de.underdocx.enginelayers.defaultodtengine.commands.forcommand.ForRowsCommandHandler;
 import de.underdocx.enginelayers.modelengine.MCommandHandler;
 import de.underdocx.enginelayers.modelengine.ModelEngine;
 import de.underdocx.enginelayers.modelengine.model.ModelNode;
@@ -70,6 +72,7 @@ public class DefaultODTEngine {
         engine.registerCommandHandler(parameters, new DateCommandHandler<>());
         engine.registerCommandHandler(parameters, new CounterCommandHandler<>());
         engine.registerCommandHandler(parameters, new IfCommandHandler<>());
+        engine.registerCommandHandler(parameters, new ForRowsCommandHandler<>());
     }
 
     public DefaultODTEngine(OdtContainer doc) {

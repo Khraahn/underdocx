@@ -28,6 +28,7 @@ import de.underdocx.enginelayers.baseengine.CommandHandler;
 import de.underdocx.tools.common.Convenience;
 import org.w3c.dom.Node;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -182,6 +183,16 @@ public class Problem {
             }
         }
         return sb.toString();
+    }
+
+    public String getSingleLineReport() {
+        List<String> elements = new ArrayList<>();
+        Convenience.ifNotNull(description, description -> elements.add(description));
+        Convenience.ifNotNull(getString(command), command -> elements.add("hander: " + command));
+        Convenience.ifNotNull(property, property -> elements.add("property: " + property));
+        Convenience.ifNotNull(value, value -> elements.add("value: " + value));
+        Convenience.ifNotNull(getString(node), node -> elements.add("node: " + node));
+        return String.join(", ", elements);
     }
 
 

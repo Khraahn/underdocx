@@ -22,21 +22,27 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-package de.underdocx.environment.err;
+package de.underdocx.commands.forloop;
 
-/**
- * A {@link RuntimeException} that contains a {@link Problem} instance for further details
- */
-public class ProblemException extends RuntimeException {
+import de.underdocx.AbstractOdtTest;
+import de.underdocx.common.doc.odf.OdtContainer;
+import de.underdocx.enginelayers.defaultodtengine.DefaultODTEngine;
+import org.junit.jupiter.api.Test;
 
-    private final Problem problem;
+import java.io.IOException;
 
-    public ProblemException(Problem problem) {
-        super(problem.getSingleLineReport(), problem.exception);
-        this.problem = problem;
-    }
+public class ForRowsTest extends AbstractOdtTest {
 
-    public Problem getProblem() {
-        return problem;
+    @Test
+    public void testTableRows() throws IOException {
+        OdtContainer doc = new OdtContainer(getResource("TableLoop.odt"));
+        DefaultODTEngine engine = new DefaultODTEngine(doc);
+        engine.run();
+        //show(doc);
+        assertNoPlaceholders(doc);
+        assertOrder(doc, "1", "Hans", "Müller");
+        assertOrder(doc, "2", "Johanna", "Sommer");
+        assertOrder(doc, "3", "Helene", "Fischer");
+        assertOrder(doc, "1", "2", "3");
     }
 }

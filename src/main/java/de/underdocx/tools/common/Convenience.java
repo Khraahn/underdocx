@@ -34,19 +34,20 @@ import java.util.stream.Collectors;
 public class Convenience {
 
 
-    public static <Y, X extends Collection<Y>> X add(X collection, Y element) {
+    public static <Y, X extends Collection<Y>> X plus(X collection, Y element) {
         collection.add(element);
         return collection;
     }
 
-    public static <Y, X extends Collection<Y>> Y push(X collection, Y element) {
+    public static <Y, X extends Collection<Y>> Y add(X collection, Y element) {
         collection.add(element);
         return element;
     }
 
     public static <T> T also(T returnValue, Consumer<T> consumer) {
+        T result = returnValue;
         consumer.accept(returnValue);
-        return returnValue;
+        return result;
     }
 
 

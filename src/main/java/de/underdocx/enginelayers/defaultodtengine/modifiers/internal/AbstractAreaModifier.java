@@ -32,6 +32,7 @@ import de.underdocx.tools.common.Pair;
 import de.underdocx.tools.odf.OdfTools;
 import de.underdocx.tools.tree.Nodes;
 import de.underdocx.tools.tree.TreeSplitter;
+import de.underdocx.tools.tree.enumerator.Enumerator;
 import org.w3c.dom.Node;
 
 import java.util.List;
@@ -75,7 +76,11 @@ public abstract class AbstractAreaModifier<C extends DocContainer<D>, P, D, M ex
 
 
     protected List<Node> getAreaNodes() {
-        return Nodes.getSiblings(area.left, area.right);
+        return getAreaNodesIterator().collect();
+    }
+
+    protected Enumerator<Node> getAreaNodesIterator() {
+        return Nodes.getSiblingsIterator(area.left, area.right);
     }
 
     protected boolean splitTrees() {

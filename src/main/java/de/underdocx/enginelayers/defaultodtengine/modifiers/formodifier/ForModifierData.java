@@ -22,21 +22,33 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-package de.underdocx.environment.err;
+package de.underdocx.enginelayers.defaultodtengine.modifiers.formodifier;
 
-/**
- * A {@link RuntimeException} that contains a {@link Problem} instance for further details
- */
-public class ProblemException extends RuntimeException {
+import de.underdocx.enginelayers.defaultodtengine.modifiers.internal.AreaModifierData;
+import de.underdocx.enginelayers.parameterengine.ParametersPlaceholderData;
+import de.underdocx.tools.common.Pair;
+import org.w3c.dom.Node;
 
-    private final Problem problem;
+import java.util.List;
 
-    public ProblemException(Problem problem) {
-        super(problem.getSingleLineReport(), problem.exception);
-        this.problem = problem;
-    }
+public interface ForModifierData extends AreaModifierData {
 
-    public Problem getProblem() {
-        return problem;
+    int getRepeats();
+
+    Pair<List<ParametersPlaceholderData>, List<ParametersPlaceholderData>> getNodeReplacement(int index);
+
+    abstract class AbstractForModifiedData extends BaseAreaModifierData implements ForModifierData {
+
+        private final int max;
+
+        public AbstractForModifiedData(Pair<Node, Node> area, int max) {
+            super(area);
+            this.max = max;
+        }
+
+        @Override
+        public int getRepeats() {
+            return max;
+        }
     }
 }

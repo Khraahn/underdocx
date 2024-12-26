@@ -29,6 +29,7 @@ import de.underdocx.enginelayers.defaultodtengine.commands.internal.attrinterpre
 import de.underdocx.enginelayers.defaultodtengine.commands.internal.attrinterpreter.PredefinedAttributesInterpreter;
 import de.underdocx.enginelayers.modelengine.model.ModelNode;
 
+import java.util.List;
 import java.util.Optional;
 
 public class AttributeInterpreterFactory {
@@ -121,4 +122,19 @@ public class AttributeInterpreterFactory {
         return new SinglePropertyInterpreter<>(AttributesInterpreter::getComplexAttribute).asPredefined(property);
     }
 
+    public static PredefinedAttributesInterpreter<Optional<List<String>>> createStringListAttributeInterpreter(boolean ignoreAccessPrefix, String property) {
+        return new SinglePropertyInterpreter<>(ignoreAccessPrefix, AttributesInterpreter::getStringListAttribute).asPredefined(property);
+    }
+
+    public static PredefinedAttributesInterpreter<Optional<List<String>>> createStringListAttributeInterpreter(String property) {
+        return new SinglePropertyInterpreter<>(AttributesInterpreter::getStringListAttribute).asPredefined(property);
+    }
+
+    public static PredefinedAttributesInterpreter<Optional<List<Integer>>> createIntListAttributeInterpreter(boolean ignoreAccessPrefix, String property) {
+        return new SinglePropertyInterpreter<>(ignoreAccessPrefix, AttributesInterpreter::getIntListAttribute).asPredefined(property);
+    }
+
+    public static PredefinedAttributesInterpreter<Optional<List<Integer>>> createIntListAttributeInterpreter(String property) {
+        return new SinglePropertyInterpreter<>(AttributesInterpreter::getIntListAttribute).asPredefined(property);
+    }
 }

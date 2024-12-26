@@ -22,7 +22,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-package de.underdocx.enginelayers.defaultodtengine.modifiers.forloop;
+package de.underdocx.enginelayers.defaultodtengine.modifiers.formodifier;
 
 import de.underdocx.common.doc.DocContainer;
 import de.underdocx.common.placeholder.TextualPlaceholderToolkit;
@@ -44,6 +44,7 @@ public class ForMofifier<C extends DocContainer<D>, D> extends AbstractAreaModif
     protected boolean modify() {
         this.areaNodes = getAreaNodes();
         List<Pair<Node, Node>> areas = createAreas();
+        selection.getDocContainer().createDebugFile("for");
         replaceBeginEndNodes(areas);
         return true;
     }

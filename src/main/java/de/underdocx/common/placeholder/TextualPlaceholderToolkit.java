@@ -107,4 +107,10 @@ public class TextualPlaceholderToolkit<P> {
     public TextNodeInterpreter getTextNodeInterpreter() {
         return extractor.getTextNodeInterpreter();
     }
+
+    public Node createPlaceholder(Node parent, P data) {
+        Node placeholder = getTextNodeInterpreter().createTextContainer(parent);
+        setPlaceholder(placeholder, data);
+        return placeholder;
+    }
 }

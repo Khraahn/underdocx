@@ -22,33 +22,38 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-package de.underdocx.enginelayers.defaultodtengine.modifiers.forloop;
+package de.underdocx.tools.common;
 
-import de.underdocx.enginelayers.defaultodtengine.modifiers.internal.AreaModifierData;
-import de.underdocx.enginelayers.parameterengine.ParametersPlaceholderData;
-import de.underdocx.tools.common.Pair;
-import org.w3c.dom.Node;
-
+import java.util.Collections;
 import java.util.List;
 
-public interface ForModifierData extends AreaModifierData {
+public class Range extends Pair<Integer, Integer> {
 
-    int getRepeats();
+    public Range(int a, int b) {
+        super(a, b);
+    }
 
-    Pair<List<ParametersPlaceholderData>, List<ParametersPlaceholderData>> getNodeReplacement(int index);
+    public Range(int a) {
+        super(a, a);
+    }
 
-    abstract class AbstractForModifiedData extends BaseAreaModifierData implements ForModifierData {
+    public Range(List<Integer> aList) {
+        super(Collections.min(aList), Collections.max(aList));
+    }
 
-        private final int max;
+    public int getMin() {
+        return Math.min(left, right);
+    }
 
-        public AbstractForModifiedData(Pair<Node, Node> area, int max) {
-            super(area);
-            this.max = max;
-        }
+    public int getMax() {
+        return Math.max(left, right);
+    }
 
-        @Override
-        public int getRepeats() {
-            return max;
-        }
+    public int getLength() {
+        return getMax() - getMin() + 1;
+    }
+
+    public boolean contains(int value) {
+        return value >= getMin() && value <= getMax();
     }
 }

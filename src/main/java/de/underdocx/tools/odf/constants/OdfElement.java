@@ -24,6 +24,10 @@ SOFTWARE.
 
 package de.underdocx.tools.odf.constants;
 
+import org.w3c.dom.Node;
+
+import java.util.function.Predicate;
+
 public enum OdfElement {
     SPAN(OdfNameSpace.TEXT, "span"),
     PARAGRAPH(OdfNameSpace.TEXT, "p"),
@@ -37,16 +41,20 @@ public enum OdfElement {
 
     FRAME(OdfNameSpace.DRAW, "frame"),
 
-    IMAGE(OdfNameSpace.DRAW, "image");
+    IMAGE(OdfNameSpace.DRAW, "image"),
+
+    TABLE(OdfNameSpace.TABLE, "table"),
+    TABLE_ROW(OdfNameSpace.TABLE, "table-row"),
+    TABLE_CELL(OdfNameSpace.TABLE, "table-cell");
 
     private final String pureName;
     private final OdfNameSpace ns;
-    private final String name;
+    private final String qualifiedName;
 
     OdfElement(OdfNameSpace odfNameSpace, String name) {
         this.pureName = name;
         this.ns = odfNameSpace;
-        this.name = ns.getQualifiedName(pureName);
+        this.qualifiedName = ns.getQualifiedName(pureName);
     }
 
     public OdfNameSpace getNs() {
@@ -57,12 +65,20 @@ public enum OdfElement {
         return pureName;
     }
 
-    public String getElementName() {
-        return name;
+    public String getQualifiedName() {
+        return qualifiedName;
+    }
+
+    public boolean is(Node node) {
+        return node.getNodeName().equals(getQualifiedName());
+    }
+
+    public Predicate<Node> createFilter() {
+        return node -> is(node);
     }
 
     @Override
     public String toString() {
-        return name;
+        return qualifiedName;
     }
 }

@@ -27,6 +27,7 @@ package de.underdocx.tools.tree;
 
 import de.underdocx.tools.common.Convenience;
 import de.underdocx.tools.common.Wrapper;
+import de.underdocx.tools.tree.enumerator.Enumerator;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -75,8 +76,8 @@ public class Nodes {
 
      */
 
-    public static List<Node> findDescendantNodes(Node start, String tagName) {
-        return findDescendantNodes(start, node -> node.getNodeName().equals(tagName));
+    public static List<Node> findDescendantNodes(Node start, String tagName, boolean skipChildrenOfFoundNodes) {
+        return findDescendantNodes(start, node -> node.getNodeName().equals(tagName), skipChildrenOfFoundNodes);
     }
 
 
@@ -84,12 +85,16 @@ public class Nodes {
         return findFirstDescendantNode(start, node -> node.getNodeName().equals(tagName));
     }
 
-    public static List<Node> findDescendantNodes(Node start, Predicate<Node> filter) {
+    public static List<Node> findDescendantNodes(Node start, Predicate<Node> filter, boolean skipChildrenOfFoundNodes) {
         return buildList(result -> {
+            boolean found = false;
             if (filter.test(start)) {
                 result.add(start);
+                found = true;
             }
-            children(start).forEach(element -> result.addAll(findDescendantNodes(element, filter)));
+            if (!found || (found && !skipChildrenOfFoundNodes)) {
+                children(start).forEach(element -> result.addAll(findDescendantNodes(element, filter, skipChildrenOfFoundNodes)));
+            }
         });
     }
 
@@ -137,13 +142,13 @@ public class Nodes {
     public static List<Node> getAncestors(Node node, Node limit) {
         ArrayList<Node> result = new ArrayList<>();
         if (node == limit) {
-            return add(result, node);
+            return plus(result, node);
         }
         Node parent = node;
         while (parent != null && parent != limit) {
-            parent = push(result, parent).getParentNode();
+            parent = add(result, parent).getParentNode();
         }
-        if (parent != null) return add(result, parent);
+        if (parent != null) return plus(result, parent);
         return result;
     }
 
@@ -161,16 +166,35 @@ public class Nodes {
         return Optional.empty();
     }
 
+    @Deprecated
     public static List<Node> getSiblings(Node firstNode, Node limit) {
-        return buildList(result -> {
-            Node current = null;
-            do {
-                current = current == null ? firstNode : current.getNextSibling();
-                if (current != null) {
-                    result.add(current);
-                }
-            } while (current != null && current != limit);
-        });
+        return getSiblingsIterator(firstNode, limit).collect();
+    }
+
+    public static Enumerator<Node> getSiblingsIterator(Node firstNode, Node limit) {
+        return new Enumerator<>() {
+            Node next = firstNode;
+            Boolean limitReached = false;
+
+            @Override
+            public boolean hasNext() {
+                return next != null;
+            }
+
+            @Override
+            public Node next() {
+                return Convenience.also(next, n -> {
+                    if (limitReached) {
+                        next = null;
+                    } else {
+                        next = next.getNextSibling();
+                        if (next == limit) {
+                            limitReached = true;
+                        }
+                    }
+                });
+            }
+        };
     }
 
     public static int compareNodePositions(Node node1, Node node2) {
@@ -207,7 +231,8 @@ public class Nodes {
 
      */
 
-    public static void insertNodes(Node refNode, List<Node> toInsert, boolean insertBefore) {
+    public static void insertNodes(Node refNode, List<? extends Node> toInsert, boolean insertBefore) {
+        // TODO improve / speedup
         if (insertBefore) {
             final Wrapper<Node> last = new Wrapper<>(refNode);
             reverse(toInsert).forEach(element -> {
@@ -226,7 +251,15 @@ public class Nodes {
     }
 
     public static void insertNode(Node refNode, Node toInsert, boolean insertBefore) {
-        insertNodes(refNode, Collections.singletonList(toInsert), insertBefore);
+        if (insertBefore) {
+            refNode.getParentNode().insertBefore(toInsert, refNode);
+        } else {
+            if (refNode.getNextSibling() == null) {
+                refNode.getParentNode().appendChild(toInsert);
+            } else {
+                refNode.getParentNode().insertBefore(toInsert, refNode.getNextSibling());
+            }
+        }
     }
 
     public static void insertBefore(Node refNode, Node toInsert) {
@@ -237,13 +270,6 @@ public class Nodes {
         insertNode(refNode, toInsert, false);
     }
 
-    public static void insertBefore(Node refNode, List<Node> toInsert) {
-        insertNodes(refNode, toInsert, true);
-    }
-
-    public static void insertAfter(Node refNode, List<Node> toInsert) {
-        insertNodes(refNode, toInsert, false);
-    }
 
     public static void addChildren(Node parent, List<Node> toInsert, boolean atBegin) {
         if (parent.hasChildNodes() && atBegin) {
@@ -274,6 +300,14 @@ public class Nodes {
     public static void replaceNode(Node oldNode, Node newNode) {
         insertBefore(oldNode, newNode);
         oldNode.getParentNode().removeChild(oldNode);
+    }
+
+    public static void insertBeforeFirstChild(Node parent, Node toAdd) {
+        if (parent.hasChildNodes()) {
+            parent.insertBefore(toAdd, parent.getFirstChild());
+        } else {
+            parent.appendChild(toAdd);
+        }
     }
 
 

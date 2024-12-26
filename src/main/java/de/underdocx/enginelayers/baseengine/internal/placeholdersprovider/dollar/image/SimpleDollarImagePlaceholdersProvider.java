@@ -61,7 +61,7 @@ public class SimpleDollarImagePlaceholdersProvider implements EncapsulatedNodesE
     }
 
     private Optional<DrawImageElement> getImage(DrawFrameElement node) {
-        Optional<Node> child = Nodes.findFirstDescendantNode(node, OdfElement.IMAGE.getElementName());
+        Optional<Node> child = Nodes.findFirstDescendantNode(node, OdfElement.IMAGE.getQualifiedName());
         return child.map(c -> (DrawImageElement) c);
     }
 
@@ -84,7 +84,7 @@ public class SimpleDollarImagePlaceholdersProvider implements EncapsulatedNodesE
     @Override
     public List<Node> extractNodes(Node tree) {
         return Convenience.also(new ArrayList<Node>(), result -> {
-            Nodes.findDescendantNodes(tree, OdfElement.FRAME.getElementName()).forEach(frame -> {
+            Nodes.findDescendantNodes(tree, OdfElement.FRAME.getQualifiedName(), true).forEach(frame -> {
                 if (isEncapsulatedNode(frame)) result.add(frame);
             });
         });

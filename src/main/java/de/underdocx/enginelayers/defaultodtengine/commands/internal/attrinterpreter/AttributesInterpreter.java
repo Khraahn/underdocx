@@ -29,12 +29,14 @@ import de.underdocx.common.codec.JsonCodec;
 import de.underdocx.enginelayers.modelengine.model.ModelNode;
 import de.underdocx.enginelayers.modelengine.model.simple.AbstractPredefinedModelNode;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 import static de.underdocx.tools.common.Convenience.*;
 
 /**
- * Interprets one or multiple JSON attributes and returns a aggregated result object
+ * Interprets one or multiple JSON attributes and returns an aggregated result object
  */
 public interface AttributesInterpreter<R, C> {
 
@@ -74,6 +76,36 @@ public interface AttributesInterpreter<R, C> {
     static Optional<Double> getDoubleAttribute(JsonNode attributes, String property) {
         return buildOptional(w -> ifNotNull(attributes,
                 json -> ifIs(json.get(property), jp -> jp != null && jp.isDouble(), jp -> w.value = jp.asDouble())));
+    }
+
+    static Optional<List<String>> getStringListAttribute(JsonNode attributes, String property) {
+        return buildOptional(w -> ifNotNull(attributes,
+                json -> ifIs(json.get(property), jp -> jp != null && jp.isArray(), jp -> {
+                    w.value = new ArrayList<>();
+                    for (JsonNode node : jp) {
+                        if (node.isTextual()) {
+                            w.value.add(node.asText());
+                        } else {
+                            w.value = null;
+                            break;
+                        }
+                    }
+                })));
+    }
+
+    static Optional<List<Integer>> getIntListAttribute(JsonNode attributes, String property) {
+        return buildOptional(w -> ifNotNull(attributes,
+                json -> ifIs(json.get(property), jp -> jp != null && jp.isArray(), jp -> {
+                    w.value = new ArrayList<>();
+                    for (JsonNode node : jp) {
+                        if (node.isInt()) {
+                            w.value.add(node.asInt());
+                        } else {
+                            w.value = null;
+                            break;
+                        }
+                    }
+                })));
     }
 
     static Optional<Boolean> getBooleanAttribute(JsonNode attributes, String property) {
