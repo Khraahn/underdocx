@@ -25,28 +25,37 @@ SOFTWARE.
 package de.underdocx.enginelayers.defaultodtengine.commands.internal.datapicker;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import de.underdocx.enginelayers.modelengine.model.ModelNode;
 import de.underdocx.enginelayers.modelengine.modelaccess.ModelAccess;
 
-import java.util.Optional;
-
 /**
- * A {@link ExtendedDataPicker} is an implementation that tries to resolve requested resources
- * by a given string (usualy a name), a {@link ModelAccess} object to receive variables or model data
- * and a {@link JsonNode} instance to read out json attributes (of the placeholder)
- * <p>
- * All {@link ExtendedDataPicker} can behave very different, it depends on their concrete implementations
- * Most important is {@link AttributeNodeDataPicker}
+ * A {@link ExtendedDataPicker} that tries to resolve a byte[] from the model or variable registry
  */
-public interface ExtendedDataPicker<T> {
+public class BinaryDataPicker implements ExtendedDataPicker<byte[]> {
 
-    DataPickerResult<T> pickData(String name, ModelAccess modelAccess, JsonNode jsonNode);
 
-    default Optional<T> getData(String name, ModelAccess modelAccess, JsonNode jsonNode) {
-        return pickData(name, modelAccess, jsonNode).getOptionalValue();
+    private final ExtendedDataPicker<ModelNode> dataPicker;
+
+    public BinaryDataPicker() {
+        this(new AttributeNodeDataPicker());
     }
 
-    default PredefinedDataPicker<T> asPredefined(String name) {
-        return (modelAccess, jsonNode) -> ExtendedDataPicker.this.pickData(name, modelAccess, jsonNode);
+    public BinaryDataPicker(
+            ExtendedDataPicker<ModelNode> dataPicker
+    ) {
+        this.dataPicker = dataPicker;
     }
 
+    public DataPickerResult<byte[]> pickData(String name, ModelAccess modelAccess, JsonNode attributes) {
+        DataPickerResult<ModelNode> tmpResult = dataPicker.pickData(name, modelAccess, attributes);
+        if (!tmpResult.isResolved()) {
+            return DataPickerResult.convert(null, tmpResult);
+        } else {
+            if (tmpResult.isResolvedNotNull() && tmpResult.value.getValue() instanceof byte[]) {
+                return DataPickerResult.convert((byte[]) tmpResult.value.getValue(), tmpResult);
+            } else {
+                return DataPickerResult.unresolvedInvalidAttrValue(tmpResult.source);
+            }
+        }
+    }
 }

@@ -27,26 +27,38 @@ package de.underdocx.enginelayers.defaultodtengine.commands.internal.datapicker;
 import com.fasterxml.jackson.databind.JsonNode;
 import de.underdocx.enginelayers.modelengine.modelaccess.ModelAccess;
 
-import java.util.Optional;
+import java.net.URI;
 
 /**
- * A {@link ExtendedDataPicker} is an implementation that tries to resolve requested resources
- * by a given string (usualy a name), a {@link ModelAccess} object to receive variables or model data
- * and a {@link JsonNode} instance to read out json attributes (of the placeholder)
- * <p>
- * All {@link ExtendedDataPicker} can behave very different, it depends on their concrete implementations
- * Most important is {@link AttributeNodeDataPicker}
+ * A {@link ExtendedDataPicker} that first tries to resolve a String and interprets it
+ * as URL to resolve the binary data as byte[]
  */
-public interface ExtendedDataPicker<T> {
+public class Uri2BinaryDataPicker implements ExtendedDataPicker<byte[]> {
 
-    DataPickerResult<T> pickData(String name, ModelAccess modelAccess, JsonNode jsonNode);
+    private final ExtendedDataPicker<String> dataPicker;
 
-    default Optional<T> getData(String name, ModelAccess modelAccess, JsonNode jsonNode) {
-        return pickData(name, modelAccess, jsonNode).getOptionalValue();
+    public Uri2BinaryDataPicker(ExtendedDataPicker<String> dataPicker) {
+        this.dataPicker = dataPicker;
     }
 
-    default PredefinedDataPicker<T> asPredefined(String name) {
-        return (modelAccess, jsonNode) -> ExtendedDataPicker.this.pickData(name, modelAccess, jsonNode);
+    public Uri2BinaryDataPicker() {
+        this(new StringConvertDataPicker());
     }
+
+    public DataPickerResult<byte[]> pickData(String name, ModelAccess modelAccess, JsonNode attributes) {
+        DataPickerResult<String> tmpResult = dataPicker.pickData(name, modelAccess, attributes);
+        if (!tmpResult.isResolved()) {
+            return DataPickerResult.convert(null, tmpResult);
+        } else {
+            try {
+                byte[] data = URI.create(tmpResult.value).toURL().openConnection().getInputStream().readAllBytes();
+                return DataPickerResult.convert(data, tmpResult);
+            } catch (Exception e) {
+                e.printStackTrace();
+                return DataPickerResult.unresolvedInvalidAttrValue(tmpResult.source);
+            }
+        }
+    }
+
 
 }

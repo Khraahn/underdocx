@@ -48,6 +48,10 @@ public abstract class OdfContainer<T extends OdfDocument> extends AbstractDocCon
         super(is);
     }
 
+    public OdfContainer(byte[] data) throws IOException {
+        super(data);
+    }
+
     public OdfContainer(File file) throws IOException {
         super(file);
     }

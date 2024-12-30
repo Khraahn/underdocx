@@ -25,6 +25,7 @@ SOFTWARE.
 package de.underdocx.enginelayers.defaultodtengine.commands.internal.datapicker;
 
 import de.underdocx.enginelayers.defaultodtengine.commands.internal.attrinterpreter.accesstype.AccessType;
+import de.underdocx.environment.err.Problems;
 
 import java.util.Optional;
 
@@ -67,6 +68,10 @@ public class DataPickerResult<T> {
         return type.resolved;
     }
 
+    public boolean isResolvedNotNull() {
+        return type.resolved && value != null;
+    }
+
     public Optional<T> getOptionalValue() {
         return Optional.ofNullable(value);
     }
@@ -75,6 +80,14 @@ public class DataPickerResult<T> {
         this.type = type;
         this.value = value;
         this.source = source;
+    }
+
+    public T getOrThrow(String propertyName) {
+        switch (type) {
+            case UNRESOLVED_MISSING_ATTR, UNRESOLVED_MISSING_VALUE -> Problems.MISSING_VALUE.fireProperty(propertyName);
+            case UNRESOLVED_INVALID_VALUE -> Problems.INVALID_VALUE.fireProperty(propertyName);
+        }
+        return Problems.MISSING_VALUE.notNull(value, propertyName);
     }
 
     public static <T> DataPickerResult<T> unresolvedInvalidAttrValue(ResultSource source) {
@@ -108,4 +121,6 @@ public class DataPickerResult<T> {
     public static <T> DataPickerResult<T> convert(T value, DataPickerResult<?> toConvert) {
         return new DataPickerResult<>(toConvert.type, toConvert.source, value);
     }
+
+
 }

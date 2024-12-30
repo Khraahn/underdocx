@@ -22,14 +22,16 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-package de.underdocx.tools.tree;
+package de.underdocx.tools.debug;
 
+import de.underdocx.tools.tree.Nodes;
+import de.underdocx.tools.tree.TreeWalker;
 import org.w3c.dom.Node;
 
 import java.util.IdentityHashMap;
 import java.util.Map;
 
-import static de.underdocx.tools.common.Convenience.buildString;
+import static de.underdocx.tools.common.Convenience.*;
 
 public class TreePrinter {
     private final Map<Node, String> nodeMarkerMap = new IdentityHashMap<>();

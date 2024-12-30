@@ -48,6 +48,10 @@ public class DeletePlaceholderModifier<C extends DocContainer<D>, P, D> implemen
         return modify(selection.getNode(), modifierData);
     }
 
+    public static boolean modify(Node placeholderNode) {
+        return modify(placeholderNode, DeletePlaceholderModifierData.DEFAULT);
+    }
+
     public static boolean modify(Node placeholderNode, DeletePlaceholderModifierData modifierData) {
         return Convenience.build(false, result -> {
             OdfTools.findAscendantParagraph(placeholderNode, false).ifPresent(p -> {
@@ -76,7 +80,7 @@ public class DeletePlaceholderModifier<C extends DocContainer<D>, P, D> implemen
             if (style.breakAfter != null && style.breakAfter.value != null && !style.breakAfter.value.equals("auto")) {
                 Node prevP = p.getPreviousSibling();
                 while (prevP != null && !PageStyleWriter.isPageStyleable(prevP)) {
-                    prevP = p.getPreviousSibling();
+                    prevP = prevP.getPreviousSibling();
                 }
                 if (PageStyleWriter.isPageStyleable(prevP)) {
                     PageStyleWriter.writePageStyle(prevP, style, true);
@@ -84,7 +88,7 @@ public class DeletePlaceholderModifier<C extends DocContainer<D>, P, D> implemen
             } else {
                 Node nextP = p.getNextSibling();
                 while (nextP != null && !PageStyleWriter.isPageStyleable(nextP)) {
-                    nextP = p.getNextSibling();
+                    nextP = nextP.getNextSibling();
                 }
                 if (PageStyleWriter.isPageStyleable(nextP)) {
                     PageStyleWriter.writePageStyle(nextP, style, true);

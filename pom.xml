@@ -19,10 +19,15 @@
         <odftoolkit.version>0.12.0</odftoolkit.version>
         <hibernatevalidator.version>8.0.0.Final</hibernatevalidator.version>
         <assertj.version>3.26.3</assertj.version>
+        <apache.commons.codec.version>1.17.1</apache.commons.codec.version>
     </properties>
 
     <dependencies>
-        <!-- Jackson -->
+        <dependency>
+            <groupId>commons-codec</groupId>
+            <artifactId>commons-codec</artifactId>
+            <version>${apache.commons.codec.version}</version>
+        </dependency>
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-databind</artifactId>

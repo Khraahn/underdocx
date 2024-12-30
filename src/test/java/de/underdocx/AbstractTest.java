@@ -18,7 +18,7 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.util.*;
 
-import static de.underdocx.tools.common.Convenience.buildList;
+import static de.underdocx.tools.common.Convenience.*;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public abstract class AbstractTest {
@@ -116,6 +116,15 @@ public abstract class AbstractTest {
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
+    }
+
+    protected byte[] readData(InputStream is) throws IOException {
+        return is.readAllBytes();
+    }
+
+    protected byte[] readData(String filename) throws IOException {
+        InputStream is = getResource(filename);
+        return is.readAllBytes();
     }
 
     protected List<String> namesOf(Collection<Node> nodes) {

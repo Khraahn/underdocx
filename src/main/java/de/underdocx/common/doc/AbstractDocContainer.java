@@ -24,6 +24,7 @@ SOFTWARE.
 
 package de.underdocx.common.doc;
 
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -42,6 +43,11 @@ public abstract class AbstractDocContainer<D> implements DocContainer<D> {
     public AbstractDocContainer(InputStream is) throws IOException {
         this();
         load(is);
+    }
+
+    public AbstractDocContainer(byte[] data) throws IOException {
+        this();
+        load(new ByteArrayInputStream(data));
     }
 
     public AbstractDocContainer(File file) throws IOException {

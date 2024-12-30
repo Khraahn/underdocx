@@ -30,7 +30,7 @@ import de.underdocx.enginelayers.defaultodtengine.commands.internal.attrinterpre
 import de.underdocx.enginelayers.modelengine.model.ModelNode;
 
 /**
- * This is a {@link DataPicker} that resolves a value from model, variable registry or from json attrobute.
+ * This is a {@link ExtendedDataPicker} that resolves a value from model, variable registry or from json attribute.
  * It analyses the prefix of the json attribute to find out the
  * source of the value (e.g. "value", "$value", "@value").
  * If source is model or variable registry, the attribute value is used as new name to look up for the value

@@ -46,6 +46,10 @@ public class OdtContainer extends OdfContainer<OdfTextDocument> {
         super(is);
     }
 
+    public OdtContainer(byte[] data) throws IOException {
+        super(data);
+    }
+
     public OdtContainer(File file) throws IOException {
         super(file);
     }
