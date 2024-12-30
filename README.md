@@ -12,7 +12,7 @@ which features are already available and will be released in the future.
 ## Demo
 
 Here is a example to load and manipulate a LibreOffice document with multiple placeholders.
-The first placeholder simply formats and prints out the current date.
+The first placeholder imports an other sub document.
 The second placeholder defines a variable "data" that contains a list of persons. A Loop
 iterates over these persons and prints out their position and data if available.
 
@@ -23,7 +23,7 @@ Run this code to exchange the placeholders
 ```java
 OdtContainer doc = new OdtContainer(is);
 DefaultODTEngine engine = new DefaultODTEngine(doc);
-engine.registerSimpleDollarImageReplacement("image", imageURL, true);
+engine.pushVariable("header", new LeafModelNode<>(readData("header.odt")));
 engine.run();
 doc.save(os);
 ```
