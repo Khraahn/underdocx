@@ -1,6 +1,7 @@
 - Bekannte Probleme:
   - For-Schleifen ohne/mit leeren Daten funktioniert nicht
   - Initialen Style von Imports optional entfernen falls initialer Paragraph einen Umbruch enthält
+  - Sicherstellen das Paragraphen mit leeren Ifs immer gelöscht werden
 - Optimierung:
   - Kommandos die effektlos den ModelPfad setzen löschen
   - Effektlose Pop/Push Sequencen löschen

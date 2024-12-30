@@ -58,7 +58,8 @@ public class Importer {
         // remove provider nodes from source that provide (renamed) style names that have been already imported earlier
         ProviderScanner targetProviders = new ProviderScanner(target, importRules.getProviderDescrs());
         for (Map.Entry<String, Pair<Node, AttrDescr>> entry : sourceProviders.getProviderEntries().entrySet()) {
-            targetProviders.findProviderByValue(entry.getKey()).ifPresent(_t -> Nodes.deleteNode(entry.getValue().left));
+            targetProviders.findProviderByValue(entry.getKey()).ifPresent(_t ->
+                    Nodes.deleteNode(entry.getValue().left));
         }
 
         // rename all consumer style names

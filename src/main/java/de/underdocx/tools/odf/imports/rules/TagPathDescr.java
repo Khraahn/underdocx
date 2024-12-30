@@ -25,7 +25,9 @@ SOFTWARE.
 package de.underdocx.tools.odf.imports.rules;
 
 import de.underdocx.common.doc.odf.OdtContainer;
+import de.underdocx.environment.UnderdocxEnv;
 import de.underdocx.tools.common.Convenience;
+import de.underdocx.tools.debug.NodePrinter;
 import de.underdocx.tools.odf.OdfTools;
 import de.underdocx.tools.tree.Nodes;
 import org.odftoolkit.odfdom.dom.element.text.TextPElement;
@@ -112,8 +114,10 @@ public class TagPathDescr {
         getParent().findFirst(target).ifPresent(targetParent -> {
             Document targetOwnerDocument = targetParent.getOwnerDocument();
             allToCopy.forEach(toCopy -> {
+                UnderdocxEnv.getInstance().logger.trace("copy src : " + new NodePrinter(toCopy));
                 Node clone = targetOwnerDocument.importNode(toCopy, true);
                 targetParent.appendChild(clone);
+                UnderdocxEnv.getInstance().logger.trace("copy trgt: " + new NodePrinter(clone));
             });
         });
     }

@@ -64,7 +64,15 @@ public class ProviderScanner implements Renameable {
 
     @Override
     public void rename(String resource) {
-        getProviderEntries().entrySet().forEach(entry ->
-                entry.getValue().right.modifyValue(resource, entry.getValue().left));
+        Map<String, Pair<Node, AttrDescr>> newCache = new HashMap<>();
+        getProviderEntries().entrySet().forEach(entry -> {
+            Optional<String> oNewValue = entry.getValue().right.modifyValue(resource, entry.getValue().left);
+            if (oNewValue.isPresent()) {
+                newCache.put(oNewValue.get(), new Pair<>(entry.getValue().left, entry.getValue().right));
+            } else {
+                newCache.put(entry.getKey(), new Pair<>(entry.getValue().left, entry.getValue().right));
+            }
+        });
+        cache = Collections.unmodifiableMap(newCache);
     }
 }

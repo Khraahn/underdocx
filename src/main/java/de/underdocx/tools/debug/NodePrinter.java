@@ -60,14 +60,13 @@ public class NodePrinter {
             sb.append("<").append(node.getNodeName());
             NamedNodeMap attributes = node.getAttributes();
             for (int i = 0; i < attributes.getLength(); i++) {
+                sb.append(" ");
                 sb.append(attributes.item(i).getNodeName());
                 sb.append("=\"");
                 sb.append(attributes.item(i).getNodeValue());
-                sb.append("=\"");
+                sb.append("\"");
                 if (i == attributes.getLength() - 1) {
                     sb.append(">");
-                } else {
-                    sb.append(" ");
                 }
             }
         } else {
