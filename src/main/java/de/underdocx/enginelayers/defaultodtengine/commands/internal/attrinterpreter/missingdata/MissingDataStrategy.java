@@ -32,7 +32,6 @@ public enum MissingDataStrategy {
     DELETE_PLACEHOLDER_KEEP_PARAGRAPH("deletePlaceholderKeepParagraph"),
     DELETE_PLACEHOLDER_DELETE_EMPTY_PARAGRAPH("deletePlaceholderDeleteEmptyParagraph"),
     DELETE_PLACEHOLDER_DELETE_PARAGRAPH("deletePlaceholderDeleteParagraph"),
-    DELETE_PLACEHOLDER_DELETE_AREA("deletePlaceholderDeleteArea"),
     KEEP_PLACEHOLDER("keepPlaceholder");
 
     private final String value;

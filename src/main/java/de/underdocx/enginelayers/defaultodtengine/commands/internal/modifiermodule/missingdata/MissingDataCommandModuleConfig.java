@@ -26,7 +26,6 @@ package de.underdocx.enginelayers.defaultodtengine.commands.internal.modifiermod
 
 import de.underdocx.enginelayers.defaultodtengine.commands.internal.attrinterpreter.missingdata.MissingDataConfig;
 import de.underdocx.enginelayers.defaultodtengine.commands.internal.datapicker.PredefinedDataPicker;
-import org.w3c.dom.Node;
 
 import java.util.function.Predicate;
 
@@ -37,14 +36,6 @@ public interface MissingDataCommandModuleConfig<M> {
     }
 
     PredefinedDataPicker<M> getDataPicker();
-
-    default Node getAreaEnd() {
-        return null;
-    }
-
-    default Node getCommonAncestor() {
-        return null;
-    }
 
     Predicate<M> getIsEmptyPredicate();
 

@@ -24,6 +24,7 @@ SOFTWARE.
 
 package de.underdocx.enginelayers.defaultodtengine.commands.internal.attrinterpreter.accesstype;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import de.underdocx.enginelayers.defaultodtengine.commands.internal.attrinterpreter.AbstractAttributeInterpreter;
 
 /**
@@ -56,5 +57,9 @@ public class AccessTypeJsonNameInterpreter extends AbstractAttributeInterpreter<
             accessType = AccessType.MISSING_ACCESS;
         }
         return accessType;
+    }
+
+    public static boolean attributeExists(JsonNode attributes, String name) {
+        return AccessTypeJsonNameInterpreter.DEFAULT.interpretAttributes(attributes, name) != AccessType.MISSING_ACCESS;
     }
 }

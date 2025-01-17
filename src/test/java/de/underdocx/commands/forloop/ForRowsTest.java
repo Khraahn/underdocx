@@ -45,4 +45,17 @@ public class ForRowsTest extends AbstractOdtTest {
         assertOrder(doc, "3", "Helene", "Fischer");
         assertOrder(doc, "1", "2", "3");
     }
+
+    @Test
+    public void testTableRowGroups() throws IOException {
+        OdtContainer doc = new OdtContainer(getResource("TableLoopGroups.odt"));
+        DefaultODTEngine engine = new DefaultODTEngine(doc);
+        engine.run();
+        //show(doc);
+        assertNoPlaceholders(doc);
+        assertOrder(doc, "1", "Hans", "Müller");
+        assertOrder(doc, "2", "Johanna", "Sommer");
+        assertOrder(doc, "3", "Helene", "Fischer");
+        assertOrder(doc, "1", "2", "3");
+    }
 }

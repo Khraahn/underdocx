@@ -28,9 +28,7 @@ package de.underdocx.tools.tree;
 import de.underdocx.tools.common.Convenience;
 import de.underdocx.tools.common.Wrapper;
 import de.underdocx.tools.tree.enumerator.Enumerator;
-import org.w3c.dom.NamedNodeMap;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
+import org.w3c.dom.*;
 
 import java.util.*;
 import java.util.function.Predicate;
@@ -366,5 +364,10 @@ public class Nodes {
     }
 
 
+    public static void appendNodeText(Node node, String text) {
+        Document document = node.getOwnerDocument();
+        Text textNode = document.createTextNode(text);
+        node.appendChild(textNode);
+    }
 }
 

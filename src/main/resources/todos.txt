@@ -1,12 +1,10 @@
 - Bekannte Probleme:
-  - For-Schleifen ohne/mit leeren Daten funktioniert nicht
-  - Initialen Style von Imports optional entfernen falls initialer Paragraph einen Umbruch enthält
-  - Sicherstellen das Paragraphen mit leeren Ifs immer gelöscht werden
-- Optimierung:
+  - Sicherstellen das Paragraphen mit leeren Ifs immer gelöscht werden (auch in Zellen)
+  - Prüfen ob Vectorgrafiken als Bilder verwendet werden können
+- Optimierungsmöglichkeiten:
   - Kommandos die effektlos den ModelPfad setzen löschen
   - Effektlose Pop/Push Sequencen löschen
   - Schleifen/If/Import möglichst unmittelbar und direkt mit W2C API
   - Cachen von Import-Daten
-  - Bei Imports tote Styles vermeiden, entfernen
   - Rescan optional ab aktiven/übergebenen Knoten beginnen und Status beibehalten
   - Validität von Knoten prüfen um Rescans zu reduzieren (z.B. Löschen von Blöcken durch If)

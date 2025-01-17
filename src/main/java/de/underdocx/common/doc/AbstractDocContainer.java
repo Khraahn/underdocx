@@ -24,13 +24,14 @@ SOFTWARE.
 
 package de.underdocx.common.doc;
 
+import de.underdocx.tools.common.Resource;
+import de.underdocx.tools.common.TmpFile;
+
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.nio.file.Files;
-import java.util.Timer;
-import java.util.TimerTask;
+import java.net.URI;
 
 public abstract class AbstractDocContainer<D> implements DocContainer<D> {
 
@@ -40,9 +41,18 @@ public abstract class AbstractDocContainer<D> implements DocContainer<D> {
         doc = createEmptyDoc();
     }
 
+    public AbstractDocContainer(Resource resource) throws IOException {
+        this(resource.openStream());
+    }
+
     public AbstractDocContainer(InputStream is) throws IOException {
         this();
         load(is);
+    }
+
+    public AbstractDocContainer(URI uri) throws IOException {
+        this();
+        load(uri.toURL().openStream());
     }
 
     public AbstractDocContainer(byte[] data) throws IOException {
@@ -73,18 +83,7 @@ public abstract class AbstractDocContainer<D> implements DocContainer<D> {
     }
 
     public File createTmpFile(String prefix, boolean deleteOnExit, Long lifetime) throws IOException {
-        File tmpFile = Files.createTempFile(prefix, "." + getFileExtension()).toFile();
-        if (deleteOnExit) {
-            tmpFile.deleteOnExit();
-        }
-        if (lifetime != null) {
-            new Timer().schedule(new TimerTask() {
-                @Override
-                public void run() {
-                    tmpFile.delete();
-                }
-            }, lifetime);
-        }
+        File tmpFile = TmpFile.createTmpFile(prefix, "." + getFileExtension(), deleteOnExit, lifetime);
         save(tmpFile);
         return tmpFile;
     }

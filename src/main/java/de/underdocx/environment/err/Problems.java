@@ -44,7 +44,8 @@ public enum Problems implements Problematic {
     ODF_FRAMEWORK_OPERARTION_EXCEPTION("An unexpected exception occurred accessing an ODF document "),
     INVALID_IF_CONDITION("If command contains an invalid structure or invalid values"),
     CANT_FIND_DOM_ELEMENT("a certain required DOM node can't be found"),
-    PLACEHOLDER_TOOLKIT_MISSING("placeholder toolkit instance is missing");
+    PLACEHOLDER_TOOLKIT_MISSING("placeholder toolkit instance is missing"),
+    EXPECTED_PLACEHOLDER_MISSING("A mandatory placeholder can not be found");
 
     private String description = null;
 

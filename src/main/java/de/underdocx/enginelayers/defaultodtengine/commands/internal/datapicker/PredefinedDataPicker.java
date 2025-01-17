@@ -26,6 +26,7 @@ package de.underdocx.enginelayers.defaultodtengine.commands.internal.datapicker;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import de.underdocx.enginelayers.modelengine.modelaccess.ModelAccess;
+import de.underdocx.environment.err.Problems;
 
 import java.util.Optional;
 
@@ -34,6 +35,12 @@ public interface PredefinedDataPicker<T> {
 
     default Optional<T> getData(ModelAccess modelAccess, JsonNode jsonNode) {
         return pickData(modelAccess, jsonNode).getOptionalValue();
+    }
+
+    String getName();
+
+    default T expect(ModelAccess modelAccess, JsonNode jsonNode) {
+        return Problems.MISSING_VALUE.get(getData(modelAccess, jsonNode), getName());
     }
 
 }

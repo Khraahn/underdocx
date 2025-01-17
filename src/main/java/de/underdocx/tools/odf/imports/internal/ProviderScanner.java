@@ -22,7 +22,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-package de.underdocx.tools.odf.imports;
+package de.underdocx.tools.odf.imports.internal;
 
 import de.underdocx.common.doc.odf.OdtContainer;
 import de.underdocx.tools.common.Pair;

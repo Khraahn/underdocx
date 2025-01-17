@@ -29,9 +29,11 @@ import de.underdocx.common.doc.DocContainer;
 import de.underdocx.enginelayers.defaultodtengine.commands.internal.AbstractStringCommandHandler;
 import de.underdocx.enginelayers.defaultodtengine.commands.internal.attrinterpreter.accesstype.AccessType;
 import de.underdocx.enginelayers.defaultodtengine.commands.internal.attrinterpreter.accesstype.AccessTypeJsonNameInterpreter;
+import de.underdocx.enginelayers.defaultodtengine.commands.internal.datapicker.DataPickerResult;
 import de.underdocx.enginelayers.defaultodtengine.commands.internal.datapicker.PredefinedDataPicker;
 import de.underdocx.enginelayers.defaultodtengine.commands.internal.datapicker.StringConvertDataPicker;
 import de.underdocx.enginelayers.defaultodtengine.commands.internal.modifiermodule.stringoutput.StringOutputModuleConfig;
+import de.underdocx.enginelayers.modelengine.modelaccess.ModelAccess;
 import de.underdocx.tools.common.Regex;
 
 import java.util.function.Predicate;
@@ -52,8 +54,18 @@ public class StringCommandHandler<C extends DocContainer<D>, D> extends Abstract
 
     @Override
     protected StringOutputModuleConfig getConfig() {
-        return () -> (modelAccess, jsonNode) -> isDirectAccess.test(jsonNode)
-                ? directDataPicker.pickData(modelAccess, jsonNode)
-                : valueDataPicker.pickData(modelAccess, jsonNode);
+        return () -> new PredefinedDataPicker<>() {
+            @Override
+            public DataPickerResult<String> pickData(ModelAccess modelAccess, JsonNode jsonNode) {
+                return isDirectAccess.test(jsonNode)
+                        ? directDataPicker.pickData(modelAccess, jsonNode)
+                        : valueDataPicker.pickData(modelAccess, jsonNode);
+            }
+
+            @Override
+            public String getName() {
+                return "value";
+            }
+        };
     }
 }

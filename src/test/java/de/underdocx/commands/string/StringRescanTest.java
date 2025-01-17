@@ -22,38 +22,32 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-package de.underdocx.tools.odf.imports;
+package de.underdocx.commands.string;
 
+import de.underdocx.AbstractOdtTest;
 import de.underdocx.common.doc.odf.OdtContainer;
-import de.underdocx.tools.common.Convenience;
-import de.underdocx.tools.odf.imports.rules.ConsumerDescr;
-import de.underdocx.tools.odf.imports.rules.Renameable;
-import de.underdocx.tools.tree.TreeWalkers;
+import de.underdocx.enginelayers.defaultodtengine.DefaultODTEngine;
+import org.junit.jupiter.api.Test;
 
-import java.util.List;
+public class StringRescanTest extends AbstractOdtTest {
 
-/**
- * finds all nodes that contain attribute with style name references. Required for renaming style names
- */
-public class ConsumerScanner implements Renameable {
-
-    private final OdtContainer doc;
-    private final List<ConsumerDescr> consumerDescr;
-
-    public ConsumerScanner(OdtContainer doc, List<ConsumerDescr> consumerDescr) {
-        this.doc = doc;
-        this.consumerDescr = consumerDescr;
+    @Test
+    public void testNoRescan() {
+        OdtContainer doc = new OdtContainer("${$x}");
+        DefaultODTEngine engine = new DefaultODTEngine(doc);
+        engine.pushVariable("x", "${String value:\"abc\"}");
+        engine.run();
+        assertContains(doc, "${String");
     }
 
-    @Override
-    public void rename(String resource) {
-        TreeWalkers treeWalkers = new TreeWalkers(doc.getContentDom(), doc.getStylesDom());
-        while (treeWalkers.hasNext()) {
-            Convenience.also(treeWalkers.next(), next -> {
-                if (next.isBeginVisit()) {
-                    consumerDescr.forEach(cd -> cd.modifyOnMatch(resource, next.getNode()));
-                }
-            });
-        }
+    @Test
+    public void testRescan() {
+        OdtContainer doc = new OdtContainer("${$x rescan:true}");
+        DefaultODTEngine engine = new DefaultODTEngine(doc);
+        engine.pushVariable("x", "${String value:\"abc\"}");
+        engine.run();
+        assertNotContains(doc, "${String");
+        assertNoPlaceholders(doc);
+        assertContains(doc, "abc");
     }
 }

@@ -24,31 +24,48 @@ SOFTWARE.
 
 package de.underdocx.enginelayers.baseengine.modifiers.existingimage;
 
-import java.net.URL;
+import de.underdocx.tools.common.Resource;
 
 public interface ExistingImageModifierData {
 
-    URL getImageURL();
+    Resource getResource();
+
+    String getFileName();
 
     boolean isKeepWidth();
 
+    String getTitle();
+
     class Simple implements ExistingImageModifierData {
         boolean keepWidth;
-        URL imageURL;
+        Resource resource;
+        String newName;
+        String title;
 
-        public Simple(boolean keepWidth, URL imageURL) {
+        public Simple(boolean keepWidth, Resource resource, String newName, String title) {
             this.keepWidth = keepWidth;
-            this.imageURL = imageURL;
+            this.resource = resource;
+            this.newName = newName;
+            this.title = title;
         }
 
         @Override
-        public URL getImageURL() {
-            return imageURL;
+        public Resource getResource() {
+            return resource;
+        }
+
+        public String getFileName() {
+            return newName;
         }
 
         @Override
         public boolean isKeepWidth() {
             return keepWidth;
+        }
+
+        @Override
+        public String getTitle() {
+            return title;
         }
     }
 }

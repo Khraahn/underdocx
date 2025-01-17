@@ -24,6 +24,8 @@ SOFTWARE.
 
 package de.underdocx.enginelayers.modelengine.model.simple;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
 import de.underdocx.common.codec.JsonCodec;
 import de.underdocx.enginelayers.modelengine.model.ModelNode;
 
@@ -76,6 +78,9 @@ public abstract class AbstractPredefinedModelNode<T> extends AbstractModelNode<T
         return also(createRootNode(object), result -> result.setParent(this));
     }
 
+    /**
+     * converts a {@link Map}, {@link List} or Leaf object into a {@link ModelNode} tree
+     */
     public static AbstractPredefinedModelNode<?> createRootNode(Object object) {
         return build(w -> {
             if (object == null) {
@@ -94,6 +99,9 @@ public abstract class AbstractPredefinedModelNode<T> extends AbstractModelNode<T
         });
     }
 
+    /**
+     * unpacks the {@link ModelNode} Tree and creates a new tree of {@link Map}, {@link List} and Leaf objects
+     */
     @SuppressWarnings("unchecked")
     protected static Object convert(AbstractPredefinedModelNode<?> node) {
         if (node.getValue() == null) {
@@ -113,5 +121,19 @@ public abstract class AbstractPredefinedModelNode<T> extends AbstractModelNode<T
 
     public String toString() {
         return jsonCodec.convertMapToJsonString(convert(this)).orElse("ModelNode: " + containedValue);
+    }
+
+    /**
+     * Creates a {@link ModelNode} tree based on a JSON string using the {@link JsonCodec}
+     */
+    public static AbstractPredefinedModelNode<?> createFromJson(String json) throws JsonProcessingException {
+        JsonNode parsed = jsonCodec.parse(json);
+        if (parsed.isArray()) {
+            List<Object> list = jsonCodec.getAsList(parsed);
+            return createRootNode(list);
+        } else {
+            Map<String, Object> map = jsonCodec.getAsMap(parsed);
+            return createRootNode(map);
+        }
     }
 }

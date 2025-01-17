@@ -45,6 +45,11 @@ public class OdfTextNodeInterpreter extends AbstractOdfTextNodeInterpreter {
     }
 
     @Override
+    public void appendNodeText(Node node, String text) {
+        OdfWhitespaceProcessor.appendText((Element) node, text);
+    }
+
+    @Override
     public Node createTextContainer(Node parent) {
         // return parent.getOwnerDocument().createElementNS("urn:oasis:names:tc:opendocument:xmlns:text:1.0", spanElementName);
         try {

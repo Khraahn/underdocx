@@ -25,30 +25,44 @@ SOFTWARE.
 package de.underdocx.enginelayers.defaultodtengine.commands.internal.modifiermodule.stringoutput;
 
 import de.underdocx.common.doc.DocContainer;
+import de.underdocx.enginelayers.baseengine.CommandHandler;
+import de.underdocx.enginelayers.baseengine.modifiers.stringmodifier.MarkupTextModifier;
 import de.underdocx.enginelayers.baseengine.modifiers.stringmodifier.ReplaceWithTextModifier;
+import de.underdocx.enginelayers.defaultodtengine.commands.internal.datapicker.BooleanDataPicker;
+import de.underdocx.enginelayers.defaultodtengine.commands.internal.datapicker.PredefinedDataPicker;
 import de.underdocx.enginelayers.defaultodtengine.commands.internal.modifiermodule.AbstractCommandModule;
 import de.underdocx.enginelayers.defaultodtengine.commands.internal.modifiermodule.missingdata.MissingDataCommandModule;
 import de.underdocx.enginelayers.defaultodtengine.commands.internal.modifiermodule.missingdata.MissingDataCommandModuleConfig;
 import de.underdocx.enginelayers.defaultodtengine.commands.internal.modifiermodule.missingdata.MissingDataCommandModuleResult;
 import de.underdocx.enginelayers.parameterengine.ParametersPlaceholderData;
 
-public class StringOutputCommandModule<C extends DocContainer<D>, D> extends AbstractCommandModule<C, ParametersPlaceholderData, D, Boolean, MissingDataCommandModuleConfig<String>> {
+public class StringOutputCommandModule<C extends DocContainer<D>, D> extends AbstractCommandModule<C, ParametersPlaceholderData, D, CommandHandler.CommandHandlerResult, MissingDataCommandModuleConfig<String>> {
+    public static final String RESCAN = "rescan";
+    public static final String MARKUP = "markup";
+    private static PredefinedDataPicker<Boolean> rescanDataPicker = new BooleanDataPicker().asPredefined(RESCAN);
+    private static PredefinedDataPicker<Boolean> markupDataPicker = new BooleanDataPicker().asPredefined(MARKUP);
+
     public StringOutputCommandModule(MissingDataCommandModuleConfig<String> configuration) {
         super(configuration);
     }
 
-
     @Override
-    protected Boolean execute() {
+    protected CommandHandler.CommandHandlerResult execute() {
+        boolean shouldRescan = rescanDataPicker.pickData(selection.getModelAccess().get(), selection.getPlaceholderData().getJson()).getOptionalValue().orElse(false);
+        boolean useMarkup = markupDataPicker.pickData(selection.getModelAccess().get(), selection.getPlaceholderData().getJson()).getOptionalValue().orElse(false);
         MissingDataCommandModule<C, D, String> module = new MissingDataCommandModule<>(configuration);
         MissingDataCommandModuleResult<String> moduleResult = module.execute(selection);
         return switch (moduleResult.resultType) {
             case VALUE_RECEIVED -> {
-                new ReplaceWithTextModifier<C, ParametersPlaceholderData, D>().modify(selection, moduleResult.value);
-                yield true;
+                if (useMarkup) {
+                    new MarkupTextModifier().modify(selection, moduleResult.value);
+                } else {
+                    new ReplaceWithTextModifier<C, ParametersPlaceholderData, D>().modify(selection, moduleResult.value);
+                }
+                yield shouldRescan ? CommandHandler.CommandHandlerResult.EXECUTED_RESCAN_REQUIRED : CommandHandler.CommandHandlerResult.EXECUTED;
             }
-            case STRATEGY_EXECUTED -> true;
-            case SKIP -> false;
+            case STRATEGY_EXECUTED -> CommandHandler.CommandHandlerResult.EXECUTED;
+            case SKIP -> CommandHandler.CommandHandlerResult.IGNORED;
         };
     }
 

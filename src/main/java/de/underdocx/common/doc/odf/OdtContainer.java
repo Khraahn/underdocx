@@ -26,6 +26,7 @@ package de.underdocx.common.doc.odf;
 
 import de.underdocx.environment.UnderdocxEnv;
 import de.underdocx.environment.err.Problems;
+import de.underdocx.tools.common.Resource;
 import org.odftoolkit.odfdom.doc.OdfTextDocument;
 import org.odftoolkit.odfdom.dom.element.office.OfficeTextElement;
 
@@ -33,6 +34,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.net.URI;
 
 import static de.underdocx.tools.common.Convenience.*;
 
@@ -46,8 +48,16 @@ public class OdtContainer extends OdfContainer<OdfTextDocument> {
         super(is);
     }
 
+    public OdtContainer(Resource resource) throws IOException {
+        super(resource);
+    }
+
     public OdtContainer(byte[] data) throws IOException {
         super(data);
+    }
+
+    public OdtContainer(URI uri) throws IOException {
+        super(uri);
     }
 
     public OdtContainer(File file) throws IOException {
@@ -122,5 +132,6 @@ public class OdtContainer extends OdfContainer<OdfTextDocument> {
     public static OdtContainer createDocument(String content) {
         return also(new OdtContainer(), result -> result.appendText(content));
     }
+
 
 }

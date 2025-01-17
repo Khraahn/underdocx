@@ -30,19 +30,20 @@ import de.underdocx.enginelayers.baseengine.Selection;
 import de.underdocx.enginelayers.baseengine.internal.placeholdersprovider.dollar.image.SimpleDollarImagePlaceholderData;
 import de.underdocx.enginelayers.baseengine.modifiers.existingimage.ExistingImageModifier;
 import de.underdocx.enginelayers.baseengine.modifiers.existingimage.ExistingImageModifierData;
+import de.underdocx.tools.common.Resource;
 
-import java.net.URL;
+import java.net.URI;
 import java.util.Optional;
 import java.util.function.Function;
 
-import static de.underdocx.tools.common.Convenience.build;
+import static de.underdocx.tools.common.Convenience.*;
 
 public class SimpleDollarImageReplaceCommand<C extends DocContainer<D>, D> implements CommandHandler<C, SimpleDollarImagePlaceholderData, D> {
 
-    private final Function<String, Optional<URL>> function;
+    private final Function<String, Optional<URI>> function;
     private final boolean keepWidth;
 
-    public SimpleDollarImageReplaceCommand(Function<String, Optional<URL>> function, boolean keepWidth) {
+    public SimpleDollarImageReplaceCommand(Function<String, Optional<URI>> function, boolean keepWidth) {
         this.function = function;
         this.keepWidth = keepWidth;
     }
@@ -50,9 +51,9 @@ public class SimpleDollarImageReplaceCommand<C extends DocContainer<D>, D> imple
     @Override
     public CommandHandlerResult tryExecuteCommand(Selection<C, SimpleDollarImagePlaceholderData, D> selection) {
         return build(CommandHandlerResult.IGNORED, result ->
-                function.apply(selection.getPlaceholderData().getVariableName()).ifPresent(url -> {
+                function.apply(selection.getPlaceholderData().getVariableName()).ifPresent(uri -> {
                     result.value = CommandHandlerResult.EXECUTED;
-                    new ExistingImageModifier<C, D>().modify(selection, new ExistingImageModifierData.Simple(keepWidth, url));
+                    new ExistingImageModifier<C, SimpleDollarImagePlaceholderData, D>().modify(selection, new ExistingImageModifierData.Simple(keepWidth, new Resource.UriResource(uri), selection.getPlaceholderData().getVariableName(), null));
                 }));
     }
 }

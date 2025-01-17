@@ -27,21 +27,19 @@ package de.underdocx.enginelayers.defaultodtengine.commands;
 import de.underdocx.common.doc.odf.OdtContainer;
 import de.underdocx.enginelayers.baseengine.modifiers.deleteplaceholder.DeletePlaceholderModifier;
 import de.underdocx.enginelayers.defaultodtengine.commands.internal.AbstractTextualCommandHandler;
-import de.underdocx.enginelayers.defaultodtengine.commands.internal.attrinterpreter.accesstype.AccessType;
-import de.underdocx.enginelayers.defaultodtengine.commands.internal.attrinterpreter.accesstype.AccessTypeJsonNameInterpreter;
 import de.underdocx.enginelayers.defaultodtengine.commands.internal.datapicker.BinaryDataPicker;
 import de.underdocx.enginelayers.defaultodtengine.commands.internal.datapicker.PredefinedDataPicker;
+import de.underdocx.enginelayers.defaultodtengine.commands.internal.datapicker.ResourceDataPicker;
 import de.underdocx.enginelayers.defaultodtengine.commands.internal.datapicker.StringConvertDataPicker;
-import de.underdocx.enginelayers.defaultodtengine.commands.internal.datapicker.Uri2BinaryDataPicker;
+import de.underdocx.enginelayers.defaultodtengine.commands.internal.modifiermodule.resource.ResourceCommandModule;
+import de.underdocx.enginelayers.defaultodtengine.modifiers.importmodifier.ImportModifier;
+import de.underdocx.enginelayers.defaultodtengine.modifiers.importmodifier.ImportModifierData;
+import de.underdocx.enginelayers.parameterengine.ParametersPlaceholderData;
 import de.underdocx.environment.err.Problems;
 import de.underdocx.tools.common.Convenience;
 import de.underdocx.tools.common.Regex;
-import de.underdocx.tools.common.StringHash;
-import de.underdocx.tools.odf.imports.Importer;
+import de.underdocx.tools.common.Resource;
 import org.odftoolkit.odfdom.doc.OdfTextDocument;
-
-import java.io.InputStream;
-import java.net.URI;
 
 /**
  * Implementation of the {{Import uri/data}} command.
@@ -52,10 +50,11 @@ public class ImportCommandHander extends AbstractTextualCommandHandler<OdtContai
 
     public static final String URI_ATTR = "uri";
     public static final String DATA_ATTR = "data";
+    public static final String RESOURCE_ATTR = "resource";
 
     private static final PredefinedDataPicker<byte[]> binaryDataPicker = new BinaryDataPicker().asPredefined(DATA_ATTR);
-    private static final PredefinedDataPicker<byte[]> uriDataPicker = new Uri2BinaryDataPicker().asPredefined(URI_ATTR);
     private static final PredefinedDataPicker<String> uriStringPicker = new StringConvertDataPicker().asPredefined(URI_ATTR);
+    private static PredefinedDataPicker<Resource> resourcePicker = new ResourceDataPicker().asPredefined(RESOURCE_ATTR);
 
 
     public ImportCommandHander() {
@@ -65,19 +64,10 @@ public class ImportCommandHander extends AbstractTextualCommandHandler<OdtContai
     @Override
     protected CommandHandlerResult tryExecuteTextualCommand() {
         return Convenience.build(CommandHandlerResult.EXECUTED_RESCAN_REQUIRED, result -> {
-            boolean isUri = AccessTypeJsonNameInterpreter.DEFAULT.interpretAttributes(placeholderData.getJson(), URI_ATTR) != AccessType.MISSING_ACCESS;
-            OdtContainer importDoc;
-            String resourceName;
-            if (isUri) {
-                resourceName = uriStringPicker.pickData(modelAccess, placeholderData.getJson()).getOrThrow("uri");
-                InputStream is = Problems.IO_EXCEPTION.exec(() -> new URI(resourceName).toURL().openStream());
-                importDoc = Problems.ODF_FRAMEWORK_OPERARTION_EXCEPTION.exec(() -> new OdtContainer(is));
-            } else {
-                byte[] binaryData = binaryDataPicker.pickData(modelAccess, placeholderData.getJson()).getOrThrow("data");
-                resourceName = StringHash.createStringHash32(binaryData);
-                importDoc = Problems.IO_EXCEPTION.exec(() -> new OdtContainer(binaryData));
-            }
-            new Importer().importDoc(resourceName, importDoc, selection.getDocContainer(), selection.getNode());
+            Resource resource = new ResourceCommandModule<OdtContainer, ParametersPlaceholderData, OdfTextDocument>(placeholderData.getJson()).execute(selection);
+            OdtContainer importDoc = Problems.ODF_FRAMEWORK_OPERARTION_EXCEPTION.exec(() -> new OdtContainer(resource));
+            ImportModifierData modifiedData = new ImportModifierData.Simple(resource.getIdentifier(), importDoc, selection.getDocContainer(), selection.getNode(), true);
+            new ImportModifier().modify(modifiedData);
             DeletePlaceholderModifier.modify(selection.getNode());
         });
     }

@@ -135,12 +135,25 @@ public interface Problematic {
         }
     }
 
+
     default <T> T exec(Callable<T> executable, String failedProperty, String failedValue) {
         try {
             return executable.call();
         } catch (Exception e) {
             return toProblem().property(failedProperty).value(failedValue).exception(e).fire();
         }
+    }
+
+    default void run(Executable executable) {
+        try {
+            executable.run();
+        } catch (Exception e) {
+            fire(e);
+        }
+    }
+
+    interface Executable {
+        void run() throws Exception;
     }
 
     class SimpleProblematic implements Problematic {

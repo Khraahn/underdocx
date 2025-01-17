@@ -24,38 +24,23 @@ SOFTWARE.
 
 package de.underdocx.enginelayers.defaultodtengine.commands.internal.datapicker;
 
-import com.fasterxml.jackson.databind.JsonNode;
 import de.underdocx.enginelayers.modelengine.model.ModelNode;
-import de.underdocx.enginelayers.modelengine.modelaccess.ModelAccess;
+
+import java.util.Optional;
 
 /**
  * A {@link ExtendedDataPicker} that tries to resolve a byte[] from the model or variable registry
  */
-public class BinaryDataPicker implements ExtendedDataPicker<byte[]> {
+public class BinaryDataPicker extends AbstractConvertDataPicker<byte[]> {
 
-
-    private final ExtendedDataPicker<ModelNode> dataPicker;
-
-    public BinaryDataPicker() {
-        this(new AttributeNodeDataPicker());
-    }
-
-    public BinaryDataPicker(
-            ExtendedDataPicker<ModelNode> dataPicker
-    ) {
-        this.dataPicker = dataPicker;
-    }
-
-    public DataPickerResult<byte[]> pickData(String name, ModelAccess modelAccess, JsonNode attributes) {
-        DataPickerResult<ModelNode> tmpResult = dataPicker.pickData(name, modelAccess, attributes);
-        if (!tmpResult.isResolved()) {
-            return DataPickerResult.convert(null, tmpResult);
+    @Override
+    Optional<byte[]> convert(ModelNode node) {
+        Object value = node.getValue();
+        if (value instanceof byte[]) {
+            return Optional.of((byte[]) value);
         } else {
-            if (tmpResult.isResolvedNotNull() && tmpResult.value.getValue() instanceof byte[]) {
-                return DataPickerResult.convert((byte[]) tmpResult.value.getValue(), tmpResult);
-            } else {
-                return DataPickerResult.unresolvedInvalidAttrValue(tmpResult.source);
-            }
+            return Optional.empty();
         }
     }
+
 }

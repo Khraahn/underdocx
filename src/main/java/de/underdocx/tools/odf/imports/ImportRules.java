@@ -62,7 +62,6 @@ public class ImportRules extends AbstractImportRules {
         consumerDescrs.add(new ConsumerDescr(new AttrDescr("parent-style-name")));
         consumerDescrs.add(new ConsumerDescr(new AttrDescr("text-style-name")));
         consumerDescrs.add(new ConsumerDescr(new AttrDescr("marker-style-name")));
-        consumerDescrs.add(new ConsumerDescr(new AttrDescr("font-name")));
 
         copyRules.add(new TagPathDescr(false, DOCUMENT_STYLES, OFFICE_STYLES, STYLE_STYLE));
         copyRules.add(new TagPathDescr(false, DOCUMENT_STYLES, OFFICE_AUTOMATIC_STYLES, NodeFilter.ACCEPT_ALL));

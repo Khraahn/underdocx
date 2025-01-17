@@ -26,6 +26,9 @@ package de.underdocx.tools.odf.imports;
 
 import de.underdocx.common.doc.odf.OdtContainer;
 import de.underdocx.tools.common.Pair;
+import de.underdocx.tools.odf.imports.internal.ConsumerScanner;
+import de.underdocx.tools.odf.imports.internal.FontImporter;
+import de.underdocx.tools.odf.imports.internal.ProviderScanner;
 import de.underdocx.tools.odf.imports.rules.AbstractImportRules;
 import de.underdocx.tools.odf.imports.rules.AttrDescr;
 import de.underdocx.tools.tree.Nodes;
@@ -50,6 +53,9 @@ public class Importer {
     }
 
     public void importDoc(String sourceResourceName, OdtContainer source, OdtContainer target, Node targetRefNodeInsertAfter) {
+
+        // copy (unchanged) font declarations
+        FontImporter.importFonts(target, source);
 
         // rename provider style names
         ProviderScanner sourceProviders = new ProviderScanner(source, importRules.getProviderDescrs());

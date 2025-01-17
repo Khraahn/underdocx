@@ -1,5 +1,6 @@
 package de.underdocx;
 
+import de.underdocx.tools.common.Resource;
 import de.underdocx.tools.tree.TreeWalker;
 import org.apache.commons.io.FileUtils;
 import org.w3c.dom.Document;
@@ -125,6 +126,15 @@ public abstract class AbstractTest {
     protected byte[] readData(String filename) throws IOException {
         InputStream is = getResource(filename);
         return is.readAllBytes();
+    }
+
+    protected Resource readResource(InputStream is) throws IOException {
+        return new Resource.DataResource(readData(is));
+    }
+
+    protected Resource readResource(String filename) throws IOException {
+        InputStream is = getResource(filename);
+        return readResource(is);
     }
 
     protected List<String> namesOf(Collection<Node> nodes) {

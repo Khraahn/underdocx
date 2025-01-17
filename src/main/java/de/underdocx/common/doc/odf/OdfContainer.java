@@ -28,6 +28,7 @@ import de.underdocx.common.doc.AbstractDocContainer;
 import de.underdocx.environment.UnderdocxEnv;
 import de.underdocx.environment.err.Problems;
 import de.underdocx.tools.common.Regex;
+import de.underdocx.tools.common.Resource;
 import org.apache.commons.io.IOUtils;
 import org.odftoolkit.odfdom.doc.OdfDocument;
 import org.odftoolkit.odfdom.dom.OdfContentDom;
@@ -35,6 +36,7 @@ import org.odftoolkit.odfdom.dom.OdfStylesDom;
 import org.xml.sax.SAXException;
 
 import java.io.*;
+import java.net.URI;
 import java.util.Scanner;
 
 public abstract class OdfContainer<T extends OdfDocument> extends AbstractDocContainer<T> {
@@ -44,8 +46,16 @@ public abstract class OdfContainer<T extends OdfDocument> extends AbstractDocCon
         super();
     }
 
+    public OdfContainer(Resource resource) throws IOException {
+        super(resource);
+    }
+
     public OdfContainer(InputStream is) throws IOException {
         super(is);
+    }
+
+    public OdfContainer(URI uri) throws IOException {
+        super(uri);
     }
 
     public OdfContainer(byte[] data) throws IOException {

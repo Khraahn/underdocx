@@ -26,21 +26,31 @@ package de.underdocx.enginelayers.baseengine.modifiers.existingimage;
 
 import de.underdocx.common.doc.DocContainer;
 import de.underdocx.enginelayers.baseengine.Selection;
-import de.underdocx.enginelayers.baseengine.internal.placeholdersprovider.dollar.image.SimpleDollarImagePlaceholderData;
+import de.underdocx.enginelayers.baseengine.internal.placeholdersprovider.dollar.image.BasicImagePlaceholderData;
 import de.underdocx.enginelayers.baseengine.modifiers.Modifier;
 import de.underdocx.environment.UnderdocxEnv;
 import de.underdocx.tools.common.Pair;
+import de.underdocx.tools.common.Resource;
 
-import java.net.URL;
+import java.net.URI;
+import java.util.Optional;
 
-public class ExistingImageModifier<C extends DocContainer<D>, D> implements Modifier<C, SimpleDollarImagePlaceholderData, D, ExistingImageModifierData> {
+public class ExistingImageModifier<C extends DocContainer<D>, P extends BasicImagePlaceholderData, D> implements Modifier<C, P, D, ExistingImageModifierData> {
 
     @Override
-    public boolean modify(Selection<C, SimpleDollarImagePlaceholderData, D> selection, ExistingImageModifierData modifierData) {
-        SimpleDollarImagePlaceholderData placeholder = selection.getPlaceholderData();
-        URL importImage = modifierData.getImageURL();
-        Pair<Double, Double> importImageWidthHeight = SimpleDollarImagePlaceholderData.getDimension(importImage);
-        placeholder.exchangeImage(modifierData.getImageURL());
+    public boolean modify(Selection<C, P, D> selection, ExistingImageModifierData modifierData) {
+        BasicImagePlaceholderData placeholder = selection.getPlaceholderData();
+        Pair<Double, Double> importImageWidthHeight;
+        String newName = modifierData.getFileName();
+        Resource resource = modifierData.getResource();
+        Optional<URI> importImageUri = resource.getURI();
+        if (importImageUri.isPresent()) {
+            importImageWidthHeight = BasicImagePlaceholderData.getDimension(importImageUri.get());
+            placeholder.exchangeImage(importImageUri.get());
+        } else {
+            importImageWidthHeight = BasicImagePlaceholderData.getDimension(resource);
+            placeholder.exchangeImage(resource, newName);
+        }
         UnderdocxEnv.getInstance().logger.trace("new image dimension; " + importImageWidthHeight);
         if (modifierData.isKeepWidth()) {
             String newHeightUnit = placeholder.getWidthUnit();
@@ -55,6 +65,8 @@ public class ExistingImageModifier<C extends DocContainer<D>, D> implements Modi
             UnderdocxEnv.getInstance().logger.trace("calculated width: " + width);
             placeholder.setWidth(width, newWidthUnit);
         }
+        String title = modifierData.getTitle();
+        placeholder.setName(title == null ? newName : title);
         return true;
     }
 }

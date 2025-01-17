@@ -25,40 +25,41 @@ SOFTWARE.
 package de.underdocx.enginelayers.defaultodtengine.commands.internal.datapicker;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import de.underdocx.enginelayers.modelengine.model.ModelNode;
 import de.underdocx.enginelayers.modelengine.modelaccess.ModelAccess;
+import de.underdocx.tools.common.Convenience;
 
-import java.net.URI;
+import java.util.Optional;
 
 /**
- * A {@link ExtendedDataPicker} that first tries to resolve a String and interprets it
- * as URL to resolve the binary data as byte[]
+ * An abstract implementation of {@link ExtendedDataPicker} that tries to convert a {@link ModelNode} to requested type
  */
-public class Uri2BinaryDataPicker implements ExtendedDataPicker<byte[]> {
+public abstract class AbstractConvertDataPicker<T> implements ExtendedDataPicker<T> {
 
-    private final ExtendedDataPicker<String> dataPicker;
+    private final ExtendedDataPicker<ModelNode> dataPicker;
 
-    public Uri2BinaryDataPicker(ExtendedDataPicker<String> dataPicker) {
+    public AbstractConvertDataPicker() {
+        this(new AttributeNodeDataPicker());
+    }
+
+    public AbstractConvertDataPicker(ExtendedDataPicker<ModelNode> dataPicker) {
         this.dataPicker = dataPicker;
     }
 
-    public Uri2BinaryDataPicker() {
-        this(new StringConvertDataPicker());
-    }
-
-    public DataPickerResult<byte[]> pickData(String name, ModelAccess modelAccess, JsonNode attributes) {
-        DataPickerResult<String> tmpResult = dataPicker.pickData(name, modelAccess, attributes);
+    public DataPickerResult<T> pickData(String name, ModelAccess modelAccess, JsonNode attributes) {
+        DataPickerResult<ModelNode> tmpResult = dataPicker.pickData(name, modelAccess, attributes);
         if (!tmpResult.isResolved()) {
             return DataPickerResult.convert(null, tmpResult);
         } else {
-            try {
-                byte[] data = URI.create(tmpResult.value).toURL().openConnection().getInputStream().readAllBytes();
-                return DataPickerResult.convert(data, tmpResult);
-            } catch (Exception e) {
-                e.printStackTrace();
-                return DataPickerResult.unresolvedInvalidAttrValue(tmpResult.source);
+            if (tmpResult == null || tmpResult.value.isNull()) {
+                return new DataPickerResult<>(tmpResult.type, tmpResult.source, null);
             }
+            return Convenience.build(result ->
+                    convert(tmpResult.value).ifPresentOrElse(
+                            value -> result.value = DataPickerResult.convert(value, tmpResult),
+                            () -> result.value = DataPickerResult.unresolvedInvalidAttrValue(tmpResult.source)));
         }
     }
 
-
+    abstract Optional<T> convert(ModelNode node);
 }

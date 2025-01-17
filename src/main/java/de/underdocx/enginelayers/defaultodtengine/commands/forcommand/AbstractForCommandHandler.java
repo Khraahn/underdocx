@@ -34,30 +34,22 @@ import de.underdocx.enginelayers.defaultodtengine.commands.internal.AreaTools;
 import de.underdocx.enginelayers.defaultodtengine.commands.internal.attrinterpreter.PredefinedAttributesInterpreter;
 import de.underdocx.enginelayers.defaultodtengine.commands.internal.attrinterpreter.accesstype.AccessType;
 import de.underdocx.enginelayers.defaultodtengine.commands.internal.attrinterpreter.accesstype.AccessTypeJsonNameInterpreter;
-import de.underdocx.enginelayers.defaultodtengine.commands.internal.attrinterpreter.missingdata.MissingDataConfig;
-import de.underdocx.enginelayers.defaultodtengine.commands.internal.attrinterpreter.missingdata.MissingDataStrategy;
-import de.underdocx.enginelayers.defaultodtengine.commands.internal.attrinterpreter.missingdata.MissingDataSzenario;
 import de.underdocx.enginelayers.defaultodtengine.commands.internal.attrinterpreter.single.AttributeInterpreterFactory;
-import de.underdocx.enginelayers.defaultodtengine.commands.internal.datapicker.AttributeNodeDataPicker;
 import de.underdocx.enginelayers.defaultodtengine.commands.internal.datapicker.DataPickerResult;
-import de.underdocx.enginelayers.defaultodtengine.commands.internal.datapicker.ExtendedDataPicker;
+import de.underdocx.enginelayers.defaultodtengine.commands.internal.datapicker.ListDataPicker;
 import de.underdocx.enginelayers.defaultodtengine.commands.internal.datapicker.PredefinedDataPicker;
-import de.underdocx.enginelayers.defaultodtengine.commands.internal.modifiermodule.missingdata.MissingDataCommandModule;
-import de.underdocx.enginelayers.defaultodtengine.commands.internal.modifiermodule.missingdata.MissingDataCommandModuleConfig;
-import de.underdocx.enginelayers.defaultodtengine.commands.internal.modifiermodule.missingdata.MissingDataCommandModuleResult;
 import de.underdocx.enginelayers.defaultodtengine.modifiers.formodifier.ForModifierData;
 import de.underdocx.enginelayers.modelengine.model.ModelNode;
+import de.underdocx.enginelayers.modelengine.model.simple.ListModelNode;
 import de.underdocx.enginelayers.parameterengine.ParametersPlaceholderData;
 import de.underdocx.environment.err.Problems;
 import de.underdocx.tools.common.Pair;
 import de.underdocx.tools.common.Regex;
-import de.underdocx.tools.odf.OdfTools;
 import org.w3c.dom.Node;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.function.Predicate;
 
 import static de.underdocx.tools.common.Convenience.*;
 
@@ -75,6 +67,8 @@ public abstract class AbstractForCommandHandler<C extends DocContainer<D>, D> ex
     protected static final PredefinedAttributesInterpreter<Optional<String>> getValueStringAttr = AttributeInterpreterFactory.createStringAttributeInterpreter(VALUE_ATTR);
     protected static final PredefinedAttributesInterpreter<Optional<JsonNode>> getValueJsonAttr = AttributeInterpreterFactory.createJsonAttributeInterpreter(VALUE_ATTR);
     protected static final PredefinedAttributesInterpreter<Optional<String>> getAsStrAttr = AttributeInterpreterFactory.createStringAttributeInterpreter(AS_ATTR);
+
+    protected static final PredefinedDataPicker<ModelNode> listPicker = new ListDataPicker().asPredefined(VALUE_ATTR);
 
     public static final String INDEX = "index";
 
@@ -108,24 +102,20 @@ public abstract class AbstractForCommandHandler<C extends DocContainer<D>, D> ex
         Optional<Pair<SelectedNode<ParametersPlaceholderData>, SelectedNode<ParametersPlaceholderData>>> area =
                 AreaTools.findArea(selection.getEngineAccess().lookAhead(null), selection, END_KEY);
         endNode = Problems.INVALID_PLACEHOLDER_STRUCTURE.get(area, "EndFor").right.getNode();
-        MissingDataCommandModuleResult<ModelNode> missingResult =
-                new MissingDataCommandModule<C, D, ModelNode>(
-                        getMissingDataModuleConfig(endNode)
-                ).execute(selection);
-        return switch (missingResult.resultType) {
-            case SKIP -> CommandHandlerResult.IGNORED;
-            case STRATEGY_EXECUTED -> CommandHandlerResult.EXECUTED_RESCAN_REQUIRED;
-            case VALUE_RECEIVED -> {
-                source = missingResult.source;
-                listNode = missingResult.value;
-                asAttributeType = AccessTypeJsonNameInterpreter.DEFAULT.interpretAttributes(placeholderData.getJson(), AS_ATTR);
-                checkAsAttr();
-                asAttrValue = getAsStrAttr.interpretAttributes(placeholderData.getJson()).orElse(null);
-                //new ForMofifier<C, D>().modify(selection, createModifierData());
-                callModifier(createModifierData());
-                yield CommandHandlerResult.EXECUTED_RESCAN_REQUIRED;
-            }
-        };
+        DataPickerResult<ModelNode> listNodeLookup = listPicker.pickData(modelAccess, attributes);
+        source = listNodeLookup.source;
+        if (listNodeLookup.isResolvedNotNull()) {
+            listNode = listNodeLookup.value;
+        } else {
+            listNode = new ListModelNode();
+        }
+
+        asAttributeType = AccessTypeJsonNameInterpreter.DEFAULT.interpretAttributes(placeholderData.getJson(), AS_ATTR);
+        checkAsAttr();
+        asAttrValue = getAsStrAttr.interpretAttributes(placeholderData.getJson()).orElse(null);
+        callModifier(createModifierData());
+
+        return CommandHandlerResult.EXECUTED_RESCAN_REQUIRED;
     }
 
     protected abstract void callModifier(ForModifierData forModifierData);
@@ -141,49 +131,6 @@ public abstract class AbstractForCommandHandler<C extends DocContainer<D>, D> ex
         ) {
             Problems.MISSING_VALUE.fireProperty("$as");
         }
-    }
-
-    private MissingDataCommandModuleConfig<ModelNode> getMissingDataModuleConfig(Node endNode) {
-        return new MissingDataCommandModuleConfig<>() {
-            @Override
-            public PredefinedDataPicker<ModelNode> getDataPicker() {
-                return ((ExtendedDataPicker<ModelNode>) (name, modelAccess, jsonNode) -> {
-                    DataPickerResult<ModelNode> tmpResult = new AttributeNodeDataPicker().pickData(name, modelAccess, jsonNode);
-                    if (!tmpResult.isResolved()) {
-                        return tmpResult;
-                    } else {
-                        if (tmpResult.value == null || tmpResult.value.getType() != ModelNode.ModelNodeType.LIST) {
-                            return DataPickerResult.unresolvedInvalidAttrValue(tmpResult.source);
-                        } else {
-                            return tmpResult;
-                        }
-                    }
-                }).asPredefined(VALUE_ATTR);
-            }
-
-            @Override
-            public Predicate<ModelNode> getIsEmptyPredicate() {
-                return test -> test == null || test.isNull() || test.getSize() == 0;
-            }
-
-            @Override
-            public MissingDataConfig getMissingDataConfig() {
-                MissingDataConfig config = new MissingDataConfig();
-                config.setStrategy(MissingDataSzenario.NULL, MissingDataStrategy.DELETE_PLACEHOLDER_DELETE_AREA);
-                config.setStrategy(MissingDataSzenario.EMPTY, MissingDataStrategy.DELETE_PLACEHOLDER_DELETE_AREA);
-                return config;
-            }
-
-            @Override
-            public Node getAreaEnd() {
-                return endNode;
-            }
-
-            @Override
-            public Node getCommonAncestor() {
-                return OdfTools.findOldestParagraphOrTable(getAreaEnd()).get();
-            }
-        };
     }
 
 

@@ -39,10 +39,14 @@ import java.util.Optional;
 
 public class ForRowsCommandHandler<C extends DocContainer<D>, D> extends AbstractForCommandHandler<C, D> {
 
+    public static String ROWGROUPSIZE_ATTR = "rowgroupsize";
+
     private static PredefinedAttributesInterpreter<Optional<List<Integer>>> rowsListInterpreter =
             AttributeInterpreterFactory.createIntListAttributeInterpreter(TABLEROW_ATTR);
     private static PredefinedAttributesInterpreter<Optional<Integer>> rowsIntInterpreter =
             AttributeInterpreterFactory.createIntegerAttributeInterpreter(TABLEROW_ATTR);
+    private static PredefinedAttributesInterpreter<Optional<Integer>> groupSizeInterpreter =
+            AttributeInterpreterFactory.createIntegerAttributeInterpreter(ROWGROUPSIZE_ATTR);
 
     @Override
     protected void callModifier(ForModifierData forModifierData) {
@@ -53,8 +57,9 @@ public class ForRowsCommandHandler<C extends DocContainer<D>, D> extends Abstrac
         } else {
             range = new Range(Problems.INVALID_VALUE.get(rowsIntInterpreter.interpretAttributes(attributes), TABLEROW_ATTR, null));
         }
+        int rowGroupSize = groupSizeInterpreter.interpretAttributes(attributes).orElse(1);
         ForRowsModifierData.DefaultForRowsModifierData modifierData
-                = new ForRowsModifierData.DefaultForRowsModifierData(forModifierData, range);
+                = new ForRowsModifierData.DefaultForRowsModifierData(forModifierData, range, rowGroupSize);
         new ForRowsModifier<C, D>().modify(selection, modifierData);
     }
 

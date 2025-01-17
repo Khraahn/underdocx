@@ -64,4 +64,18 @@ public class ImportTest extends AbstractOdtTest {
         assertNoPlaceholders(doc);
         assertOrder(doc, "Begin", "Lorem ipsum", "1A", "---", "End");
     }
+
+    @Test
+    public void testImportResource() throws IOException {
+        OdtContainer doc = new OdtContainer("""
+                Begin
+                ${Import $resource:"resourceDoc"}
+                End""");
+        DefaultODTEngine engine = new DefaultODTEngine(doc);
+        engine.pushVariable("resourceDoc", new LeafModelNode<>(readResource("Source.odt")));
+        engine.run();
+        // show(doc);
+        assertNoPlaceholders(doc);
+        assertOrder(doc, "Begin", "Lorem ipsum", "1A", "---", "End");
+    }
 }

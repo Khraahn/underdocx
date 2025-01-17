@@ -34,12 +34,8 @@ import de.underdocx.enginelayers.defaultodtengine.commands.internal.attrinterpre
 import de.underdocx.enginelayers.defaultodtengine.commands.internal.attrinterpreter.missingdata.MissingDataSzenario;
 import de.underdocx.enginelayers.defaultodtengine.commands.internal.datapicker.DataPickerResult;
 import de.underdocx.enginelayers.defaultodtengine.commands.internal.modifiermodule.AbstractCommandModule;
-import de.underdocx.enginelayers.defaultodtengine.modifiers.deletearea.DeleteAreaModifier;
-import de.underdocx.enginelayers.defaultodtengine.modifiers.internal.AreaModifierWithCommonAncestorData;
 import de.underdocx.enginelayers.parameterengine.ParametersPlaceholderData;
 import de.underdocx.environment.err.Problems;
-import de.underdocx.tools.common.Pair;
-import org.w3c.dom.Node;
 
 public class MissingDataCommandModule<C extends DocContainer<D>, D, M> extends AbstractCommandModule<C, ParametersPlaceholderData, D, MissingDataCommandModuleResult<M>, MissingDataCommandModuleConfig<M>> {
 
@@ -92,7 +88,6 @@ public class MissingDataCommandModule<C extends DocContainer<D>, D, M> extends A
             case DELETE_PLACEHOLDER_DELETE_PARAGRAPH -> new DeletePlaceholderModifier<C, ParametersPlaceholderData, D>()
                     .modify(selection, new DeletePlaceholderModifierData.Simple(
                             DeletePlaceholderModifierData.Strategy.DELETE_PARAGRAPH, true));
-            case DELETE_PLACEHOLDER_DELETE_AREA -> deleteAreaOdf();
             case KEEP_PLACEHOLDER -> {/* Nothing to do*/}
             default -> Problems.UNEXPECTED_TYPE_DETECTED.fireValue(strategy.name());
         }
@@ -104,12 +99,4 @@ public class MissingDataCommandModule<C extends DocContainer<D>, D, M> extends A
         new ReplaceWithTextModifier<C, ParametersPlaceholderData, D>().modify(selection, fallback);
     }
 
-    private void deleteAreaOdf() {
-        Node endNode = configuration.getAreaEnd();
-        Node commonAncestor = configuration.getCommonAncestor();
-        DeleteAreaModifier.deleteArea(
-                new AreaModifierWithCommonAncestorData.DefaultAreaModifierWithCommonAncestorData(
-                        new Pair<>(selection.getNode(), endNode),
-                        commonAncestor));
-    }
 }

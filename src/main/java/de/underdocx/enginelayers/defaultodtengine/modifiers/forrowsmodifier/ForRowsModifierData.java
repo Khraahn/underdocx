@@ -35,14 +35,18 @@ import java.util.List;
 public interface ForRowsModifierData extends ForModifierData {
     Range getRepeatRows();
 
+    int getRowGroupSize();
+
     class DefaultForRowsModifierData implements ForRowsModifierData {
 
         private final Range rows;
         private final ForModifierData wrapped;
+        private final int rowGroupSize;
 
-        public DefaultForRowsModifierData(ForModifierData wrapped, Range repeatRows) {
+        public DefaultForRowsModifierData(ForModifierData wrapped, Range repeatRows, int rowGroupSize) {
             this.wrapped = wrapped;
             this.rows = repeatRows;
+            this.rowGroupSize = rowGroupSize;
         }
 
         @Override
@@ -63,6 +67,11 @@ public interface ForRowsModifierData extends ForModifierData {
         @Override
         public Range getRepeatRows() {
             return rows;
+        }
+
+        @Override
+        public int getRowGroupSize() {
+            return rowGroupSize;
         }
     }
 }

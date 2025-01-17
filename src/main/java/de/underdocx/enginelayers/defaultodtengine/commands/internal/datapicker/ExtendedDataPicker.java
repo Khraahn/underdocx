@@ -46,7 +46,17 @@ public interface ExtendedDataPicker<T> {
     }
 
     default PredefinedDataPicker<T> asPredefined(String name) {
-        return (modelAccess, jsonNode) -> ExtendedDataPicker.this.pickData(name, modelAccess, jsonNode);
+        return new PredefinedDataPicker<>() {
+            @Override
+            public DataPickerResult<T> pickData(ModelAccess modelAccess, JsonNode jsonNode) {
+                return ExtendedDataPicker.this.pickData(name, modelAccess, jsonNode);
+            }
+
+            @Override
+            public String getName() {
+                return name;
+            }
+        };
     }
 
 }

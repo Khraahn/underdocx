@@ -24,6 +24,8 @@ SOFTWARE.
 
 package de.underdocx.tools.odf;
 
+import de.underdocx.common.doc.odf.OdtContainer;
+import de.underdocx.tools.common.Convenience;
 import de.underdocx.tools.tree.Nodes;
 import org.odftoolkit.odfdom.dom.element.OdfStylableElement;
 import org.odftoolkit.odfdom.dom.element.office.OfficeTextElement;
@@ -31,6 +33,7 @@ import org.odftoolkit.odfdom.dom.element.table.TableTableElement;
 import org.odftoolkit.odfdom.dom.element.text.TextParagraphElementBase;
 import org.odftoolkit.odfdom.pkg.OdfFileDom;
 import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 
 import java.util.Optional;
 
@@ -62,8 +65,26 @@ public class OdfTools {
         } else {
             return Optional.empty();
         }
-
     }
 
+    public static Optional<Node> findFirstParagraphOrTableChild(OdtContainer doc) {
+        return Convenience.buildOptional(result -> {
+            Nodes.findFirstDescendantNode(doc.getContentRoot(), "office:text").ifPresent(node ->
+                    findFirstParagraphOrTableChild((OfficeTextElement) node).ifPresent(found ->
+                            result.value = found));
+        });
+    }
 
+    public static Optional<Node> findFirstParagraphOrTableChild(OfficeTextElement content) {
+        NodeList list = content.getChildNodes();
+        for (int i = 0; i < list.getLength(); i++) {
+            Node node = list.item(i);
+            if (node instanceof TextParagraphElementBase) {
+                return Optional.of(node);
+            } else if (node instanceof TableTableElement) {
+                return Optional.of(node);
+            }
+        }
+        return Optional.empty();
+    }
 }

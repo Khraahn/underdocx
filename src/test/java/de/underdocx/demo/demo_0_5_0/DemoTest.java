@@ -47,7 +47,7 @@ public class DemoTest extends AbstractOdtTest {
         engine.pushVariable("header", new LeafModelNode<>(readData("header.odt")));
 
         engine.run();
-        show(doc);
+        //show(doc);
         doc.save(os);
 
         if (UnderdocxEnv.isLibreOfficeInstalled()) {

@@ -27,7 +27,6 @@ package de.underdocx.enginelayers.modelengine.model.simple;
 import java.io.InputStream;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
-import java.util.List;
 import java.util.Map;
 
 public class MapModelNode extends AbstractPredefinedModelNode<Map<String, AbstractModelNode<?>>> {
@@ -51,14 +50,6 @@ public class MapModelNode extends AbstractPredefinedModelNode<Map<String, Abstra
         if (map != null)
             //noinspection unchecked
             this.containedValue = (Map<String, AbstractModelNode<?>>) create(map).containedValue;
-        else
-            this.containedValue = new LinkedHashMap<>();
-    }
-
-    public MapModelNode(List<Object> list) {
-        if (list != null)
-            //noinspection unchecked
-            this.containedValue = (Map<String, AbstractModelNode<?>>) create(list).containedValue;
         else
             this.containedValue = new LinkedHashMap<>();
     }

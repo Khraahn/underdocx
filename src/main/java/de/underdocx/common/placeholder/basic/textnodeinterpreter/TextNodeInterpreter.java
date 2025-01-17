@@ -77,4 +77,6 @@ public interface TextNodeInterpreter {
 
     void setNodeText(Node node, String text);
 
+    void appendNodeText(Node node, String text);
+
 }

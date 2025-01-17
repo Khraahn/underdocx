@@ -52,6 +52,7 @@ public class DeleteAreaModifier<C extends DocContainer<D>, D> extends AbstractAr
         Node ancestor = modifierData.getCommonAncestor();
         TreeSplitter.split(a.left, ancestor, OdfTextNodeInterpreter.INSTANCE);
         TreeSplitter.split(a.right, ancestor, OdfTextNodeInterpreter.INSTANCE);
-        Nodes.deleteNodes(Nodes.getSiblings(a.left, a.right));
+
+        Nodes.deleteNodes(Nodes.getSiblings(Nodes.findAncestorChild(a.left, ancestor).get(), Nodes.findAncestorChild(a.right, ancestor).get()));
     }
 }

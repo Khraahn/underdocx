@@ -29,12 +29,12 @@ import de.underdocx.environment.UnderdocxEnv;
 import java.util.Optional;
 
 public interface Codec<P> {
-    
+
     default Optional<P> tryParse(String string) {
         try {
             return Optional.ofNullable(parse(string));
         } catch (Exception e) {
-            UnderdocxEnv.getInstance().logger.warn(e);
+            UnderdocxEnv.getInstance().logger.info("can not parse: " + string);
             return Optional.empty();
         }
     }

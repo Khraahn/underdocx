@@ -10,6 +10,7 @@ import de.underdocx.tools.odf.ParagraphWalker;
 import de.underdocx.tools.odf.constants.OdfAttribute;
 import de.underdocx.tools.odf.constants.OdfElement;
 import de.underdocx.tools.tree.Nodes;
+import de.underdocx.tools.tree.TreeWalker;
 import org.odftoolkit.odfdom.doc.OdfTextDocument;
 import org.odftoolkit.odfdom.dom.element.text.TextParagraphElementBase;
 import org.odftoolkit.odfdom.incubator.search.TextNavigation;
@@ -134,6 +135,18 @@ public class AbstractOdtTest extends AbstractTest {
         assertThat(countParagraphs(doc)).isEqualTo(expectation);
     }
 
+    protected int countElements(Node node, String elementName) {
+        TreeWalker walker = new TreeWalker(node, node);
+        int count = 0;
+        while (walker.hasNext()) {
+            TreeWalker.VisitState state = walker.next();
+            if (state.isBeginVisit() && state.getNode().getNodeName().equals(elementName)) {
+                count++;
+            }
+        }
+        return count;
+    }
+
     /*
 
     -- Creation
@@ -162,6 +175,11 @@ public class AbstractOdtTest extends AbstractTest {
         @Override
         public void setNodeText(Node node, String text) {
             Nodes.setNodeText(node, text);
+        }
+
+        @Override
+        public void appendNodeText(Node node, String text) {
+            Nodes.appendNodeText(node, text);
         }
     };
 

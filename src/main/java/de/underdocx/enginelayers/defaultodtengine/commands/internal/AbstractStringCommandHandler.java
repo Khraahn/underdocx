@@ -40,7 +40,7 @@ public abstract class AbstractStringCommandHandler<C extends DocContainer<D>, D>
 
     protected CommandHandlerResult tryExecuteTextualCommand() {
         StringOutputCommandModule<C, D> module = new StringOutputCommandModule<>(getConfig());
-        return module.execute(selection) ? CommandHandlerResult.EXECUTED : CommandHandlerResult.IGNORED;
+        return module.execute(selection);
     }
 
     protected abstract StringOutputModuleConfig getConfig();

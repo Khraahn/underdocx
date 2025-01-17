@@ -24,46 +24,8 @@ SOFTWARE.
 
 package de.underdocx.enginelayers.baseengine.internal.placeholdersprovider.dollar.image;
 
-import de.underdocx.environment.err.Problems;
-import de.underdocx.tools.common.Pair;
-
-import javax.imageio.ImageIO;
-import java.awt.image.BufferedImage;
-import java.io.IOException;
-import java.net.URL;
-
-public interface SimpleDollarImagePlaceholderData {
-
-    String getWidthUnit();
-
-    String getWidthAttr();
-
-    String getHeightAttr();
-
-    String getName();
+public interface SimpleDollarImagePlaceholderData extends BasicImagePlaceholderData {
 
     String getVariableName();
-
-    double getWidthValue();
-
-    String getHeightUnit();
-
-    double getHeightValue();
-
-    void setWidth(double value, String unit);
-
-    void setHeight(double value, String unit);
-
-    void exchangeImage(URL imageUrl);
-
-    static Pair<Double, Double> getDimension(URL url) {
-        try {
-            BufferedImage bufferedImage = ImageIO.read(url);
-            return new Pair<>((double) bufferedImage.getWidth(), (double) bufferedImage.getHeight());
-        } catch (IOException e) {
-            return Problems.IO_EXCEPTION.fire(e);
-        }
-    }
-
 
 }

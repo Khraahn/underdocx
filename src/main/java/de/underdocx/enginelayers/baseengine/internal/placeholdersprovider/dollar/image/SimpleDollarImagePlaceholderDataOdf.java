@@ -28,15 +28,13 @@ import de.underdocx.common.doc.odf.OdfContainer;
 import de.underdocx.environment.err.Problems;
 import de.underdocx.tools.common.Pair;
 import de.underdocx.tools.common.Regex;
+import de.underdocx.tools.common.Resource;
 import de.underdocx.tools.odf.OdfLengthUnit;
 import org.odftoolkit.odfdom.dom.element.draw.DrawFrameElement;
 import org.odftoolkit.odfdom.dom.element.draw.DrawImageElement;
 import org.odftoolkit.odfdom.incubator.doc.draw.OdfDrawImage;
 
-import javax.imageio.ImageIO;
-import java.awt.image.BufferedImage;
-import java.io.IOException;
-import java.net.URL;
+import java.net.URI;
 
 public class SimpleDollarImagePlaceholderDataOdf implements SimpleDollarImagePlaceholderData {
 
@@ -79,7 +77,7 @@ public class SimpleDollarImagePlaceholderDataOdf implements SimpleDollarImagePla
         return name.startsWith("$") ? name.substring(1) : name;
     }
 
-    private void setName(String name) {
+    public void setName(String name) {
         elements.left.setDrawNameAttribute(name);
     }
 
@@ -103,10 +101,10 @@ public class SimpleDollarImagePlaceholderDataOdf implements SimpleDollarImagePla
         setHeightAttr(value + unit);
     }
 
-    public void exchangeImage(URL imageUri) {
+    public void exchangeImage(URI imageUri) {
         OdfDrawImage image = new OdfDrawImage(doc.getContentDom());
         try {
-            String packagePath = image.newImage(imageUri.toURI());
+            String packagePath = image.newImage(imageUri);
             elements.right.setXlinkHrefAttribute(packagePath);
             setName(packagePath);
             // TODO set mimetype? String mimeType = OdfFileEntry.getMediaTypeString(imageUri.toString());
@@ -115,14 +113,8 @@ public class SimpleDollarImagePlaceholderDataOdf implements SimpleDollarImagePla
         }
     }
 
-    public static Pair<Double, Double> getDimension(URL url) {
-        try {
-            BufferedImage bufferedImage = ImageIO.read(url);
-            return new Pair<>((double) bufferedImage.getWidth(), (double) bufferedImage.getHeight());
-        } catch (IOException e) {
-            return Problems.IO_EXCEPTION.fire(e);
-        }
+    @Override
+    public void exchangeImage(Resource data, String suffix) {
+        throw new UnsupportedOperationException("This type does not support binary image data");
     }
-
-
 }

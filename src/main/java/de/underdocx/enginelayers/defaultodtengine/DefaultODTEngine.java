@@ -24,6 +24,7 @@ SOFTWARE.
 
 package de.underdocx.enginelayers.defaultodtengine;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import de.underdocx.common.doc.odf.OdtContainer;
 import de.underdocx.enginelayers.baseengine.CommandHandler;
 import de.underdocx.enginelayers.baseengine.PlaceholdersProvider;
@@ -33,10 +34,14 @@ import de.underdocx.enginelayers.baseengine.internal.placeholdersprovider.dollar
 import de.underdocx.enginelayers.baseengine.internal.placeholdersprovider.dollar.image.SimpleDollarImagePlaceholdersProvider;
 import de.underdocx.enginelayers.defaultodtengine.commands.*;
 import de.underdocx.enginelayers.defaultodtengine.commands.forcommand.ForCommandHandler;
+import de.underdocx.enginelayers.defaultodtengine.commands.forcommand.ForListCommandHandler;
 import de.underdocx.enginelayers.defaultodtengine.commands.forcommand.ForRowsCommandHandler;
+import de.underdocx.enginelayers.defaultodtengine.commands.image.ImagePlaceholdersProvider;
 import de.underdocx.enginelayers.modelengine.MCommandHandler;
 import de.underdocx.enginelayers.modelengine.ModelEngine;
 import de.underdocx.enginelayers.modelengine.model.ModelNode;
+import de.underdocx.enginelayers.modelengine.model.simple.AbstractPredefinedModelNode;
+import de.underdocx.enginelayers.modelengine.model.simple.LeafModelNode;
 import de.underdocx.enginelayers.modelengine.model.simple.ReflectionModelNode;
 import de.underdocx.enginelayers.parameterengine.ParametersPlaceholderData;
 import de.underdocx.enginelayers.parameterengine.ParametersPlaceholderProvider;
@@ -46,8 +51,7 @@ import de.underdocx.environment.err.Problems;
 import de.underdocx.tools.common.Regex;
 import org.odftoolkit.odfdom.doc.OdfTextDocument;
 
-import java.net.MalformedURLException;
-import java.net.URL;
+import java.net.URI;
 import java.util.Optional;
 import java.util.function.Function;
 import java.util.regex.Pattern;
@@ -57,6 +61,8 @@ public class DefaultODTEngine {
     private final SimpleDollarImagePlaceholdersProvider simpleDollarImage;
     private final SimpleDollarPlaceholdersProvider<OdtContainer, OdfTextDocument> simpleDollar;
     private final ParametersPlaceholderProvider<OdtContainer, OdfTextDocument> parameters;
+    private final ImagePlaceholdersProvider imagePlaceholdersProvider;
+    private final MultiCommandHandler<OdtContainer, OdfTextDocument> multiCommandHandler = new MultiCommandHandler<>();
 
     private final ModelEngine<OdtContainer, OdfTextDocument> engine;
 
@@ -74,6 +80,19 @@ public class DefaultODTEngine {
         engine.registerCommandHandler(parameters, new IfCommandHandler<>());
         engine.registerCommandHandler(parameters, new ForRowsCommandHandler<>());
         engine.registerCommandHandler(parameters, new ImportCommandHander());
+        engine.registerCommandHandler(imagePlaceholdersProvider, new ImageCommandHandler());
+        engine.registerCommandHandler(parameters, new ForListCommandHandler<>());
+        engine.registerCommandHandler(parameters, new PageStyleCommandHandler<>());
+        engine.registerCommandHandler(parameters, new ExportCommandHandler());
+        engine.registerCommandHandler(parameters, multiCommandHandler);
+    }
+
+    public void registerStringReplacement(Regex key, String replacement, boolean forceRescan) {
+        multiCommandHandler.registerStringReplacement(key, replacement, forceRescan);
+    }
+
+    public void registerStringReplacement(String key, String replacement) {
+        multiCommandHandler.registerStringReplacement(key, replacement);
     }
 
     public DefaultODTEngine(OdtContainer doc) {
@@ -81,6 +100,7 @@ public class DefaultODTEngine {
         simpleDollar = new SimpleDollarPlaceholdersProvider<>(doc);
         simpleDollarImage = new SimpleDollarImagePlaceholdersProvider(doc);
         parameters = new ParametersPlaceholderProvider<>(doc);
+        imagePlaceholdersProvider = new ImagePlaceholdersProvider(doc);
         registerDefaultCommandHandlers();
     }
 
@@ -106,7 +126,7 @@ public class DefaultODTEngine {
         );
     }
 
-    public void registerSimpleDollarImageReplaceFunction(Function<String, Optional<URL>> replaceFunction, boolean keepWidth) {
+    public void registerSimpleDollarImageReplaceFunction(Function<String, Optional<URI>> replaceFunction, boolean keepWidth) {
         registerCommandHandler(simpleDollarImage, new SimpleDollarImageReplaceCommand<>(replaceFunction, keepWidth));
     }
 
@@ -114,13 +134,13 @@ public class DefaultODTEngine {
         this.registerSimpleDollarImageReplacement(Pattern.compile(Pattern.quote(variableName)), imageURL, keepWidth);
     }
 
-    public void registerSimpleDollarImageReplacement(Pattern pattern, String imageURL, boolean keepWidth) {
+    public void registerSimpleDollarImageReplacement(Pattern pattern, String imageURI, boolean keepWidth) {
         this.registerSimpleDollarImageReplaceFunction(variableName ->
                 {
                     try {
-                        return new Regex(pattern).matches(variableName) ? Optional.of(new URL(imageURL)) : Optional.empty();
-                    } catch (MalformedURLException e) {
-                        return Problems.INVALID_VALUE.toProblem().value(imageURL).exception(e).fire();
+                        return new Regex(pattern).matches(variableName) ? Optional.of(new URI(imageURI)) : Optional.empty();
+                    } catch (Exception e) {
+                        return Problems.INVALID_VALUE.toProblem().value(imageURI).exception(e).fire();
                     }
                 }, keepWidth
         );
@@ -149,6 +169,14 @@ public class DefaultODTEngine {
 
     public void pushVariable(String name, Object object, ReflectionModelNode.Resolver resolver) {
         engine.pushVariable(name, new ReflectionModelNode(object, resolver));
+    }
+
+    public void pushLeafVariable(String name, Object value) {
+        engine.pushVariable(name, new LeafModelNode<>(value));
+    }
+
+    public void pushJsonVariable(String name, String json) throws JsonProcessingException {
+        pushVariable(name, AbstractPredefinedModelNode.createFromJson(json));
     }
 
 

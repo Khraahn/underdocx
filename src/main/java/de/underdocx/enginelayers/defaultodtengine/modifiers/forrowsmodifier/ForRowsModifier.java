@@ -48,6 +48,7 @@ import java.util.Optional;
 public class ForRowsModifier<C extends DocContainer<D>, D> extends AbstractAreaModifier<C, ParametersPlaceholderData, D, ForRowsModifierData> {
     @Override
     protected boolean modify() {
+        Problems.INVALID_VALUE.check(modifierData.getRepeatRows().getLength() % modifierData.getRowGroupSize() == 0, "rowgroupsize", "" + modifierData.getRowGroupSize());
         List<Node> clonedRows = cloneRows();
         insertPlaceholdersInClonedRows(clonedRows);
         DeletePlaceholderModifier.modify(selection.getNode(), DeletePlaceholderModifierData.DEFAULT);
@@ -57,12 +58,14 @@ public class ForRowsModifier<C extends DocContainer<D>, D> extends AbstractAreaM
 
 
     private void insertPlaceholdersInClonedRows(List<Node> clonedRows) {
-        for (int i = 0; i < clonedRows.size(); i++) {
-            Node currentRow = clonedRows.get(i);
-            Pair<List<ParametersPlaceholderData>, List<ParametersPlaceholderData>> firstLastPlaceholders = modifierData.getNodeReplacement(i);
-            Pair<TableTableCellElement, TableTableCellElement> firstLastCell = getFirstLastCellOfRow(currentRow);
-            insertPlaceholderInCell(firstLastCell.left, firstLastPlaceholders.left, true);
-            insertPlaceholderInCell(firstLastCell.right, firstLastPlaceholders.right, false);
+        for (int group = 0; group < clonedRows.size() / modifierData.getRowGroupSize(); group++) {
+            Node beginRow = clonedRows.get(group * modifierData.getRowGroupSize());
+            Node endRow = clonedRows.get(group * modifierData.getRowGroupSize() + modifierData.getRowGroupSize() - 1);
+            TableTableCellElement firstCell = getFirstCellOfRow(beginRow);
+            TableTableCellElement lastCell = getLastCellOfRow(endRow);
+            Pair<List<ParametersPlaceholderData>, List<ParametersPlaceholderData>> firstLastPlaceholders = modifierData.getNodeReplacement(group);
+            insertPlaceholderInCell(firstCell, firstLastPlaceholders.left, true);
+            insertPlaceholderInCell(lastCell, firstLastPlaceholders.right, false);
         }
     }
 
@@ -83,16 +86,21 @@ public class ForRowsModifier<C extends DocContainer<D>, D> extends AbstractAreaM
     }
 
 
-    private Pair<TableTableCellElement, TableTableCellElement> getFirstLastCellOfRow(Node row) {
+    private TableTableCellElement getFirstCellOfRow(Node row) {
+        return (TableTableCellElement) Nodes.findFirstDescendantNode(row, OdfElement.TABLE_CELL.createFilter()).get();
+    }
+
+    private TableTableCellElement getLastCellOfRow(Node row) {
         List<Node> cells = Nodes.findDescendantNodes(row, OdfElement.TABLE_CELL.createFilter(), true);
-        return new Pair<>((TableTableCellElement) cells.get(0), (TableTableCellElement) cells.get(cells.size() - 1));
+        return (TableTableCellElement) cells.get(cells.size() - 1);
     }
 
     private List<Node> cloneRows() {
+        int requiredNumberOfRows = modifierData.getRepeats() * modifierData.getRowGroupSize();
         List<Node> originRows = findTableAndCloneableRows();
         int originSize = originRows.size();
-        if (modifierData.getRepeats() <= originRows.size()) {
-            for (int i = 0; i < originSize - modifierData.getRepeats(); i++) {
+        if (requiredNumberOfRows <= originRows.size()) {
+            for (int i = 0; i < originSize - requiredNumberOfRows; i++) {
                 Node removedNode = originRows.remove(originSize - i - 1);
                 Nodes.deleteNode(removedNode);
             }
@@ -101,7 +109,7 @@ public class ForRowsModifier<C extends DocContainer<D>, D> extends AbstractAreaM
             return Convenience.buildList(result -> {
                 Node last = originRows.get(originRows.size() - 1);
                 result.addAll(originRows);
-                for (int i = 0; i < modifierData.getRepeats() - originRows.size(); i++) {
+                for (int i = 0; i < requiredNumberOfRows - originRows.size(); i++) {
                     Node toClone = originRows.get(i % originSize);
                     Node clone = toClone.cloneNode(true);
                     Nodes.insertAfter(last, clone);
@@ -138,7 +146,7 @@ public class ForRowsModifier<C extends DocContainer<D>, D> extends AbstractAreaM
         });
     }
 
-    Optional<Node> findTable() {
+    private Optional<Node> findTable() {
         return Convenience.buildOptional(result -> {
             for (Node node : getAreaNodesIterator()) {
                 if (OdfElement.TABLE.is(node)) {
@@ -147,7 +155,6 @@ public class ForRowsModifier<C extends DocContainer<D>, D> extends AbstractAreaM
                 }
             }
         });
-
     }
 
 }
