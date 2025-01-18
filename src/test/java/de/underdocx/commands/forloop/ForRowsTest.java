@@ -35,7 +35,7 @@ public class ForRowsTest extends AbstractOdtTest {
 
     @Test
     public void testTableRows() throws IOException {
-        OdtContainer doc = new OdtContainer(getResource("TableLoop.odt"));
+        OdtContainer doc = new OdtContainer(getInputStream("TableLoop.odt"));
         DefaultODTEngine engine = new DefaultODTEngine(doc);
         engine.run();
         //show(doc);
@@ -48,7 +48,7 @@ public class ForRowsTest extends AbstractOdtTest {
 
     @Test
     public void testTableRowGroups() throws IOException {
-        OdtContainer doc = new OdtContainer(getResource("TableLoopGroups.odt"));
+        OdtContainer doc = new OdtContainer(getInputStream("TableLoopGroups.odt"));
         DefaultODTEngine engine = new DefaultODTEngine(doc);
         engine.run();
         //show(doc);

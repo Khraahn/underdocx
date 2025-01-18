@@ -27,10 +27,13 @@ package de.underdocx.demo.demo_0_6_0;
 import de.underdocx.AbstractOdtTest;
 import de.underdocx.common.doc.odf.OdtContainer;
 import de.underdocx.enginelayers.defaultodtengine.DefaultODTEngine;
+import de.underdocx.enginelayers.modelengine.model.ModelNode;
+import de.underdocx.enginelayers.modelengine.model.simple.ModelBuilder;
 import de.underdocx.environment.UnderdocxEnv;
 import org.junit.jupiter.api.Test;
 
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
@@ -38,29 +41,31 @@ public class DemoTest extends AbstractOdtTest {
 
     @Test
     public void testDemoDoc() throws Exception {
-        InputStream is = getResource("demo.odt");
-        byte[] fragment = readData("header.odt");
+        InputStream is = getInputStream("template.odt");
         OutputStream os = new FileOutputStream(createFileInTempDir("demo0.6.0out.odt"));
-        String uri1 = createTmpUri(getResource("image1.png"), ".png");
-        String uri2 = createTmpUri(getResource("image2.png"), ".png");
-        String uri3 = createTmpUri(getResource("image3.png"), ".png");
 
-        String persons = """
-                [
-                    {firstName: "Hans", lastName:"Müller", birthDate:"1975-10-02", member:false, imageTitle: "Hans", imageName:"hans.png", imageUri:"%s"},
-                    {firstName: "Helene", lastName:"Schäfer", birthDate:"2013-02-02", member:true, imageTitle: "Helene", imageName:"helene.png", imageUri:"%s"},
-                    {firstName: "Lea", lastName:"Fischer", birthDate:"1999-08-12", member:false, imageTitle: "Lea", imageName:"lea.png", imageUri:"%s"}
-                ]
-                """.formatted(uri1, uri2, uri3);
-
+        // Prepare document and engine
         OdtContainer doc = new OdtContainer(is);
         DefaultODTEngine engine = new DefaultODTEngine(doc);
-        engine.pushLeafVariable("header", fragment);
-        engine.pushJsonVariable("persons", persons);
 
+        // Alias placeholders
+        engine.registerStringReplacement("addHeaderAndFooter", "${Export $resource:\"master\"} ");
+        engine.registerStringReplacement("membersTable", "${Import $resource:\"membersTable\"} ");
+
+        // Variables / Data
+        engine.pushLeafVariable("membersTable", readResource("membertable.odt"));
+        engine.pushLeafVariable("master", readResource("master.odt"));
+        engine.pushLeafVariable("signatureImage", readResource("signature.png"));
+        engine.pushVariable("persons", createPersonsData());
+        engine.pushVariable("address", "Mr. Peter Silie\nKochstrasse 42\n38106 Braunschweig");
+        engine.pushVariable("contact", "Mr. Silie");
+        engine.pushVariable("signature", "Jon Sutton");
+
+        // Execute the engine
         engine.run();
-        //show(doc);
         doc.save(os);
+        show(doc);
+
 
         if (UnderdocxEnv.isLibreOfficeInstalled()) {
             OutputStream pos = new FileOutputStream(createFileInTempDir("demo0.6.0out.pdf"));
@@ -68,6 +73,43 @@ public class DemoTest extends AbstractOdtTest {
         }
 
         assertNoPlaceholders(doc);
+    }
+
+    private ModelNode createPersonsData() throws IOException {
+        ModelNode data = ModelBuilder
+                /*  */.beginList()
+
+                /*    */.beginMap()
+                /*      */.add("firstName", "Hans")
+                /*      */.add("lastName", "Müller")
+                /*      */.add("birthDate", "1975-02-01")
+                /*      */.add("imageTitle", "Hans")
+                /*      */.add("imageName", "hans.png")
+                /*      */.addObj("imageResource", readResource("image1.png"))
+                /*    */.end()
+
+                /*    */.beginMap()
+                /*      */.add("firstName", "Helene")
+                /*      */.add("lastName", "Schäfer")
+                /*      */.add("birthDate", "2009-05-03")
+                /*      */.add("imageTitle", "Helene")
+                /*      */.add("imageName", "helene.png")
+                /*      */.addObj("imageResource", readResource("image2.png"))
+                /*    */.end()
+
+                /*    */.beginMap()
+                /*      */.add("firstName", "Lea")
+                /*      */.add("lastName", "Fischer")
+                /*      */.add("birthDate", "1999-12-03")
+                /*      */.add("imageTitle", "Lea")
+                /*      */.add("imageName", "lea.png")
+                /*      */.addObj("imageResource", readResource("image3.png"))
+                /*    */.end()
+
+                /*  */.end()
+                /*  */.build();
+
+        return data;
     }
 
 }

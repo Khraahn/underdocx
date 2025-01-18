@@ -38,8 +38,8 @@ public class Demo_0_4_0_Test extends AbstractOdtTest {
 
     @Test
     public void testDemoDoc() throws Exception {
-        InputStream is = getResource("demo0.4.0.odt");
-        String imageURL = createTmpUri(getResource("smile.png"), "png");
+        InputStream is = getInputStream("demo0.4.0.odt");
+        String imageURL = createTmpUri(getInputStream("smile.png"), "png");
         OutputStream os = new FileOutputStream(createFileInTempDir("demo0.4.0out.odt"));
 
 

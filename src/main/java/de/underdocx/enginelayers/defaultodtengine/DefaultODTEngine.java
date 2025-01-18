@@ -178,8 +178,7 @@ public class DefaultODTEngine {
     public void pushJsonVariable(String name, String json) throws JsonProcessingException {
         pushVariable(name, AbstractPredefinedModelNode.createFromJson(json));
     }
-
-
+    
     public Optional<Problem> run() {
         return engine.run();
     }

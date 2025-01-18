@@ -40,7 +40,7 @@ public class Demo_0_1_0_Test extends AbstractOdtTest {
 
     @Test
     public void testDemoDoc() throws IOException {
-        InputStream is = getResource("demo0.1.0.odt");
+        InputStream is = getInputStream("demo0.1.0.odt");
         OutputStream os = new FileOutputStream(createFileInTempDir("demo0.1.0out.odt"));
 
 

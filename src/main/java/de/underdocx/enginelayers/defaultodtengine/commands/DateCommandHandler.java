@@ -25,49 +25,34 @@ SOFTWARE.
 package de.underdocx.enginelayers.defaultodtengine.commands;
 
 import de.underdocx.common.doc.DocContainer;
-import de.underdocx.enginelayers.defaultodtengine.commands.internal.AbstractStringCommandHandler;
-import de.underdocx.enginelayers.defaultodtengine.commands.internal.datapicker.AttributeNodeDataPicker;
-import de.underdocx.enginelayers.defaultodtengine.commands.internal.datapicker.DataPickerResult;
-import de.underdocx.enginelayers.defaultodtengine.commands.internal.modifiermodule.stringoutput.StringOutputModuleConfig;
-import de.underdocx.enginelayers.modelengine.model.ModelNode;
-import de.underdocx.enginelayers.modelengine.model.simple.LeafModelNode;
+import de.underdocx.enginelayers.baseengine.modifiers.stringmodifier.ReplaceWithTextModifier;
+import de.underdocx.enginelayers.defaultodtengine.commands.internal.AbstractTextualCommandHandler;
+import de.underdocx.enginelayers.defaultodtengine.commands.internal.datapicker.PredefinedDataPicker;
+import de.underdocx.enginelayers.defaultodtengine.commands.internal.datapicker.StringConvertDataPicker;
+import de.underdocx.enginelayers.parameterengine.ParametersPlaceholderData;
 import de.underdocx.tools.common.Regex;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
-public class DateCommandHandler<C extends DocContainer<D>, D> extends AbstractStringCommandHandler<C, D> {
+public class DateCommandHandler<C extends DocContainer<D>, D> extends AbstractTextualCommandHandler<C, D> {
+
+    private static PredefinedDataPicker<String> valueDataPicker = new StringConvertDataPicker().asPredefined("value");
+    private static PredefinedDataPicker<String> outputFormatDataPicker = new StringConvertDataPicker().asPredefined("format");
+    private static PredefinedDataPicker<String> inputFormatDataPicker = new StringConvertDataPicker().asPredefined("inputFormat");
+
     public DateCommandHandler() {
         super(new Regex("Date"));
     }
 
     @Override
-
-    protected StringOutputModuleConfig getConfig() {
-        return buildConfig("value", (name, modelAccess, jsonNode) -> {
-            String inFormat = resolveStringByAttr("inputFormat").orElse("yyyy-MM-dd");
-            String outFormat = resolveStringByAttr("format").orElse("yyyy-MM-dd");
-            DataPickerResult<ModelNode> rawResult = new AttributeNodeDataPicker().pickData(name, modelAccess, jsonNode);
-            if (rawResult.isResolved()) {
-                if (rawResult.value != null && rawResult.value.getValue() instanceof String) {
-                    if (rawResult.value != null && rawResult.value.getValue() instanceof String) {
-                        String dateString = rawResult.value.getValue().toString();
-                        DateTimeFormatter inputFormatter = DateTimeFormatter.ofPattern(inFormat);
-                        LocalDate date = LocalDate.parse(dateString, inputFormatter);
-                        DateTimeFormatter outFormatter = DateTimeFormatter.ofPattern(outFormat);
-                        String result = date.format(outFormatter);
-                        return new DataPickerResult<>(
-                                DataPickerResult.ResultType.RESOLVED,
-                                rawResult.source,
-                                new LeafModelNode<>(result));
-                    } else {
-                        return new DataPickerResult<>(DataPickerResult.ResultType.UNRESOLVED_INVALID_VALUE, rawResult.source, null);
-                    }
-                } else {
-                    return new DataPickerResult<>(DataPickerResult.ResultType.UNRESOLVED_MISSING_VALUE, rawResult.source, null);
-                }
-            }
-            return rawResult;
-        });
+    protected CommandHandlerResult tryExecuteTextualCommand() {
+        String inFormat = inputFormatDataPicker.pickData(modelAccess, placeholderData.getJson()).getOptionalValue().orElse("yyyy-MM-dd");
+        String outFormat = outputFormatDataPicker.pickData(modelAccess, placeholderData.getJson()).getOptionalValue().orElse("yyyy-MM-dd");
+        String dateStr = valueDataPicker.pickData(modelAccess, placeholderData.getJson()).getOptionalValue().orElse(null);
+        LocalDate date = dateStr == null ? LocalDate.now() : LocalDate.parse(dateStr, DateTimeFormatter.ofPattern(inFormat));
+        String result = date.format(DateTimeFormatter.ofPattern(outFormat));
+        new ReplaceWithTextModifier<C, ParametersPlaceholderData, D>().modify(selection, result);
+        return CommandHandlerResult.EXECUTED;
     }
 }

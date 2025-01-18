@@ -185,7 +185,7 @@ public class AbstractOdtTest extends AbstractTest {
 
     protected OdtContainer readOdt(String name) {
         try {
-            return new OdtContainer(getResource(name));
+            return new OdtContainer(getInputStream(name));
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

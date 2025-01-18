@@ -35,7 +35,7 @@ public class ForListTest extends AbstractOdtTest {
 
     @Test
     public void testListLoop() throws IOException {
-        OdtContainer doc = new OdtContainer(getResource("ListLoop.odt"));
+        OdtContainer doc = new OdtContainer(getInputStream("ListLoop.odt"));
         DefaultODTEngine engine = new DefaultODTEngine(doc);
         engine.run();
         //show(doc);

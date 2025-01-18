@@ -35,7 +35,7 @@ public class ShortStringFallbackTest extends AbstractOdtTest {
 
     @Test
     public void testFallback() throws Exception {
-        InputStream is = getResource("ShortStringFallback.odt");
+        InputStream is = getInputStream("ShortStringFallback.odt");
 
         OdtContainer doc = new OdtContainer(is);
         DefaultODTEngine engine = new DefaultODTEngine(doc);

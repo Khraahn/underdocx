@@ -29,13 +29,13 @@ public abstract class AbstractTest {
         --- load and create files ---
 
      */
-    protected InputStream getResource(String name) {
+    protected InputStream getInputStream(String name) {
         return this.getClass().getResourceAsStream(name);
     }
 
     protected String getResourceAsString(String name) {
         try {
-            return new String(getResource(name).readAllBytes(), StandardCharsets.UTF_8);
+            return new String(getInputStream(name).readAllBytes(), StandardCharsets.UTF_8);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -124,7 +124,7 @@ public abstract class AbstractTest {
     }
 
     protected byte[] readData(String filename) throws IOException {
-        InputStream is = getResource(filename);
+        InputStream is = getInputStream(filename);
         return is.readAllBytes();
     }
 
@@ -133,7 +133,7 @@ public abstract class AbstractTest {
     }
 
     protected Resource readResource(String filename) throws IOException {
-        InputStream is = getResource(filename);
+        InputStream is = getInputStream(filename);
         return readResource(is);
     }
 

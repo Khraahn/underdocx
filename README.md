@@ -12,18 +12,32 @@ which features are already available and will be released in the future.
 ## Demo
 
 Here is a example to load and manipulate a LibreOffice document with multiple placeholders.
-The first placeholder imports an other sub document.
-The second placeholder defines a variable "data" that contains a list of persons. A Loop
-iterates over these persons and prints out their position and data if available.
+Some of these placeholders stand for simple texts, other represent an other
+document that shall be imported. Images can also represent placeholders that shall be exchanged:
 
 ![Unchanged Doc](src/main/resources/demo/demoUnchanged.png)
 
-Run this code to exchange the placeholders
+This code snipped reads the template document above and replaces the placeholders with data
 
 ```java
+// Prepare document and engine
 OdtContainer doc = new OdtContainer(is);
 DefaultODTEngine engine = new DefaultODTEngine(doc);
-engine.pushVariable("header", new LeafModelNode<>(readData("header.odt")));
+
+// Alias placeholders
+engine.registerStringReplacement("addHeaderAndFooter", "${Export $resource:\"master\"} ");
+engine.registerStringReplacement("membersTable", "${Import $resource:\"membersTable\"} ");
+
+// Variables / Data
+engine.pushLeafVariable("membersTable", readResource("membertable.odt"));
+engine.pushLeafVariable("master", readResource("master.odt"));
+engine.pushLeafVariable("signatureImage", readResource("signature.png"));
+engine.pushVariable("persons", createPersonsData());
+engine.pushVariable("address", "Mr. Peter Silie\nKochstrasse 42\n38106 Braunschweig");
+engine.pushVariable("contact", "Mr. Silie");
+engine.pushVariable("signature", "Jon Sutton");
+
+// Execute the engine
 engine.run();
 doc.save(os);
 ```

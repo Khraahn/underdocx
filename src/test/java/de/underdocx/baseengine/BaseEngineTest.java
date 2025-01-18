@@ -91,11 +91,11 @@ public class BaseEngineTest extends AbstractOdtTest {
 
     @Test
     public void testSimpleImage() throws Exception {
-        OdtContainer doc = new OdtContainer(getResource("ContainsImagePlaceholder.odt"));
+        OdtContainer doc = new OdtContainer(getInputStream("ContainsImagePlaceholder.odt"));
         assertThat(Nodes.findFirstDescendantNode(doc.getContentDom(), node ->
                 (Nodes.attributes(node).getOrDefault("draw:name", "").startsWith("$")
                 )).isPresent());
-        String imageURI = createTmpUri(getResource("image3.jpg"), "jpg");
+        String imageURI = createTmpUri(getInputStream("image3.jpg"), "jpg");
         DefaultODTEngine engine = new DefaultODTEngine(doc);
         engine.registerSimpleDollarImageReplacement("image", imageURI, true);
         engine.run();
@@ -108,14 +108,14 @@ public class BaseEngineTest extends AbstractOdtTest {
 
     @Test
     public void testSimpleImageAndText() throws Exception {
-        OdtContainer doc = new OdtContainer(getResource("ContainsImagePlaceholder.odt"));
+        OdtContainer doc = new OdtContainer(getInputStream("ContainsImagePlaceholder.odt"));
         doc.getDocument().addText("$name");
         assertThat(Nodes.findFirstDescendantNode(doc.getContentDom(), node ->
                 (Nodes.attributes(node).getOrDefault("draw:name", "").startsWith("$")
                 )).isPresent());
         assertContains(doc, "$name");
         //show(doc);
-        String imageURI = createTmpUri(getResource("image3.jpg"), "jpg");
+        String imageURI = createTmpUri(getInputStream("image3.jpg"), "jpg");
         DefaultODTEngine engine = new DefaultODTEngine(doc);
         engine.registerSimpleDollarImageReplacement("image", imageURI, true);
         engine.registerSimpleDollarReplacement("name", "Test");
@@ -141,7 +141,7 @@ public class BaseEngineTest extends AbstractOdtTest {
 
     @Test
     public void testHeaderFooter() throws IOException {
-        InputStream is = getResource("HeaderFooter.odt");
+        InputStream is = getInputStream("HeaderFooter.odt");
 
 
         OdtContainer doc = new OdtContainer(is);
@@ -159,7 +159,7 @@ public class BaseEngineTest extends AbstractOdtTest {
 
     @Test
     public void testSoftLineBreakPlaceholder() throws IOException {
-        InputStream is = getResource("SoftLineBreakPlaceholder.odt");
+        InputStream is = getInputStream("SoftLineBreakPlaceholder.odt");
 
         OdtContainer doc = new OdtContainer(is);
         DefaultODTEngine engine = new DefaultODTEngine(doc);
