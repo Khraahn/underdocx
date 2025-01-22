@@ -66,7 +66,6 @@ public class ReflectionModelTest extends AbstractOdtTest {
         public String getNull() {
             return null;
         }
-
     }
 
     @Test
@@ -91,6 +90,25 @@ public class ReflectionModelTest extends AbstractOdtTest {
                         ? java.util.Optional.of(new LeafModelNode("42"))
                         : Optional.empty());
         engine.run();
+        assertContains(doc, "Item1");
+        assertContains(doc, "42");
+        assertNoPlaceholders(doc);
+    }
+
+    @Test
+    public void testResolve2() {
+        String content = """
+                ${@b.x}
+                ${@b.c[0]}
+                """;
+        OdtContainer doc = new OdtContainer(content);
+        ReflectionModelNode.Resolver resolver = (object, name) -> name.equals("x")
+                ? java.util.Optional.of(new LeafModelNode("42"))
+                : Optional.empty();
+        DefaultODTEngine engine = new DefaultODTEngine(doc);
+        engine.setModel(new TestClassA(), resolver);
+        engine.run();
+        //show(doc);
         assertContains(doc, "Item1");
         assertContains(doc, "42");
         assertNoPlaceholders(doc);

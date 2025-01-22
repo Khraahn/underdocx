@@ -64,7 +64,7 @@ public class DemoTest extends AbstractOdtTest {
         // Execute the engine
         engine.run();
         doc.save(os);
-        show(doc);
+        //show(doc);
 
 
         if (UnderdocxEnv.isLibreOfficeInstalled()) {

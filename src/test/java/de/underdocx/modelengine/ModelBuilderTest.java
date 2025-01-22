@@ -26,6 +26,7 @@ package de.underdocx.modelengine;
 
 import de.underdocx.AbstractTest;
 import de.underdocx.enginelayers.modelengine.model.ModelNode;
+import de.underdocx.enginelayers.modelengine.model.simple.MapModelNode;
 import de.underdocx.enginelayers.modelengine.model.simple.ModelBuilder;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -49,6 +50,16 @@ public class ModelBuilderTest extends AbstractTest {
                 /*    */.end() //
                 /*  */.end() //
                 /*  */.build();
+
+        MapModelNode node = new MapModelNode("""
+                {
+                    persons: [
+                        {birthday: "1975-05-14"},
+                        {birthday: "2021-03-07"}
+                    ]
+                }
+                """);
+
 
         Assertions.assertThat(data.getProperty("projectName").getValue()).isEqualTo("Project");
         Assertions.assertThat(data.getProperty("members").getSize()).isEqualTo(2);

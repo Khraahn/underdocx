@@ -38,7 +38,7 @@ import java.time.format.DateTimeFormatter;
 public class DateCommandHandler<C extends DocContainer<D>, D> extends AbstractTextualCommandHandler<C, D> {
 
     private static PredefinedDataPicker<String> valueDataPicker = new StringConvertDataPicker().asPredefined("value");
-    private static PredefinedDataPicker<String> outputFormatDataPicker = new StringConvertDataPicker().asPredefined("format");
+    private static PredefinedDataPicker<String> outputFormatDataPicker = new StringConvertDataPicker().asPredefined("outputFormat");
     private static PredefinedDataPicker<String> inputFormatDataPicker = new StringConvertDataPicker().asPredefined("inputFormat");
 
     public DateCommandHandler() {

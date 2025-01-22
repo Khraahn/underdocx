@@ -1,17 +1,44 @@
 ![Underdocx](./src/main/resources/logo-title.svg)
 
 Underdocx is an extendable open source framework to manipulate ODT Documents
-(LibreOffice / OpenOffice). It uses different types of placeholders that can be
+(LibreOffice / OpenOffice). It is a template engine and 
+uses different types of placeholders that can be
 found and replaced by custom texts, images, tables and other documents.
 Also documents can be converted to PDF if LibreOffice has been installed.
 
-Underdocx is still under development. See the
-[Release-Plan](https://github.com/winterrifier/underdocx/wiki/Release-Plan)
-which features are already available and will be released in the future.
+![Overview](src/main/resources/overview.png)
+
+## Getting Started
+Add Underdocx as dependency to your project, for example in your pom.xml add:
+```
+<dependency>
+    <groupId>io.github.winterrifier</groupId>
+    <artifactId>underdocx</artifactId>
+    <version>0.6.0</version>
+</dependency>
+```
+
+Now you can use this code to create a simple template that will be
+processed by the template engine:
+
+```java
+public class HelloWorld {
+    public static void main(String[] args) throws IOException {
+        OdtContainer doc = new OdtContainer("Hello ${$name}");
+        DefaultODTEngine engine = new DefaultODTEngine(doc);
+        engine.pushVariable("name", "World");
+        engine.run();
+        File tmpFile = File.createTempFile("Test_", ".odt");
+        doc.save(tmpFile);
+        System.out.println("Document created: %s".formatted(tmpFile));
+    }
+}
+```
+This code will create a ODT-document with prefix "Test_" in your temp folder that contains text "Hello World"
 
 ## Demo
 
-Here is a example to load and manipulate a LibreOffice document with multiple placeholders.
+Here is an example to load and manipulate a LibreOffice document with multiple placeholders.
 Some of these placeholders stand for simple texts, other represent an other
 document that shall be imported. Images can also represent placeholders that shall be exchanged:
 
