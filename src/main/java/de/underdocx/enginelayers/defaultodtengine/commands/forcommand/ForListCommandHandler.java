@@ -26,14 +26,25 @@ package de.underdocx.enginelayers.defaultodtengine.commands.forcommand;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import de.underdocx.common.doc.DocContainer;
+import de.underdocx.enginelayers.defaultodtengine.commands.internal.attrinterpreter.PredefinedAttributesInterpreter;
+import de.underdocx.enginelayers.defaultodtengine.commands.internal.attrinterpreter.single.AttributeInterpreterFactory;
+import de.underdocx.enginelayers.defaultodtengine.modifiers.forlistmodifier.ForListModifier;
+import de.underdocx.enginelayers.defaultodtengine.modifiers.forlistmodifier.ForListModifierData;
 import de.underdocx.enginelayers.defaultodtengine.modifiers.formodifier.ForModifierData;
-import de.underdocx.enginelayers.defaultodtengine.modifiers.formodifier.ForMofifier;
+
+import java.util.Optional;
 
 
 public class ForListCommandHandler<C extends DocContainer<D>, D> extends AbstractForCommandHandler<C, D> {
+
+    private static PredefinedAttributesInterpreter<Optional<Integer>> indexInterpreter =
+            AttributeInterpreterFactory.createIntegerAttributeInterpreter(LISTITEM_ATTR);
+
     @Override
     protected void callModifier(ForModifierData forModifierData) {
-        new ForMofifier<C, D>().modify(selection, forModifierData);
+        Integer listitem = indexInterpreter.interpretAttributes(attributes).orElse(0);
+        ForListModifierData listData = new ForListModifierData.DefaultForListModifierData(forModifierData, listitem);
+        new ForListModifier<C, D>().modify(selection, listData);
     }
 
     @Override
