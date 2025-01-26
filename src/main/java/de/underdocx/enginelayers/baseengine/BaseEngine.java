@@ -40,10 +40,7 @@ import org.w3c.dom.Node;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 import static de.underdocx.tools.common.Convenience.*;
 
@@ -55,6 +52,7 @@ public class BaseEngine<C extends DocContainer<D>, D> {
     protected boolean rescan = true;
 
     protected ArrayListValuedHashMap<PlaceholdersProvider<C, ?, D>, CommandHandler<C, ?, D>> registry = new ArrayListValuedHashMap<>();
+    protected IdentityHashMap<PlaceholdersProvider.Factory<C, ?, D>, PlaceholdersProvider<C, ?, D>> factoryProviderMap = new IdentityHashMap<>();
     protected LinkedHashSet<EngineListener<C, D>> listeners = new LinkedHashSet<>();
 
 
@@ -62,6 +60,14 @@ public class BaseEngine<C extends DocContainer<D>, D> {
         this.doc = doc;
     }
 
+    public <X> BaseEngine<C, D> registerCommandHandler(PlaceholdersProvider.Factory<C, X, D> providerFactory, CommandHandler<C, X, D> commandHandler) {
+        PlaceholdersProvider<C, ?, D> provider = factoryProviderMap.get(providerFactory);
+        if (provider == null) {
+            provider = providerFactory.createProvider(doc);
+            factoryProviderMap.put(providerFactory, provider);
+        }
+        return registerCommandHandler((PlaceholdersProvider<C, X, D>) provider, commandHandler);
+    }
 
     public <X> BaseEngine<C, D> registerCommandHandler(PlaceholdersProvider<C, X, D> provider, CommandHandler<C, X, D> commandHandler) {
         registry.put(provider, commandHandler);

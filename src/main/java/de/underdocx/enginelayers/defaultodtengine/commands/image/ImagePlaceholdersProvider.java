@@ -86,5 +86,13 @@ public class ImagePlaceholdersProvider implements EncapsulatedNodesExtractor, Pl
         return Optional.empty();
     }
 
+    public static class ImagePlaceholdersProviderFactory implements PlaceholdersProvider.Factory<OdtContainer, ImagePlaceholderData, OdfTextDocument> {
+
+        @Override
+        public PlaceholdersProvider<OdtContainer, ImagePlaceholderData, OdfTextDocument> createProvider(OdtContainer doc) {
+            return new ImagePlaceholdersProvider(doc);
+        }
+    }
+
 
 }

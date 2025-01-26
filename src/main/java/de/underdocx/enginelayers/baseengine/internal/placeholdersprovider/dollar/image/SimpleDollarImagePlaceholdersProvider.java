@@ -117,5 +117,11 @@ public class SimpleDollarImagePlaceholdersProvider implements EncapsulatedNodesE
         return Optional.empty();
     }
 
+    public static class SimpleDollarImagePlaceholdersProviderFactory implements PlaceholdersProvider.Factory<OdtContainer, SimpleDollarImagePlaceholderData, OdfTextDocument> {
 
+        @Override
+        public PlaceholdersProvider<OdtContainer, SimpleDollarImagePlaceholderData, OdfTextDocument> createProvider(OdtContainer doc) {
+            return new SimpleDollarImagePlaceholdersProvider(doc);
+        }
+    }
 }

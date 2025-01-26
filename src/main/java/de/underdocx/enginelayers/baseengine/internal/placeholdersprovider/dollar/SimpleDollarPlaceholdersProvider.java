@@ -26,15 +26,18 @@ package de.underdocx.enginelayers.baseengine.internal.placeholdersprovider.dolla
 
 import de.underdocx.common.codec.Codec;
 import de.underdocx.common.doc.odf.OdfContainer;
+import de.underdocx.common.doc.odf.OdtContainer;
 import de.underdocx.common.placeholder.EncapsulatedNodesExtractor;
 import de.underdocx.common.placeholder.TextualPlaceholderToolkit;
 import de.underdocx.common.placeholder.basic.extraction.RegexExtractor;
 import de.underdocx.common.placeholder.basic.textnodeinterpreter.OdfTextNodeInterpreter;
 import de.underdocx.common.placeholder.basic.textnodeinterpreter.TextNodeInterpreter;
+import de.underdocx.enginelayers.baseengine.PlaceholdersProvider;
 import de.underdocx.enginelayers.baseengine.internal.placeholdersprovider.AbstractTextualPlaceholdersProvider;
 import de.underdocx.environment.err.Problems;
 import de.underdocx.tools.common.Regex;
 import org.odftoolkit.odfdom.doc.OdfDocument;
+import org.odftoolkit.odfdom.doc.OdfTextDocument;
 
 public class SimpleDollarPlaceholdersProvider<C extends OdfContainer<D>, D extends OdfDocument> extends AbstractTextualPlaceholdersProvider<C, String, D> {
 
@@ -65,5 +68,13 @@ public class SimpleDollarPlaceholdersProvider<C extends OdfContainer<D>, D exten
 
     public static EncapsulatedNodesExtractor createExtractor(TextNodeInterpreter interpreter) {
         return new RegexExtractor(regex, interpreter);
+    }
+
+    public static class SimpleDollarPlaceholdersProviderFactory<C extends OdfContainer<D>, D extends OdfDocument> implements PlaceholdersProvider.Factory<OdtContainer, String, OdfTextDocument> {
+
+        @Override
+        public PlaceholdersProvider<OdtContainer, String, OdfTextDocument> createProvider(OdtContainer doc) {
+            return new SimpleDollarPlaceholdersProvider<>(doc);
+        }
     }
 }

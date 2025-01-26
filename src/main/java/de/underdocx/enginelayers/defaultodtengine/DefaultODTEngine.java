@@ -58,10 +58,15 @@ import java.util.regex.Pattern;
 
 public class DefaultODTEngine {
 
-    private final SimpleDollarImagePlaceholdersProvider simpleDollarImage;
-    private final SimpleDollarPlaceholdersProvider<OdtContainer, OdfTextDocument> simpleDollar;
-    private final ParametersPlaceholderProvider<OdtContainer, OdfTextDocument> parameters;
-    private final ImagePlaceholdersProvider imagePlaceholdersProvider;
+    public static final SimpleDollarImagePlaceholdersProvider.SimpleDollarImagePlaceholdersProviderFactory simpleDollarImage
+            = new SimpleDollarImagePlaceholdersProvider.SimpleDollarImagePlaceholdersProviderFactory();
+    public static final SimpleDollarPlaceholdersProvider.SimpleDollarPlaceholdersProviderFactory<OdtContainer, OdfTextDocument> simpleDollar
+            = new SimpleDollarPlaceholdersProvider.SimpleDollarPlaceholdersProviderFactory<>();
+    public static final ParametersPlaceholderProvider.ParametersPlaceholderProviderFactory<OdtContainer, OdfTextDocument> parameters
+            = new ParametersPlaceholderProvider.ParametersPlaceholderProviderFactory<>();
+    public static final ImagePlaceholdersProvider.ImagePlaceholdersProviderFactory imagePlaceholdersProvider
+            = new ImagePlaceholdersProvider.ImagePlaceholdersProviderFactory();
+
     private final MultiCommandHandler<OdtContainer, OdfTextDocument> multiCommandHandler = new MultiCommandHandler<>();
 
     private final ModelEngine<OdtContainer, OdfTextDocument> engine;
@@ -97,14 +102,14 @@ public class DefaultODTEngine {
 
     public DefaultODTEngine(OdtContainer doc) {
         this.engine = new ModelEngine<>(doc);
-        simpleDollar = new SimpleDollarPlaceholdersProvider<>(doc);
-        simpleDollarImage = new SimpleDollarImagePlaceholdersProvider(doc);
-        parameters = new ParametersPlaceholderProvider<>(doc);
-        imagePlaceholdersProvider = new ImagePlaceholdersProvider(doc);
         registerDefaultCommandHandlers();
     }
 
-    public <P> void registerCommandHandler(PlaceholdersProvider<OdtContainer, P, OdfTextDocument> provider, CommandHandler<OdtContainer, P, OdfTextDocument> commandHandler) {
+    private <P> void registerCommandHandler(PlaceholdersProvider<OdtContainer, P, OdfTextDocument> provider, CommandHandler<OdtContainer, P, OdfTextDocument> commandHandler) {
+        this.engine.registerCommandHandler(provider, commandHandler);
+    }
+
+    public <P> void registerCommandHandler(PlaceholdersProvider.Factory<OdtContainer, P, OdfTextDocument> provider, CommandHandler<OdtContainer, P, OdfTextDocument> commandHandler) {
         this.engine.registerCommandHandler(provider, commandHandler);
     }
 
@@ -178,7 +183,7 @@ public class DefaultODTEngine {
     public void pushJsonVariable(String name, String json) throws JsonProcessingException {
         pushVariable(name, AbstractPredefinedModelNode.createFromJson(json));
     }
-    
+
     public Optional<Problem> run() {
         return engine.run();
     }

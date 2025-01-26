@@ -38,4 +38,8 @@ public interface PlaceholdersProvider<C extends DocContainer<D>, P, D> {
     P getPlaceholderData(Node node);
 
     Optional<TextualPlaceholderToolkit<P>> getPlaceholderToolkit();
+
+    interface Factory<C extends DocContainer<D>, P, D> {
+        PlaceholdersProvider<C, P, D> createProvider(C doc);
+    }
 }

@@ -25,6 +25,7 @@ SOFTWARE.
 package de.underdocx.enginelayers.parameterengine;
 
 import de.underdocx.common.doc.odf.OdfContainer;
+import de.underdocx.enginelayers.baseengine.PlaceholdersProvider;
 import de.underdocx.enginelayers.baseengine.internal.placeholdersprovider.AbstractTextualPlaceholdersProvider;
 import de.underdocx.enginelayers.parameterengine.internal.ParametersPlaceholderToolkit;
 import org.odftoolkit.odfdom.doc.OdfDocument;
@@ -34,4 +35,11 @@ public class ParametersPlaceholderProvider<C extends OdfContainer<D>, D extends 
         super(doc, ParametersPlaceholderToolkit.ODF_INSTANCE);
     }
 
+    public static class ParametersPlaceholderProviderFactory<C extends OdfContainer<D>, D extends OdfDocument> implements PlaceholdersProvider.Factory<C, ParametersPlaceholderData, D> {
+
+        @Override
+        public PlaceholdersProvider<C, ParametersPlaceholderData, D> createProvider(C doc) {
+            return new ParametersPlaceholderProvider<>(doc);
+        }
+    }
 }

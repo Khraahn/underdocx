@@ -142,4 +142,8 @@ public class ModelEngine<C extends DocContainer<D>, D> extends BaseEngine {
     public <X> BaseEngine<C, D> registerCommandHandler(PlaceholdersProvider<C, X, D> provider, MCommandHandler<C, X, D> commandHandler) {
         return super.registerCommandHandler(provider, commandHandler);
     }
+
+    public <X> BaseEngine<C, D> registerCommandHandler(PlaceholdersProvider.Factory<C, X, D> provider, MCommandHandler<C, X, D> commandHandler) {
+        return super.registerCommandHandler(provider, commandHandler);
+    }
 }
