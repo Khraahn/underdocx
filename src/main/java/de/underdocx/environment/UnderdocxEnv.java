@@ -66,5 +66,15 @@ public class UnderdocxEnv {
         }
     });
 
+    public String libreOfficeHomePath = Convenience.build(path -> {
+        path.value = System.getenv("LIBREOFFICEHOME");
+        if (path.value == null || path.value.isBlank()) {
+            path.value = System.getProperty("libreofficehome");
+        }
+        if (path.value == null || path.value.isBlank()) {
+            path.value = null;
+        }
+    });
+
 
 }

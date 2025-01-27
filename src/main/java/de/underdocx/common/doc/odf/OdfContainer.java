@@ -100,6 +100,9 @@ public abstract class OdfContainer<T extends OdfDocument> extends AbstractDocCon
             ProcessBuilder processBuilder = new ProcessBuilder(libreOffice, "--headless", "--convert-to", "pdf", tmpOdtFileName);
             processBuilder.directory(tmpDir);
             processBuilder.redirectErrorStream(true);
+            if (UnderdocxEnv.getInstance().libreOfficeHomePath != null && !UnderdocxEnv.getInstance().libreOfficeHomePath.isBlank()) {
+                processBuilder.environment().put("HOME", UnderdocxEnv.getInstance().libreOfficeHomePath);
+            }
             synchronized (lock) {
                 Process process = processBuilder.start();
                 Scanner scanner = new Scanner(process.getInputStream());

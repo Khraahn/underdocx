@@ -6,7 +6,7 @@
 
     <groupId>io.github.winterrifier</groupId>
     <artifactId>underdocx</artifactId>
-    <version>0.6.0</version>
+    <version>0.6.1</version>
     <packaging>jar</packaging>
 
     <name>Underdocx</name>
