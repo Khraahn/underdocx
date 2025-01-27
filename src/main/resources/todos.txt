@@ -1,3 +1,6 @@
+- Features
+  - Auf weitere LibreOffice-Formate erweitern
+  - später ggf. docx unterstützen
 - Bekannte Probleme:
   - Sicherstellen das Paragraphen mit leeren Ifs immer gelöscht werden (auch in Zellen)
   - Prüfen ob Vectorgrafiken als Bilder verwendet werden können
