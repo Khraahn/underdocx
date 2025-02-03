@@ -1,0 +1,1514 @@
+<html>
+
+<head>
+  <title>User Guide</title>
+  <link href="content.css" rel="stylesheet" media="" />
+  <link href="guide.css" rel="stylesheet" media="" />
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+  <script src="index.js" type="text/javascript"></script>
+  <script src="buildMenu.js" type="text/javascript"></script>
+
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.3/styles/lightfair.min.css">
+</head>
+
+<body class="bodyclass">
+
+  <div id="guideContainer">
+    <div id="guideMenu" class="hide">
+      <span class="menuTitle">Table of Contents</span>
+    </div>
+
+
+
+
+
+    <!-- the user guide content begins here-->
+
+
+
+
+
+
+    <div id="mainContentContainer">
+      <div id="mainContent">
+        <h1>Underdocx User Guide</h1>
+
+        This Guide will describe what Underdocx exactly is, how this framework can be used in your project,
+        how templates can be defined and how custom data can be provided for document generation.
+
+        <h2>About</h2>
+        <h3>ODT Template Engine</h3>
+        Underdocx is an extendable open source Java framework to manipulate ODT Documents (LibreOffice / OpenOffice).
+        It uses different types of parameterizable placeholders that will be replaced by custom texts, images, tables
+        and
+        even
+        other documents. This allows you to define "components" that can be easily reused. Underdocx also allows
+        you to define custom placeholders and provide custom functionalities.
+        Also documents can be converted directly to PDF if LibreOffice has been installed on the system.<br>
+        <br>
+        Underdox is a Template Engine or Template Processor. It receives template documents and data and combines it
+        to generate the concrete document. This is a simplified overview that Underdocx does:
+        <div class="imageContainer"><img src="images/overview.png" /></div>
+
+        <h3>Open Source</h3>
+        Underdocx is free and uses the
+        <a href="https://github.com/winterrifier/underdocx/blob/main/LICENSE" target="_blank">MIT
+          License</a>.<br>
+        The Source Code is hosted at <a href="https://github.com/winterrifier/underdocx"  target="_blank">GitHub</a>.<br>
+        Releases are provided by
+        <a href="https://central.sonatype.com/artifact/io.github.winterrifier/underdocx" target="_blank">Maven Central
+          Repository</a>.<br>
+        This documentation and more information can be found at
+        <a href="https://underdocx.org" target="_blank">Underdocx.org</a>
+
+        <h2> Getting Started</h2>
+
+        Add Underdocx as dependency to your project, for example in Maven extend your pom.xml:
+
+        <pre class="highlightjs highlight nowrap"><code class="language-xml hljs" data-lang="xml">&lt;dependency&gt;
+    &lt;groupId&gt;io.github.winterrifier&lt;/groupId&gt;
+    &lt;artifactId&gt;underdocx&lt;/artifactId&gt;
+    &lt;version&gt;0.6.1&lt;/version&gt;
+&lt;/dependency&gt;</code></pre>
+
+        When you use Gradle your dependency should look like this
+
+        <pre class="padding"><code>implementation 'io.github.winterrifier:underdocx:0.6.1'</code></pre>
+
+        Now you can use this code to create a simple template that will be
+        processed by the template engine:
+
+        <pre class="highlightjs highlight nowrap"><code class="language-java hljs" data-lang="java">public class HelloWorld {
+    public static void main(String[] args) throws IOException {
+        OdtContainer doc = new OdtContainer("Hello ${$name}");
+        DefaultODTEngine engine = new DefaultODTEngine(doc);
+        engine.pushVariable("name", "World");
+        engine.run();
+        File tmpFile = File.createTempFile("Test_", ".odt");
+        doc.save(tmpFile);
+        System.out.println("Document created: %s".formatted(tmpFile));
+    }
+}</code></pre>
+        This code will create a ODT-document with prefix "Test_" in your temp folder that contains text "Hello World"
+
+        <h2>Principles</h2>
+
+        <h3>Technical abstraction</h3>
+
+        Depending on your software project, multiple teams with different knowledge can be involved when Underdocx is
+        used:
+        <ul>
+          <li>The Template documents could be created by customers without knowledge about software development.
+            Technical
+            details can be hidden behind simple placeholders.</li>
+          <li>Additional importable document "fragments" can also be provided and used by the customer or by the
+            software development team
+            that define document fragments as reusable components, similar to components used in web development.</li>
+          <li>The data used to fill the templates can be provided by customer, by the software development team or any
+            third party </li>
+          <li>Software developers are responsible to use the Underdocx API to combine data and templates</li>
+          <li>Software developers can also extend Underdocx with custom placeholders and functionalities to simplify or
+            improve
+            definition of templates</li>
+        </ul>
+        <div class="imageContainer"><img src="images/guide/templateengine_roles.png" /></div>
+
+        <h3>Use Cases</h3>
+
+        <h4>Example Use Case: Reporting</h4>
+        As describe above, Underdocx can be used to create individual software solutions where different
+        roles can apply data and templates through a WebApp. This WebApp may also allow other users to generate
+        report-documents after selecting data that shall be visualized.
+
+        <h4>Example Use Case: Web Shop</h4>
+
+        Underdocx might also be used by software developers to simply generate PDF documents based on templates.
+        In this example a WebApp has been implemented. Its Backend uses predefined
+        templates to let Underdocx generate invoice-documents that can be downloaded by
+        the user.
+        <div class="imageContainer"><img src="images/guide/exampleWebShop.png" /></div>
+
+        <h4>Example Use Case: Translatable Document</h4>
+
+        Underdocx might be used as a translation tool, taking a document with placeholders
+        that shall be replaced by translations. Underdocx also takes the translation
+        data, provided by translation files, and generates the document in multiple
+        translated variants.
+        <div class="imageContainer"><img src="images/guide/ExampleTranslation.png" /></div>
+
+        <h3>Placeholders</h3>
+
+        Underdocx uses placeholders to replace them with text or other document components.
+        It provides a predefined placeholder syntax and predefined parameterizable placeholders,
+        so called "commands". The default syntax of placeholders is as follows:
+        <pre class="padding"><code>${Key}
+${Key attr1:value1}
+${Key attr1:value1, "attr2":value2}</code></pre>
+
+        Actually the syntax is derived from the JSON-syntax, which allows definition of complex attribute values.
+        Here are some example of placeholders that are supported by default:
+        <pre class="padding"><code>${Date}
+${Date value:"2022-01-05", outputFormat:"dd.MM.yyyy"}
+${For value:[{firstName: "Hans", lastName:"Müller"}, {firstName: "Jon", lastName:"Doe"}], $as:"person"}</code></pre>
+
+        Underdocx also supports placeholders of different kinds. For example images can be defined to be
+        placeholders for other images. Also Underdocx can be extended to define custom placeholders with different
+        syntax.
+
+        <h3>Model, Variables and Values</h3>
+
+        There are three ways how templates can address data that shall be used.
+        <ul>
+          <li><b>Values</b> are directly provided as placeholder attributes that do
+            not use prefixes characters like '@' and '$'.</li>
+          <li><b>Variables</b> are stored values, added though the engine API
+            but also dynamically created during template processing.
+            The Attribute-Prefix '$' is associated with variables, which means the attribute refers to a variable</li>
+          <li>The <b>Model</b>-tree defines a static data structure the engine can walk through.
+            This data type is optional.
+            The Attribute-Prefix '@' is associated with the model, which means the attribute
+            points to a node of the model-data-tree</li>
+        </ul>
+
+        <h4>Values</h4>
+
+        Values are placeholder attribute values that are directly defined and used by the placeholder itself, for
+        example this document content:
+        <pre class="padding"><code>Example: ${Date value:"2022-01-05" outputFormat:"dd.MM.yyyy"}</code></pre>
+        will always be replaced by this text:
+        <pre class="padding"><code>Example: 05.01.2022</code></pre>
+        because the value of the date and the output format to use are defined directly in the placeholder as values.
+
+        <h4>Variables</h4>
+
+        A simple way to import data to the template engine are the definition of variables that can be
+        accessed by the placeholders. Usually the attribute prefix '$' indicates access to a variable. For example,
+        the given text:
+        <pre class="padding"><code>Example: ${Date $value:"dateToShow" outputFormat:"dd.MM.yyyy"}</code></pre>
+        and the code snipped:
+        <pre class="highlightjs highlight nowrap"><code class="language-java hljs" data-lang="java">String lastYear = LocalDate.now().minusYear(1)
+          .format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+engine.pushVariable("dateToShow", lastYear);</code></pre>
+        will generate a document with the date one year ago, which has been stored in the variable "dateToShow".
+        For example:
+        <pre class="padding"><code>Example: 19.01.2024</code></pre>
+
+        <h4>Model</h4>
+
+        The model is a static hierarchical data structure the template engine can navigate through during
+        template processing. It has one unnamed root node, therefore it is not possible to register
+        multiple models. Existing tree nodes won't usually change their value.
+        The Template Engine always has a current position within the model tree that may
+        change during template processing (for example in for-loops). References to
+        model nodes are always relatively to the engines current model tree position.
+        The usage of models is optional, you might also use variables.
+        This example shows how to register a model and how to address a node:
+        <pre class="padding"><code>Example: ${Date @value:"persons[1].birthday" outputFormat:"dd.MM.yyyy"}</code></pre>
+        and this code snipped:
+        <pre class="highlightjs highlight nowrap"><code class="language-java hljs" data-lang="java">ModelNode model = new MapModelNode("""
+          {
+              persons: [
+                  {birthday: "1975-05-14"},
+                  {birthday: "2021-03-07"}
+              ]
+          }
+      """);
+engine.setModel(model);</code></pre>
+        will always generate a document with content:
+        <pre class="padding"><code>Example: 07.03.2021</code></pre>
+        In this example,
+        the model is defined by using the JSON syntax, which is converted to a data-tree using the
+        <code-word>MapModelNode</code-word>-class.
+        The <code-word>@value</code-word> parameter uses the model-path-syntax to address a certain node in the model
+        data tree.
+
+        <h4>ModelPath-Syntax</h4>
+
+        Variables and models can store hierarchical data. The ModelPath-Syntax can be used to address certain
+        (sub-)nodes in the tree, or even to address parent nodes. There is an overview of characters that have
+        a special meaning:
+        <table>
+          <tr>
+            <th>Character</th>
+            <th>Description</th>
+            <th>Example</th>
+            <th>Explanation</th>
+          </tr>
+          <tr>
+            <td>.</td>
+            <td>introduces the next hierarchy level</td>
+            <td>a.b</td>
+            <td>access to the value "b" which is a child node of "a"</td>
+          </tr>
+          <tr>
+            <td>[ ]</td>
+            <td>selects an item of a list </td>
+            <td><no-br>persons[1]</no-br></td>
+            <td>access to the second item of a list named "persons"</td>
+          </tr>
+          <tr>
+            <td>^</td>
+            <td>selects the root node</td>
+            <td><no-br>x^a.b</no-br></td>
+            <td>access to node "b" which is child of node "a". Node "x" will be ignored</td>
+          </tr>
+          <tr>
+            <td>&lt;</td>
+            <td>selects the parent node</td>
+            <td><no-br>a.b.c&lt;d</no-br></td>
+            <td>access to node "d" which is child of "b"</td>
+          </tr>
+        </table>
+
+        <h2>API Introduction</h2>
+        <h3>OdtContainer</h3>
+        <code-word>OdtContainer</code-word> instances represent an ODT document which can be modified by
+        the engine or by user. This class provides multiple constructors to load
+        or create documents.
+        <pre class="highlightjs highlight nowrap"><code class="language-java hljs" data-lang="java">public class Main {
+  public static void main(String[] args) throws IOException {
+    // creates an empty document
+    new OdtContainer(); 
+    // creates a document with two paragraphs "Hello World" and "How are you?"
+    new OdtContainer("Hello World\nHow are you?"); 
+    // loads an ODT file
+    new OdtContainer(new File("file.odt"));
+  }
+}</code></pre>
+
+        <h3>DefaultODTEngine</h3>
+
+        This is the main class to process a document, exchange its placeholder and to
+        register custom extensions to provide more placeholders or functionalities. This
+        example registers variable "name" at the engine and
+        processes a text document containing a single placeholder. A file is created
+        that contains text "Hello World"
+        <pre class="highlightjs highlight nowrap"><code class="language-java hljs" data-lang="java">public class Main {
+  public static void main(String[] args) throws IOException {
+    OdtContainer doc = new OdtContainer("Hello ${$name}");
+    DefaultODTEngine engine = new DefaultODTEngine(doc);
+    engine.pushVariable("name", "World");
+    engine.run();
+    File tmpFile = File.createTempFile("Test_", ".odt");
+    doc.save(tmpFile);
+  }
+}</code></pre>
+
+        <h3>Resource</h3>
+
+        <code-word>Resource</code-word> is an interface that represents data that can be loaded. This interface is
+        important
+        for command like <code-word>${Import}</code-word>, <code-word>${Export}</code-word> and
+        <code-word>${Image}</code-word> that load images or other
+        documents to include them into the template. There are default implementation to convert URLs,
+        Files or binary data into <code-word>Resource</code-word>-instances
+        <pre class="highlightjs highlight nowrap"><code class="language-java hljs" data-lang="java">// Creates a Resource instance based on a file
+Resource resource = new Resouce.FileResource(String file);
+// Creates a Resource instance based on a file
+Resource resource = new Resouce.FileResource(File file);
+// Creates a Resource instance based on binary data
+Resource resource = new Resouce.DataResource(byte[] data);
+// Creates a Resource instance based on an URI/URL
+Resource resource = new Resouce.UriResource(String uri);
+// Creates a Resource instance based on an URI/URL
+Resource resource = new Resouce.UriResource(URI uri);      </code></pre>
+
+        <h3>ModelNode</h3>
+
+        All type of values (model and variables) are stored as a tree structure that implement the
+        interface <code-word>ModelNode</code-word>. You can write your own implementation to provide data to the engine.
+        But there are also some predefined implementation you can easily use, such as
+        <code-word>MapModelNode</code-word>, <code-word>ModelNodeBuilder</code-word> and
+        <code-word>ReflectionModelNode</code-word>
+
+        <h4>MapModelNode</h4>
+        Use <code-word>MapModelNode</code-word> to manually register values in a map. These values might also
+        be maps, lists or single (leaf) values. <code-word>MapModelNode</code-word> also allows to convert
+        JSON text into ModelNodes. The following example uses a JSON to create a <code-word>ModelNode</code-word>
+        that is stored as variable "persons". The resulting document will contain text "Hello Jenny"
+
+        <pre class="highlightjs highlight nowrap"><code class="language-java hljs" data-lang="java">public class Main {
+  public static void main(String[] args) throws IOException {
+    ModelNode persons = new MapModelNode("""{
+      persons: [
+        {name: "Hans"},
+        {name: "Jenny"}
+      ]}
+    """);
+    OdtContainer doc = new OdtContainer("Hello ${$persons[1].name}");
+    DefaultODTEngine engine = new DefaultODTEngine(doc);
+    engine.pushVariable("persons", persons);
+    engine.run();
+    File tmpFile = File.createTempFile("Test_", ".odt");
+    doc.save(tmpFile);
+  }
+}</code></pre>
+
+        <h4>ModelNodeBuilder</h4>
+
+        The <code-word>ModelNodeBuilder</code-word> provides a fluent API to build up a tree data structure. It helps
+        to construct structures that can not be expressed by JSON, for example structures that
+        contains non primitive objects. The next example create a list of persons that contain
+        <code-word>Resource</code-word>-objects representing images.
+        <pre class="highlightjs highlight nowrap"><code class="language-java hljs" data-lang="java">private ModelNode createPersonsData() throws IOException {
+  Resource resource1 = new Resource.FileResource("image1.png");
+  Resource resource2 = new Resource.FileResource("image2.png");
+  ModelNode data = ModelBuilder
+    .beginList()
+      .beginMap()
+        .add("firstName", "Hans")
+        .add("lastName", "Müller")
+        .add("birthDate", "1975-02-01")
+        .add("imageTitle", "Hans")
+        .add("imageName", "hans.png")
+        .addObj("imageResource", resource1)
+      .end()
+       
+      .beginMap()
+        .add("firstName", "Helene")
+        .add("lastName", "Schäfer")
+        .add("birthDate", "2009-05-03")
+        .add("imageTitle", "Helene")
+        .add("imageName", "helene.png")
+        .addObj("imageResource", resource2)
+      .end()
+        
+    .end()
+  .build();
+        
+ return data;
+}</code></pre>
+
+        <h4>ReflectionModelNode</h4>
+
+        <code-word>ReflectionModelNode</code-word> provides a convenient way to convert any object
+        dynamically to ModelNode instances. Fields and get methods are
+        called by the java reflection API to build up the tree dynamically.
+
+        Additionally the definition of <code-word>Resolver</code-word> allows to dynamically
+        simulate fields that are not provided by the reflected object. This
+        allows injection of additional data to the model node that is not
+        provided by its origin object.
+
+        <pre class="highlightjs highlight nowrap"><code class="language-java hljs" data-lang="java">private static class TestClassA {
+  public TestClassB b = new TestClassB();
+}
+      
+private static class TestClassB {
+  public List<String> getC() {
+    return Arrays.asList("Item1", "Item2");
+  }
+}
+      
+public static void main (String[] args) {
+  String content = """
+    ${@b.x}
+    ${@b.c[0]}
+  """;
+  OdtContainer doc = new OdtContainer(content);
+  ReflectionModelNode.Resolver resolver = (object, name) -> 
+    name.equals("x")
+    ? java.util.Optional.of(new LeafModelNode("42"))
+    : Optional.empty();
+  DefaultODTEngine engine = new DefaultODTEngine(doc);
+  engine.setModel(new TestClassA(), resolver);
+  engine.run();
+  File tmpFile = File.createTempFile("Test_", ".odt");
+  doc.save(tmpFile);
+}</code></pre>
+
+        This snipped will create a document with content:
+
+        <pre class="padding"><code>42
+Item1
+</code></pre>
+        Reason: <code-word>${@b.c[0]}</code-word> is a placeholder to print out model node addresses by ModelPath
+        <code-word>b.c[0]</code-word>.
+        Also <code-word>${@b.x}</code-word> is a placeholder to print out model node addresses by ModelPath "b.x".
+        The call of <code-word>engine.setModel(new TestClassA())</code-word> creates an instance of TestClassA and
+        converts it into a ReflectionModelNode. This node is now declared as model data.
+        The Additional "resolver" provides value 42 when property "x"
+        is requested by an placeholder. "x" is not part of the reflected classes.
+
+        <h2>Predefined Commands</h2>
+
+        Underdocx provides multiple predefined placeholders and attributes to enable some basic
+        functions.
+
+        <h3>${String}-Command</h3>
+
+        The placeholder with keyword String is used to be replaced with text. The text can be taken
+        from a variable, model or directly from attribute. Attribute <code-word>value</code-word> refers
+        to the text value that has to be printed. There are also shotcuts of the command
+        as you can see in the example below. The String command
+        supports multiple attributes. These attributes can also be used in the shotcut versions.
+
+        <table>
+          <tr>
+            <th>
+              Attribute
+            </th>
+            <th>
+              Type
+            </th>
+            <th>
+              Description
+            </th>
+          </tr>
+          <tr>
+            <td>
+              value
+            </td>
+            <td>
+              String or Primitive
+            </td>
+            <td>
+              Text to be printed. When value-Attribute is missing, current model node will be printed
+            </td>
+          </tr>
+          <tr>
+            <td>
+              onNull
+            </td>
+            <td>
+              String of "skip", "fallback", "empty", "deletePlaceholderKeepParagraph",
+              "deletePlaceholderDeleteEmptyParagraph", "deletePlaceholderDeleteParagraph", "keepPlaceholder"
+            </td>
+            <td>
+              Strategy how to to react on missing data
+            </td>
+          </tr>
+          <tr>
+            <td>
+              onEmpty
+            </td>
+            <td>
+              String of "skip", "fallback", "empty", "deletePlaceholderKeepParagraph",
+              "deletePlaceholderDeleteEmptyParagraph", "deletePlaceholderDeleteParagraph", "keepPlaceholder"
+            </td>
+
+            <td>
+              Strategy how to react on empty data
+            </td>
+          </tr>
+          <tr>
+            <td>
+              onError
+            </td>
+            <td>
+              String of "skip", "fallback", "empty", "deletePlaceholderKeepParagraph",
+              "deletePlaceholderDeleteEmptyParagraph", "deletePlaceholderDeleteParagraph", "keepPlaceholder"
+            </td>
+            <td>
+              Strategy how to react on invalid data
+            </td>
+          </tr>
+          <tr>
+            <td>
+              fallback
+            </td>
+            <td>
+              String
+            </td>
+            <td>
+              text to use when fallback strategy is applied
+            </td>
+          </tr>
+          <tr>
+            <td>
+              markup
+            </td>
+            <td>
+              true / false
+            </td>
+            <td>
+              text contains markup tags, e.g. &lt;b&gt; for bold
+            </td>
+          </tr>
+          <tr>
+            <td>
+              rescan
+            </td>
+            <td>
+              true / false
+            </td>
+            <td>
+              text may contain placeholder itself to be interpreted
+            </td>
+          </tr>
+        </table>
+
+        Here is an example document with placeholder and its expectations when the code below is executed
+
+        <table>
+          <tr>
+            <th>
+              Placeholder Example
+            </th>
+            <th>
+              Exception
+            </th>
+            <th>
+              Explanation
+            </th>
+          </tr>
+          <tr>
+            <td>
+              <no-br>${String value:"Hello World"}</no-br>
+            </td>
+            <td>
+              Hello World
+            </td>
+            <td>
+              Prints out the attribute value
+            </td>
+          </tr>
+
+          <tr>
+            <td>
+              ${String $value:"text"}
+            </td>
+            <td>
+              Variable
+            </td>
+            <td>
+              Prints value of variable "text"
+            </td>
+          </tr>
+          <tr>
+            <td>
+              ${$text}
+            </td>
+            <td>
+              Variable
+            </td>
+            <td>
+              Prints value of variable "text" (shortcut)
+            </td>
+          </tr>
+          <tr>
+            <td>
+              ${String @value:"text"}
+            </td>
+            <td>
+              Model
+            </td>
+            <td>
+              Prints value of model property "text"
+            </td>
+          </tr>
+          <tr>
+            <td>
+              ${@text}
+            </td>
+            <td>
+              Model
+            </td>
+            <td>
+              Prints value of model property "text" (shortcut)
+            </td>
+          </tr>
+          <tr>
+            <td>
+              ${@markupText}
+            </td>
+            <td>
+              &lt;b&gt;bold&lt;/b&gt; &lt;i&gt;italic&lt;/i&gt; &lt;u&gt;underline&lt;/u&gt; &lt;font
+              size="20"&gt;large&lt;/font&gt;
+            </td>
+            <td>
+              Prints value of model property "markupText", does not interpret markup elements
+            </td>
+          </tr>
+          <tr>
+            <td>
+              ${@markupText markup:true}
+            </td>
+            <td>
+              <guide-b>bold</guide-b> <guide-i>italic</guide-i> <guide-u>underline</guide-u>
+              <guide-large>large</guide-large>
+            </td>
+            <td>
+              Prints value of model property "markupText", does not interpret markup elements
+            </td>
+          </tr>
+          <tr>
+            <td>
+              ${@text onNull:"fallback, fallback:"X"}
+            </td>
+            <td>
+              Model
+            </td>
+            <td>
+              Prints the value of model property "text" (which exists)
+            </td>
+          </tr>
+          <tr>
+            <td>
+              ${@missing onNull:"fallback, fallback:"X"}
+            </td>
+            <td>
+              X
+            </td>
+            <td>
+              Prints "X" because model property "missing" does not exist
+            </td>
+          </tr>
+          <tr>
+            <td>
+              ${String value:"Y", onEmpty:"fallback", fallback:"Z"}
+            </td>
+            <td>
+              Y
+            </td>
+            <td>
+              Prints "Y" because attribute is not empty
+            </td>
+          </tr>
+          <tr>
+            <td>
+              ${String value:" ", onEmpty:"fallback", fallback:"Z"}
+            </td>
+            <td>
+              Z
+            </td>
+            <td>
+              Prints "Z" because attribute is empty
+            </td>
+          </tr>
+        </table>
+
+
+        <pre class="highlightjs highlight nowrap"><code class="language-java hljs" data-lang="java">public class Main {
+  public static void main(String[] args) throws IOException {
+    OdtContainer doc = new OdtContainer(is);
+      String modelData = """
+        {
+          text: "Model",
+          markupText: "&lt;b&gt;bold&lt;/b&gt; &lt;i&gt;italic&lt;/i&gt; &lt;u&gt;underline&lt;/u&gt; &lt;font
+                       size="20"&gt;large&lt;/font&gt;"
+        }
+      """;
+      DefaultODTEngine engine = new DefaultODTEngine(doc);;
+      engine.pushVariable("text", "Variable");
+      engine.setModel(new MapModelNode(modelData));
+      engine.run();
+      doc.createTmpFile("Test", false, null);
+  }
+}</code></pre>
+
+        <h3>${For}-Command</h3>
+
+        Placeholder keyword "For" introduces a loops. There are different loop implementations. You can repeat
+        multiple paragraphs, rows of a table or items of a list.
+        Also there are some differences how to receive the iterable data and how to access the current item during
+        iteration. Every <code-word>${For}</code-word>-Command must have a corresponding
+        <code-word>${EndFor}</code-word> command to define a repeatable area.
+
+        <h4>Loops over model, variables or values</h4>
+        Similar to the String command there is a mandatory <code-word>value</code-word>-Attribute, that addresses
+        the list of items to walk though. The attribute may refer a variable, a model node or directly use the
+        attribute value. Additionally you can (or maybe have to)
+        use the <code-word>as</code-word> attribute to make the current item accessible by a name. The usage of
+        <code-word>as</code-word>depends on how
+        the attribute <code-word>value</code-word> is used.
+
+        <table>
+          <tr>
+            <th>
+              Example
+            </th>
+            <th>
+              Result
+            </th>
+            <th>
+              Description
+            </th>
+          </tr>
+          <tr>
+            <td>
+              <no-br>${For value:["A", "B"], <guide-b>$as:"it"</guide-b>}</no-br><br>
+              &nbsp;&nbsp;${$index} <guide-b>${$it}</guide-b><br>
+              ${EndFor}
+            </td>
+            <td>
+              <no-br>0 <guide-b>A</guide-b></no-br><br>
+              <no-br>1 <guide-b>B</guide-b></no-br><br>
+            </td>
+            <td>
+              The list is defined directly in the value attribute. During iteration, a variable "it" is created that
+              stores the current list item. This item is printed out by command ${$it}. The Variable “index” stores the
+              current item index.
+            </td>
+          </tr>
+
+          <tr>
+            <td>
+              <no-br>${For $value:"list", <guide-b>$as:"it"</guide-b>}</no-br><br>
+              &nbsp;&nbsp;${$index} <guide-b>${$it}</guide-b><br>
+              ${EndFor}
+            </td>
+            <td>
+              <no-br>0 <guide-b>A</guide-b></no-br><br>
+              <no-br>1 <guide-b>B</guide-b></no-br><br>
+            </td>
+            <td>
+              The list is accessed through variable "list". During iteration, a variable "it" is created that stores the
+              current list item. This item is printed out by command ${$it}. The Variable “index” stores the current
+              item index.
+            </td>
+          </tr>
+
+          <tr>
+            <td>
+              <no-br>${For @value:"list", <guide-b>$as:"it"</guide-b>}</no-br><br>
+              &nbsp;&nbsp;${$index} <guide-b>${$it}</guide-b><br>
+              ${EndFor}
+            </td>
+            <td>
+              <no-br>0 <guide-b>A</guide-b></no-br><br>
+              <no-br>1 <guide-b>B</guide-b></no-br><br>
+            </td>
+            <td>The list is accessed through model property "list". During iteration, a variable "it" is created that
+              stores the current list item. This item is printed out by command
+              ${$it}. Also, the current item becomes the current model position aka current model node. The Variable
+              “index” stores the current item index.
+            </td>
+          </tr>
+
+          <tr>
+            <td>
+              <no-br>${For @value:"list", <guide-b>@as:"it"</guide-b>}</no-br><br>
+              &nbsp;&nbsp;${$index} <guide-b>${@it</guide-b>}<br>
+              ${EndFor}
+            </td>
+            <td>
+              <no-br>0 <guide-b>A</guide-b></no-br><br>
+              <no-br>1 <guide-b>B</guide-b></no-br><br>
+            </td>
+            <td>
+              The list is accessed through model property "list". During iteration, a prefix "it" is registered that
+              represents the current list item. This item is printed out by command ${@it}. Also, the current item
+              becomes the current model position aka current model node. The Variable “index” stores the current item
+              index.
+            </td>
+          </tr>
+
+          <tr>
+            <td>
+              <no-br>${For @value:"list"}</no-br><br>
+              &nbsp;&nbsp;${$index} <guide-b>${@}</guide-b><br>
+              ${EndFor}
+            </td>
+            <td>
+              <no-br>0 <guide-b>A</guide-b></no-br><br>
+              <no-br>1 <guide-b>B<guide-b></no-br><br>
+            </td>
+            <td>
+              The list is accessed through model property "list". During iteration the current item becomes the current
+              model position aka current model node. When no "as"-attribute is used, the current model node can be
+              printed with command ${@}. The Variable “index” stores the current item index.
+            </td>
+          </tr>
+        </table>
+
+        <h4>Loop of Tablerows</h4>
+
+        To repeat table rows, a template-table has to be placed between the <code-word>${For}</code-word> and
+        the <code-word>${EndFor}</code-word>-command. The mandatory attribute <code-word>tablerow</code-word> defines
+        which row index or range of rows shall be repeated. Also the optional attribute
+        <code-word>rowgroupsize</code-word>
+        defines how may of these rows belong to a single list item.<br>
+        <br>
+        The example below uses the <code-word>${Push}</code-word>-Command to define
+        a variable "data" that contains a list of person objects.
+        The <code-word>${For}</code-word>-command uses this "data"-list to generate a table.
+        <code-word>tablerowRow:[1,6]</code-word> indicates that indices 1 to 6 are
+        used for the loops. Attribute <code-word>rowgroupsize:3</code-word> ensures each item receives 3
+        rows of the repeatable rows.
+        As you can see in the example, cells of multiple rows can be merged as long
+        they are part of one group. Placeholder <code-word>${Counter}</code-word> prints the current loop iteration
+
+        <div class="imageContainer"><img src="images/guide/tableLoopGroup.png" /></div>
+        <div class="imageContainer"><img src="images/guide/tableLoopGroupResult.png" /></div>
+
+        <h4>Loop of ListItems</h4>
+
+        To Loop items of a list use attribute <code-word>listitem</code-word> to define a list item index that
+        shall be repeated. Similar to loops over table rows, the <code-word>${For}</code-word> and
+        <code-word>${EndFor}</code-word> command has to souround a "real" list created by the (LibreOffice-)Application.
+        The example below uses the <code-word>${Push}</code-word>-Command to define
+        a variable "data" that contains a list of person objects.
+        The <code-word>${For}</code-word>-command uses this "data"-list to extends the existing list.
+
+        <table>
+          <tr>
+            <th>
+              Example
+            </th>
+            <th>
+              Expectation
+            </th>
+          </tr>
+          <tr>
+            <td>
+              <no-br>${Push key:“data“, value:[</no-br><br>
+              <no-br>&nbsp;&nbsp;{firstName: „Hans“, lastName:“Müller“},</no-br><br>
+              <no-br>&nbsp;&nbsp;{firstName: „Johanna“, lastName:“Sommer“},</no-br><br>
+              <no-br>&nbsp;&nbsp;{firstName: „Helene“, lastName:“Jäger“}</no-br><br>
+              ]}<br>
+              <br>
+              <no-br>${For $value:“data“, $as:“person“, listitem:0}</no-br><br>
+              <no-br>&nbsp;<guide-b>1.</guide-b>&nbsp;${$person.firstName} ${$person.lastName}</no-br><br>
+              ${EndFor}<br>
+            </td>
+            <td>
+              <no-br>&nbsp;&nbsp;<guide-b>1.</guide-b>&nbsp;Hans Müller</no-br><br>
+              <no-br>&nbsp;&nbsp;<guide-b>2.</guide-b>&nbsp;Johanna Sommer</no-br><br>
+              <no-br>&nbsp;&nbsp;<guide-b>3.</guide-b>&nbsp;Helene Jäger</no-br><br>
+            </td>
+          </tr>
+        </table>
+
+        <h4>${$index} and &#x24;&#x7B;Counter&#x7D;-Command</h4>
+
+        Within loops, the current item index will be stores in Variable <code-word>$index</code-word>. The
+        first item will be associated with index 0. Because humans are use to count
+        beginning with 1, the Command <code-word>${Counter}</code-word> prints out the index increased by one.
+
+        <h3>${If}-Command</h3>
+
+        The <code-word>${If}</code-word>-command is used to hide or show parts of the document. To define
+        the visible area each <code-word>${If}</code-word>-command requires a corresponding
+        <code-word>${EndIf}</code-word>-command.
+        The visibility decision is made by the first attribute, which is a simple or complex condition
+        that depends on variables or model values.
+        A condition is a hierarchical structure of one or multiple condition elements.
+        The next example shows the syntax of these condition elements:
+
+        <pre class="padding"><code>// condition is true only when variable "v" contains value true
+<guide-b>$v:true</guide-b>
+// condition is false only when variable "v" contains value true
+<guide-b>$v:false</guide-b>
+// condition is true only when variable "v" contains string "x"          
+<guide-b>$v:"x"</guide-b>
+// condition is true only when variable "v" contains integer 42
+<guide-b>$v:"42</guide-b>
+// condition is true only when variable "v" is null or does not exist
+<guide-b>$v:null</guide-b>
+// condition is true only when variable "v" is an empty list
+<guide-b>$v:[]</guide-b>
+
+// condition is true when condition element within { } is false, otherwise true
+<guide-b>not:{ ... }</guide-b>
+// condition is only true when all comma separated condition elements
+//within [ ] are true, otherwise false
+<guide-b>and:[ ... ]</guide-b>
+// condition is only true when at least one of the comma separated condition 
+// elements within [ ] is true, otherwise false
+<guide-b>or:[ ... ]</guide-b></code></pre>
+
+        The next example box shows multiple if statements. The <code-word>${Push}</code-word>-command is
+        used to define some example variables the if conditions will rely on.
+        All "HIDDEN" texts will be invisible when Underdocx would interpret the following statements:
+
+        <pre class="padding"><code>${Push key:"testString", value:"Test"}
+${Push key:"testTrue", value:true}
+
+${If $testString:"Test"} VISIBLE ${EndIf}
+${If $testString:"xyz"} HIDDEN ${EndIf}
+${If $testTrue:true} VISIBLE ${EndIf}
+${If $testTrue:false} HIDDEN ${EndIf}
+${If not:{$testTrue:false}} VISIBLE ${EndIf}
+
+${If and:[{$testString:"Test"},{$testTrue:true}]}
+  VISIBLE
+${EndIf}
+
+${If and:[{$testString:"Test"},{not:{$testTrue:true}}]}
+  HIDDEN
+${EndIf}
+
+${If or:[{$testString:"Test"},{$testTrue:false}]}
+  VISIBLE
+${EndIf}
+
+${If or:[{$testString:"x"},{$testTrue:false}]}
+  HIDDEN
+${EndIf}</code></pre>
+
+
+        <h3>${Import}-Command</h3>
+
+        This command enables
+        creation of reusable document-components that
+        are imported into the main document. Imported document are usual
+        document that also may contain placeholders that will be interpreted after
+        the document has been imported. Note that only the main content of a component
+        will be imported, footer or headers fill be ignored. <code-word>$Import</code-word> offers
+        three different attributes to address a document that shall be imported:
+
+        <table>
+          <tr>
+            <th>
+              Attribute
+            </th>
+            <th>
+              Description
+            </th>
+          </tr>
+          <tr>
+            <td>
+              uri
+            </td>
+            <td>
+              Attribute refers to a String that contains an URI to the the document
+            </td>
+          </tr>
+          <tr>
+            <td>
+              data
+            </td>
+            <td>
+              Attribute refers to a byte-Array that contains the binary data of the document
+            </td>
+          </tr>
+          <tr>
+            <td>
+              resource
+            </td>
+            <td>
+              Attribute refers to a Resource-object that represents the document
+            </td>
+          </tr>
+        </table>
+
+        This example code create a document with different Import-Placeholders. All of them will be replaced
+        by the content of the same document:
+
+        <pre class="highlightjs highlight nowrap"><code class="language-java hljs" data-lang="java">public class Main {
+  public static void main(String[] args) throws IOException {
+      File file = new File("/home/User/doc1.odt");
+      String content = """
+              ${Import uri:"%s"}
+              ${Import $data:"data"}
+              ${Import $resource:"resource"}
+              """.formatted("file:///home/User/doc1.odt");
+      OdtContainer doc = new OdtContainer(content);
+      DefaultODTEngine engine = new DefaultODTEngine(doc);
+      byte[] data = Files.readAllBytes(Paths.get(file));
+      engine.pushLeafVariable("data", data);
+      Resource resource = new Resource.FileResource(file);
+      engine.pushLeafVariable("resource", resource);
+      engine.run();
+      doc.createTmpFile("Test", false, null);
+      doc.save(tmpFile);
+  }
+}</code></pre>
+
+        <h3>${Export}-Command</h3>
+        The <code-word>${Export}</code-word>-command is quite similar the <code-word>${Import}</code-word>-command, but
+        it
+        addresses a master-document that shall import the current document. That means
+        the footer and header of the master document will be visible in the final document.
+        When Attribute <code-word>name</code-word> and placeholder <code-word>${ExportTarget}</code-word> are not used,
+        the content of the current document will be appended to the master document.
+
+        <table>
+          <tr>
+            <th>Attribute</th>
+            <th>Description</th>
+          </tr>
+          <tr>
+            <td>uri</td>
+            <td>
+              Attribute refers to a String that contains an URI to the the document
+            </td>
+          </tr>
+          <tr>
+            <td>data</td>
+            <td>
+              Attribute refers to a byte-Array that contains the binary data of the document
+            </td>
+          </tr>
+          <tr>
+            <td>resource</td>
+            <td>
+              Attribute refers to a Resource-object that represents the document
+            </td>
+          </tr>
+          <tr>
+            <td>name</td>
+            <td>
+              Name of the ${ExportTarget} placeholder in the master document that shall receive this document
+            </td>
+          </tr>
+        </table>
+
+        <h4>${ExportTarget}-Command</h4>
+
+        The master document may contain a <code-word>${ExportTarget}</code-word>-placeholders that shall receive the
+        content of the current
+        document that contains the <code-word>${Export}</code-word>-command. This this case, both the
+        <code-word>${Export}</code-word> and
+        <code-word>${ExportTarget}</code-word> placeholders have to use the <code-word>name</code-word> Attribute with
+        an identical string value.
+
+        <h3>${Image}-Command</h3>
+
+        This command is a special placeholder, because it is not a plain textual command. Images placeholder are real
+        images that are placed during template creation. An image becomes a placeholder image by adding
+        the <code-word>${Image}</code-word> as image name. This textual part of the placeholder is located
+        in the "Name" field of the "Options"-tab of the "Properties..."-window of the image, which is selectable
+        when you right-click the image.
+
+        <div class="imageContainer"><img src="images/guide/ImageContextMenu.png" /></div>
+        <div class="imageContainer"><img src="images/guide/ImageProperties.png" /></div>
+
+        The textual image command provides following attributes
+
+        <table>
+          <tr>
+            <th>
+              Attribute
+            </th>
+            <th>
+              Required
+            </th>
+            <th>
+              Description
+            </th>
+          </tr>
+          <tr>
+            <td>uri</td>
+            <td>required if not data or resource has been used</td>
+            <td>
+              Attribute refers to a String that contains an URI to the image to use
+            </td>
+          </tr>
+
+          <tr>
+            <td>data</td>
+            <td>required if not resource or uri has been used</td>
+            <td>
+              Attribute refers to a byte-Array that contains the binary data of the image
+            </td>
+          </tr>
+
+          <tr>
+            <td>resource</td>
+            <td>required if not data or uri has been used</td>
+            <td>
+              Attribute refers to a Resource-object that represents the image
+            </td>
+          </tr>
+
+          <tr>
+            <td>name</td>
+            <td>yes</td>
+            <td>
+              Name of the image file. It must contain the file extension, for example "image.png"
+            </td>
+          </tr>
+
+          <tr>
+            <td>title</td>
+            <td>no</td>
+            <td>
+              Will be the new name of the image after replacement
+            </td>
+          </tr>
+
+          <tr>
+            <td>keepWidth</td>
+            <td>yes</td>
+            <td>
+              when true, replaced image will have same width as this template image and height will be recalculated.
+              When false, replaced image will have same height as this template image and width will be recalculated
+            </td>
+          </tr>
+        </table>
+
+        Note that images must contain unique names. Ensure the textual commands are different and
+        attribute "title" provides unique names after replacement.
+
+        <h3>${Date}-Command</h3>
+
+        This command simplifies printing dates. It uses the <code-word>value</code-word>-attribute to read
+        a date string from a variable, model property or from attribute directly. This
+        command can also be used to print the current date, in this case don't use the
+        <code-word>value</code-word>-attribute
+
+        <table>
+          <tr>
+            <th>
+              Attribute
+            </th>
+            <th>
+              Description
+            </th>
+          </tr>
+          <tr>
+            <td>value</td>
+            <td>date string. If not set, the current date will be used </td>
+          </tr>
+          <tr>
+            <td>inputFormat</td>
+            <td>expected date-format of the string addressed by attribute "value". Default format is "yyyy-MM-dd"</td>
+          </tr>
+          <tr>
+            <td>outputFormat</td>
+            <td>preferred date format to display after replacement. Default format is "yyyy-MM-dd" </td>
+          </tr>
+        </table>
+
+        Examples:
+
+        <pre class="padding"><code>// prints the current date, e.g. 2025-01-25
+${Date}
+
+// prints the current date, e.g. 25.01.2025
+${Date outputFormat:"dd.MM.yyyy"}
+
+// prints 2024-12-24             
+${Date value:"2024-12-24"}
+
+// prints 24.12.2024  
+${Date value:"2024-12-24" outputFormat:"dd.MM.yyyy"}
+
+// prints 2024-12-24
+${Date value:"24.12.2024" inputFormat:"dd.MM.yyyy"} 
+
+// prints the date stored in variable "date" 
+${Date $value:"date"}</code></pre>
+
+        <h3>${PageStyle}-Command</h3>
+
+        PageBreaks, Page-Orientation-Changes and new page numbers can be forced with
+        the <code-word>${PageStyle}</code-word>-command. To understand this command it is important to understand how
+        ODT handles pages breaks with page style changes. First of all there are to types of page break
+        - "Before": The page break will be inserted before this paragraph/placeholder begins (default)
+        - "After" The page break will be inserted after this paragraph (not recommended)<br>
+        <br>
+        Only page breaks of type "Before" can define/change the page style to use for the next page.
+        And only page breaks with explicit page style can change the page number. You can try it
+        in Libre Office Write by manually editing the page break:
+
+        <div class="imageContainer"><img src="images/guide/PageBreakWithPageStyle.png" /></div>
+
+        All available page style can be shown or edited in the styles view (Press F11 and select button "Page Styles").
+        Here you can also add custom page styles with different header and footers.
+
+        <div class="imageContainer"><img src="images/guide/MyPageStyle.png" /></div>
+
+        The <code-word>${PageStyle}</code-word>-command acts like this LibreOffice Writer component:
+
+        <div class="imageContainer"><img src="images/guide/PageBreakWithPageStyleZoom.png" /></div>
+
+        Therefore you can use these attributes:
+
+        <table>
+          <tr>
+            <th>Attribute</th>
+            <th>Values</th>
+            <th>Description</th>
+          </tr>
+          <tr>
+            <td>pageBreakAfter</td>
+            <td>true/false</td>
+            <td>if true, a page break is inserted after this paragraph </td>
+          </tr>
+          <tr>
+            <td>pageBreakBefore</td>
+            <td>true/false</td>
+            <td>if true, a page break is inserted before this paragraph (recommended)</td>
+          </tr>
+          <tr>
+            <td>masterPage</td>
+            <td>String</td>
+            <td>only allowed when pageBreakBefore is true, sets the new page style for the page after the break</td>
+          </tr>
+          <tr>
+            <td>pageNumber</td>
+            <td>Integer</td>
+            <td>only allowed when masterPage is set, reset the page number for the page after the break </td>
+          </tr>
+        </table>
+
+        When the <code-word>${PageStyle}</code-word>-command is used in a document that will be exported
+        to a master document by the <code-word>${Export}</code-word>-command, ensure attribute
+        <code-word>masterPage</code-word> uses
+        a style name that is defined in the master document.
+
+        <h3>&#x24;&#x7B;Push&#x7D;-Command / &#x24;&#x7B;Pop&#x7D;-Command</h3>
+
+        The <code-word>${Push}</code-word>-command allows definition of variables within the document. It
+        can also be used to copy a variables or model nodes. Technically spoken all new variables
+        are pushed onto a stack, that means the previous variable value will not be
+        overwritten but becomes hidden by the new one. The <code-word>${Pop}</code-word>-command removes
+        a variable value from the stack and makes the previous value visible again.
+        Underdocx uses this stack to ensure the <code-word>$index</code-word> always represent
+        the current index in the current loop, even when loops are nested.<br>
+        <br>
+        The <code-word>${Push}</code-word>-command provides two mandatory attributes
+
+        <table>
+          <tr>
+            <td>Attribute</td>
+            <td>Description</td>
+          </tr>
+          <tr>
+            <td>key</td>
+            <td>Name of the variable. You can access an other variable or model node to read out the name </td>
+          </tr>
+          <tr>
+            <td>value</td>
+            <td>Variable value to store. You can access an other variable or model node to read out the value </td>
+          </tr>
+        </table>
+
+        The <code-word>${Pop}</code-word>-command only support the attribute <code-word>key</code-word> to address the
+        variable that shall be removed
+        from the stack.
+
+        <h3>${Model}-Command</h3>
+
+        This command is used to test the current model position / current model node. It is internally used by
+        Underdocx to realize For-Loop by copying the content of the loop multiple times and setting the model
+        position before and after every repeat.
+
+        In case you want to change the model position the <code-word>${Model}</code-word> command provides these
+        attributes:
+
+        <table>
+          <tr>
+            <th>Attribute</th>
+            <th>Description</th>
+          </tr>
+          <tr>
+            <td>interpret</td>
+            <td>set the model position according to the model path relativly to the current position.</td>
+          </tr>
+          <tr>
+            <td>value</td>
+            <td>set the model position according to the absolute model path </td>
+          </tr>
+          <tr>
+            <td>activeModelPathPrefix</td>
+            <td>registers a prefix that has to be used in model paths (see @as in for-loops)</td>
+          </tr>
+        </table>
+
+        <h2>PDF Generation</h2>
+
+        You can use Underdocx to convert ODT files into PDF.<br>
+        <br>
+
+        Class <code-word>OdfContainer</code-word> which is a superclass of <code-word>OdtContainer</code-word> provides
+        method <code-word>writePDF(OutputStream os)</code-word> so save the document as PDF.<br>
+        <br>
+
+        Underdocx uses an existing installation of LibreOffice to convert a document into PDF.
+        Ensure environment variable <code-word>LIBREOFFICE</code-word> contains the path of the libre office
+        installation,
+        for example "C:/Program Files/LibreOffice/program/soffice.exe" on windows.
+
+        <h2>Custom Extensions</h2>
+
+        Underdocx has been designed of extendability.
+        You can change the syntax of placeholders and add custom placeholders
+        and functionalities in different ways.
+
+        <h3>Custom Placeholders</h3>
+
+        A simple way to add custom placeholders is to add a new custom "key" as command that
+        will be replaced by an other more complex command. This allows you to hide complexity
+        behind simple placeholders. For example, you can import an other sub document
+        using the <code-word>${Import}</code-word> command and hide the functionality bind the custom command
+        <code-word>${ReportTable}</code-word><br>
+        <br>
+
+        The engine provides method <code-word>registerStringReplacement</code-word> to register such replacements.
+        Note: All replacements will be performed in the document when the engine detects
+        the first alias placeholder.<br>
+        <br>
+
+        The following example creates a custom <code-word>${Begin}</code-word>- and
+        <code-word>${End}</code-word>-command
+        that will be replaced by
+        an predefined more complex <code-word>${For}</code-word> and <code-word>${EndFor}</code-word> command.
+
+        <pre class="highlightjs highlight nowrap"><code class="language-java hljs" data-lang="java">String documentStr = """
+            <guide-b>${Begin}</guide-b>
+              ${$index} ${$element} 
+            <guide-b>${End}</guide-b>
+          """;
+OdtContainer doc = new OdtContainer(documentStr);
+DefaultODTEngine engine = new DefaultODTEngine(doc);
+engine.registerStringReplacement(<guide-b>"Begin"</guide-b>, 
+  "${For value:[\"A\", \"B\", \"C\"], $as:\"element\"} ");
+engine.registerStringReplacement(<guide-b>"End"</guide-b>, "${EndFor}");
+engine.run();</code></pre>
+
+        <h3>Custom Handlers</h3>
+
+        CommandHandlers can be written and registered at the engine. They receive detected placeholders
+        and an API to modify the document DOM if they "feal resonsible" for the provided placeholder. Usualy these
+        CommandHandlers read out the attributes of the placeholder and pass the collected information to a
+        so called Modifier that is responsible to manipulate the internal document DOM.
+
+        <h4>Example: Custom &#x24;&#x7B;Add&#x7D;-Command</h4>
+
+        The next example defines a custom CommandHandler hat adds two attribute <code-word>a</code-word> and
+        <code-word>b</code-word> and
+        stores the sum in a variable defined by attribute <code-word>target</code-word>.
+        The <code-word>AddCommandHandler</code-word> extends class <code-word>AbstractTextualCommandHandler</code-word>
+        and uses
+        <code-word>ExtendedDataPicker</code-word> instances that read out the attributes of the placeholder.
+        The result is stored in the variable stack with help of the provided <code-word>ModelAccess</code-word>
+        instance.
+        The <code-word>${Add}</code-word> placeholder itself will be deleted by the
+        <code-word>DeletePlaceholderModifier</code-word> that
+        receives the DOM-Node that represent the handled placeholder.
+        The <code-word>AddCommandHandler</code-word> is registered at the engine by calling the
+        <code-word>registerParametersCommandHandler</code-word> method.<br>
+        <br>
+        This example creates a document that initially contains the <code-word>${Add}</code-word> -command to add two
+        values (2+3). After
+        execution the document will just contain the calculated sum (5).
+
+        <pre class="highlightjs highlight nowrap"><code class="language-java hljs" data-lang="java">public class AddExample {
+
+  private static class AddCommandHandler extends AbstractTextualCommandHandler&lt;OdtContainer, OdfTextDocument&gt; {
+      protected AddCommandHandler() {
+          super(new Regex("Add"));
+      }
+
+      @Override
+      protected CommandHandlerResult tryExecuteTextualCommand() {
+          DataPickerResult&lt;Integer&gt; aValue = new IntegerDataPicker().asPredefined("a").pickData(modelAccess, placeholderData.getJson());
+          DataPickerResult&lt;Integer&gt; bValue = new IntegerDataPicker().asPredefined("b").pickData(modelAccess, placeholderData.getJson());
+          DataPickerResult&lt;String&gt; target = new StringConvertDataPicker().asPredefined("target").pickData(modelAccess, placeholderData.getJson());
+          if (!(aValue.isResolvedNotNull() && bValue.isResolvedNotNull() && target.isResolvedNotNull()))
+              return CommandHandlerResult.IGNORED;
+          int result = aValue.value + bValue.value;
+          modelAccess.pushVariable(target.value, new LeafModelNode&lt;&gt;(result));
+          DeletePlaceholderModifier.modify(selection.getNode());
+          return CommandHandlerResult.EXECUTED;
+      }
+  }
+
+  public static void main(String[] args) throws IOException {
+      String content = """
+              ${Add a:2, b:3, target:"sum"}
+              ${$sum}
+              """;
+      OdtContainer doc = new OdtContainer(content);
+      DefaultODTEngine engine = new DefaultODTEngine(doc);
+      engine.registerParametersCommandHandler(new AddCommandHandler());
+      engine.run();
+      File tmpFile = File.createTempFile("Test_", ".odt");
+      doc.save(tmpFile);
+      System.out.println("Document created: %s".formatted(tmpFile));
+  }
+};</code></pre>
+
+        <h3>Custom Syntax</h3>
+
+        To define custom placeholders with custom syntax, you have to implements
+        the <code-word>PlaceholdersProvider</code-word> and it's <code-word>PlaceholderProvider.Factory</code-word>
+        interfaces.
+        There are some base classes you can reuse as done in the example below. For example
+        the <code-word>RegexExtractor</code-word> finds text sequences in the document by passing a
+        regular expression, the <code-word>TextualPlaceholderToolkit</code-word> simplifies
+        placeholder node handling, and the <code-word>AbstractTextualPlaceholdersProvider</code-word>
+        uses these helpers to create the <code-word>PlaceholdersProvider</code-word>.<br>
+        <br>
+
+        The example below also defines a custom <code-word>UpperCaseCommandHandler</code-word> that accepts placeholders
+        provided by the custom <code-word>MyPlaceholdersProvider</code-word>. It provides all word beginning with
+        <code-word>&lt;</code-word> and ending with </code-word>&gt;</code-word>. The
+        <code-word>UpperCaseCommandHandler</code-word> takes the placeholder playload,
+        converts it in uppercase, and replaces the placeholder with the converted text.<br>
+        <br>
+
+        The main method of theexample creates a document
+        that initially contains text <code-word>Hello &lt;name&gt;</code-word>, which will modified to <code-word>Hello
+          NAME</code-word>.
+        <pre class="highlightjs highlight nowrap"><code class="language-java hljs" data-lang="java">public class CustomPlaceholderExample {
+
+  private static class MyPlaceholdersProvider extends AbstractTextualPlaceholdersProvider&lt;OdtContainer, String, OdfTextDocument&gt; {
+
+      private static final Regex regex = new Regex("\\&lt;\\w+\\&gt;");
+      private static final EncapsulatedNodesExtractor defaultExtractor = new RegexExtractor(regex, OdfTextNodeInterpreter.INSTANCE);
+      private static final Codec&lt;String&gt; codec = new Codec&lt;&gt;() {
+          @Override
+          public String parse(String string) {
+              if (string.startsWith("&lt;") && string.endsWith("&gt;"))
+                  return string.substring(1, string.length() - 1);
+              throw new RuntimeException("parse error");
+          }
+
+          @Override
+          public String getTextContent(String data) {
+              return "&lt;" + data + "&gt;";
+          }
+      };
+
+      public MyPlaceholdersProvider(OdtContainer doc) {
+          super(doc, new TextualPlaceholderToolkit&lt;&gt;(defaultExtractor, codec));
+      }
+
+      public static class MyPlaceholderProviderFactory implements PlaceholdersProvider.Factory&lt;OdtContainer, String, OdfTextDocument&gt; {
+
+          @Override
+          public MyPlaceholdersProvider createProvider(OdtContainer doc) {
+              return new MyPlaceholdersProvider(doc);
+          }
+      }
+  }
+
+  private static class UpperCaseCommandHandler implements CommandHandler&lt;OdtContainer, String, OdfTextDocument&gt; {
+
+      @Override
+      public CommandHandlerResult tryExecuteCommand(Selection&lt;OdtContainer, String, OdfTextDocument&gt; selection) {
+          selection.getPlaceholderToolkit().ifPresent(toolkit -&gt; {
+              Node placeholderNode = selection.getNode();
+              String word = toolkit.parsePlaceholder(placeholderNode);
+              toolkit.replacePlaceholderWithText(placeholderNode, word.toUpperCase());
+          });
+          return CommandHandlerResult.EXECUTED;
+      }
+  }
+
+  public static void main(String[] args) throws IOException {
+      String content = "Hello &lt;name&gt;";
+      OdtContainer doc = new OdtContainer(content);
+      DefaultODTEngine engine = new DefaultODTEngine(doc);
+      engine.registerCommandHandler(new MyPlaceholdersProvider.MyPlaceholderProviderFactory(), new UpperCaseCommandHandler());
+      engine.run();
+      File tmpFile = File.createTempFile("Test_", ".odt");
+      doc.save(tmpFile); // Expectation: Document containing "Hello NAME"
+  }
+}</code></pre>
+
+
+
+      </div>
+    </div>
+
+    <script>
+      buildMenu("guideMenu");
+      ensureNavBarVisible("guide");
+
+    </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.3/highlight.min.js"></script>
+    <script>
+      if (!hljs.initHighlighting.called) {
+        hljs.initHighlighting.called = true
+          ;[].slice.call(document.querySelectorAll('pre.highlight > code[data-lang]')).forEach(function (el) { hljs.highlightBlock(el) })
+      }
+    </script>
+</body>
+
+</html>

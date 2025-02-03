@@ -1,0 +1,74 @@
+body, html, .bodyclass {
+	font-weight:normal;
+	font-family:Helvetica,Helv;
+	font-size:14px;
+    padding: 0px;
+    margin: 0px;
+    background-color: #eee;
+}
+
+
+#mainContent {
+    padding: 5px;
+    max-width: 600px;
+    min-width: 100px;
+    align-self: center;
+    flex-shrink: 100;
+}
+#mainContentContainer {
+    display: flex;
+    align-items: center;
+    align-content: center;
+    flex-grow: 2;
+    justify-content: center;
+}
+
+.title {
+    font-weight: bold;
+    font-size: 18px;
+}
+
+h1,h2,h3,h4,h5,h6{
+    font-weight: bold;
+}
+h1 {
+    font-size: 20px;
+}
+
+h2 {
+    font-size: 18px;
+}
+
+h3 {
+    font-size: 16px;
+}
+
+h4 {
+    font-size: 14px;
+}
+
+h5 {
+    font-size: 14px;
+    padding-left: 10px;
+}
+
+h6 {
+    padding-left: 20px;
+    font-size: 15px;
+}
+
+img {
+    max-width: 100%;
+    width: auto;
+    padding-top: 10px;
+    padding-bottom: 10px;
+}
+.imageContainer{
+    width: 100%;
+
+}
+.centerImageContainer{
+    display: flex;
+    justify-content: center;
+    width: 100%;
+}

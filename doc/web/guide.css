@@ -1,0 +1,127 @@
+
+#guideContainer {
+    display: flex;  
+    flex-direction: row-reverse;
+}
+#guideMenu {
+  display: flex;  
+  flex-direction: column;
+  min-width: 200px;
+  background-color: #999;
+  color: #eee;
+  align-items: flex-start;
+  padding: 5px;
+}
+.menuTitle {
+    font-weight: bold;
+    font-size: 18px;
+    padding: 5px;
+}
+.menuItem {
+    cursor: pointer;
+}
+.menuItem:hover{
+    color: #fff;
+}
+.menuItem0 {
+    padding-left: 5px;    
+}
+.menuItem1 {
+    padding-left: 8px;    
+}
+.menuItem2 {
+    padding-left: 11px;    
+}
+.menuItem3 {
+    padding-left: 14px;    
+}
+.menuItem4 {
+    padding-left: 17px;    
+}
+.menuItem5 {
+    padding-left: 20px;    
+}
+@media screen and (max-width: 810px) {
+    #guideContainer {
+        display: flex;  
+        flex-direction: column;
+        width: 100%;
+        max-width: auto;
+    }
+
+    .menuItem0 {
+        padding-left: 5px;    
+    }
+    .menuItem1 {
+        padding-left: 10px;    
+    }
+    .menuItem2 {
+        padding-left: 15px;    
+    }
+    .menuItem3 {
+        padding-left: 20px;    
+    }
+    .menuItem4 {
+        padding-left: 25px;    
+    }
+    .menuItem5 {
+        padding-left: 30px;    
+    }
+
+} 
+pre {
+    color: #333;
+    border: solid thin black;
+    overflow: auto;
+    font-size: 12px !important;
+    background-color: white;
+}
+.padding {
+    padding: 5px;
+}
+code {
+    background-color: white;
+}
+code-word {
+    font-size: 14px;
+    font-family: monospace;
+    background-color: #ddd;
+    padding-left: 5px;
+    padding-right: 5px;
+}
+table {
+    background-color: white;    
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+tr:nth-child(odd) {background: #ddd}
+tr:nth-child(even) {background: #FFF}
+table, th, td {
+    border: 1px solid #ccc;
+    border-collapse: collapse;
+    text-align: left;
+    vertical-align: top;
+    padding: 5px;
+    font-size: 12px;
+}
+th {
+    background-color: #bbb;
+}
+no-br {
+    white-space: nowrap;
+}
+guide-b {
+    font-weight: bold;
+}
+guide-i {
+    font-style: italic;
+}
+guide-u {
+    text-decoration-line: underline;
+}
+guide-large {
+    font-size: 20px;
+}
+.hide {
+    display: none !important;
+}

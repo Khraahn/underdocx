@@ -57,6 +57,10 @@ public interface Resource {
             this.file = file;
         }
 
+        public FileResource(String file) {
+            this.file = new File(file);
+        }
+
         @Override
         public InputStream openStream() throws IOException {
             return new FileInputStream(file);
