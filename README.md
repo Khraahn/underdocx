@@ -1,4 +1,4 @@
-# Welcome to **${Underdocx}**
+# Welcome to ${underdocx}
 
 Underdocx is an extendable open source framework to manipulate ODT Documents
 (LibreOffice / OpenOffice). It is a template engine and 
@@ -8,9 +8,9 @@ Also documents can be converted to PDF if LibreOffice has been installed.
 
 ![Overview](src/main/resources/overview.png)
 
-## Underdocx.org
-Please visit [Underdocx.org](https://underdocx.org) to get additional information and
-to find the User Guide
+## underdocx.org
+Please visit [underdocx.org](https://underdocx.org) to get additional information and
+to find the [User Guide](https://underdocx.org/guide.html)
 
 ## Getting Started
 Add Underdocx as dependency to your project, for example in your pom.xml add:
