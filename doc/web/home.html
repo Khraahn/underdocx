@@ -26,56 +26,13 @@
 
         <div class="imageContainer"><img src="images/overview.png"/></div>
 
-        <h1>Getting Started</h1>
+        <h1>Further Information</h1>
 
-        Visit <a href="gettingstarted.html">Getting Started</a> to include Underdocx
+        Visit <a href="gettingstarted.html">Getting Started</a> to include underdocx
         into your project.<br>
-        For more Details how ti use Underdocx visit the <a href="guide.html">User Guide</a>.
-
-        <h1>Demo</h1>
-        Here is an example to load and manipulate a LibreOffice document with multiple placeholders.
-        Some of these placeholders stand for simple texts, other represent an other
-        document that shall be imported. Images can also represent placeholders that shall be exchanged:
-
-        <div class="imageContainer"><img src="images/guide/demoUnchanged.png"/></div>
-
-        This code snipped reads the template document above and replaces the placeholders with data
-
-        <pre class="highlightjs highlight nowrap"><code class="language-java hljs" data-lang="java">// Prepare document and engine
-OdtContainer doc = new OdtContainer(is);
-DefaultODTEngine engine = new DefaultODTEngine(doc);
-
-// Alias placeholders
-engine.registerStringReplacement("addHeaderAndFooter", "${Export $resource:\"master\"} ");
-engine.registerStringReplacement("membersTable", "${Import $resource:\"membersTable\"} ");
-
-// Variables / Data
-engine.pushLeafVariable("membersTable", readResource("membertable.odt"));
-engine.pushLeafVariable("master", readResource("master.odt"));
-engine.pushLeafVariable("signatureImage", readResource("signature.png"));
-engine.pushVariable("persons", createPersonsData());
-engine.pushVariable("address", "Mr. Peter Silie\nKochstrasse 42\n38106 Braunschweig");
-engine.pushVariable("contact", "Mr. Silie");
-engine.pushVariable("signature", "Jon Sutton");
-
-// Execute the engine
-engine.run();
-doc.save(os);</code></pre>
-
-        And you get a filled document like this one:
-
-        <div class="imageContainer"><img src="images/guide/demoChanged.png"/></div>
-
-        When LibreOffice is installed and LIBREOFFICE environment variable is set correctly you
-        can also generate a PDF:
-
-        <pre
-                class="highlightjs highlight nowrap"><code class="language-java hljs" data-lang="java">doc.writePDF(pos);</code></pre>
-
-        <div class="imageContainer"><img src="images/guide/demoPdf.png"/></div>
-
-        <h2>Further Information</h2>
-
+        For more Details how to use underdocx visit the <a href="guide.html">User Guide</a><br>
+        A small demonstration of underdocx can be found on the <a href="demo.html">Demo</a> page.<br>
+        <br>
         Underdocx is free and uses the
         <a href="https://github.com/winterrifier/underdocx/blob/main/LICENSE" target="_blank">MIT
             License</a>.<br>
