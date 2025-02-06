@@ -12,7 +12,12 @@
   <meta http-equiv="content-type" content="text/html; charset=utf-8" />
   <script src="index.js" type="text/javascript"></script>
   <script src="buildMenu.js" type="text/javascript"></script>
-
+    <link rel="icon" type="image/png" sizes="16x16" href="images/favicon_16.png"/>
+    <link rel="icon" type="image/png" sizes="32x32" href="images/favicon_32.png"/>
+    <link rel="icon" type="image/png" sizes="48x48" href="images/favicon_48.png"/>
+    <link rel="icon" type="image/png" sizes="192x192" href="images/favicon_192.png"/>
+    <link rel="icon" type="image/png" sizes="180x180" href="images/favicon_180.png"/>
+    <link rel="icon" type="image/png" sizes="167x167" href="images/favicon_167.png"/>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.3/styles/lightfair.min.css">
 </head>
 
@@ -66,11 +71,45 @@
         This documentation and more information can be found at
         <a href="https://underdocx.org" target="_blank">Underdocx.org</a>
 
-        <h2>Include Underdocx</h2>
+        <h2>Getting Started</h2>
 
-        Please visit <a href="gettingstarted.html">Getting Started</a> to add underdocx as dependency or
-        check <a href="https://central.sonatype.com/artifact/io.github.winterrifier/underdocx"
-        target="_blank">Underdocx on Maven Central Repository</a>
+        <h3>Add dependency</h3>
+
+        Add Underdocx as dependency to your project, for example in Maven extend your pom.xml:
+
+        <pre class="highlightjs highlight nowrap"><code class="language-xml hljs" data-lang="xml">&lt;dependency&gt;
+    &lt;groupId&gt;io.github.winterrifier&lt;/groupId&gt;
+    &lt;artifactId&gt;underdocx&lt;/artifactId&gt;
+    &lt;version&gt;0.6.1&lt;/version&gt;
+&lt;/dependency&gt;</code></pre>
+
+        When you use Gradle your dependency should look like this
+
+        <pre class="padding"><code>implementation 'io.github.winterrifier:underdocx:0.6.1'</code></pre>
+
+        You can also visit <a href="https://central.sonatype.com/artifact/io.github.winterrifier/underdocx"
+          target="_blank">
+          Underdocx on Maven Central Repository</a>.<br> to find more snippets how to include underdocx
+        into your project.
+
+        <h3>Hello Word Example</h3>
+
+        Now you can use this code to create a simple template that will be
+        processed by the template engine:
+
+        <pre class="highlightjs highlight nowrap"><code class="language-java hljs" data-lang="java">public class HelloWorld {
+  public static void main(String[] args) throws IOException {
+    OdtContainer doc = new OdtContainer("Hello ${$name}");
+    DefaultODTEngine engine = new DefaultODTEngine(doc);
+    engine.pushVariable("name", "World");
+    engine.run();
+    File tmpFile = File.createTempFile("Test_", ".odt");
+    doc.save(tmpFile);
+    System.out.println("Document created: %s".formatted(tmpFile));
+  }
+}</code></pre>
+        This code will create a ODT-document with prefix "Test_" in your temp folder that contains text "Hello World"
+
 
         <h2>Principles</h2>
 
