@@ -24,16 +24,22 @@ SOFTWARE.
 
 package org.underdocx.baseengine;
 
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.odftoolkit.odfdom.doc.OdfTextDocument;
 import org.underdocx.AbstractOdtTest;
 import org.underdocx.common.tools.Convenience;
 import org.underdocx.common.tree.Nodes;
+import org.underdocx.common.tree.nodepath.TreeNodeCollector;
 import org.underdocx.doctypes.odf.odt.OdtContainer;
 import org.underdocx.doctypes.odf.odt.OdtEngine;
 import org.underdocx.enginelayers.baseengine.CommandHandlerResult;
 import org.underdocx.enginelayers.defaultodtengine.commands.internal.AbstractTextualCommandHandler;
 import org.underdocx.enginelayers.modelengine.model.simple.LeafModelNode;
+import org.w3c.dom.Document;
+import org.w3c.dom.Node;
+
+import java.util.ArrayList;
 
 public class StartAtNodeTest extends AbstractOdtTest {
 
@@ -81,5 +87,26 @@ public class StartAtNodeTest extends AbstractOdtTest {
         assertNotContains(doc, "ReplaceWithIncVar");
         assertContains(doc, "IncVar");
         assertContains(doc, "Result: 1");
+    }
+
+    @Test
+    public void testValidNodeTreeWalker() {
+        String xmlContent = """
+                <root>
+                    <a>
+                        <b></b>
+                        <c></c>
+                        <d></d>
+                    </a>
+                    <e>
+                        <f></f>
+                    </e>
+                </root>
+                """.replaceAll("\\s+", "");
+        Document document = readXML(xmlContent);
+        Node c = Nodes.findFirstDescendantNode(document, "c").get();
+        StringBuilder buffer = new StringBuilder();
+        new TreeNodeCollector(document, document, c, new ArrayList<>()).collect().forEach(node -> buffer.append(node.getNodeName()));
+        Assertions.assertThat(buffer.toString()).isEqualTo("cdef");
     }
 }
