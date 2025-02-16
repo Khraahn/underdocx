@@ -39,7 +39,7 @@ public class ParagraphByParagraphNodesEnumerator implements Enumerator<Node> {
     private final List<Node> collectedNodes = new ArrayList<>();
     private Node next = null;
     private NodesProvider nodesProvider = null;
-    private Node firstValidNode;
+
 
     public ParagraphByParagraphNodesEnumerator(
             AbstractOdfContainer<?> doc,
@@ -47,13 +47,12 @@ public class ParagraphByParagraphNodesEnumerator implements Enumerator<Node> {
             Node firstValidNode,
             boolean skipParagraphChildNodes) {
         this.nodesProvider = nodesProvider;
-        this.firstValidNode = firstValidNode;
         walker = new ParagraphWalker(doc, skipParagraphChildNodes);
-        findFirstValidParagraph();
+        findFirstValidParagraph(firstValidNode);
         next = findNext();
     }
 
-    private void findFirstValidParagraph() {
+    private void findFirstValidParagraph(Node firstValidNode) {
         if (firstValidNode != null) {
             // find top paragraph
             Node firstParagraphToUse = null;
@@ -66,12 +65,12 @@ public class ParagraphByParagraphNodesEnumerator implements Enumerator<Node> {
                 }
             }
             if (firstParagraphToUse != null) {
-                while (next != null && next != firstParagraphToUse) {
-                    if (walker.hasNext()) {
-                        next = walker.next();
-                    } else {
-                        next = null;
-                    }
+                TextParagraphElementBase p = null;
+                while (p != firstParagraphToUse && walker.hasNext()) {
+                    p = walker.next();
+                }
+                if (p == firstParagraphToUse) {
+                    collectedNodes.addAll(nodesProvider.collectNodes(p, firstValidNode));
                 }
             }
         }
@@ -85,8 +84,7 @@ public class ParagraphByParagraphNodesEnumerator implements Enumerator<Node> {
         while (collectedNodes.isEmpty() && walker.hasNext()) {
             TextParagraphElementBase paragraph = walker.next();
             if (paragraph != null) {
-                collectedNodes.addAll(nodesProvider.collectNodes(paragraph, firstValidNode));
-                firstValidNode = null;
+                collectedNodes.addAll(nodesProvider.collectNodes(paragraph, null));
             }
         }
         return collectedNodes;
