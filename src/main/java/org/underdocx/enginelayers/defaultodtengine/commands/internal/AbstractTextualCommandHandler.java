@@ -26,6 +26,10 @@ package org.underdocx.enginelayers.defaultodtengine.commands.internal;
 
 import org.underdocx.common.doc.DocContainer;
 import org.underdocx.common.placeholder.TextualPlaceholderToolkit;
+import org.underdocx.common.tools.Convenience;
+import org.underdocx.common.types.Pair;
+import org.underdocx.common.types.Regex;
+import org.underdocx.enginelayers.baseengine.CommandHandlerResult;
 import org.underdocx.enginelayers.baseengine.SelectedNode;
 import org.underdocx.enginelayers.defaultodtengine.commands.internal.datapicker.AttributeNodeDataPicker;
 import org.underdocx.enginelayers.defaultodtengine.commands.internal.datapicker.StringConvertDataPicker;
@@ -33,9 +37,6 @@ import org.underdocx.enginelayers.modelengine.model.ModelNode;
 import org.underdocx.enginelayers.parameterengine.ParametersPlaceholderData;
 import org.underdocx.enginelayers.parameterengine.internal.ParametersPlaceholderCodec;
 import org.underdocx.environment.err.Problems;
-import org.underdocx.common.tools.Convenience;
-import org.underdocx.common.types.Pair;
-import org.underdocx.common.types.Regex;
 import org.w3c.dom.Node;
 
 import java.util.Optional;

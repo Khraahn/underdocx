@@ -25,12 +25,13 @@ SOFTWARE.
 package org.underdocx.enginelayers.defaultodtengine.commands;
 
 import org.underdocx.common.doc.DocContainer;
+import org.underdocx.common.types.Regex;
+import org.underdocx.enginelayers.baseengine.CommandHandlerResult;
 import org.underdocx.enginelayers.baseengine.modifiers.stringmodifier.ReplaceWithTextModifier;
 import org.underdocx.enginelayers.defaultodtengine.commands.internal.AbstractTextualCommandHandler;
 import org.underdocx.enginelayers.defaultodtengine.commands.internal.datapicker.PredefinedDataPicker;
 import org.underdocx.enginelayers.defaultodtengine.commands.internal.datapicker.StringConvertDataPicker;
 import org.underdocx.enginelayers.parameterengine.ParametersPlaceholderData;
-import org.underdocx.common.types.Regex;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -53,6 +54,6 @@ public class DateCommandHandler<C extends DocContainer<D>, D> extends AbstractTe
         LocalDate date = dateStr == null ? LocalDate.now() : LocalDate.parse(dateStr, DateTimeFormatter.ofPattern(inFormat));
         String result = date.format(DateTimeFormatter.ofPattern(outFormat));
         new ReplaceWithTextModifier<C, ParametersPlaceholderData, D>().modify(selection, result);
-        return CommandHandlerResult.EXECUTED;
+        return CommandHandlerResult.EXECUTED_PROCEED;
     }
 }

@@ -26,6 +26,10 @@ package org.underdocx.enginelayers.defaultodtengine.commands;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import org.underdocx.common.doc.DocContainer;
+import org.underdocx.common.tools.Convenience;
+import org.underdocx.common.types.Pair;
+import org.underdocx.common.types.Regex;
+import org.underdocx.enginelayers.baseengine.CommandHandlerResult;
 import org.underdocx.enginelayers.baseengine.SelectedNode;
 import org.underdocx.enginelayers.defaultodtengine.commands.ifcondition.ConditionAttributeInterpreter;
 import org.underdocx.enginelayers.defaultodtengine.commands.internal.AbstractTextualCommandHandler;
@@ -37,9 +41,6 @@ import org.underdocx.enginelayers.defaultodtengine.modifiers.ifmodifier.IfModifi
 import org.underdocx.enginelayers.modelengine.model.ModelNode;
 import org.underdocx.enginelayers.parameterengine.ParametersPlaceholderData;
 import org.underdocx.environment.err.Problems;
-import org.underdocx.common.tools.Convenience;
-import org.underdocx.common.types.Pair;
-import org.underdocx.common.types.Regex;
 
 import java.util.Collection;
 
@@ -62,7 +63,7 @@ public class IfCommandHandler<C extends DocContainer<D>, D> extends AbstractText
 
     @Override
     protected CommandHandlerResult tryExecuteTextualCommand() {
-        return Convenience.build(CommandHandlerResult.EXECUTED_RESCAN_REQUIRED, result -> {
+        return Convenience.build(CommandHandlerResult.EXECUTED_FULL_RESCAN, result -> {
             JsonNode attributes = placeholderData.getJson();
             Pair<SelectedNode<ParametersPlaceholderData>, SelectedNode<ParametersPlaceholderData>> area =
                     Problems.INVALID_PLACEHOLDER_STRUCTURE.get(

@@ -24,10 +24,12 @@ SOFTWARE.
 
 package org.underdocx.enginelayers.defaultodtengine.commands;
 
+import org.odftoolkit.odfdom.doc.OdfTextDocument;
 import org.underdocx.common.enumerator.Enumerator;
 import org.underdocx.common.types.Regex;
 import org.underdocx.common.types.Resource;
 import org.underdocx.doctypes.odf.odt.OdtContainer;
+import org.underdocx.enginelayers.baseengine.CommandHandlerResult;
 import org.underdocx.enginelayers.baseengine.modifiers.deleteplaceholder.DeletePlaceholderModifier;
 import org.underdocx.enginelayers.defaultodtengine.commands.internal.AbstractTextualCommandHandler;
 import org.underdocx.enginelayers.defaultodtengine.commands.internal.attrinterpreter.PredefinedAttributesInterpreter;
@@ -41,7 +43,6 @@ import org.underdocx.enginelayers.defaultodtengine.modifiers.importmodifier.Impo
 import org.underdocx.enginelayers.parameterengine.ParametersPlaceholderData;
 import org.underdocx.enginelayers.parameterengine.ParametersPlaceholderProvider;
 import org.underdocx.environment.err.Problems;
-import org.odftoolkit.odfdom.doc.OdfTextDocument;
 import org.w3c.dom.Node;
 
 import java.util.Optional;
@@ -78,7 +79,7 @@ public class ExportCommandHandler extends AbstractTextualCommandHandler<OdtConta
         new ImportModifier().modify(modifiedData);
         selection.getDocContainer().setDocument(targetDoc.getDocument());
         DeletePlaceholderModifier.modify(refNode);
-        return CommandHandlerResult.EXECUTED_RESCAN_REQUIRED;
+        return CommandHandlerResult.EXECUTED_FULL_RESCAN;
     }
 
     private String randomStr() {

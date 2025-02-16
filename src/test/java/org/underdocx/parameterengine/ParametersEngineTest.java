@@ -24,15 +24,15 @@ SOFTWARE.
 
 package org.underdocx.parameterengine;
 
-import org.underdocx.AbstractOdtTest;
-import org.underdocx.doctypes.odf.odt.OdtContainer;
-import org.underdocx.enginelayers.baseengine.CommandHandler;
-import org.underdocx.enginelayers.baseengine.modifiers.stringmodifier.ReplaceWithTextModifier;
-import org.underdocx.doctypes.odf.odt.OdtEngine;
-import org.underdocx.enginelayers.defaultodtengine.commands.internal.attrinterpreter.AttributesInterpreter;
-import org.underdocx.enginelayers.parameterengine.ParametersPlaceholderData;
 import org.junit.jupiter.api.Test;
 import org.odftoolkit.odfdom.doc.OdfTextDocument;
+import org.underdocx.AbstractOdtTest;
+import org.underdocx.doctypes.odf.odt.OdtContainer;
+import org.underdocx.doctypes.odf.odt.OdtEngine;
+import org.underdocx.enginelayers.baseengine.CommandHandlerResult;
+import org.underdocx.enginelayers.baseengine.modifiers.stringmodifier.ReplaceWithTextModifier;
+import org.underdocx.enginelayers.defaultodtengine.commands.internal.attrinterpreter.AttributesInterpreter;
+import org.underdocx.enginelayers.parameterengine.ParametersPlaceholderData;
 
 public class ParametersEngineTest extends AbstractOdtTest {
 
@@ -44,7 +44,7 @@ public class ParametersEngineTest extends AbstractOdtTest {
                 selection -> {
                     String text = AttributesInterpreter.getStringAttribute(selection.getPlaceholderData().getJson(), "att1").get();
                     new ReplaceWithTextModifier<OdtContainer, ParametersPlaceholderData, OdfTextDocument>().modify(selection, text);
-                    return CommandHandler.CommandHandlerResult.EXECUTED;
+                    return CommandHandlerResult.EXECUTED_PROCEED;
                 });
         engine.run();
         assertContains(doc, "ABC value1 XYZ");
@@ -60,8 +60,8 @@ public class ParametersEngineTest extends AbstractOdtTest {
                     if (selection.getPlaceholderData().getKey().equals("Key")
                             && new ReplaceWithTextModifier<OdtContainer, ParametersPlaceholderData, OdfTextDocument>()
                             .modify(selection, "Test"))
-                        return CommandHandler.CommandHandlerResult.EXECUTED;
-                    else return CommandHandler.CommandHandlerResult.IGNORED;
+                        return CommandHandlerResult.EXECUTED_PROCEED;
+                    else return CommandHandlerResult.IGNORED;
                 });
         engine.run();
         assertContains(doc, "ABC Test XYZ");

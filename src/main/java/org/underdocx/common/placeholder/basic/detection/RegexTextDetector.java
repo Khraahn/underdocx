@@ -31,6 +31,9 @@ import org.underdocx.common.types.Regex;
 import java.util.Optional;
 import java.util.regex.Pattern;
 
+/**
+ * A {@link TextDetector} based on Regular Expressions. Can be used for simple (custom) placeholders
+ */
 public class RegexTextDetector implements TextDetector {
 
     private final Regex regex;

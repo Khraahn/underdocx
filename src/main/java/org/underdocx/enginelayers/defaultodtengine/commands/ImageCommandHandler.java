@@ -28,7 +28,7 @@ import org.odftoolkit.odfdom.doc.OdfTextDocument;
 import org.underdocx.common.tools.Convenience;
 import org.underdocx.common.types.Resource;
 import org.underdocx.doctypes.odf.odt.OdtContainer;
-import org.underdocx.enginelayers.baseengine.CommandHandler;
+import org.underdocx.enginelayers.baseengine.CommandHandlerResult;
 import org.underdocx.enginelayers.baseengine.modifiers.existingimage.ExistingImageModifier;
 import org.underdocx.enginelayers.baseengine.modifiers.existingimage.ExistingImageModifierData;
 import org.underdocx.enginelayers.defaultodtengine.commands.ifcondition.ConditionAttributeInterpreter;
@@ -61,8 +61,8 @@ public class ImageCommandHandler extends AbstractCommandHandler<OdtContainer, Im
 
 
     @Override
-    protected CommandHandler.CommandHandlerResult tryExecuteCommand() {
-        return Convenience.build(CommandHandler.CommandHandlerResult.EXECUTED, result -> {
+    protected CommandHandlerResult tryExecuteCommand() {
+        return Convenience.build(CommandHandlerResult.EXECUTED_PROCEED, result -> {
             String name = namePicker.expect(modelAccess, placeholderData.getJson());
             String title = titlePicker.pickData(modelAccess, placeholderData.getJson()).getOptionalValue().orElse(null);
             Boolean keepWidth = keepWidthPicker.expect(modelAccess, placeholderData.getJson());

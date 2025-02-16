@@ -25,14 +25,15 @@ SOFTWARE.
 package org.underdocx.enginelayers.defaultodtengine.commands;
 
 import org.underdocx.common.doc.DocContainer;
+import org.underdocx.common.tools.Convenience;
+import org.underdocx.common.types.Regex;
+import org.underdocx.enginelayers.baseengine.CommandHandlerResult;
 import org.underdocx.enginelayers.baseengine.EngineAccess;
 import org.underdocx.enginelayers.baseengine.modifiers.EngineListener;
 import org.underdocx.enginelayers.baseengine.modifiers.deleteplaceholder.DeletePlaceholderModifier;
 import org.underdocx.enginelayers.baseengine.modifiers.deleteplaceholder.DeletePlaceholderModifierData;
 import org.underdocx.enginelayers.defaultodtengine.commands.internal.AbstractTextualCommandHandler;
 import org.underdocx.enginelayers.parameterengine.ParametersPlaceholderData;
-import org.underdocx.common.tools.Convenience;
-import org.underdocx.common.types.Regex;
 
 import java.util.Optional;
 
@@ -60,14 +61,14 @@ public class VariableCommandHandler<C extends DocContainer<D>, D> extends Abstra
     }
 
     private CommandHandlerResult handlePushCommand() {
-        return Convenience.build(CommandHandlerResult.EXECUTED, result ->
+        return Convenience.build(CommandHandlerResult.EXECUTED_PROCEED, result ->
                 resolveStringByAttr(KEY_ATTR).ifPresent(key ->
                         resolveNodeByAttr(VALUE_ATTR).ifPresent(modelValue ->
                                 modelAccess.pushVariable(key, modelValue))));
     }
 
     private CommandHandlerResult handlePopCommand() {
-        return Convenience.build(CommandHandlerResult.EXECUTED, result ->
+        return Convenience.build(CommandHandlerResult.EXECUTED_PROCEED, result ->
                 resolveStringByAttr(KEY_ATTR).ifPresent(key ->
                         modelAccess.popVariable(key)));
     }
@@ -79,5 +80,5 @@ public class VariableCommandHandler<C extends DocContainer<D>, D> extends Abstra
             return placeholderData.isPresent() && KEYS.matches(placeholderData.get().getKey());
         }).forEach(placeholderNode -> DeletePlaceholderModifier.modify(placeholderNode, DeletePlaceholderModifierData.DEFAULT));
     }
-    
+
 }

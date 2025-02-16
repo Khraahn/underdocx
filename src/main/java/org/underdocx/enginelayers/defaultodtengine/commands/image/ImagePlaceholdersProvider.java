@@ -24,18 +24,18 @@ SOFTWARE.
 
 package org.underdocx.enginelayers.defaultodtengine.commands.image;
 
+import org.odftoolkit.odfdom.doc.OdfTextDocument;
 import org.underdocx.common.enumerator.Enumerator;
 import org.underdocx.common.placeholder.EncapsulatedNodesExtractor;
 import org.underdocx.common.placeholder.TextualPlaceholderToolkit;
 import org.underdocx.common.placeholder.basic.textnodeinterpreter.OdfTextNodeInterpreter;
-import org.underdocx.common.tree.Nodes;
 import org.underdocx.common.tools.Convenience;
+import org.underdocx.common.tree.nodepath.TreeNodeCollector;
 import org.underdocx.doctypes.TextNodeInterpreter;
 import org.underdocx.doctypes.odf.constants.OdfElement;
 import org.underdocx.doctypes.odf.odt.OdtContainer;
 import org.underdocx.doctypes.odf.odt.tools.ParagraphByParagraphNodesEnumerator;
 import org.underdocx.enginelayers.baseengine.PlaceholdersProvider;
-import org.odftoolkit.odfdom.doc.OdfTextDocument;
 import org.w3c.dom.Node;
 
 import java.util.ArrayList;
@@ -44,6 +44,7 @@ import java.util.Optional;
 
 public class ImagePlaceholdersProvider implements EncapsulatedNodesExtractor, PlaceholdersProvider<OdtContainer, ImagePlaceholderData, OdfTextDocument> {
     private final OdtContainer doc;
+    private Node firstValidNode = null;
 
     public ImagePlaceholdersProvider(OdtContainer doc) {
         this.doc = doc;
@@ -51,11 +52,16 @@ public class ImagePlaceholdersProvider implements EncapsulatedNodesExtractor, Pl
 
     private static TextNodeInterpreter interpreter = OdfTextNodeInterpreter.INSTANCE;
 
-
     @Override
-    public List<Node> extractNodes(Node tree) {
+    public List<Node> extractNodes(Node tree, Node firstValidNodeOrNull) {
         return Convenience.also(new ArrayList<Node>(), result -> {
-            Nodes.findDescendantNodes(tree, OdfElement.FRAME.getQualifiedName(), true).forEach(frame -> {
+            TreeNodeCollector collector = new TreeNodeCollector(tree, tree, firstValidNodeOrNull, new ArrayList<>(),
+                    visitState -> visitState != null &&
+                            visitState.isValid() &&
+                            visitState.isBeginVisit() &&
+                            visitState.getNode() != null &&
+                            OdfElement.FRAME.is(visitState.getNode()));
+            collector.forEach(frame -> {
                 if (isEncapsulatedNode(frame)) result.add(frame);
             });
         });
@@ -73,7 +79,7 @@ public class ImagePlaceholdersProvider implements EncapsulatedNodesExtractor, Pl
 
     @Override
     public Enumerator<Node> getPlaceholders() {
-        return new ParagraphByParagraphNodesEnumerator(doc, p -> this.extractNodes(p), true);
+        return new ParagraphByParagraphNodesEnumerator(doc, (p, first) -> this.extractNodes(p, first), firstValidNode, true);
     }
 
     @Override
@@ -84,6 +90,11 @@ public class ImagePlaceholdersProvider implements EncapsulatedNodesExtractor, Pl
     @Override
     public Optional<TextualPlaceholderToolkit<ImagePlaceholderData>> getPlaceholderToolkit() {
         return Optional.empty();
+    }
+
+    @Override
+    public void restartAt(Node node) {
+        this.firstValidNode = node;
     }
 
     public static class ImagePlaceholdersProviderFactory implements PlaceholdersProvider.Factory<OdtContainer, ImagePlaceholderData, OdfTextDocument> {

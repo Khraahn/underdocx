@@ -25,6 +25,9 @@ SOFTWARE.
 package org.underdocx.enginelayers.defaultodtengine.commands;
 
 import org.underdocx.common.doc.DocContainer;
+import org.underdocx.common.tools.Convenience;
+import org.underdocx.common.types.Regex;
+import org.underdocx.enginelayers.baseengine.CommandHandlerResult;
 import org.underdocx.enginelayers.baseengine.EngineAccess;
 import org.underdocx.enginelayers.baseengine.modifiers.EngineListener;
 import org.underdocx.enginelayers.baseengine.modifiers.deleteplaceholder.DeletePlaceholderModifier;
@@ -33,8 +36,6 @@ import org.underdocx.enginelayers.defaultodtengine.commands.internal.AbstractTex
 import org.underdocx.enginelayers.modelengine.modelpath.ActivePrefixModelPath;
 import org.underdocx.enginelayers.modelengine.modelpath.ModelPath;
 import org.underdocx.enginelayers.parameterengine.ParametersPlaceholderData;
-import org.underdocx.common.tools.Convenience;
-import org.underdocx.common.types.Regex;
 
 import java.util.Optional;
 import java.util.regex.Pattern;
@@ -65,7 +66,7 @@ public class ModelCommandHandler<C extends DocContainer<D>, D> extends AbstractT
 
     @Override
     protected CommandHandlerResult tryExecuteTextualCommand() {
-        return Convenience.build(CommandHandlerResult.EXECUTED, result -> {
+        return Convenience.build(CommandHandlerResult.EXECUTED_PROCEED, result -> {
             engineAccess.addListener(this);
             ModelPath newPath = Convenience.build(modelAccess.getCurrentModelPath(), p ->
                     resolveStringByAttr(ATTR_VALUE).ifPresentOrElse(

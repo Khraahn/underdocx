@@ -32,10 +32,8 @@ import org.w3c.dom.Node;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
-import java.util.function.Predicate;
 
-import static org.underdocx.common.tools.Convenience.*;
+import static org.underdocx.common.tools.Convenience.also;
 
 public class TextualPlaceholderToolkit<P> {
     private final EncapsulatedNodesExtractor extractor;
@@ -46,8 +44,8 @@ public class TextualPlaceholderToolkit<P> {
         this.extractor = extractor;
     }
 
-    public List<Node> extractPlaceholders(Node tree) {
-        return extractor.extractNodes(tree);
+    public List<Node> extractPlaceholders(Node tree, Node firstValidNodeOrNull) {
+        return extractor.extractNodes(tree, firstValidNodeOrNull);
     }
 
     public void replacePlaceholderWithText(Node placeholder, String text) {
@@ -95,6 +93,7 @@ public class TextualPlaceholderToolkit<P> {
         });
     }
 
+    /*
     public List<Node> findPlaceholders(Node tree, Predicate<P> filter) {
         return filter(extractPlaceholders(tree), node -> filter.test(parsePlaceholder(node)));
     }
@@ -104,6 +103,8 @@ public class TextualPlaceholderToolkit<P> {
         return list.isEmpty() ? Optional.empty() : Optional.of(first(list));
     }
 
+
+     */
     public TextNodeInterpreter getTextNodeInterpreter() {
         return extractor.getTextNodeInterpreter();
     }

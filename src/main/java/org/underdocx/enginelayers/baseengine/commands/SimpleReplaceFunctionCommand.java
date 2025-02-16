@@ -26,6 +26,7 @@ package org.underdocx.enginelayers.baseengine.commands;
 
 import org.underdocx.common.doc.DocContainer;
 import org.underdocx.enginelayers.baseengine.CommandHandler;
+import org.underdocx.enginelayers.baseengine.CommandHandlerResult;
 import org.underdocx.enginelayers.baseengine.Selection;
 import org.underdocx.enginelayers.baseengine.modifiers.stringmodifier.ReplaceWithTextModifier;
 
@@ -46,7 +47,7 @@ public class SimpleReplaceFunctionCommand<C extends DocContainer<D>, D> implemen
     public CommandHandlerResult tryExecuteCommand(Selection<C, String, D> selection) {
         return build(CommandHandlerResult.IGNORED, result ->
                 replaceFunction.apply(selection.getPlaceholderData()).ifPresent(replacement ->
-                        result.value = CommandHandlerResult.mapToExecuted(new ReplaceWithTextModifier().modify(selection, replacement))
+                        result.value = CommandHandlerResult.FACTORY.checkExecuted(new ReplaceWithTextModifier().modify(selection, replacement))
                 ));
     }
 }

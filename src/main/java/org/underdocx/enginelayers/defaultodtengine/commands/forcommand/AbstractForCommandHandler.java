@@ -26,6 +26,9 @@ package org.underdocx.enginelayers.defaultodtengine.commands.forcommand;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import org.underdocx.common.doc.DocContainer;
+import org.underdocx.common.types.Pair;
+import org.underdocx.common.types.Regex;
+import org.underdocx.enginelayers.baseengine.CommandHandlerResult;
 import org.underdocx.enginelayers.baseengine.SelectedNode;
 import org.underdocx.enginelayers.defaultodtengine.commands.ModelCommandHandler;
 import org.underdocx.enginelayers.defaultodtengine.commands.VariableCommandHandler;
@@ -43,15 +46,13 @@ import org.underdocx.enginelayers.modelengine.model.ModelNode;
 import org.underdocx.enginelayers.modelengine.model.simple.ListModelNode;
 import org.underdocx.enginelayers.parameterengine.ParametersPlaceholderData;
 import org.underdocx.environment.err.Problems;
-import org.underdocx.common.types.Pair;
-import org.underdocx.common.types.Regex;
 import org.w3c.dom.Node;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import static org.underdocx.common.tools.Convenience.*;
+import static org.underdocx.common.tools.Convenience.also;
 
 public abstract class AbstractForCommandHandler<C extends DocContainer<D>, D> extends AbstractTextualCommandHandler<C, D> {
 
@@ -115,7 +116,7 @@ public abstract class AbstractForCommandHandler<C extends DocContainer<D>, D> ex
         asAttrValue = getAsStrAttr.interpretAttributes(placeholderData.getJson()).orElse(null);
         callModifier(createModifierData());
 
-        return CommandHandlerResult.EXECUTED_RESCAN_REQUIRED;
+        return CommandHandlerResult.EXECUTED_FULL_RESCAN;
     }
 
     protected abstract void callModifier(ForModifierData forModifierData);

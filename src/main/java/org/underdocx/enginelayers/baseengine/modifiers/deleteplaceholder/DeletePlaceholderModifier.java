@@ -27,9 +27,9 @@ package org.underdocx.enginelayers.baseengine.modifiers.deleteplaceholder;
 import org.underdocx.common.doc.DocContainer;
 import org.underdocx.common.placeholder.TextualPlaceholderToolkit;
 import org.underdocx.common.placeholder.basic.textnodeinterpreter.OdfTextNodeInterpreter;
+import org.underdocx.common.tools.Convenience;
 import org.underdocx.common.tree.nodepath.TextNodePath;
 import org.underdocx.common.tree.nodepath.TreeNodeCollector;
-import org.underdocx.common.tools.Convenience;
 import org.underdocx.common.types.Wrapper;
 import org.underdocx.doctypes.odf.odt.pagestyle.PageStyle;
 import org.underdocx.doctypes.odf.odt.pagestyle.PageStyleReader;
@@ -60,7 +60,7 @@ public class DeletePlaceholderModifier<C extends DocContainer<D>, P, D> implemen
                     if (modifierData.getDeleteStrategy() == DeletePlaceholderModifierData.Strategy.DELETE_PARAGRAPH) {
                         removeParagraph(result, p, modifierData.copyPageStyle());
                     } else {
-                        List<Node> paragraphNodes = new TreeNodeCollector(p, p, new ArrayList<>()).collect();
+                        List<Node> paragraphNodes = new TreeNodeCollector(p, p, null, new ArrayList<>()).collect();
                         TextNodePath path = new TextNodePath(paragraphNodes, OdfTextNodeInterpreter.INSTANCE);
                         if (path.isTextRealtedOnly()) {
                             String textContent = path.fetchTextContent();

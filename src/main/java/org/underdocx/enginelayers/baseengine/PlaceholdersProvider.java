@@ -39,6 +39,8 @@ public interface PlaceholdersProvider<C extends DocContainer<D>, P, D> {
 
     Optional<TextualPlaceholderToolkit<P>> getPlaceholderToolkit();
 
+    void restartAt(Node node);
+
     interface Factory<C extends DocContainer<D>, P, D> {
         PlaceholdersProvider<C, P, D> createProvider(C doc);
     }

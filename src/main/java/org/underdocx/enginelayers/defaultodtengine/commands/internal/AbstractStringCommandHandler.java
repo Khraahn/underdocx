@@ -25,12 +25,13 @@ SOFTWARE.
 package org.underdocx.enginelayers.defaultodtengine.commands.internal;
 
 import org.underdocx.common.doc.DocContainer;
+import org.underdocx.common.types.Regex;
+import org.underdocx.enginelayers.baseengine.CommandHandlerResult;
 import org.underdocx.enginelayers.defaultodtengine.commands.internal.datapicker.ExtendedDataPicker;
 import org.underdocx.enginelayers.defaultodtengine.commands.internal.datapicker.StringConvertDataPicker;
 import org.underdocx.enginelayers.defaultodtengine.commands.internal.modifiermodule.stringoutput.StringOutputCommandModule;
 import org.underdocx.enginelayers.defaultodtengine.commands.internal.modifiermodule.stringoutput.StringOutputModuleConfig;
 import org.underdocx.enginelayers.modelengine.model.ModelNode;
-import org.underdocx.common.types.Regex;
 
 public abstract class AbstractStringCommandHandler<C extends DocContainer<D>, D> extends AbstractTextualCommandHandler<C, D> {
 

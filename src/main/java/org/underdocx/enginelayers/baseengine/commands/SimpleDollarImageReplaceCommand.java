@@ -25,18 +25,19 @@ SOFTWARE.
 package org.underdocx.enginelayers.baseengine.commands;
 
 import org.underdocx.common.doc.DocContainer;
+import org.underdocx.common.types.Resource;
 import org.underdocx.enginelayers.baseengine.CommandHandler;
+import org.underdocx.enginelayers.baseengine.CommandHandlerResult;
 import org.underdocx.enginelayers.baseengine.Selection;
 import org.underdocx.enginelayers.baseengine.internal.placeholdersprovider.dollar.image.SimpleDollarImagePlaceholderData;
 import org.underdocx.enginelayers.baseengine.modifiers.existingimage.ExistingImageModifier;
 import org.underdocx.enginelayers.baseengine.modifiers.existingimage.ExistingImageModifierData;
-import org.underdocx.common.types.Resource;
 
 import java.net.URI;
 import java.util.Optional;
 import java.util.function.Function;
 
-import static org.underdocx.common.tools.Convenience.*;
+import static org.underdocx.common.tools.Convenience.build;
 
 public class SimpleDollarImageReplaceCommand<C extends DocContainer<D>, D> implements CommandHandler<C, SimpleDollarImagePlaceholderData, D> {
 
@@ -52,7 +53,7 @@ public class SimpleDollarImageReplaceCommand<C extends DocContainer<D>, D> imple
     public CommandHandlerResult tryExecuteCommand(Selection<C, SimpleDollarImagePlaceholderData, D> selection) {
         return build(CommandHandlerResult.IGNORED, result ->
                 function.apply(selection.getPlaceholderData().getVariableName()).ifPresent(uri -> {
-                    result.value = CommandHandlerResult.EXECUTED;
+                    result.value = CommandHandlerResult.EXECUTED_PROCEED;
                     new ExistingImageModifier<C, SimpleDollarImagePlaceholderData, D>().modify(selection, new ExistingImageModifierData.Simple(keepWidth, new Resource.UriResource(uri), selection.getPlaceholderData().getVariableName(), null));
                 }));
     }

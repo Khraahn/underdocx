@@ -24,8 +24,8 @@ SOFTWARE.
 
 package org.underdocx.common.tree.nodepath;
 
-import org.underdocx.doctypes.TextNodeInterpreter;
 import org.underdocx.common.tools.Convenience;
+import org.underdocx.doctypes.TextNodeInterpreter;
 import org.w3c.dom.Node;
 
 import java.util.ArrayList;
@@ -177,15 +177,15 @@ public class TextNodePath {
     }
 
     public static boolean isBlank(Node tree, TextNodeInterpreter textNodeInterpreter) {
-        List<Node> nodes = new TreeNodeCollector(tree, tree).collect();
+        List<Node> nodes = new TreeNodeCollector(tree, tree, null).collect();
         return new TextNodePath(nodes, textNodeInterpreter).isBlank();
     }
 
     public static String fetchTextContent(Node tree, TextNodeInterpreter textNodeInterpreter) {
-        return new TextNodePath(new TreeNodeCollector(tree, tree).collect(), textNodeInterpreter).fetchTextContent();
+        return new TextNodePath(new TreeNodeCollector(tree, tree, null).collect(), textNodeInterpreter).fetchTextContent();
     }
 
     public static Optional<String> getTextContent(Node tree, TextNodeInterpreter textNodeInterpreter) {
-        return new TextNodePath(new TreeNodeCollector(tree, tree).collect(), textNodeInterpreter).getTextContent();
+        return new TextNodePath(new TreeNodeCollector(tree, tree, null).collect(), textNodeInterpreter).getTextContent();
     }
 }

@@ -24,17 +24,17 @@ SOFTWARE.
 
 package org.underdocx.baseengine;
 
+import org.junit.jupiter.api.Test;
+import org.odftoolkit.odfdom.doc.OdfTextDocument;
 import org.underdocx.AbstractOdtTest;
 import org.underdocx.common.debug.TreePrinter;
 import org.underdocx.common.placeholder.EncapsulatedNodesExtractor;
 import org.underdocx.common.tree.Nodes;
 import org.underdocx.doctypes.odf.odt.OdtContainer;
+import org.underdocx.doctypes.odf.odt.OdtEngine;
 import org.underdocx.enginelayers.baseengine.BaseEngine;
 import org.underdocx.enginelayers.baseengine.commands.SimpleReplaceFunctionCommand;
 import org.underdocx.enginelayers.baseengine.internal.placeholdersprovider.dollar.SimpleDollarPlaceholdersProvider;
-import org.underdocx.doctypes.odf.odt.OdtEngine;
-import org.junit.jupiter.api.Test;
-import org.odftoolkit.odfdom.doc.OdfTextDocument;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 
@@ -83,7 +83,7 @@ public class BaseEngineTest extends AbstractOdtTest {
         Document xml = readXML("<root><p>Hallo $name :-)</p></root>");
         Node paragraph = Nodes.findFirstDescendantNode(xml, "p").get();
         EncapsulatedNodesExtractor extractor = SimpleDollarPlaceholdersProvider.createExtractor(testTextNodeInterpreter);
-        List<Node> nodes = extractor.extractNodes(paragraph);
+        List<Node> nodes = extractor.extractNodes(paragraph, null);
         assertThat(nodes.get(0).getFirstChild().getNodeValue()).isEqualTo("$name");
         String xmlTree = new TreePrinter(Nodes.findFirstDescendantNode(xml, "root").get(), true).toString();
         assertThat(xmlTree).isEqualTo("<root><p>Hallo <span>$name</span> :-)</p></root>");
@@ -133,7 +133,7 @@ public class BaseEngineTest extends AbstractOdtTest {
         Document xml = readXML("<root><p><x></x>Hallo $name :-)</p></root>");
         Node paragraph = Nodes.findFirstDescendantNode(xml, "p").get();
         EncapsulatedNodesExtractor extractor = SimpleDollarPlaceholdersProvider.createExtractor(testTextNodeInterpreter);
-        List<Node> nodes = extractor.extractNodes(paragraph);
+        List<Node> nodes = extractor.extractNodes(paragraph, null);
         assertThat(nodes.get(0).getFirstChild().getNodeValue()).isEqualTo("$name");
         String xmlTree = new TreePrinter(Nodes.findFirstDescendantNode(xml, "root").get(), true).toString();
         assertThat(xmlTree).isEqualTo("<root><p><x></x>Hallo <span>$name</span> :-)</p></root>");

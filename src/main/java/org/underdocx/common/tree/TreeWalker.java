@@ -24,8 +24,8 @@ SOFTWARE.
 
 package org.underdocx.common.tree;
 
-import org.underdocx.common.enumerator.Enumerator;
 import jakarta.validation.constraints.NotNull;
+import org.underdocx.common.enumerator.Enumerator;
 import org.w3c.dom.Node;
 
 import java.util.function.Supplier;
@@ -39,22 +39,31 @@ public class TreeWalker implements Enumerator<TreeWalker.VisitState> {
     private Node initialNode;
     private final Node scope;
     private VisitState state = null;
+    private Node firstValidNode = null;
+
 
     public TreeWalker(@NotNull Node initialNode, Node scope) {
         this.initialNode = initialNode;
         this.scope = scope;
     }
 
+    public TreeWalker(@NotNull Node initialNode, Node scope, Node firstValidNode) {
+        this.initialNode = initialNode;
+        this.scope = scope;
+        this.firstValidNode = firstValidNode;
+    }
+
     public TreeWalker(@NotNull TreeWalker treeWalker) {
         this.state = treeWalker.state != null ? new VisitState(treeWalker.state) : null;
         this.initialNode = treeWalker.initialNode;
         this.scope = treeWalker.scope;
+        this.firstValidNode = treeWalker.firstValidNode;
     }
 
     private VisitState nextStateSkipChildren() {
         VisitState result;
         if (state != null && state.beginVisit && state.node.hasChildNodes()) {
-            result = new VisitState(state.node, false);
+            result = new VisitState(state.node, false, state.isValid);
         } else {
             return nextState();
         }
@@ -62,17 +71,18 @@ public class TreeWalker implements Enumerator<TreeWalker.VisitState> {
     }
 
     private VisitState nextState() {
-        if (state == null) return new VisitState(initialNode, true);
+        if (state == null) return new VisitState(initialNode, true, isFirstValidNodeFound(null, initialNode));
         if (scope != null && state.node == scope && !state.beginVisit) return null;
         if (state.beginVisit) return state.node.hasChildNodes()
-                ? new VisitState(state.node.getFirstChild(), true)
-                : new VisitState(state.node, false);
+                ? new VisitState(state.node.getFirstChild(), true, isFirstValidNodeFound(state, state.node.getFirstChild()))
+                : new VisitState(state.node, false, isFirstValidNodeFound(state, state.node));
         else {
-            if (state.node.getNextSibling() != null)
-                return new VisitState(state.node.getNextSibling(), true);
-            else {
+            if (state.node.getNextSibling() != null) {
+                Node nextSibling = state.node.getNextSibling();
+                return new VisitState(nextSibling, true, isFirstValidNodeFound(state, nextSibling));
+            } else {
                 Node parent = state.node.getParentNode();
-                return parent != null ? new VisitState(parent, false) : null;
+                return parent != null ? new VisitState(parent, false, isFirstValidNodeFound(state, parent)) : null;
             }
         }
     }
@@ -95,13 +105,29 @@ public class TreeWalker implements Enumerator<TreeWalker.VisitState> {
         return result;
     }
 
+    private boolean isFirstValidNodeFound(VisitState lastState, Node currentNode) {
+        if (firstValidNode == null) {
+            return true;
+        }
+        if (currentNode == firstValidNode) {
+            return true;
+        }
+        if (lastState == null) {
+            return false;
+        }
+        return lastState.isValid;
+    }
+
     public void jump(Node node) {
+        if (state != null && state.isValid) {
+            firstValidNode = null;
+        }
         initialNode = node;
         state = null;
     }
 
-    public static Node findNextNode(Node node, Node scope, boolean skipChildren) {
-        TreeWalker walker = new TreeWalker(node, scope);
+    public static Node findNextNode(Node node, Node scope, Node firstValidNodeOrNull, boolean skipChildren) {
+        TreeWalker walker = new TreeWalker(node, scope, firstValidNodeOrNull);
         VisitState state;
         walker.next();
         do {
@@ -114,14 +140,16 @@ public class TreeWalker implements Enumerator<TreeWalker.VisitState> {
     public static class VisitState {
         private final Node node;
         private final boolean beginVisit;
+        private final boolean isValid;
 
-        public VisitState(@NotNull Node node, boolean beginVisit) {
+        public VisitState(@NotNull Node node, boolean beginVisit, boolean isValid) {
             this.node = node;
             this.beginVisit = beginVisit;
+            this.isValid = isValid;
         }
 
         public VisitState(@NotNull VisitState visitState) {
-            this(visitState.node, visitState.beginVisit);
+            this(visitState.node, visitState.beginVisit, visitState.isValid);
         }
 
         public Node getNode() {
@@ -130,6 +158,10 @@ public class TreeWalker implements Enumerator<TreeWalker.VisitState> {
 
         public boolean isBeginVisit() {
             return beginVisit;
+        }
+
+        public boolean isValid() {
+            return isValid;
         }
     }
 

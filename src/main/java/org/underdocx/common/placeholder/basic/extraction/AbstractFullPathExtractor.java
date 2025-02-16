@@ -27,10 +27,10 @@ package org.underdocx.common.placeholder.basic.extraction;
 import org.underdocx.common.enumerator.Enumerator;
 import org.underdocx.common.placeholder.basic.detection.TextDetectionResult;
 import org.underdocx.common.placeholder.basic.detection.TextDetector;
-import org.underdocx.doctypes.TextNodeInterpreter;
+import org.underdocx.common.tree.TreeWalker;
 import org.underdocx.common.tree.nodepath.TextNodePath;
 import org.underdocx.common.tree.nodepath.TreeNodeCollector;
-import org.underdocx.common.tree.TreeWalker;
+import org.underdocx.doctypes.TextNodeInterpreter;
 import org.w3c.dom.Node;
 
 import java.util.List;
@@ -45,16 +45,16 @@ public class AbstractFullPathExtractor extends AbstractExtractor {
     }
 
     @Override
-    public List<Node> extractNodes(Node tree) {
+    public List<Node> extractNodes(Node tree, Node firstValidNodeOrNull) {
         return buildList(result -> {
             Node start = tree;
             while (start != null) {
-                TextNodePath fullPath = new TextNodePath(also(new TreeNodeCollector(start, tree), Enumerator::collect).getNodes(), interpreter);
+                TextNodePath fullPath = new TextNodePath(also(new TreeNodeCollector(start, tree, firstValidNodeOrNull), Enumerator::collect).getNodes(), interpreter);
                 TextDetectionResult.TextArea area = detector.detect(fullPath).area;
                 if (area != null) {
                     Node foundNode = getIfEncapsulated(area).orElse(Encapsulator.encapsulate(area));
                     result.add(foundNode);
-                    start = TreeWalker.findNextNode(foundNode, tree, true);
+                    start = TreeWalker.findNextNode(foundNode, tree, null, true);
                 } else {
                     start = null;
                 }

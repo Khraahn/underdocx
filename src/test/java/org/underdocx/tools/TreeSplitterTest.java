@@ -24,13 +24,13 @@ SOFTWARE.
 
 package org.underdocx.tools;
 
+import org.assertj.core.api.Assertions;
+import org.junit.jupiter.api.Test;
 import org.underdocx.AbstractOdtTest;
 import org.underdocx.common.tree.Nodes;
 import org.underdocx.common.tree.TreeSplitter;
 import org.underdocx.common.tree.TreeWalker;
 import org.underdocx.common.tree.nodepath.TreeNodeCollector;
-import org.assertj.core.api.Assertions;
-import org.junit.jupiter.api.Test;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 
@@ -102,8 +102,8 @@ public class TreeSplitterTest extends AbstractOdtTest {
         Document expectXML = readXML(expectationXMLStr);
         Predicate<TreeWalker.VisitState> filter = visitState ->
                 visitState.isBeginVisit() && visitState.getNode().getNodeType() != Node.TEXT_NODE;
-        List<Node> changedNodes = new TreeNodeCollector(initialXML, initialXML, new ArrayList<>(), filter).collect();
-        List<Node> expectedNodes = new TreeNodeCollector(expectXML, expectXML, new ArrayList<>(), filter).collect();
+        List<Node> changedNodes = new TreeNodeCollector(initialXML, initialXML, null, new ArrayList<>(), filter).collect();
+        List<Node> expectedNodes = new TreeNodeCollector(expectXML, expectXML, null, new ArrayList<>(), filter).collect();
 
         Assertions.assertThat(changedNodes.size()).isGreaterThan(5);
         Assertions.assertThat(changedNodes.size()).isEqualTo(expectedNodes.size());

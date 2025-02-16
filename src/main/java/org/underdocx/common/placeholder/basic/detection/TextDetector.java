@@ -26,6 +26,10 @@ package org.underdocx.common.placeholder.basic.detection;
 
 import org.underdocx.common.tree.nodepath.TextNodePath;
 
+/**
+ * A {@link TextDetector} receives a sequence of Tokens (sequence of Nodes) and decides
+ * if the sequence contains a placeholder, parts of it (beginning sequence) or nothing special
+ */
 public interface TextDetector {
 
     TextDetectionResult detect(TextNodePath path);

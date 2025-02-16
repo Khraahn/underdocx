@@ -25,8 +25,8 @@ SOFTWARE.
 package org.underdocx.common.tree.nodepath;
 
 import org.underdocx.common.enumerator.Enumerator;
-import org.underdocx.common.tree.TreeWalker;
 import org.underdocx.common.tools.Convenience;
+import org.underdocx.common.tree.TreeWalker;
 import org.w3c.dom.Node;
 
 import java.util.ArrayList;
@@ -36,24 +36,25 @@ import java.util.function.Predicate;
 
 public class TreeNodeCollector implements Enumerator<Node> {
 
-    public static final Predicate<TreeWalker.VisitState> BeginVisitNodeFilter = TreeWalker.VisitState::isBeginVisit;
+    public static final Predicate<TreeWalker.VisitState> BeginVisitValidNodeFilter
+            = visitState -> visitState.isValid() && visitState.isBeginVisit();
 
     private final Predicate<TreeWalker.VisitState> filter;
     private final List<Node> path;
     private final TreeWalker walker;
 
-    public TreeNodeCollector(Node start, Node limit, List<Node> path, Predicate<TreeWalker.VisitState> filter) {
+    public TreeNodeCollector(Node start, Node limit, Node firstValidNodeOrNull, List<Node> path, Predicate<TreeWalker.VisitState> filter) {
         this.path = path;
         this.filter = filter;
-        this.walker = new TreeWalker(start, limit);
+        this.walker = new TreeWalker(start, limit, firstValidNodeOrNull);
     }
 
-    public TreeNodeCollector(Node start, Node limit, List<Node> path) {
-        this(start, limit, path, BeginVisitNodeFilter);
+    public TreeNodeCollector(Node start, Node limit, Node firstValidNodeOrNull, List<Node> path) {
+        this(start, limit, firstValidNodeOrNull, path, BeginVisitValidNodeFilter);
     }
 
-    public TreeNodeCollector(Node start, Node limit) {
-        this(start, limit, new ArrayList<>(), BeginVisitNodeFilter);
+    public TreeNodeCollector(Node start, Node limit, Node firstValidNodeOrNull) {
+        this(start, limit, firstValidNodeOrNull, new ArrayList<>(), BeginVisitValidNodeFilter);
     }
 
     private Optional<Node> nextNode(boolean keepCurrentState) {

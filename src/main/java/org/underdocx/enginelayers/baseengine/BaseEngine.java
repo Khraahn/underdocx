@@ -24,6 +24,7 @@ SOFTWARE.
 
 package org.underdocx.enginelayers.baseengine;
 
+import org.apache.commons.collections4.multimap.ArrayListValuedHashMap;
 import org.underdocx.common.doc.DocContainer;
 import org.underdocx.common.enumerator.LookAheadEnumerator;
 import org.underdocx.common.enumerator.SimpleLookAheadEnumerator;
@@ -35,7 +36,6 @@ import org.underdocx.enginelayers.baseengine.modifiers.EngineListener;
 import org.underdocx.environment.UnderdocxEnv;
 import org.underdocx.environment.err.Problem;
 import org.underdocx.environment.err.Problems;
-import org.apache.commons.collections4.multimap.ArrayListValuedHashMap;
 import org.w3c.dom.Node;
 
 import java.io.File;
@@ -54,6 +54,7 @@ public class BaseEngine<C extends DocContainer<D>, D> {
     protected ArrayListValuedHashMap<PlaceholdersProvider<C, ?, D>, CommandHandler<C, ?, D>> registry = new ArrayListValuedHashMap<>();
     protected IdentityHashMap<PlaceholdersProvider.Factory<C, ?, D>, PlaceholdersProvider<C, ?, D>> factoryProviderMap = new IdentityHashMap<>();
     protected LinkedHashSet<EngineListener<C, D>> listeners = new LinkedHashSet<>();
+    protected LookAheadEnumerator<Pair<PlaceholdersProvider<C, ?, D>, Node>> placeholderEnumerator;
 
 
     public BaseEngine(C doc) {
@@ -78,8 +79,8 @@ public class BaseEngine<C extends DocContainer<D>, D> {
         return new SimpleLookAheadEnumerator<>(new PlaceholdersEnumerator<>(registry.keySet()));
     }
 
-    protected CommandHandler.CommandHandlerResult findAndExecCommandHandler(PlaceholdersProvider<C, ?, D> provider, Selection<C, ?, D> selection) {
-        return build(CommandHandler.CommandHandlerResult.IGNORED, result -> {
+    protected CommandHandlerResult findAndExecCommandHandler(PlaceholdersProvider<C, ?, D> provider, Selection<C, ?, D> selection) {
+        return build(CommandHandlerResult.IGNORED, result -> {
             for (CommandHandler<C, ?, D> commandHandler : registry.get(provider)) {
                 try {
                     result.value = commandHandler.tryExecuteCommand((Selection) selection);
@@ -91,8 +92,8 @@ public class BaseEngine<C extends DocContainer<D>, D> {
                             .handle(e)
                             .fire();
                 }
-                if (result.value != CommandHandler.CommandHandlerResult.IGNORED) {
-                    UnderdocxEnv.getInstance().logger.trace("Step " + step + ": commandHandler " + commandHandler + " has been executed, rescan: " + rescan + ", (changed) node: " + selection.getNode());
+                if (result.value != CommandHandlerResult.IGNORED) {
+                    UnderdocxEnv.getInstance().logger.trace("Step " + step + ": commandHandler " + commandHandler + " returned type: " + result.value.getResultType().name() + ", (changed) node: " + selection.getNode());
                     break;
                 }
             }
@@ -140,30 +141,36 @@ public class BaseEngine<C extends DocContainer<D>, D> {
     }
 
 
-    protected void reactOnExecutionResult(CommandHandler.CommandHandlerResult executionResult, Selection<C, ?, D> selection) {
-        switch (executionResult) {
+    protected void reactOnExecutionResult(CommandHandlerResult executionResult, Selection<C, ?, D> selection) {
+        switch (executionResult.getResultType()) {
             case IGNORED ->
                     UnderdocxEnv.getInstance().logger.warn("No Command handler found four " + selection.getNode(), null);
-            case EXECUTED -> stepExecuted(selection);
-            case EXECUTED_RESCAN_REQUIRED -> {
+            case EXECUTED_PROCEED -> stepExecuted(selection);
+            case EXECUTED_FULL_RESCAN -> {
                 stepExecuted(selection);
                 rescan = true;
             }
-            default -> Problems.UNEXPECTED_TYPE_DETECTED.fireValue(executionResult.name());
+            case EXECUTED_RESTART_AT_NODE -> {
+                registry.keySet().forEach(provider -> {
+                    provider.restartAt(executionResult.getRestartNode());
+                });
+                placeholderEnumerator = createPlaceholdersEnumerator();
+            }
+            default -> Problems.UNEXPECTED_TYPE_DETECTED.fireValue(executionResult.getResultType().name());
         }
     }
 
     protected void runUncatched() {
         while (rescan) {
-            LookAheadEnumerator<Pair<PlaceholdersProvider<C, ?, D>, Node>> enumerator = createPlaceholdersEnumerator();
+            placeholderEnumerator = createPlaceholdersEnumerator();
             List<Node> visited = new ArrayList<>();
             rescan = false;
-            EngineAccess<C, D> engineAccess = new EngineAccessImpl<>(listeners, () -> rescan = true, enumerator, visited);
-            while (!rescan && enumerator.hasNext()) {
+            EngineAccess<C, D> engineAccess = new EngineAccessImpl<>(listeners, () -> rescan = true, placeholderEnumerator, visited);
+            while (!rescan && placeholderEnumerator.hasNext()) {
                 step++;
-                Pair<PlaceholdersProvider<C, ?, D>, Node> placeholder = enumerator.next();
+                Pair<PlaceholdersProvider<C, ?, D>, Node> placeholder = placeholderEnumerator.next();
                 Selection<C, ?, D> selection = createSelection(placeholder.left, placeholder.right, engineAccess);
-                CommandHandler.CommandHandlerResult executionResult = findAndExecCommandHandler(placeholder.left, selection);
+                CommandHandlerResult executionResult = findAndExecCommandHandler(placeholder.left, selection);
                 reactOnExecutionResult(executionResult, selection);
                 visited.add(selection.getNode());
             }

@@ -24,12 +24,12 @@ SOFTWARE.
 
 package org.underdocx.enginelayers.baseengine.internal.placeholdersprovider;
 
+import org.odftoolkit.odfdom.doc.OdfDocument;
 import org.underdocx.common.enumerator.Enumerator;
 import org.underdocx.common.placeholder.TextualPlaceholderToolkit;
 import org.underdocx.doctypes.odf.AbstractOdfContainer;
 import org.underdocx.doctypes.odf.odt.tools.ParagraphByParagraphNodesEnumerator;
 import org.underdocx.enginelayers.baseengine.PlaceholdersProvider;
-import org.odftoolkit.odfdom.doc.OdfDocument;
 import org.w3c.dom.Node;
 
 import java.util.Optional;
@@ -38,6 +38,7 @@ public abstract class AbstractTextualPlaceholdersProvider<C extends AbstractOdfC
 
     private final TextualPlaceholderToolkit<P> toolkit;
     private final AbstractOdfContainer<?> doc;
+    private Node startNode = null;
 
     protected AbstractTextualPlaceholdersProvider(AbstractOdfContainer<?> doc, TextualPlaceholderToolkit<P> toolkit) {
         this.toolkit = toolkit;
@@ -46,7 +47,7 @@ public abstract class AbstractTextualPlaceholdersProvider<C extends AbstractOdfC
 
     @Override
     public Enumerator<Node> getPlaceholders() {
-        ParagraphByParagraphNodesEnumerator result = new ParagraphByParagraphNodesEnumerator(doc, p -> toolkit.extractPlaceholders(p), true);
+        ParagraphByParagraphNodesEnumerator result = new ParagraphByParagraphNodesEnumerator(doc, (p, firstValidNode) -> toolkit.extractPlaceholders(p, firstValidNode), startNode, true);
         return result;
     }
 
@@ -59,6 +60,11 @@ public abstract class AbstractTextualPlaceholdersProvider<C extends AbstractOdfC
     @Override
     public Optional<TextualPlaceholderToolkit<P>> getPlaceholderToolkit() {
         return Optional.of(toolkit);
+    }
+
+    @Override
+    public void restartAt(Node node) {
+        this.startNode = node;
     }
 
 }

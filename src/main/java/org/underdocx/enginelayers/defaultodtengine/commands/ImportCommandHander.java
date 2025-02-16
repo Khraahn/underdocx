@@ -24,7 +24,12 @@ SOFTWARE.
 
 package org.underdocx.enginelayers.defaultodtengine.commands;
 
+import org.odftoolkit.odfdom.doc.OdfTextDocument;
+import org.underdocx.common.tools.Convenience;
+import org.underdocx.common.types.Regex;
+import org.underdocx.common.types.Resource;
 import org.underdocx.doctypes.odf.odt.OdtContainer;
+import org.underdocx.enginelayers.baseengine.CommandHandlerResult;
 import org.underdocx.enginelayers.baseengine.modifiers.deleteplaceholder.DeletePlaceholderModifier;
 import org.underdocx.enginelayers.defaultodtengine.commands.internal.AbstractTextualCommandHandler;
 import org.underdocx.enginelayers.defaultodtengine.commands.internal.datapicker.BinaryDataPicker;
@@ -36,11 +41,6 @@ import org.underdocx.enginelayers.defaultodtengine.modifiers.importmodifier.Impo
 import org.underdocx.enginelayers.defaultodtengine.modifiers.importmodifier.ImportModifierData;
 import org.underdocx.enginelayers.parameterengine.ParametersPlaceholderData;
 import org.underdocx.environment.err.Problems;
-import org.underdocx.common.tools.Convenience;
-import org.underdocx.common.types.Regex;
-import org.underdocx.common.types.Resource;
-import org.odftoolkit.odfdom.doc.OdfTextDocument;
-import org.underdocx.enginelayers.baseengine.CommandHandler;
 
 /**
  * Implementation of the {{Import uri/data}} command.
@@ -63,8 +63,8 @@ public class ImportCommandHander extends AbstractTextualCommandHandler<OdtContai
     }
 
     @Override
-    protected CommandHandler.CommandHandlerResult tryExecuteTextualCommand() {
-        return Convenience.build(CommandHandler.CommandHandlerResult.EXECUTED_RESCAN_REQUIRED, result -> {
+    protected CommandHandlerResult tryExecuteTextualCommand() {
+        return Convenience.build(CommandHandlerResult.EXECUTED_FULL_RESCAN, result -> {
             Resource resource = new ResourceCommandModule<OdtContainer, ParametersPlaceholderData, OdfTextDocument>(placeholderData.getJson()).execute(selection);
             OdtContainer importDoc = Problems.ODF_FRAMEWORK_OPERARTION_EXCEPTION.exec(() -> new OdtContainer(resource));
             ImportModifierData modifiedData = new ImportModifierData.Simple(resource.getIdentifier(), importDoc, selection.getDocContainer(), selection.getNode(), true);

@@ -25,6 +25,8 @@ SOFTWARE.
 package org.underdocx.enginelayers.defaultodtengine.commands;
 
 import org.underdocx.common.doc.DocContainer;
+import org.underdocx.common.types.Regex;
+import org.underdocx.enginelayers.baseengine.CommandHandlerResult;
 import org.underdocx.enginelayers.baseengine.modifiers.deleteplaceholder.DeletePlaceholderModifier;
 import org.underdocx.enginelayers.baseengine.modifiers.deleteplaceholder.DeletePlaceholderModifierData;
 import org.underdocx.enginelayers.baseengine.modifiers.stringmodifier.ReplaceWithTextModifier;
@@ -32,7 +34,6 @@ import org.underdocx.enginelayers.defaultodtengine.commands.internal.AbstractTex
 import org.underdocx.enginelayers.defaultodtengine.commands.internal.datapicker.VarNameDataPicker;
 import org.underdocx.enginelayers.modelengine.model.ModelNode;
 import org.underdocx.enginelayers.parameterengine.ParametersPlaceholderData;
-import org.underdocx.common.types.Regex;
 
 public class CounterCommandHandler<C extends DocContainer<D>, D> extends AbstractTextualCommandHandler<C, D> {
     public CounterCommandHandler() {
@@ -49,7 +50,7 @@ public class CounterCommandHandler<C extends DocContainer<D>, D> extends Abstrac
         } else {
             DeletePlaceholderModifier.modify(selection.getNode(), DeletePlaceholderModifierData.DEFAULT);
         }
-        return CommandHandlerResult.EXECUTED;
+        return CommandHandlerResult.EXECUTED_PROCEED;
     }
 
 

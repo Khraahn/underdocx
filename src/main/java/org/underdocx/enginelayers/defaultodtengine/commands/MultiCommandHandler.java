@@ -25,6 +25,8 @@ SOFTWARE.
 package org.underdocx.enginelayers.defaultodtengine.commands;
 
 import org.underdocx.common.doc.DocContainer;
+import org.underdocx.common.types.Regex;
+import org.underdocx.enginelayers.baseengine.CommandHandlerResult;
 import org.underdocx.enginelayers.baseengine.SelectedNode;
 import org.underdocx.enginelayers.defaultodtengine.commands.internal.AbstractCommandHandler;
 import org.underdocx.enginelayers.defaultodtengine.commands.internal.AbstractTextualCommandHandler;
@@ -32,7 +34,6 @@ import org.underdocx.enginelayers.modelengine.MCommandHandler;
 import org.underdocx.enginelayers.modelengine.MSelection;
 import org.underdocx.enginelayers.modelengine.internal.Node2MSelection;
 import org.underdocx.enginelayers.parameterengine.ParametersPlaceholderData;
-import org.underdocx.common.types.Regex;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -63,13 +64,23 @@ public class MultiCommandHandler<C extends DocContainer<D>, D> extends AbstractC
                 if (waiting.getPlaceholderData() instanceof ParametersPlaceholderData) {
                     MSelection<C, ParametersPlaceholderData, D> newSelection = Node2MSelection.createMSelection(selection, (SelectedNode<ParametersPlaceholderData>) waiting);
                     CommandHandlerResult localResult = trySelection(newSelection);
-                    if (localResult.compareTo(result) > 0) {
-                        result = localResult;
-                    }
+                    result = combineResults(result, localResult);
                 }
             }
         }
         return result;
+    }
+
+    private CommandHandlerResult combineResults(CommandHandlerResult last, CommandHandlerResult current) {
+        return switch (current.getResultType()) {
+            case IGNORED, EXECUTED_PROCEED -> last;
+            case EXECUTED_FULL_RESCAN -> current;
+            case EXECUTED_RESTART_AT_NODE -> switch (last.getResultType()) {
+                case IGNORED, EXECUTED_PROCEED -> current;
+                case EXECUTED_FULL_RESCAN -> last;
+                case EXECUTED_RESTART_AT_NODE -> CommandHandlerResult.EXECUTED_FULL_RESCAN;
+            };
+        };
     }
 
     protected CommandHandlerResult trySelection(MSelection selection) {
@@ -98,8 +109,8 @@ public class MultiCommandHandler<C extends DocContainer<D>, D> extends AbstractC
             selection.getPlaceholderToolkit().ifPresent(toolkit -> {
                 toolkit.replacePlaceholderWithText(selection.getNode(), replacement);
             });
-            if (forceRescan) return CommandHandlerResult.EXECUTED_RESCAN_REQUIRED;
-            else return CommandHandlerResult.EXECUTED;
+            if (forceRescan) return CommandHandlerResult.EXECUTED_FULL_RESCAN;
+            else return CommandHandlerResult.EXECUTED_PROCEED;
         }
     }
 }

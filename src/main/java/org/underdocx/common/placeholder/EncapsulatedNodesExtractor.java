@@ -31,7 +31,7 @@ import java.util.List;
 
 public interface EncapsulatedNodesExtractor {
 
-    List<Node> extractNodes(Node tree);
+    List<Node> extractNodes(Node tree, Node firstValidNodeOrNull);
 
     boolean isEncapsulatedNode(Node node);
 

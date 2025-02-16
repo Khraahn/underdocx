@@ -24,10 +24,13 @@ SOFTWARE.
 
 package org.underdocx.common.placeholder.basic.detection;
 
-import org.underdocx.doctypes.TextNodeInterpreter;
 import org.underdocx.common.tree.nodepath.TextNodePath;
+import org.underdocx.doctypes.TextNodeInterpreter;
 import org.w3c.dom.Node;
 
+/**
+ * Analysis result of a {@link TextDetector}
+ */
 public class TextDetectionResult {
 
     public final TextArea area;
@@ -42,6 +45,9 @@ public class TextDetectionResult {
         CONTAINS_TEXT, CONTAINS_START, NO_DETECTION
     }
 
+    /**
+     * Nodes containing a placeholder or parts of it. Result of a {@link TextDetector}
+     */
     public static class TextArea {
 
         public final TextNodePath path;

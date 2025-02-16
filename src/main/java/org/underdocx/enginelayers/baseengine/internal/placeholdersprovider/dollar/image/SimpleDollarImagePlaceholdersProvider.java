@@ -24,12 +24,16 @@ SOFTWARE.
 
 package org.underdocx.enginelayers.baseengine.internal.placeholdersprovider.dollar.image;
 
+import org.odftoolkit.odfdom.doc.OdfTextDocument;
+import org.odftoolkit.odfdom.dom.element.draw.DrawFrameElement;
+import org.odftoolkit.odfdom.dom.element.draw.DrawImageElement;
 import org.underdocx.common.enumerator.Enumerator;
 import org.underdocx.common.placeholder.EncapsulatedNodesExtractor;
 import org.underdocx.common.placeholder.TextualPlaceholderToolkit;
 import org.underdocx.common.placeholder.basic.textnodeinterpreter.OdfTextNodeInterpreter;
-import org.underdocx.common.tree.Nodes;
 import org.underdocx.common.tools.Convenience;
+import org.underdocx.common.tree.Nodes;
+import org.underdocx.common.tree.nodepath.TreeNodeCollector;
 import org.underdocx.common.types.Pair;
 import org.underdocx.doctypes.TextNodeInterpreter;
 import org.underdocx.doctypes.odf.AbstractOdfContainer;
@@ -38,9 +42,6 @@ import org.underdocx.doctypes.odf.odt.OdtContainer;
 import org.underdocx.doctypes.odf.odt.tools.ParagraphByParagraphNodesEnumerator;
 import org.underdocx.enginelayers.baseengine.PlaceholdersProvider;
 import org.underdocx.enginelayers.baseengine.internal.placeholdersprovider.dollar.SimpleDollarPlaceholdersProvider;
-import org.odftoolkit.odfdom.doc.OdfTextDocument;
-import org.odftoolkit.odfdom.dom.element.draw.DrawFrameElement;
-import org.odftoolkit.odfdom.dom.element.draw.DrawImageElement;
 import org.w3c.dom.Node;
 
 import java.util.ArrayList;
@@ -49,6 +50,7 @@ import java.util.Optional;
 
 public class SimpleDollarImagePlaceholdersProvider implements EncapsulatedNodesExtractor, PlaceholdersProvider<OdtContainer, SimpleDollarImagePlaceholderData, OdfTextDocument> {
     private final AbstractOdfContainer<?> doc;
+    private Node firstValidNode = null;
 
     public SimpleDollarImagePlaceholdersProvider(AbstractOdfContainer<?> doc) {
         this.doc = doc;
@@ -82,9 +84,15 @@ public class SimpleDollarImagePlaceholdersProvider implements EncapsulatedNodesE
     }
 
     @Override
-    public List<Node> extractNodes(Node tree) {
+    public List<Node> extractNodes(Node tree, Node firstValidNodeOrNull) {
         return Convenience.also(new ArrayList<Node>(), result -> {
-            Nodes.findDescendantNodes(tree, OdfElement.FRAME.getQualifiedName(), true).forEach(frame -> {
+            TreeNodeCollector collector = new TreeNodeCollector(tree, tree, firstValidNodeOrNull, new ArrayList<>(),
+                    visitState -> visitState != null &&
+                            visitState.isValid() &&
+                            visitState.isBeginVisit() &&
+                            visitState.getNode() != null &&
+                            OdfElement.FRAME.is(visitState.getNode()));
+            collector.forEach(frame -> {
                 if (isEncapsulatedNode(frame)) result.add(frame);
             });
         });
@@ -104,7 +112,7 @@ public class SimpleDollarImagePlaceholdersProvider implements EncapsulatedNodesE
 
     @Override
     public Enumerator<Node> getPlaceholders() {
-        return new ParagraphByParagraphNodesEnumerator(doc, p -> this.extractNodes(p), true);
+        return new ParagraphByParagraphNodesEnumerator(doc, (p, first) -> this.extractNodes(p, first), firstValidNode, true);
     }
 
     @Override
@@ -115,6 +123,11 @@ public class SimpleDollarImagePlaceholdersProvider implements EncapsulatedNodesE
     @Override
     public Optional<TextualPlaceholderToolkit<SimpleDollarImagePlaceholderData>> getPlaceholderToolkit() {
         return Optional.empty();
+    }
+
+    @Override
+    public void restartAt(Node node) {
+        this.firstValidNode = node;
     }
 
     public static class SimpleDollarImagePlaceholdersProviderFactory implements PlaceholdersProvider.Factory<OdtContainer, SimpleDollarImagePlaceholderData, OdfTextDocument> {

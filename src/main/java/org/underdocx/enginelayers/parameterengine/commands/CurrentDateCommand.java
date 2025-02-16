@@ -25,13 +25,14 @@ SOFTWARE.
 package org.underdocx.enginelayers.parameterengine.commands;
 
 import org.underdocx.common.doc.DocContainer;
+import org.underdocx.common.tools.Convenience;
 import org.underdocx.enginelayers.baseengine.CommandHandler;
+import org.underdocx.enginelayers.baseengine.CommandHandlerResult;
 import org.underdocx.enginelayers.baseengine.Selection;
 import org.underdocx.enginelayers.baseengine.modifiers.stringmodifier.ReplaceWithTextModifier;
 import org.underdocx.enginelayers.defaultodtengine.commands.internal.attrinterpreter.PredefinedAttributesInterpreter;
 import org.underdocx.enginelayers.defaultodtengine.commands.internal.attrinterpreter.single.AttributeInterpreterFactory;
 import org.underdocx.enginelayers.parameterengine.ParametersPlaceholderData;
-import org.underdocx.common.tools.Convenience;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -47,7 +48,7 @@ public class CurrentDateCommand<C extends DocContainer<D>, D> implements Command
                         = AttributeInterpreterFactory.createStringAttributeInterpreter("format");
                 String format = formatReader.interpretAttributes(placeholderData.getJson()).orElse("yyyy-mm-dd");
                 String dateText = new SimpleDateFormat(format).format(new Date());
-                result.value = CommandHandlerResult.mapToExecuted(new ReplaceWithTextModifier().modify(selection, dateText));
+                result.value = CommandHandlerResult.FACTORY.checkExecuted(new ReplaceWithTextModifier().modify(selection, dateText));
             }
         });
     }

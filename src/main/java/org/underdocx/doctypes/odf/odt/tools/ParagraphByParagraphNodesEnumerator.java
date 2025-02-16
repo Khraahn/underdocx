@@ -24,28 +24,54 @@ SOFTWARE.
 
 package org.underdocx.doctypes.odf.odt.tools;
 
-import org.underdocx.common.enumerator.Enumerator;
-import org.underdocx.doctypes.odf.AbstractOdfContainer;
 import org.odftoolkit.odfdom.dom.element.text.TextParagraphElementBase;
+import org.underdocx.common.enumerator.Enumerator;
+import org.underdocx.common.tree.Nodes;
+import org.underdocx.doctypes.odf.AbstractOdfContainer;
 import org.w3c.dom.Node;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.function.Function;
 
 public class ParagraphByParagraphNodesEnumerator implements Enumerator<Node> {
     private final ParagraphWalker walker;
     private final List<Node> collectedNodes = new ArrayList<>();
     private Node next = null;
-    private Function<TextParagraphElementBase, Collection<Node>> nodesProvider = null;
+    private NodesProvider nodesProvider = null;
+    private Node firstValidNode;
 
-    public ParagraphByParagraphNodesEnumerator(AbstractOdfContainer<?> doc, Function<TextParagraphElementBase, Collection<Node>> nodesProvider
-            , boolean skipParagraphChildNodes) {
+    public ParagraphByParagraphNodesEnumerator(
+            AbstractOdfContainer<?> doc,
+            NodesProvider nodesProvider,
+            Node firstValidNode,
+            boolean skipParagraphChildNodes) {
         this.nodesProvider = nodesProvider;
+        this.firstValidNode = firstValidNode;
         walker = new ParagraphWalker(doc, skipParagraphChildNodes);
+        findFirstValidParagraph();
         next = findNext();
+    }
 
+    private void findFirstValidParagraph() {
+        if (firstValidNode != null) {
+            // find top paragraph
+            Node firstParagraphToUse = null;
+            Node tmp = Nodes.findAscendantNode(firstValidNode, p -> p instanceof TextParagraphElementBase).orElse(null);
+            while (tmp != null) {
+                firstParagraphToUse = tmp;
+                tmp = Nodes.findAscendantNode(tmp, p -> p instanceof TextParagraphElementBase).orElse(null);
+            }
+            if (firstParagraphToUse != null) {
+                while (next != null && next != firstParagraphToUse) {
+                    if (walker.hasNext()) {
+                        next = walker.next();
+                    } else {
+                        next = null;
+                    }
+                }
+            }
+        }
     }
 
     private Node findNext() {
@@ -56,7 +82,8 @@ public class ParagraphByParagraphNodesEnumerator implements Enumerator<Node> {
         while (collectedNodes.isEmpty() && walker.hasNext()) {
             TextParagraphElementBase paragraph = walker.next();
             if (paragraph != null) {
-                collectedNodes.addAll(nodesProvider.apply(paragraph));
+                collectedNodes.addAll(nodesProvider.collectNodes(paragraph, firstValidNode));
+                firstValidNode = null;
             }
         }
         return collectedNodes;
@@ -72,5 +99,9 @@ public class ParagraphByParagraphNodesEnumerator implements Enumerator<Node> {
         Node result = next;
         next = findNext();
         return result;
+    }
+
+    public interface NodesProvider {
+        Collection<Node> collectNodes(TextParagraphElementBase p, Node firstValidNode);
     }
 }

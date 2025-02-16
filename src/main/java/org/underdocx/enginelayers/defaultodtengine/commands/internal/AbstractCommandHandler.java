@@ -25,6 +25,7 @@ SOFTWARE.
 package org.underdocx.enginelayers.defaultodtengine.commands.internal;
 
 import org.underdocx.common.doc.DocContainer;
+import org.underdocx.enginelayers.baseengine.CommandHandlerResult;
 import org.underdocx.enginelayers.baseengine.EngineAccess;
 import org.underdocx.enginelayers.modelengine.MCommandHandler;
 import org.underdocx.enginelayers.modelengine.MSelection;

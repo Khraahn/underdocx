@@ -26,11 +26,11 @@ package org.underdocx.common.placeholder.basic.extraction;
 
 import org.underdocx.common.placeholder.basic.detection.TextDetectionResult;
 import org.underdocx.common.placeholder.basic.detection.TextDetector;
-import org.underdocx.doctypes.TextNodeInterpreter;
+import org.underdocx.common.tools.Convenience;
+import org.underdocx.common.tree.TreeWalker;
 import org.underdocx.common.tree.nodepath.TextNodePath;
 import org.underdocx.common.tree.nodepath.TreeNodeCollector;
-import org.underdocx.common.tree.TreeWalker;
-import org.underdocx.common.tools.Convenience;
+import org.underdocx.doctypes.TextNodeInterpreter;
 import org.w3c.dom.Node;
 
 import java.util.List;
@@ -42,11 +42,11 @@ public abstract class AbstractPartialExtractor extends AbstractExtractor {
     }
 
     @Override
-    public List<Node> extractNodes(Node tree) {
+    public List<Node> extractNodes(Node tree, Node firstValidNodeOrNull) {
         return Convenience.buildList(result -> {
-            TreeWalker startNodeWalker = new TreeWalker(tree, tree);
+            TreeWalker startNodeWalker = new TreeWalker(tree, tree, firstValidNodeOrNull);
             while (startNodeWalker.hasNext()) {
-                Convenience.ifIs(startNodeWalker.next(), state -> state.isBeginVisit(), state -> {
+                Convenience.ifIs(startNodeWalker.next(), state -> state.isBeginVisit() && state.isValid(), state -> {
                     Node startNode = state.getNode();
                     Convenience.ifNotNull(analyzeStartNode(startNode, tree), textArea -> {
                         Node placeholder = getIfEncapsulated(textArea).orElse(Encapsulator.encapsulate(textArea));
@@ -61,7 +61,7 @@ public abstract class AbstractPartialExtractor extends AbstractExtractor {
     }
 
     private TextDetectionResult.TextArea analyzeStartNode(Node node, Node scope) {
-        TreeNodeCollector nodesCollector = new TreeNodeCollector(node, scope);
+        TreeNodeCollector nodesCollector = new TreeNodeCollector(node, scope, null);
         TextDetectionResult detection = null;
         while ((detection == null || detection.result == TextDetectionResult.TextDetectionResultType.CONTAINS_START) && nodesCollector.hasNext()) {
             nodesCollector.next();

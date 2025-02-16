@@ -25,17 +25,18 @@ SOFTWARE.
 package org.underdocx.enginelayers.defaultodtengine.commands;
 
 import org.underdocx.common.doc.DocContainer;
+import org.underdocx.common.tools.Convenience;
+import org.underdocx.common.types.Regex;
+import org.underdocx.common.types.Wrapper;
+import org.underdocx.doctypes.odf.odt.pagestyle.PageStyle;
+import org.underdocx.doctypes.odf.odt.pagestyle.PageStyleWriter;
+import org.underdocx.enginelayers.baseengine.CommandHandlerResult;
 import org.underdocx.enginelayers.baseengine.modifiers.deleteplaceholder.DeletePlaceholderModifier;
 import org.underdocx.enginelayers.defaultodtengine.commands.internal.AbstractTextualCommandHandler;
 import org.underdocx.enginelayers.defaultodtengine.commands.internal.datapicker.BooleanDataPicker;
 import org.underdocx.enginelayers.defaultodtengine.commands.internal.datapicker.IntegerDataPicker;
 import org.underdocx.enginelayers.defaultodtengine.commands.internal.datapicker.PredefinedDataPicker;
 import org.underdocx.enginelayers.defaultodtengine.commands.internal.datapicker.StringConvertDataPicker;
-import org.underdocx.common.tools.Convenience;
-import org.underdocx.common.types.Regex;
-import org.underdocx.common.types.Wrapper;
-import org.underdocx.doctypes.odf.odt.pagestyle.PageStyle;
-import org.underdocx.doctypes.odf.odt.pagestyle.PageStyleWriter;
 
 import java.util.regex.Pattern;
 
@@ -62,7 +63,7 @@ public class PageStyleCommandHandler<C extends DocContainer<D>, D> extends Abstr
         PageStyle pageStyle = createPageStyle();
         PageStyleWriter.writePageStyle(selection.getNode(), pageStyle, true);
         DeletePlaceholderModifier.modify(selection.getNode());
-        return CommandHandlerResult.EXECUTED;
+        return CommandHandlerResult.EXECUTED_PROCEED;
     }
 
     private PageStyle createPageStyle() {
