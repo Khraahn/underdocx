@@ -52,13 +52,16 @@ public class StartAtNodeTest extends AbstractOdtTest {
     }
 
     private class ReplaceWithIncVarAndProceesAtNextNode extends AbstractTextualCommandHandler<OdtContainer, OdfTextDocument> {
+        private int replaceCounter = 0;
+
         protected ReplaceWithIncVarAndProceesAtNextNode() {
             super("ReplaceWithIncVar");
         }
 
         @Override
         protected CommandHandlerResult tryExecuteTextualCommand() {
-            selection.getNode().setTextContent("${IncVar}");
+            selection.getNode().setTextContent("${IncVar id:" + replaceCounter + "}");
+            replaceCounter++;
             return Convenience.getOrDefault(Nodes.findNextNode(selection.getNode()), CommandHandlerResult.FACTORY::startAtNode, CommandHandlerResult.EXECUTED_PROCEED);
         }
     }
@@ -66,8 +69,8 @@ public class StartAtNodeTest extends AbstractOdtTest {
     @Test
     public void testStartAt() {
         String docContent = """
-                Test ${IncVar}
-                ${ReplaceWithIncVar} ${ReplaceWithIncVar} ${ReplaceWithIncVar}
+                Test ${IncVar id:"origin"}
+                ${ReplaceWithIncVar id:"a"} a ${ReplaceWithIncVar id:"b"} b ${ReplaceWithIncVar id:"c"} c
                 Result: ${$testcounter}
                 """;
         OdtContainer doc = new OdtContainer(docContent);

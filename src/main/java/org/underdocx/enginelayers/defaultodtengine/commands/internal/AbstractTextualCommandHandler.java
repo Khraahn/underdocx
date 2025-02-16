@@ -36,6 +36,7 @@ import org.underdocx.enginelayers.defaultodtengine.commands.internal.datapicker.
 import org.underdocx.enginelayers.modelengine.model.ModelNode;
 import org.underdocx.enginelayers.parameterengine.ParametersPlaceholderData;
 import org.underdocx.enginelayers.parameterengine.internal.ParametersPlaceholderCodec;
+import org.underdocx.environment.UnderdocxEnv;
 import org.underdocx.environment.err.Problems;
 import org.w3c.dom.Node;
 
@@ -68,6 +69,7 @@ public abstract class AbstractTextualCommandHandler<C extends DocContainer<D>, D
     protected CommandHandlerResult tryExecuteCommand() {
         this.placeholderToolkit = Problems.MISSING_VALUE.get(selection.getPlaceholderToolkit(), "placeholderToolkit");
         if (allowedKeys == null || allowedKeys.matches(placeholderData.getKey())) {
+            UnderdocxEnv.getInstance().logger.trace("CommandHandler " + this + " received node: " + selection.getNode());
             return tryExecuteTextualCommand();
         } else {
             return CommandHandlerResult.IGNORED;

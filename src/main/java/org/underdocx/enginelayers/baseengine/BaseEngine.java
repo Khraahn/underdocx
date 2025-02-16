@@ -76,7 +76,7 @@ public class BaseEngine<C extends DocContainer<D>, D> {
     }
 
     protected LookAheadEnumerator<Pair<PlaceholdersProvider<C, ?, D>, Node>> createPlaceholdersEnumerator() {
-        return new SimpleLookAheadEnumerator<>(new PlaceholdersEnumerator<>(registry.keySet()));
+        return new SimpleLookAheadEnumerator<>(new PlaceholdersEnumerator<>(registry.keySet()), false);
     }
 
     protected CommandHandlerResult findAndExecCommandHandler(PlaceholdersProvider<C, ?, D> provider, Selection<C, ?, D> selection) {

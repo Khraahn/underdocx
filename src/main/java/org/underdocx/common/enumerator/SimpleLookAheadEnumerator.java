@@ -33,10 +33,6 @@ public class SimpleLookAheadEnumerator<T> implements LookAheadEnumerator<T> {
 
     private final Enumerator<T> inner;
 
-    public SimpleLookAheadEnumerator(Enumerator<T> inner) {
-        this(inner, true); // TODO: should be configurable (Using Hibernate this should be true)
-    }
-
     public SimpleLookAheadEnumerator(Enumerator<T> inner, boolean cacheAll) {
         this.inner = inner;
         if (cacheAll) {
