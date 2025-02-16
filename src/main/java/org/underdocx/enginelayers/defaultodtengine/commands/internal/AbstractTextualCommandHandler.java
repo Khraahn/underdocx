@@ -40,6 +40,7 @@ import org.underdocx.environment.err.Problems;
 import org.w3c.dom.Node;
 
 import java.util.Optional;
+import java.util.regex.Pattern;
 
 public abstract class AbstractTextualCommandHandler<C extends DocContainer<D>, D> extends AbstractCommandHandler<C, ParametersPlaceholderData, D> {
 
@@ -48,6 +49,10 @@ public abstract class AbstractTextualCommandHandler<C extends DocContainer<D>, D
 
     protected AbstractTextualCommandHandler(Regex keys) {
         this.allowedKeys = keys;
+    }
+
+    protected AbstractTextualCommandHandler(String key) {
+        this(new Regex(Pattern.compile(Pattern.quote(key))));
     }
 
     protected Optional<String> resolveStringByAttr(String attrName) {

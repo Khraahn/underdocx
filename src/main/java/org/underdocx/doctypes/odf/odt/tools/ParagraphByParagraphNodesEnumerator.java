@@ -60,7 +60,10 @@ public class ParagraphByParagraphNodesEnumerator implements Enumerator<Node> {
             Node tmp = Nodes.findAscendantNode(firstValidNode, p -> p instanceof TextParagraphElementBase).orElse(null);
             while (tmp != null) {
                 firstParagraphToUse = tmp;
-                tmp = Nodes.findAscendantNode(tmp, p -> p instanceof TextParagraphElementBase).orElse(null);
+                tmp = tmp.getParentNode();
+                if (tmp != null) {
+                    tmp = Nodes.findAscendantNode(tmp, p -> p instanceof TextParagraphElementBase).orElse(null);
+                }
             }
             if (firstParagraphToUse != null) {
                 while (next != null && next != firstParagraphToUse) {

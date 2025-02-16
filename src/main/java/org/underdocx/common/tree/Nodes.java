@@ -218,6 +218,18 @@ public class Nodes {
                 : 1; // a->b*  vs   a->b*->c
     }
 
+    public static Optional<Node> findNextNode(Node node) {
+        Node current = node;
+        Node result = null;
+        while (result == null) {
+            result = current.getNextSibling();
+            if (result == null) {
+                current = current.getParentNode();
+            }
+        }
+        return Optional.of(result);
+    }
+
 
 
 

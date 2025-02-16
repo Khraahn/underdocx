@@ -52,10 +52,6 @@ public interface CommandHandlerResult {
         public CommandHandlerResult checkExecuted(boolean result) {
             return result ? EXECUTED_PROCEED : IGNORED;
         }
-
-        public CommandHandlerResult checkStartAt(Node nodeOrNull) {
-            return nodeOrNull != null ? startAtNode(nodeOrNull) : IGNORED;
-        }
     }
 
     class DefaultResult implements CommandHandlerResult {
@@ -80,6 +76,11 @@ public interface CommandHandlerResult {
         @Override
         public Node getRestartNode() {
             return node;
+        }
+
+        @Override
+        public String toString() {
+            return type == CommandHandlerResultType.EXECUTED_RESTART_AT_NODE ? "CommandHandlerResult:EXECUTED_RESTART_AT_NODE, " + node : "CommandHandlerResult:" + type;
         }
     }
 }
