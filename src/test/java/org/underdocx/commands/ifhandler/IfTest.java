@@ -24,13 +24,30 @@ SOFTWARE.
 
 package org.underdocx.commands.ifhandler;
 
+import org.junit.jupiter.api.Test;
 import org.underdocx.AbstractOdtTest;
 import org.underdocx.doctypes.odf.odt.OdtContainer;
 import org.underdocx.doctypes.odf.odt.OdtEngine;
 import org.underdocx.enginelayers.modelengine.model.simple.MapModelNode;
-import org.junit.jupiter.api.Test;
 
 public class IfTest extends AbstractOdtTest {
+    @Test
+    public void testSingleIfSimpleCondition() {
+        String documentStr = """
+                P ${If $testTrue:false} INVALID ${EndIf}P
+                Test
+                """;
+        OdtContainer doc = new OdtContainer(documentStr);
+        OdtEngine engine = new OdtEngine(doc);
+        engine.run();
+        // show(doc);
+        assertContains(doc, "P P");
+
+        assertNotContains(doc, "INVALID");
+        assertNoPlaceholders(doc);
+    }
+
+
     @Test
     public void testIfSimpleConditions() {
         String jsonString = """

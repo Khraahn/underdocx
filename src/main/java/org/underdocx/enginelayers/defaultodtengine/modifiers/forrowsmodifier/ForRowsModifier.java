@@ -24,36 +24,40 @@ SOFTWARE.
 
 package org.underdocx.enginelayers.defaultodtengine.modifiers.forrowsmodifier;
 
+import org.odftoolkit.odfdom.dom.element.table.TableTableCellElement;
+import org.odftoolkit.odfdom.dom.element.text.TextPElement;
 import org.underdocx.common.doc.DocContainer;
 import org.underdocx.common.placeholder.TextualPlaceholderToolkit;
+import org.underdocx.common.tools.Convenience;
 import org.underdocx.common.tree.Nodes;
 import org.underdocx.common.tree.TreeWalker;
-import org.underdocx.common.tools.Convenience;
 import org.underdocx.common.types.Pair;
 import org.underdocx.common.types.Range;
 import org.underdocx.doctypes.odf.constants.OdfElement;
+import org.underdocx.enginelayers.baseengine.modifiers.ModifierNodeResult;
 import org.underdocx.enginelayers.baseengine.modifiers.deleteplaceholder.DeletePlaceholderModifier;
 import org.underdocx.enginelayers.baseengine.modifiers.deleteplaceholder.DeletePlaceholderModifierData;
 import org.underdocx.enginelayers.defaultodtengine.modifiers.internal.AbstractAreaModifier;
 import org.underdocx.enginelayers.parameterengine.ParametersPlaceholderData;
 import org.underdocx.environment.err.Problems;
-import org.odftoolkit.odfdom.dom.element.table.TableTableCellElement;
-import org.odftoolkit.odfdom.dom.element.text.TextPElement;
 import org.w3c.dom.Node;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-public class ForRowsModifier<C extends DocContainer<D>, D> extends AbstractAreaModifier<C, ParametersPlaceholderData, D, ForRowsModifierData> {
+public class ForRowsModifier<C extends DocContainer<D>, D> extends AbstractAreaModifier<C, ParametersPlaceholderData, D, ForRowsModifierData, ModifierNodeResult> {
+    Node resultNode = null;
+
     @Override
-    protected boolean modify() {
+    protected ModifierNodeResult modify() {
+        resultNode = null;
         Problems.INVALID_VALUE.check(modifierData.getRepeatRows().getLength() % modifierData.getRowGroupSize() == 0, "rowgroupsize", "" + modifierData.getRowGroupSize());
         List<Node> clonedRows = cloneRows();
         insertPlaceholdersInClonedRows(clonedRows);
         DeletePlaceholderModifier.modify(selection.getNode(), DeletePlaceholderModifierData.DEFAULT);
         DeletePlaceholderModifier.modify(area.right, DeletePlaceholderModifierData.DEFAULT);
-        return true;
+        return ModifierNodeResult.FACTORY.success(resultNode, false);
     }
 
 
@@ -122,6 +126,7 @@ public class ForRowsModifier<C extends DocContainer<D>, D> extends AbstractAreaM
 
     private List<Node> findTableAndCloneableRows() {
         Node table = Problems.CANT_FIND_DOM_ELEMENT.get(findTable(), "table", null);
+        resultNode = table;
         return Problems.CANT_FIND_DOM_ELEMENT.notNullOrEmpty(getCloneableRows(table), "row");
     }
 

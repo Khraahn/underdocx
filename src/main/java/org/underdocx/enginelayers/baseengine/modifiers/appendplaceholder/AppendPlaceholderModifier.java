@@ -24,27 +24,28 @@ SOFTWARE.
 
 package org.underdocx.enginelayers.baseengine.modifiers.appendplaceholder;
 
-import org.underdocx.doctypes.odf.odt.OdtContainer;
-import org.underdocx.common.placeholder.TextualPlaceholderToolkit;
-import org.underdocx.enginelayers.baseengine.Selection;
-import org.underdocx.enginelayers.baseengine.modifiers.Modifier;
-import org.underdocx.environment.err.Problems;
-import org.underdocx.common.tools.Convenience;
 import org.odftoolkit.odfdom.doc.OdfTextDocument;
 import org.odftoolkit.odfdom.incubator.doc.text.OdfTextParagraph;
+import org.underdocx.common.placeholder.TextualPlaceholderToolkit;
+import org.underdocx.common.tools.Convenience;
+import org.underdocx.doctypes.odf.odt.OdtContainer;
+import org.underdocx.enginelayers.baseengine.Selection;
+import org.underdocx.enginelayers.baseengine.modifiers.Modifier;
+import org.underdocx.enginelayers.baseengine.modifiers.ModifierNodeResult;
+import org.underdocx.environment.err.Problems;
 import org.w3c.dom.Node;
 
-public class AppendPlaceholderModifier<P> implements Modifier<OdtContainer, P, OdfTextDocument, P> {
+public class AppendPlaceholderModifier<P> implements Modifier<OdtContainer, P, OdfTextDocument, P, ModifierNodeResult> {
     @Override
-    public boolean modify(Selection<OdtContainer, P, OdfTextDocument> selection, P modifierData) {
-        return Convenience.build(false, result -> {
+    public ModifierNodeResult modify(Selection<OdtContainer, P, OdfTextDocument> selection, P modifierData) {
+        return Convenience.build(ModifierNodeResult.FAILED, result -> {
             selection.getPlaceholderToolkit().ifPresent(toolkit -> {
                 Node clone = TextualPlaceholderToolkit.clonePlaceholder(selection.getNode(), true);
                 toolkit.setPlaceholder(clone, modifierData);
                 try {
                     OdfTextParagraph newParagraph = selection.getDocContainer().getDocument().newParagraph();
                     newParagraph.appendChild(clone);
-                    result.value = true;
+                    result.value = ModifierNodeResult.FACTORY.success(clone, false);
                 } catch (Exception e) {
                     Problems.ODF_FRAMEWORK_OPERARTION_EXCEPTION.toProblem().handle(e).fire();
                 }

@@ -25,9 +25,10 @@ SOFTWARE.
 package org.underdocx.enginelayers.defaultodtengine.modifiers.internal;
 
 import org.underdocx.common.doc.DocContainer;
+import org.underdocx.enginelayers.baseengine.modifiers.ModifierResult;
 import org.underdocx.enginelayers.modelengine.MSelection;
 
-public interface MModifier<C extends DocContainer<D>, P, D, M> {
+public interface MModifier<C extends DocContainer<D>, P, D, M, R extends ModifierResult> {
 
-    boolean modify(MSelection<C, P, D> selection, M modifierData);
+    R modify(MSelection<C, P, D> selection, M modifierData);
 }

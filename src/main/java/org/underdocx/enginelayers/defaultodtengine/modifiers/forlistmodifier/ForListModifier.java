@@ -24,32 +24,33 @@ SOFTWARE.
 
 package org.underdocx.enginelayers.defaultodtengine.modifiers.forlistmodifier;
 
+import org.odftoolkit.odfdom.dom.element.text.TextListItemElement;
+import org.odftoolkit.odfdom.dom.element.text.TextPElement;
 import org.underdocx.common.doc.DocContainer;
 import org.underdocx.common.placeholder.TextualPlaceholderToolkit;
+import org.underdocx.common.tools.Convenience;
 import org.underdocx.common.tree.Nodes;
 import org.underdocx.common.tree.TreeWalker;
-import org.underdocx.common.tools.Convenience;
 import org.underdocx.common.types.Pair;
 import org.underdocx.doctypes.odf.constants.OdfElement;
+import org.underdocx.enginelayers.baseengine.modifiers.ModifierNodeResult;
 import org.underdocx.enginelayers.baseengine.modifiers.deleteplaceholder.DeletePlaceholderModifier;
 import org.underdocx.enginelayers.baseengine.modifiers.deleteplaceholder.DeletePlaceholderModifierData;
 import org.underdocx.enginelayers.defaultodtengine.modifiers.internal.AbstractAreaModifier;
 import org.underdocx.enginelayers.parameterengine.ParametersPlaceholderData;
 import org.underdocx.environment.err.Problems;
-import org.odftoolkit.odfdom.dom.element.text.TextListItemElement;
-import org.odftoolkit.odfdom.dom.element.text.TextPElement;
 import org.w3c.dom.Node;
 
 import java.util.*;
 
-public class ForListModifier<C extends DocContainer<D>, D> extends AbstractAreaModifier<C, ParametersPlaceholderData, D, ForListModifierData> {
+public class ForListModifier<C extends DocContainer<D>, D> extends AbstractAreaModifier<C, ParametersPlaceholderData, D, ForListModifierData, ModifierNodeResult> {
     @Override
-    protected boolean modify() {
+    protected ModifierNodeResult modify() {
         List<Node> clonedListItems = cloneListItems();
         insertPlaceholdersInClonedRows(clonedListItems);
-        DeletePlaceholderModifier.modify(selection.getNode(), DeletePlaceholderModifierData.DEFAULT);
+        ModifierNodeResult result = DeletePlaceholderModifier.modify(selection.getNode(), DeletePlaceholderModifierData.DEFAULT);
         DeletePlaceholderModifier.modify(area.right, DeletePlaceholderModifierData.DEFAULT);
-        return true;
+        return result;
     }
 
     private void insertPlaceholdersInClonedRows(List<Node> clonedListItems) {

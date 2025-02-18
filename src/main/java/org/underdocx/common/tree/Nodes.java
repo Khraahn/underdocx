@@ -219,15 +219,18 @@ public class Nodes {
     }
 
     public static Optional<Node> findNextNode(Node node) {
-        Node current = node;
         Node result = null;
-        while (result == null) {
-            result = current.getNextSibling();
-            if (result == null) {
-                current = current.getParentNode();
+        TreeWalker walker = new TreeWalker(node, null, null);
+        while (result == null && walker.hasNext()) {
+            TreeWalker.VisitState state = walker.next();
+            if (state.getNode() == node) {
+                state = walker.nextSkipChildren();
+            }
+            if (state != null && state.isBeginVisit()) {
+                result = state.getNode();
             }
         }
-        return Optional.of(result);
+        return Optional.ofNullable(result);
     }
 
 

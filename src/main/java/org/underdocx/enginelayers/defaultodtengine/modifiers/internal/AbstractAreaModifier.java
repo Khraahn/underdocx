@@ -32,13 +32,14 @@ import org.underdocx.common.tree.TreeSplitter;
 import org.underdocx.common.types.Pair;
 import org.underdocx.doctypes.TextNodeInterpreter;
 import org.underdocx.doctypes.odf.tools.OdfNodes;
+import org.underdocx.enginelayers.baseengine.modifiers.ModifierResult;
 import org.underdocx.enginelayers.modelengine.MSelection;
 import org.w3c.dom.Node;
 
 import java.util.List;
 import java.util.function.BiFunction;
 
-public abstract class AbstractAreaModifier<C extends DocContainer<D>, P, D, M extends AreaModifierData> implements MModifier<C, P, D, M> {
+public abstract class AbstractAreaModifier<C extends DocContainer<D>, P, D, M extends AreaModifierData, R extends ModifierResult> implements MModifier<C, P, D, M, R> {
 
     protected static final BiFunction<Node, Node, Node> COMMON_ANCESTOR_P_OR_TABLE_PARENT =
             (first, second) -> OdfNodes.findOldestParagraphOrTableParent(first).get();
@@ -59,19 +60,21 @@ public abstract class AbstractAreaModifier<C extends DocContainer<D>, P, D, M ex
     }
 
     @Override
-    public boolean modify(MSelection<C, P, D> selection, M modifierData) {
+    public R modify(MSelection<C, P, D> selection, M modifierData) {
         this.selection = selection;
         this.modifierData = modifierData;
         Node commonAncestor = getCommonAncestorNode(modifierData);
+        this.area = splitTreeAndGetArea(modifierData, commonAncestor, OdfTextNodeInterpreter.INSTANCE);
+        return modify();
+    }
+
+    public static <M extends AreaModifierData> Pair<Node, Node> splitTreeAndGetArea(M modifierData, Node commonAncestor, TextNodeInterpreter interpreter) {
         Pair<Node, Node> placeholderArea = modifierData.getAreaPlaceholderNodes();
-        if (splitTrees()) {
-            TreeSplitter.split(placeholderArea.left, commonAncestor, getTextNodeInterpreter());
-            TreeSplitter.split(placeholderArea.right, commonAncestor, getTextNodeInterpreter());
-        }
-        this.area = new Pair<>(
+        TreeSplitter.split(placeholderArea.left, commonAncestor, interpreter);
+        TreeSplitter.split(placeholderArea.right, commonAncestor, interpreter);
+        return new Pair<>(
                 Nodes.findAncestorChild(placeholderArea.left, commonAncestor).get(),
                 Nodes.findAncestorChild(placeholderArea.right, commonAncestor).get());
-        return modify();
     }
 
 
@@ -83,14 +86,5 @@ public abstract class AbstractAreaModifier<C extends DocContainer<D>, P, D, M ex
         return Nodes.getSiblingsIterator(area.left, area.right);
     }
 
-    protected boolean splitTrees() {
-        return true;
-    }
-
-    protected TextNodeInterpreter getTextNodeInterpreter() {
-        return OdfTextNodeInterpreter.INSTANCE;
-    }
-
-
-    abstract protected boolean modify();
+    abstract protected R modify();
 }

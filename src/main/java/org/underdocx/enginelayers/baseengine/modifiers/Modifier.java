@@ -27,7 +27,7 @@ package org.underdocx.enginelayers.baseengine.modifiers;
 import org.underdocx.common.doc.DocContainer;
 import org.underdocx.enginelayers.baseengine.Selection;
 
-public interface Modifier<C extends DocContainer<D>, P, D, M> {
+public interface Modifier<C extends DocContainer<D>, P, D, M, R extends ModifierResult> {
 
-    boolean modify(Selection<C, P, D> selection, M modifierData);
+    R modify(Selection<C, P, D> selection, M modifierData);
 }

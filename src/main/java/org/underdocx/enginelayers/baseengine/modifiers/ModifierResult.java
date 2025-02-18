@@ -22,23 +22,44 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-package org.underdocx.enginelayers.baseengine.modifiers.stringmodifier;
+package org.underdocx.enginelayers.baseengine.modifiers;
 
-import org.underdocx.common.doc.DocContainer;
-import org.underdocx.common.tools.Convenience;
-import org.underdocx.enginelayers.baseengine.Selection;
-import org.underdocx.enginelayers.baseengine.modifiers.Modifier;
-import org.underdocx.enginelayers.baseengine.modifiers.ModifierResult;
+import org.w3c.dom.Node;
 
-public class ReplaceWithTextModifier<C extends DocContainer<D>, P, D> implements Modifier<C, P, D, String, ModifierResult> {
+import java.util.Optional;
 
-    @Override
-    public ModifierResult modify(Selection<C, P, D> selection, String modifierData) {
-        return Convenience.build(ModifierResult.FAILED, result ->
-                selection.getPlaceholderToolkit().ifPresent(
-                        toolkit -> {
-                            toolkit.replacePlaceholderWithText(selection.getNode(), modifierData);
-                            result.value = ModifierResult.SUCCESS;
-                        }));
+public interface ModifierResult {
+    ModifierNodeResult SUCCESS = new DefaultModifierResult();
+    ModifierNodeResult FAILED = new DefaultModifierResult(false);
+
+    boolean getSuccess();
+
+    class DefaultModifierResult implements ModifierNodeResult {
+
+        private Node endNode = null;
+        protected boolean success;
+
+        public DefaultModifierResult() {
+            success = true;
+        }
+
+        public DefaultModifierResult(boolean success) {
+            this.success = success;
+        }
+
+        public DefaultModifierResult(boolean success, Node endNode) {
+            this.success = success;
+            this.endNode = endNode;
+        }
+
+        @Override
+        public boolean getSuccess() {
+            return success;
+        }
+
+        @Override
+        public Optional<Node> getEndNode() {
+            return Optional.ofNullable(endNode);
+        }
     }
 }

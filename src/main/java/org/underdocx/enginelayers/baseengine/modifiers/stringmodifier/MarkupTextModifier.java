@@ -28,6 +28,7 @@ import org.underdocx.common.doc.DocContainer;
 import org.underdocx.common.placeholder.basic.textnodeinterpreter.OdfTextNodeInterpreter;
 import org.underdocx.enginelayers.baseengine.Selection;
 import org.underdocx.enginelayers.baseengine.modifiers.Modifier;
+import org.underdocx.enginelayers.baseengine.modifiers.ModifierResult;
 import org.underdocx.enginelayers.baseengine.modifiers.stringmodifier.markup.MarkupNodeBuilder;
 import org.underdocx.enginelayers.baseengine.modifiers.stringmodifier.markup.MarkupXMLDOMParser;
 import org.underdocx.enginelayers.baseengine.modifiers.stringmodifier.markup.NodeStyler;
@@ -38,16 +39,16 @@ import org.w3c.dom.Node;
 
 import java.util.Map;
 
-public class MarkupTextModifier<C extends DocContainer<D>, P, D> implements Modifier<C, P, D, String> {
+public class MarkupTextModifier<C extends DocContainer<D>, P, D> implements Modifier<C, P, D, String, ModifierResult> {
 
     private static MarkupXMLDOMParser parser = new MarkupXMLDOMParser();
 
     @Override
-    public boolean modify(Selection<C, P, D> selection, String modifierData) {
+    public ModifierResult modify(Selection<C, P, D> selection, String modifierData) {
         Document xml = Problems.CODEC_ERROR.get(parser.tryParse(modifierData), null, modifierData);
         Node placeholder = selection.getNode();
         Map<Node, TextStyle> mapping = new MarkupNodeBuilder(OdfTextNodeInterpreter.INSTANCE).createTree(placeholder, xml);
         new NodeStyler().styleNodes(placeholder, mapping);
-        return true;
+        return ModifierResult.SUCCESS;
     }
 }

@@ -37,24 +37,27 @@ import org.underdocx.doctypes.odf.odt.pagestyle.PageStyleWriter;
 import org.underdocx.doctypes.odf.tools.OdfNodes;
 import org.underdocx.enginelayers.baseengine.Selection;
 import org.underdocx.enginelayers.baseengine.modifiers.Modifier;
+import org.underdocx.enginelayers.baseengine.modifiers.ModifierNodeResult;
+import org.underdocx.enginelayers.baseengine.modifiers.ModifierResult;
 import org.w3c.dom.Node;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class DeletePlaceholderModifier<C extends DocContainer<D>, P, D> implements Modifier<C, P, D, DeletePlaceholderModifierData> {
+public class DeletePlaceholderModifier<C extends DocContainer<D>, P, D> implements Modifier<C, P, D, DeletePlaceholderModifierData, ModifierNodeResult> {
     @Override
-    public boolean modify(Selection<C, P, D> selection, DeletePlaceholderModifierData modifierData) {
+    public ModifierNodeResult modify(Selection<C, P, D> selection, DeletePlaceholderModifierData modifierData) {
         return modify(selection.getNode(), modifierData);
     }
 
-    public static boolean modify(Node placeholderNode) {
+    public static ModifierNodeResult modify(Node placeholderNode) {
         return modify(placeholderNode, DeletePlaceholderModifierData.DEFAULT);
     }
 
-    public static boolean modify(Node placeholderNode, DeletePlaceholderModifierData modifierData) {
-        return Convenience.build(false, result -> {
+    public static ModifierNodeResult modify(Node placeholderNode, DeletePlaceholderModifierData modifierData) {
+        return Convenience.build(ModifierResult.FAILED, result -> {
             OdfNodes.findAscendantParagraph(placeholderNode, false).ifPresent(p -> {
+                result.value = ModifierNodeResult.FACTORY.success(placeholderNode, true);
                 TextualPlaceholderToolkit.deletePlaceholder(placeholderNode);
                 if (modifierData.getDeleteStrategy() != DeletePlaceholderModifierData.Strategy.KEEP_PARAGRAPH) {
                     if (modifierData.getDeleteStrategy() == DeletePlaceholderModifierData.Strategy.DELETE_PARAGRAPH) {
@@ -74,7 +77,7 @@ public class DeletePlaceholderModifier<C extends DocContainer<D>, P, D> implemen
         });
     }
 
-    private static void removeParagraph(Wrapper<Boolean> result, Node p, boolean copyStyle) {
+    private static void removeParagraph(Wrapper<ModifierNodeResult> result, Node p, boolean copyStyle) {
         if (copyStyle) {
             PageStyle style = PageStyleReader.readPageStyle(p);
             if (style.breakAfter != null && style.breakAfter.value != null && !style.breakAfter.value.equals("auto")) {
@@ -96,8 +99,8 @@ public class DeletePlaceholderModifier<C extends DocContainer<D>, P, D> implemen
             }
         }
 
+        result.value = ModifierNodeResult.FACTORY.success(p, true);
         p.getParentNode().removeChild(p);
-        result.value = true;
     }
 
 

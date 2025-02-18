@@ -25,20 +25,21 @@ SOFTWARE.
 package org.underdocx.enginelayers.baseengine.modifiers.existingimage;
 
 import org.underdocx.common.doc.DocContainer;
+import org.underdocx.common.types.Pair;
+import org.underdocx.common.types.Resource;
 import org.underdocx.enginelayers.baseengine.Selection;
 import org.underdocx.enginelayers.baseengine.internal.placeholdersprovider.dollar.image.BasicImagePlaceholderData;
 import org.underdocx.enginelayers.baseengine.modifiers.Modifier;
+import org.underdocx.enginelayers.baseengine.modifiers.ModifierResult;
 import org.underdocx.environment.UnderdocxEnv;
-import org.underdocx.common.types.Pair;
-import org.underdocx.common.types.Resource;
 
 import java.net.URI;
 import java.util.Optional;
 
-public class ExistingImageModifier<C extends DocContainer<D>, P extends BasicImagePlaceholderData, D> implements Modifier<C, P, D, ExistingImageModifierData> {
+public class ExistingImageModifier<C extends DocContainer<D>, P extends BasicImagePlaceholderData, D> implements Modifier<C, P, D, ExistingImageModifierData, ModifierResult> {
 
     @Override
-    public boolean modify(Selection<C, P, D> selection, ExistingImageModifierData modifierData) {
+    public ModifierResult modify(Selection<C, P, D> selection, ExistingImageModifierData modifierData) {
         BasicImagePlaceholderData placeholder = selection.getPlaceholderData();
         Pair<Double, Double> importImageWidthHeight;
         String newName = modifierData.getFileName();
@@ -67,6 +68,6 @@ public class ExistingImageModifier<C extends DocContainer<D>, P extends BasicIma
         }
         String title = modifierData.getTitle();
         placeholder.setName(title == null ? newName : title);
-        return true;
+        return ModifierResult.SUCCESS;
     }
 }

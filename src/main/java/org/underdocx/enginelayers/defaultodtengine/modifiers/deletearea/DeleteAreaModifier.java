@@ -26,15 +26,16 @@ package org.underdocx.enginelayers.defaultodtengine.modifiers.deletearea;
 
 import org.underdocx.common.doc.DocContainer;
 import org.underdocx.common.placeholder.basic.textnodeinterpreter.OdfTextNodeInterpreter;
+import org.underdocx.common.tools.Convenience;
 import org.underdocx.common.tree.Nodes;
-import org.underdocx.common.tree.TreeSplitter;
 import org.underdocx.common.types.Pair;
+import org.underdocx.enginelayers.baseengine.modifiers.ModifierNodeResult;
 import org.underdocx.enginelayers.defaultodtengine.modifiers.internal.AbstractAreaModifier;
 import org.underdocx.enginelayers.defaultodtengine.modifiers.internal.AreaModifierWithCommonAncestorData;
 import org.underdocx.enginelayers.parameterengine.ParametersPlaceholderData;
 import org.w3c.dom.Node;
 
-public class DeleteAreaModifier<C extends DocContainer<D>, D> extends AbstractAreaModifier<C, ParametersPlaceholderData, D, AreaModifierWithCommonAncestorData> {
+public class DeleteAreaModifier<C extends DocContainer<D>, D> extends AbstractAreaModifier<C, ParametersPlaceholderData, D, AreaModifierWithCommonAncestorData, ModifierNodeResult> {
 
     @Override
     protected Node getCommonAncestorNode(AreaModifierWithCommonAncestorData modifierData) {
@@ -42,17 +43,13 @@ public class DeleteAreaModifier<C extends DocContainer<D>, D> extends AbstractAr
     }
 
     @Override
-    protected boolean modify() {
-        Nodes.deleteNodes(getAreaNodes());
-        return true;
+    protected ModifierNodeResult modify() {
+        return Convenience.also(ModifierNodeResult.FACTORY.success(area.right, true), result -> Nodes.deleteNodes(getAreaNodes()));
     }
 
-    public static void deleteArea(AreaModifierWithCommonAncestorData modifierData) {
-        Pair<Node, Node> a = modifierData.getAreaPlaceholderNodes();
-        Node ancestor = modifierData.getCommonAncestor();
-        TreeSplitter.split(a.left, ancestor, OdfTextNodeInterpreter.INSTANCE);
-        TreeSplitter.split(a.right, ancestor, OdfTextNodeInterpreter.INSTANCE);
-
-        Nodes.deleteNodes(Nodes.getSiblings(Nodes.findAncestorChild(a.left, ancestor).get(), Nodes.findAncestorChild(a.right, ancestor).get()));
+    public static ModifierNodeResult deleteArea(AreaModifierWithCommonAncestorData modifierData) {
+        Pair<Node, Node> area = AbstractAreaModifier.splitTreeAndGetArea(modifierData, modifierData.getCommonAncestor(), OdfTextNodeInterpreter.INSTANCE);
+        Nodes.deleteNodes(Nodes.getSiblingsIterator(area.left, area.right).collect());
+        return ModifierNodeResult.FACTORY.success(area.right, true);
     }
 }

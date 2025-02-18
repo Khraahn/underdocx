@@ -28,7 +28,6 @@ import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.odftoolkit.odfdom.doc.OdfTextDocument;
 import org.underdocx.AbstractOdtTest;
-import org.underdocx.common.tools.Convenience;
 import org.underdocx.common.tree.Nodes;
 import org.underdocx.common.tree.nodepath.TreeNodeCollector;
 import org.underdocx.doctypes.odf.odt.OdtContainer;
@@ -68,7 +67,7 @@ public class StartAtNodeTest extends AbstractOdtTest {
         protected CommandHandlerResult tryExecuteTextualCommand() {
             selection.getNode().setTextContent("${IncVar id:" + replaceCounter + "}");
             replaceCounter++;
-            return Convenience.getOrDefault(Nodes.findNextNode(selection.getNode()), CommandHandlerResult.FACTORY::startAtNode, CommandHandlerResult.EXECUTED_PROCEED);
+            return CommandHandlerResult.FACTORY.startAtNextNode(selection.getNode());
         }
     }
 
@@ -84,6 +83,7 @@ public class StartAtNodeTest extends AbstractOdtTest {
         engine.registerParametersCommandHandler(new IncVarPlaceholder());
         engine.registerParametersCommandHandler(new ReplaceWithIncVarAndProceesAtNextNode());
         engine.run();
+        //show(doc);
         assertNotContains(doc, "ReplaceWithIncVar");
         assertContains(doc, "IncVar");
         assertContains(doc, "Result: 1");

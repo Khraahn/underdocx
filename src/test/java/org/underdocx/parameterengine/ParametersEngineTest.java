@@ -59,7 +59,7 @@ public class ParametersEngineTest extends AbstractOdtTest {
                 selection -> {
                     if (selection.getPlaceholderData().getKey().equals("Key")
                             && new ReplaceWithTextModifier<OdtContainer, ParametersPlaceholderData, OdfTextDocument>()
-                            .modify(selection, "Test"))
+                            .modify(selection, "Test").getSuccess())
                         return CommandHandlerResult.EXECUTED_PROCEED;
                     else return CommandHandlerResult.IGNORED;
                 });

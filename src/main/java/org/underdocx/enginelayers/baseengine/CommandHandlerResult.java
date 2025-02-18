@@ -24,6 +24,9 @@ SOFTWARE.
 
 package org.underdocx.enginelayers.baseengine;
 
+import org.underdocx.common.tools.Convenience;
+import org.underdocx.common.tree.Nodes;
+import org.underdocx.enginelayers.baseengine.modifiers.ModifierResult;
 import org.w3c.dom.Node;
 
 public interface CommandHandlerResult {
@@ -49,8 +52,12 @@ public interface CommandHandlerResult {
             return new DefaultResult(node);
         }
 
-        public CommandHandlerResult checkExecuted(boolean result) {
-            return result ? EXECUTED_PROCEED : IGNORED;
+        public CommandHandlerResult checkExecuted(ModifierResult result) {
+            return result.getSuccess() ? EXECUTED_PROCEED : IGNORED;
+        }
+
+        public CommandHandlerResult startAtNextNode(Node node) {
+            return Convenience.getOrDefault(Nodes.findNextNode(node), CommandHandlerResult.FACTORY::startAtNode, CommandHandlerResult.EXECUTED_PROCEED);
         }
     }
 

@@ -26,9 +26,10 @@ package org.underdocx.enginelayers.defaultodtengine.modifiers.formodifier;
 
 import org.underdocx.common.doc.DocContainer;
 import org.underdocx.common.placeholder.TextualPlaceholderToolkit;
-import org.underdocx.common.tree.Nodes;
 import org.underdocx.common.tools.Convenience;
+import org.underdocx.common.tree.Nodes;
 import org.underdocx.common.types.Pair;
+import org.underdocx.enginelayers.baseengine.modifiers.ModifierNodeResult;
 import org.underdocx.enginelayers.defaultodtengine.modifiers.internal.AbstractAreaModifier;
 import org.underdocx.enginelayers.parameterengine.ParametersPlaceholderData;
 import org.w3c.dom.Node;
@@ -36,17 +37,19 @@ import org.w3c.dom.Node;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ForMofifier<C extends DocContainer<D>, D> extends AbstractAreaModifier<C, ParametersPlaceholderData, D, ForModifierData> {
+public class ForMofifier<C extends DocContainer<D>, D> extends AbstractAreaModifier<C, ParametersPlaceholderData, D, ForModifierData, ModifierNodeResult> {
 
     private List<Node> areaNodes;
+    private Node resultNode = null;
 
     @Override
-    protected boolean modify() {
+    protected ModifierNodeResult modify() {
+        resultNode = null;
         this.areaNodes = getAreaNodes();
         List<Pair<Node, Node>> areas = createAreas();
         selection.getDocContainer().createDebugFile("for");
         replaceBeginEndNodes(areas);
-        return true;
+        return ModifierNodeResult.FACTORY.success(resultNode, false);
     }
 
     private void replaceBeginEndNodes(List<Pair<Node, Node>> areas) {
@@ -64,6 +67,9 @@ public class ForMofifier<C extends DocContainer<D>, D> extends AbstractAreaModif
             Nodes.deleteNode(node);
         } else {
             List<Node> nodes = TextualPlaceholderToolkit.clonePlaceholder(node, replacements.size());
+            if (nodes.size() > 0 && resultNode == null) {
+                resultNode = nodes.get(0);
+            }
             for (int i = 0; i < replacements.size(); i++) {
                 int ii = i;
                 selection.getPlaceholderToolkit().ifPresent(toolkit ->
@@ -76,7 +82,10 @@ public class ForMofifier<C extends DocContainer<D>, D> extends AbstractAreaModif
         return Convenience.also(new ArrayList<>(), result -> {
             int max = modifierData.getRepeats();
             switch (max) {
-                case 0 -> Nodes.deleteNodes(areaNodes);
+                case 0 -> {
+                    resultNode = Nodes.findNextNode(areaNodes.get(areaNodes.size() - 1)).orElse(null);
+                    Nodes.deleteNodes(areaNodes);
+                }
                 default -> {
                     result.add(area);
                     Node last = area.right;

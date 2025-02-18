@@ -22,23 +22,32 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-package org.underdocx.enginelayers.baseengine.modifiers.stringmodifier;
+package org.underdocx.enginelayers.baseengine.modifiers;
 
-import org.underdocx.common.doc.DocContainer;
-import org.underdocx.common.tools.Convenience;
-import org.underdocx.enginelayers.baseengine.Selection;
-import org.underdocx.enginelayers.baseengine.modifiers.Modifier;
-import org.underdocx.enginelayers.baseengine.modifiers.ModifierResult;
+import org.underdocx.common.tree.Nodes;
+import org.w3c.dom.Node;
 
-public class ReplaceWithTextModifier<C extends DocContainer<D>, P, D> implements Modifier<C, P, D, String, ModifierResult> {
+import java.util.Optional;
 
-    @Override
-    public ModifierResult modify(Selection<C, P, D> selection, String modifierData) {
-        return Convenience.build(ModifierResult.FAILED, result ->
-                selection.getPlaceholderToolkit().ifPresent(
-                        toolkit -> {
-                            toolkit.replacePlaceholderWithText(selection.getNode(), modifierData);
-                            result.value = ModifierResult.SUCCESS;
-                        }));
+public interface ModifierNodeResult extends ModifierResult {
+    Factory FACTORY = new Factory();
+
+    Optional<Node> getEndNode();
+
+    class Factory {
+
+        public ModifierNodeResult success(Node node, boolean excludeNode) {
+            if (node == null) {
+                return new DefaultModifierResult(true, null);
+            } else {
+                if (excludeNode) {
+                    Node next = Nodes.findNextNode(node).orElse(null);
+                    return success(next, false);
+                } else {
+                    return new DefaultModifierResult(true, node);
+                }
+            }
+        }
     }
+
 }
