@@ -32,22 +32,28 @@ import java.util.Optional;
 public interface ModifierNodeResult extends ModifierResult {
     Factory FACTORY = new Factory();
 
+    boolean isEndOfDoc();
+
     Optional<Node> getEndNode();
 
     class Factory {
 
         public ModifierNodeResult success(Node node, boolean excludeNode) {
             if (node == null) {
-                return new DefaultModifierResult(true, null);
+                return new DefaultModifierResult(true, null, false);
             } else {
                 if (excludeNode) {
-                    Node next = Nodes.findNextNode(node).orElse(null);
-                    return success(next, false);
+                    Optional<Node> next = Nodes.findNextNode(node);
+                    if (next.isEmpty()) {
+                        return new DefaultModifierResult(true, null, true);
+                    }
+                    return new DefaultModifierResult(true, next.get(), false);
                 } else {
-                    return new DefaultModifierResult(true, node);
+                    return new DefaultModifierResult(true, node, false);
                 }
             }
         }
     }
+
 
 }

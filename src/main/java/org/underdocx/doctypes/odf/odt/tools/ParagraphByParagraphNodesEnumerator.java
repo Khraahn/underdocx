@@ -54,14 +54,19 @@ public class ParagraphByParagraphNodesEnumerator implements Enumerator<Node> {
 
     private void findFirstValidParagraph(Node firstValidNode) {
         if (firstValidNode != null) {
-            // find top paragraph
             Node firstParagraphToUse = null;
-            Node tmp = Nodes.findAscendantNode(firstValidNode, p -> p instanceof TextParagraphElementBase).orElse(null);
-            while (tmp != null) {
-                firstParagraphToUse = tmp;
-                tmp = tmp.getParentNode();
-                if (tmp != null) {
-                    tmp = Nodes.findAscendantNode(tmp, p -> p instanceof TextParagraphElementBase).orElse(null);
+            if (firstValidNode instanceof TextParagraphElementBase) {
+                firstParagraphToUse = firstValidNode;
+                firstValidNode = null;
+            }
+            if (firstParagraphToUse == null) {
+                Node tmp = Nodes.findAscendantNode(firstValidNode, p -> p instanceof TextParagraphElementBase).orElse(null);
+                while (tmp != null) {
+                    firstParagraphToUse = tmp;
+                    tmp = tmp.getParentNode();
+                    if (tmp != null) {
+                        tmp = Nodes.findAscendantNode(tmp, p -> p instanceof TextParagraphElementBase).orElse(null);
+                    }
                 }
             }
             if (firstParagraphToUse != null) {

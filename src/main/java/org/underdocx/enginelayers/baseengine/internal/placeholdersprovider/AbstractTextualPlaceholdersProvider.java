@@ -39,6 +39,7 @@ public abstract class AbstractTextualPlaceholdersProvider<C extends AbstractOdfC
     private final TextualPlaceholderToolkit<P> toolkit;
     private final AbstractOdfContainer<?> doc;
     private Node startNode = null;
+    private boolean endOfDoc = false;
 
     protected AbstractTextualPlaceholdersProvider(AbstractOdfContainer<?> doc, TextualPlaceholderToolkit<P> toolkit) {
         this.toolkit = toolkit;
@@ -47,6 +48,7 @@ public abstract class AbstractTextualPlaceholdersProvider<C extends AbstractOdfC
 
     @Override
     public Enumerator<Node> getPlaceholders() {
+        if (endOfDoc) return Enumerator.empty();
         ParagraphByParagraphNodesEnumerator result = new ParagraphByParagraphNodesEnumerator(doc, (p, firstValidNode) -> toolkit.extractPlaceholders(p, firstValidNode), startNode, true);
         return result;
     }
@@ -63,8 +65,9 @@ public abstract class AbstractTextualPlaceholdersProvider<C extends AbstractOdfC
     }
 
     @Override
-    public void restartAt(Node node) {
+    public void restartAt(Node node, boolean endOfDoc) {
         this.startNode = node;
+        this.endOfDoc = endOfDoc;
     }
 
 }

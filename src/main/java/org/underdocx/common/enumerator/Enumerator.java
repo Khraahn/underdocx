@@ -35,6 +35,19 @@ import java.util.function.Predicate;
 
 public interface Enumerator<T> extends Iterable<T>, Iterator<T>, Enumeration<T> {
 
+    static <T> Enumerator<T> empty() {
+        return new Enumerator<>() {
+            @Override
+            public boolean hasNext() {
+                return false;
+            }
+
+            @Override
+            public T next() {
+                return null;
+            }
+        };
+    }
 
     boolean hasNext();
 

@@ -48,7 +48,7 @@ public class CurrentDateCommand<C extends DocContainer<D>, D> implements Command
                         = AttributeInterpreterFactory.createStringAttributeInterpreter("format");
                 String format = formatReader.interpretAttributes(placeholderData.getJson()).orElse("yyyy-mm-dd");
                 String dateText = new SimpleDateFormat(format).format(new Date());
-                result.value = CommandHandlerResult.FACTORY.checkExecuted(new ReplaceWithTextModifier().modify(selection, dateText));
+                result.value = CommandHandlerResult.FACTORY.convert(new ReplaceWithTextModifier().modify(selection, dateText));
             }
         });
     }

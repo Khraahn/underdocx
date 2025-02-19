@@ -47,7 +47,7 @@ public class SimpleReplaceFunctionCommand<C extends DocContainer<D>, D> implemen
     public CommandHandlerResult tryExecuteCommand(Selection<C, String, D> selection) {
         return build(CommandHandlerResult.IGNORED, result ->
                 replaceFunction.apply(selection.getPlaceholderData()).ifPresent(replacement ->
-                        result.value = CommandHandlerResult.FACTORY.checkExecuted(new ReplaceWithTextModifier().modify(selection, replacement))
+                        result.value = CommandHandlerResult.FACTORY.convert(new ReplaceWithTextModifier().modify(selection, replacement))
                 ));
     }
 }

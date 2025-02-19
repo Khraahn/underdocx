@@ -30,7 +30,7 @@ import java.util.Optional;
 
 public interface ModifierResult {
     ModifierNodeResult SUCCESS = new DefaultModifierResult();
-    ModifierNodeResult FAILED = new DefaultModifierResult(false);
+    ModifierNodeResult IGNORED = new DefaultModifierResult(false);
 
     boolean getSuccess();
 
@@ -38,6 +38,7 @@ public interface ModifierResult {
 
         private Node endNode = null;
         protected boolean success;
+        protected boolean isEndOfDoc;
 
         public DefaultModifierResult() {
             success = true;
@@ -47,9 +48,10 @@ public interface ModifierResult {
             this.success = success;
         }
 
-        public DefaultModifierResult(boolean success, Node endNode) {
+        public DefaultModifierResult(boolean success, Node endNode, boolean isEndOfDoc) {
             this.success = success;
             this.endNode = endNode;
+            this.isEndOfDoc = isEndOfDoc;
         }
 
         @Override
@@ -60,6 +62,11 @@ public interface ModifierResult {
         @Override
         public Optional<Node> getEndNode() {
             return Optional.ofNullable(endNode);
+        }
+
+        @Override
+        public boolean isEndOfDoc() {
+            return isEndOfDoc;
         }
     }
 }

@@ -34,7 +34,7 @@ public class ReplaceWithTextModifier<C extends DocContainer<D>, P, D> implements
 
     @Override
     public ModifierResult modify(Selection<C, P, D> selection, String modifierData) {
-        return Convenience.build(ModifierResult.FAILED, result ->
+        return Convenience.build(ModifierResult.IGNORED, result ->
                 selection.getPlaceholderToolkit().ifPresent(
                         toolkit -> {
                             toolkit.replacePlaceholderWithText(selection.getNode(), modifierData);

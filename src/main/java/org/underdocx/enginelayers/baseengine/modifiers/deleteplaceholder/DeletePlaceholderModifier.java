@@ -55,7 +55,7 @@ public class DeletePlaceholderModifier<C extends DocContainer<D>, P, D> implemen
     }
 
     public static ModifierNodeResult modify(Node placeholderNode, DeletePlaceholderModifierData modifierData) {
-        return Convenience.build(ModifierResult.FAILED, result -> {
+        return Convenience.build(ModifierResult.IGNORED, result -> {
             OdfNodes.findAscendantParagraph(placeholderNode, false).ifPresent(p -> {
                 result.value = ModifierNodeResult.FACTORY.success(placeholderNode, true);
                 TextualPlaceholderToolkit.deletePlaceholder(placeholderNode);

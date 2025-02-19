@@ -148,11 +148,22 @@ public class BaseEngine<C extends DocContainer<D>, D> {
             case EXECUTED_PROCEED -> stepExecuted(selection);
             case EXECUTED_FULL_RESCAN -> {
                 stepExecuted(selection);
+                registry.keySet().forEach(provider -> {
+                    provider.restartAt(null, false);
+                });
                 rescan = true;
             }
             case EXECUTED_RESTART_AT_NODE -> {
+                stepExecuted(selection);
                 registry.keySet().forEach(provider -> {
-                    provider.restartAt(executionResult.getRestartNode());
+                    provider.restartAt(executionResult.getRestartNode(), false);
+                });
+                placeholderEnumerator = createPlaceholdersEnumerator();
+            }
+            case EXECUTED_END_OF_DOC -> {
+                stepExecuted(selection);
+                registry.keySet().forEach(provider -> {
+                    provider.restartAt(null, true);
                 });
                 placeholderEnumerator = createPlaceholdersEnumerator();
             }
@@ -165,7 +176,7 @@ public class BaseEngine<C extends DocContainer<D>, D> {
             placeholderEnumerator = createPlaceholdersEnumerator();
             List<Node> visited = new ArrayList<>();
             rescan = false;
-            EngineAccess<C, D> engineAccess = new EngineAccessImpl<>(listeners, () -> rescan = true, placeholderEnumerator, visited);
+            EngineAccess<C, D> engineAccess = new EngineAccessImpl<>(listeners, () -> rescan = true, () -> placeholderEnumerator, () -> visited);
             while (!rescan && placeholderEnumerator.hasNext()) {
                 step++;
                 Pair<PlaceholdersProvider<C, ?, D>, Node> placeholder = placeholderEnumerator.next();

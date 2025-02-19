@@ -26,11 +26,11 @@ package org.underdocx.enginelayers.defaultodtengine.commands;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import org.underdocx.common.doc.DocContainer;
-import org.underdocx.common.tools.Convenience;
 import org.underdocx.common.types.Pair;
 import org.underdocx.common.types.Regex;
 import org.underdocx.enginelayers.baseengine.CommandHandlerResult;
 import org.underdocx.enginelayers.baseengine.SelectedNode;
+import org.underdocx.enginelayers.baseengine.modifiers.ModifierNodeResult;
 import org.underdocx.enginelayers.defaultodtengine.commands.ifcondition.ConditionAttributeInterpreter;
 import org.underdocx.enginelayers.defaultodtengine.commands.internal.AbstractTextualCommandHandler;
 import org.underdocx.enginelayers.defaultodtengine.commands.internal.AreaTools;
@@ -63,21 +63,22 @@ public class IfCommandHandler<C extends DocContainer<D>, D> extends AbstractText
 
     @Override
     protected CommandHandlerResult tryExecuteTextualCommand() {
-        return Convenience.build(CommandHandlerResult.EXECUTED_FULL_RESCAN, result -> {
-            JsonNode attributes = placeholderData.getJson();
-            Pair<SelectedNode<ParametersPlaceholderData>, SelectedNode<ParametersPlaceholderData>> area =
-                    Problems.INVALID_PLACEHOLDER_STRUCTURE.get(
-                            AreaTools.findArea(selection.getEngineAccess().lookAhead(null), selection, END_KEY), END_KEY);
-            boolean match = conditionInterpreter.interpretAttributes(attributes, valueResolver -> {
-                String property = valueResolver.left;
-                ModelNode foundNode = dataPicker.pickData(property, modelAccess, attributes).getOptionalValue().orElse(null);
-                Object toCompareWith = valueResolver.right;
-                return compare(foundNode, toCompareWith);
-            });
-            new IfModifier<C, D>().modify(selection,
-                    new IfModifierData.DefaultIfModifierData(
-                            new Pair<>(area.left.getNode(), area.right.getNode()), match));
+
+        JsonNode attributes = placeholderData.getJson();
+        Pair<SelectedNode<ParametersPlaceholderData>, SelectedNode<ParametersPlaceholderData>> area =
+                Problems.INVALID_PLACEHOLDER_STRUCTURE.get(
+                        AreaTools.findArea(selection.getEngineAccess().lookAhead(null), selection, END_KEY), END_KEY);
+        boolean match = conditionInterpreter.interpretAttributes(attributes, valueResolver -> {
+            String property = valueResolver.left;
+            ModelNode foundNode = dataPicker.pickData(property, modelAccess, attributes).getOptionalValue().orElse(null);
+            Object toCompareWith = valueResolver.right;
+            return compare(foundNode, toCompareWith);
         });
+        ModifierNodeResult modiferResult = new IfModifier<C, D>().modify(selection,
+                new IfModifierData.DefaultIfModifierData(
+                        new Pair<>(area.left.getNode(), area.right.getNode()), match));
+
+        return CommandHandlerResult.FACTORY.convert(modiferResult);
     }
 
     private boolean compare(ModelNode foundNode, Object toCompareWith) {

@@ -39,7 +39,11 @@ public interface PlaceholdersProvider<C extends DocContainer<D>, P, D> {
 
     Optional<TextualPlaceholderToolkit<P>> getPlaceholderToolkit();
 
-    void restartAt(Node node);
+    /**
+     * @param node     next valid node in the tree (all nodes before have to be ignored), null means start at begin
+     * @param endOfDoc restart at end of document, probably there are no more placeholders to expect
+     */
+    void restartAt(Node node, boolean endOfDoc);
 
     interface Factory<C extends DocContainer<D>, P, D> {
         PlaceholdersProvider<C, P, D> createProvider(C doc);

@@ -25,7 +25,7 @@ SOFTWARE.
 package org.underdocx.enginelayers.defaultodtengine.modifiers.ifmodifier;
 
 import org.underdocx.common.doc.DocContainer;
-import org.underdocx.enginelayers.baseengine.modifiers.ModifierResult;
+import org.underdocx.enginelayers.baseengine.modifiers.ModifierNodeResult;
 import org.underdocx.enginelayers.baseengine.modifiers.deleteplaceholder.DeletePlaceholderModifier;
 import org.underdocx.enginelayers.baseengine.modifiers.deleteplaceholder.DeletePlaceholderModifierData;
 import org.underdocx.enginelayers.defaultodtengine.modifiers.deletearea.DeleteAreaModifier;
@@ -34,7 +34,7 @@ import org.underdocx.enginelayers.defaultodtengine.modifiers.internal.AreaModifi
 import org.underdocx.enginelayers.parameterengine.ParametersPlaceholderData;
 import org.w3c.dom.Node;
 
-public class IfModifier<C extends DocContainer<D>, D> extends AbstractAreaModifier<C, ParametersPlaceholderData, D, IfModifierData, ModifierResult> {
+public class IfModifier<C extends DocContainer<D>, D> extends AbstractAreaModifier<C, ParametersPlaceholderData, D, IfModifierData, ModifierNodeResult> {
 
     @Override
     protected Node getCommonAncestorNode(IfModifierData modifierData) {
@@ -42,7 +42,7 @@ public class IfModifier<C extends DocContainer<D>, D> extends AbstractAreaModifi
     }
 
     @Override
-    protected ModifierResult modify() {
+    protected ModifierNodeResult modify() {
         if (modifierData.isMatch()) {
             DeletePlaceholderModifier.modify(area.left, DeletePlaceholderModifierData.DEFAULT);
             return DeletePlaceholderModifier.modify(area.right, DeletePlaceholderModifierData.DEFAULT);

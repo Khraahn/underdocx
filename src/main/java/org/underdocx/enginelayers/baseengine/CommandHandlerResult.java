@@ -26,6 +26,7 @@ package org.underdocx.enginelayers.baseengine;
 
 import org.underdocx.common.tools.Convenience;
 import org.underdocx.common.tree.Nodes;
+import org.underdocx.enginelayers.baseengine.modifiers.ModifierNodeResult;
 import org.underdocx.enginelayers.baseengine.modifiers.ModifierResult;
 import org.w3c.dom.Node;
 
@@ -33,6 +34,7 @@ public interface CommandHandlerResult {
     CommandHandlerResult IGNORED = new DefaultResult(CommandHandlerResultType.IGNORED);
     CommandHandlerResult EXECUTED_PROCEED = new DefaultResult(CommandHandlerResultType.EXECUTED_PROCEED);
     CommandHandlerResult EXECUTED_FULL_RESCAN = new DefaultResult(CommandHandlerResultType.EXECUTED_FULL_RESCAN);
+    CommandHandlerResult EXECUTED_END_OF_DOC = new DefaultResult(CommandHandlerResultType.EXECUTED_END_OF_DOC);
 
     Factory FACTORY = new Factory();
 
@@ -40,7 +42,8 @@ public interface CommandHandlerResult {
         IGNORED,
         EXECUTED_PROCEED,
         EXECUTED_FULL_RESCAN,
-        EXECUTED_RESTART_AT_NODE
+        EXECUTED_RESTART_AT_NODE,
+        EXECUTED_END_OF_DOC
     }
 
     CommandHandlerResultType getResultType();
@@ -52,12 +55,27 @@ public interface CommandHandlerResult {
             return new DefaultResult(node);
         }
 
-        public CommandHandlerResult checkExecuted(ModifierResult result) {
+        public CommandHandlerResult convert(ModifierNodeResult result) {
+            if (result.getSuccess()) {
+                if (result.isEndOfDoc()) {
+                    return new DefaultResult(CommandHandlerResultType.EXECUTED_END_OF_DOC);
+                }
+                if (result.getEndNode().isPresent()) {
+                    return new DefaultResult(result.getEndNode().get());
+                } else {
+                    return EXECUTED_PROCEED;
+                }
+            } else {
+                return IGNORED;
+            }
+        }
+
+        public CommandHandlerResult convert(ModifierResult result) {
             return result.getSuccess() ? EXECUTED_PROCEED : IGNORED;
         }
 
         public CommandHandlerResult startAtNextNode(Node node) {
-            return Convenience.getOrDefault(Nodes.findNextNode(node), CommandHandlerResult.FACTORY::startAtNode, CommandHandlerResult.EXECUTED_PROCEED);
+            return Convenience.getOrDefault(Nodes.findNextNode(node), CommandHandlerResult.FACTORY::startAtNode, CommandHandlerResult.EXECUTED_END_OF_DOC);
         }
     }
 

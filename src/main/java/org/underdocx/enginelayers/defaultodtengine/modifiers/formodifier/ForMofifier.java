@@ -40,16 +40,16 @@ import java.util.List;
 public class ForMofifier<C extends DocContainer<D>, D> extends AbstractAreaModifier<C, ParametersPlaceholderData, D, ForModifierData, ModifierNodeResult> {
 
     private List<Node> areaNodes;
-    private Node resultNode = null;
+    private ModifierNodeResult modifierResult = null;
 
     @Override
     protected ModifierNodeResult modify() {
-        resultNode = null;
+        modifierResult = null;
         this.areaNodes = getAreaNodes();
         List<Pair<Node, Node>> areas = createAreas();
         selection.getDocContainer().createDebugFile("for");
         replaceBeginEndNodes(areas);
-        return ModifierNodeResult.FACTORY.success(resultNode, false);
+        return modifierResult;
     }
 
     private void replaceBeginEndNodes(List<Pair<Node, Node>> areas) {
@@ -67,8 +67,8 @@ public class ForMofifier<C extends DocContainer<D>, D> extends AbstractAreaModif
             Nodes.deleteNode(node);
         } else {
             List<Node> nodes = TextualPlaceholderToolkit.clonePlaceholder(node, replacements.size());
-            if (nodes.size() > 0 && resultNode == null) {
-                resultNode = nodes.get(0);
+            if (nodes.size() > 0 && modifierResult == null) {
+                modifierResult = ModifierNodeResult.FACTORY.success(nodes.get(0), false);
             }
             for (int i = 0; i < replacements.size(); i++) {
                 int ii = i;
@@ -83,7 +83,7 @@ public class ForMofifier<C extends DocContainer<D>, D> extends AbstractAreaModif
             int max = modifierData.getRepeats();
             switch (max) {
                 case 0 -> {
-                    resultNode = Nodes.findNextNode(areaNodes.get(areaNodes.size() - 1)).orElse(null);
+                    modifierResult = ModifierNodeResult.FACTORY.success(areaNodes.get(areaNodes.size() - 1), true);
                     Nodes.deleteNodes(areaNodes);
                 }
                 default -> {

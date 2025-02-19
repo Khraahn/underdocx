@@ -26,27 +26,28 @@ package org.underdocx.enginelayers.baseengine.internal;
 
 import org.underdocx.common.doc.DocContainer;
 import org.underdocx.common.enumerator.LookAheadEnumerator;
+import org.underdocx.common.tools.Convenience;
 import org.underdocx.common.types.Pair;
 import org.underdocx.enginelayers.baseengine.EngineAccess;
 import org.underdocx.enginelayers.baseengine.PlaceholdersProvider;
 import org.underdocx.enginelayers.baseengine.SelectedNode;
 import org.underdocx.enginelayers.baseengine.modifiers.EngineListener;
-import org.underdocx.common.tools.Convenience;
 import org.w3c.dom.Node;
 
 import java.util.Collection;
 import java.util.List;
 import java.util.function.Predicate;
+import java.util.function.Supplier;
 
 public class EngineAccessImpl<C extends DocContainer<D>, D> implements EngineAccess<C, D> {
 
     private final Collection<EngineListener<C, D>> listeners;
     private final Runnable rescan;
-    private final List<Node> lookBack;
-    private final LookAheadEnumerator<Pair<PlaceholdersProvider<C, ?, D>, Node>> lookAhead;
+    private final Supplier<List<Node>> lookBack;
+    private final Supplier<LookAheadEnumerator<Pair<PlaceholdersProvider<C, ?, D>, Node>>> lookAhead;
 
 
-    public EngineAccessImpl(Collection<EngineListener<C, D>> listeners, Runnable forceRescan, LookAheadEnumerator<Pair<PlaceholdersProvider<C, ?, D>, Node>> lookAhead, List<Node> lookBack) {
+    public EngineAccessImpl(Collection<EngineListener<C, D>> listeners, Runnable forceRescan, Supplier<LookAheadEnumerator<Pair<PlaceholdersProvider<C, ?, D>, Node>>> lookAhead, Supplier<List<Node>> lookBack) {
         this.listeners = listeners;
         this.rescan = forceRescan;
         this.lookAhead = lookAhead;
@@ -70,7 +71,7 @@ public class EngineAccessImpl<C extends DocContainer<D>, D> implements EngineAcc
     }
 
     public List<SelectedNode<?>> lookAhead(Predicate<SelectedNode<?>> filter) {
-        return Convenience.buildList(result -> lookAhead.lookAhead().forEach(pair -> {
+        return Convenience.buildList(result -> lookAhead.get().lookAhead().forEach(pair -> {
             SelectedNodeImpl<C, ?, D> selectedNode = new SelectedNodeImpl<>(pair.right, pair.left);
             if (filter == null || filter.test(selectedNode)) {
                 result.add(selectedNode);
@@ -79,6 +80,6 @@ public class EngineAccessImpl<C extends DocContainer<D>, D> implements EngineAcc
     }
 
     public List<Node> lookBack(Predicate<Node> filter) {
-        return Convenience.filter(lookBack, filter);
+        return Convenience.filter(lookBack.get(), filter);
     }
 }

@@ -90,6 +90,55 @@ public class StartAtNodeTest extends AbstractOdtTest {
     }
 
     @Test
+    public void testDeleteStaticPlaceholderAtEndOfDocumentWhenStartNodePlaceholdersAreUsed1() {
+        String docContent = """
+                ${Model value:"^"}
+                Test ${IncVar id:"origin"}
+                ${ReplaceWithIncVar id:"a"} a ${ReplaceWithIncVar id:"b"} b ${ReplaceWithIncVar id:"c"} c
+                Result: ${$testcounter}
+                """;
+        OdtContainer doc = new OdtContainer(docContent);
+        OdtEngine engine = new OdtEngine(doc);
+        engine.registerParametersCommandHandler(new IncVarPlaceholder());
+        engine.registerParametersCommandHandler(new ReplaceWithIncVarAndProceesAtNextNode());
+        engine.run();
+        //show(doc);
+        assertNotContains(doc, "ReplaceWithIncVar");
+        assertNotContains(doc, "Model");
+        assertContains(doc, "IncVar");
+        assertNotContains(doc, "push");
+        assertContains(doc, "Result: 1");
+    }
+
+
+    @Test
+    public void testDeleteStaticPlaceholderAtEndOfDocumentWhenStartNodePlaceholdersAreUsed2() {
+        String docContent = """
+                ${Push key:"var", value:true}
+                ${Model value:"^"}
+                Test ${IncVar id:"origin"}
+                ${ReplaceWithIncVar id:"a"} a ${ReplaceWithIncVar id:"b"} b ${ReplaceWithIncVar id:"c"} c
+                ${If $var:true}visible${EndIf comment:"first"}
+                ${If $var:false}invisible${EndIf comment:"second"}
+                Result: ${$testcounter}
+                """;
+        OdtContainer doc = new OdtContainer(docContent);
+        OdtEngine engine = new OdtEngine(doc);
+        engine.registerParametersCommandHandler(new IncVarPlaceholder());
+        engine.registerParametersCommandHandler(new ReplaceWithIncVarAndProceesAtNextNode());
+        engine.run();
+        //show(doc);
+        assertNotContains(doc, "ReplaceWithIncVar");
+        assertNotContains(doc, "Model");
+        assertContains(doc, "IncVar");
+        assertContains(doc, "visible");
+        assertNotContains(doc, "invisible");
+        assertNotContains(doc, "Push");
+        assertContains(doc, "Result: 1");
+    }
+
+
+    @Test
     public void testValidNodeTreeWalker() {
         String xmlContent = """
                 <root>

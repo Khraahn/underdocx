@@ -38,7 +38,7 @@ import org.w3c.dom.Node;
 public class AppendPlaceholderModifier<P> implements Modifier<OdtContainer, P, OdfTextDocument, P, ModifierNodeResult> {
     @Override
     public ModifierNodeResult modify(Selection<OdtContainer, P, OdfTextDocument> selection, P modifierData) {
-        return Convenience.build(ModifierNodeResult.FAILED, result -> {
+        return Convenience.build(ModifierNodeResult.IGNORED, result -> {
             selection.getPlaceholderToolkit().ifPresent(toolkit -> {
                 Node clone = TextualPlaceholderToolkit.clonePlaceholder(selection.getNode(), true);
                 toolkit.setPlaceholder(clone, modifierData);

@@ -35,6 +35,7 @@ import org.underdocx.enginelayers.defaultodtengine.modifiers.internal.AreaModifi
 import org.underdocx.enginelayers.parameterengine.ParametersPlaceholderData;
 import org.w3c.dom.Node;
 
+
 public class DeleteAreaModifier<C extends DocContainer<D>, D> extends AbstractAreaModifier<C, ParametersPlaceholderData, D, AreaModifierWithCommonAncestorData, ModifierNodeResult> {
 
     @Override
@@ -49,7 +50,8 @@ public class DeleteAreaModifier<C extends DocContainer<D>, D> extends AbstractAr
 
     public static ModifierNodeResult deleteArea(AreaModifierWithCommonAncestorData modifierData) {
         Pair<Node, Node> area = AbstractAreaModifier.splitTreeAndGetArea(modifierData, modifierData.getCommonAncestor(), OdfTextNodeInterpreter.INSTANCE);
+        ModifierNodeResult result = ModifierNodeResult.FACTORY.success(area.right, true);
         Nodes.deleteNodes(Nodes.getSiblingsIterator(area.left, area.right).collect());
-        return ModifierNodeResult.FACTORY.success(area.right, true);
+        return result;
     }
 }

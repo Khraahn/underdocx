@@ -78,8 +78,9 @@ public class MultiCommandHandler<C extends DocContainer<D>, D> extends AbstractC
             case EXECUTED_RESTART_AT_NODE -> switch (last.getResultType()) {
                 case IGNORED, EXECUTED_PROCEED -> current;
                 case EXECUTED_FULL_RESCAN -> last;
-                case EXECUTED_RESTART_AT_NODE -> CommandHandlerResult.EXECUTED_FULL_RESCAN;
+                case EXECUTED_RESTART_AT_NODE, EXECUTED_END_OF_DOC -> CommandHandlerResult.EXECUTED_FULL_RESCAN;
             };
+            case EXECUTED_END_OF_DOC -> CommandHandlerResult.EXECUTED_FULL_RESCAN;
         };
     }
 

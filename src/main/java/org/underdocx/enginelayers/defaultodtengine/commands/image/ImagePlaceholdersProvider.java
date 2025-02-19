@@ -45,6 +45,7 @@ import java.util.Optional;
 public class ImagePlaceholdersProvider implements EncapsulatedNodesExtractor, PlaceholdersProvider<OdtContainer, ImagePlaceholderData, OdfTextDocument> {
     private final OdtContainer doc;
     private Node firstValidNode = null;
+    private boolean endOfDoc;
 
     public ImagePlaceholdersProvider(OdtContainer doc) {
         this.doc = doc;
@@ -79,6 +80,7 @@ public class ImagePlaceholdersProvider implements EncapsulatedNodesExtractor, Pl
 
     @Override
     public Enumerator<Node> getPlaceholders() {
+        if (endOfDoc) return Enumerator.empty();
         return new ParagraphByParagraphNodesEnumerator(doc, (p, first) -> this.extractNodes(p, first), firstValidNode, true);
     }
 
@@ -93,8 +95,9 @@ public class ImagePlaceholdersProvider implements EncapsulatedNodesExtractor, Pl
     }
 
     @Override
-    public void restartAt(Node node) {
+    public void restartAt(Node node, boolean endOfDoc) {
         this.firstValidNode = node;
+        this.endOfDoc = endOfDoc;
     }
 
     public static class ImagePlaceholdersProviderFactory implements PlaceholdersProvider.Factory<OdtContainer, ImagePlaceholderData, OdfTextDocument> {
