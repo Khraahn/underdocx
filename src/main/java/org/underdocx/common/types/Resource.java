@@ -24,9 +24,9 @@ SOFTWARE.
 
 package org.underdocx.common.types;
 
-import org.underdocx.common.tools.StringHash;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
+import org.underdocx.common.tools.StringHash;
 
 import java.io.*;
 import java.net.URI;
@@ -85,6 +85,8 @@ public interface Resource {
 
     class DataResource implements Resource {
 
+        private String cachedIdentifier = null;
+
         private final byte[] data;
 
         public DataResource(byte[] data) {
@@ -98,7 +100,10 @@ public interface Resource {
 
         @Override
         public String getIdentifier() {
-            return StringHash.createStringHash32(data);
+            if (cachedIdentifier == null) {
+                cachedIdentifier = StringHash.createStringHash32(data);
+            }
+            return cachedIdentifier;
         }
 
         @Override

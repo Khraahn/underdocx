@@ -41,6 +41,8 @@ import org.underdocx.enginelayers.defaultodtengine.modifiers.importmodifier.Impo
 import org.underdocx.enginelayers.parameterengine.ParametersPlaceholderData;
 import org.underdocx.environment.err.Problems;
 
+import java.util.HashMap;
+
 /**
  * Implementation of the {{Import uri/data}} command.
  */
@@ -61,12 +63,24 @@ public class ImportCommandHander extends AbstractTextualCommandHandler<OdtContai
         super(KEYS);
     }
 
+    HashMap<String, OdtContainer> cache = new HashMap<>();
+
     @Override
     protected CommandHandlerResult tryExecuteTextualCommand() {
         Resource resource = new ResourceCommandModule<OdtContainer, ParametersPlaceholderData, OdfTextDocument>(placeholderData.getJson()).execute(selection);
-        OdtContainer importDoc = Problems.ODF_FRAMEWORK_OPERARTION_EXCEPTION.exec(() -> new OdtContainer(resource));
+        OdtContainer importDoc = getDoc(resource);
         ImportModifierData modifiedData = new ImportModifierData.Simple(resource.getIdentifier(), importDoc, selection.getDocContainer(), selection.getNode(), true);
         new ImportModifier().modify(modifiedData);
         return CommandHandlerResult.FACTORY.convert(DeletePlaceholderModifier.modify(selection.getNode()));
+    }
+
+    private OdtContainer getDoc(Resource resource) {
+        String resourceId = resource.getIdentifier();
+        OdtContainer result = cache.get(resourceId);
+        if (result == null) {
+            result = Problems.IO_EXCEPTION.exec(() -> new OdtContainer(resource));
+            cache.put(resourceId, result);
+        }
+        return result;
     }
 }
