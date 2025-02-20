@@ -180,13 +180,13 @@ ${For value:[{firstName: "Hans", lastName:"Müller"}, {firstName: "Jon", lastNam
         There are three ways how templates can address data that shall be used.
         <ul>
           <li><b>Values</b> are directly provided as placeholder attributes that do
-            not use prefixes characters like '@' and '$'.</li>
+            not use prefixes characters like '*' and '$'.</li>
           <li><b>Variables</b> are stored values, added though the engine API
             but also dynamically created during template processing.
             The Attribute-Prefix '$' is associated with variables, which means the attribute refers to a variable</li>
           <li>The <b>Model</b>-tree defines a static data structure the engine can walk through.
             This data type is optional.
-            The Attribute-Prefix '@' is associated with the model, which means the attribute
+            The Attribute-Prefix '*' is associated with the model, which means the attribute
             points to a node of the model-data-tree</li>
         </ul>
 
@@ -223,7 +223,7 @@ engine.pushVariable("dateToShow", lastYear);</code></pre>
         model nodes are always relatively to the engines current model tree position.
         The usage of models is optional, you might also use variables.
         This example shows how to register a model and how to address a node:
-        <pre class="padding"><code>Example: ${Date @value:"persons[1].birthday" outputFormat:"dd.MM.yyyy"}</code></pre>
+        <pre class="padding"><code>Example: ${Date *value:"persons[1].birthday" outputFormat:"dd.MM.yyyy"}</code></pre>
         and this code snipped:
         <pre class="highlightjs highlight nowrap"><code class="language-java hljs" data-lang="java">ModelNode model = new MapModelNode("""
           {
@@ -239,7 +239,7 @@ engine.setModel(model);</code></pre>
         In this example,
         the model is defined by using the JSON syntax, which is converted to a data-tree using the
         <code-word>MapModelNode</code-word>-class.
-        The <code-word>@value</code-word> parameter uses the model-path-syntax to address a certain node in the model
+        The <code-word>*value</code-word> parameter uses the model-path-syntax to address a certain node in the model
         data tree.
 
         <h4>ModelPath-Syntax</h4>
@@ -422,8 +422,8 @@ private static class TestClassB {
       
 public static void main (String[] args) {
   String content = """
-    ${@b.x}
-    ${@b.c[0]}
+    ${*b.x}
+    ${*b.c[0]}
   """;
   OdtContainer doc = new OdtContainer(content);
   ReflectionModelNode.Resolver resolver = (object, name) -> 
@@ -442,9 +442,9 @@ public static void main (String[] args) {
         <pre class="padding"><code>42
 Item1
 </code></pre>
-        Reason: <code-word>${@b.c[0]}</code-word> is a placeholder to print out model node addresses by ModelPath
+        Reason: <code-word>${*b.c[0]}</code-word> is a placeholder to print out model node addresses by ModelPath
         <code-word>b.c[0]</code-word>.
-        Also <code-word>${@b.x}</code-word> is a placeholder to print out model node addresses by ModelPath "b.x".
+        Also <code-word>${*b.x}</code-word> is a placeholder to print out model node addresses by ModelPath "b.x".
         The call of <code-word>engine.setModel(new TestClassA())</code-word> creates an instance of TestClassA and
         converts it into a ReflectionModelNode. This node is now declared as model data.
         The Additional "resolver" provides value 42 when property "x"
@@ -608,7 +608,7 @@ Item1
           </tr>
           <tr>
             <td>
-              ${String @value:"text"}
+              ${String *value:"text"}
             </td>
             <td>
               Model
@@ -619,7 +619,7 @@ Item1
           </tr>
           <tr>
             <td>
-              ${@text}
+              ${*text}
             </td>
             <td>
               Model
@@ -630,7 +630,7 @@ Item1
           </tr>
           <tr>
             <td>
-              ${@markupText}
+              ${*markupText}
             </td>
             <td>
               &lt;b&gt;bold&lt;/b&gt; &lt;i&gt;italic&lt;/i&gt; &lt;u&gt;underline&lt;/u&gt; &lt;font
@@ -642,7 +642,7 @@ Item1
           </tr>
           <tr>
             <td>
-              ${@markupText markup:true}
+              ${*markupText markup:true}
             </td>
             <td>
               <guide-b>bold</guide-b> <guide-i>italic</guide-i> <guide-u>underline</guide-u>
@@ -654,7 +654,7 @@ Item1
           </tr>
           <tr>
             <td>
-              ${@text onNull:"fallback, fallback:"X"}
+              ${*text onNull:"fallback, fallback:"X"}
             </td>
             <td>
               Model
@@ -665,7 +665,7 @@ Item1
           </tr>
           <tr>
             <td>
-              ${@missing onNull:"fallback, fallback:"X"}
+              ${*missing onNull:"fallback, fallback:"X"}
             </td>
             <td>
               X
@@ -781,7 +781,7 @@ Item1
 
           <tr>
             <td>
-              <no-br>${For @value:"list", <guide-b>$as:"it"</guide-b>}</no-br><br>
+              <no-br>${For *value:"list", <guide-b>$as:"it"</guide-b>}</no-br><br>
               &nbsp;&nbsp;${$index} <guide-b>${$it}</guide-b><br>
               ${EndFor}
             </td>
@@ -798,8 +798,8 @@ Item1
 
           <tr>
             <td>
-              <no-br>${For @value:"list", <guide-b>@as:"it"</guide-b>}</no-br><br>
-              &nbsp;&nbsp;${$index} <guide-b>${@it</guide-b>}<br>
+              <no-br>${For *value:"list", <guide-b>*as:"it"</guide-b>}</no-br><br>
+              &nbsp;&nbsp;${$index} <guide-b>${*it</guide-b>}<br>
               ${EndFor}
             </td>
             <td>
@@ -808,7 +808,7 @@ Item1
             </td>
             <td>
               The list is accessed through model property "list". During iteration, a prefix "it" is registered that
-              represents the current list item. This item is printed out by command ${@it}. Also, the current item
+              represents the current list item. This item is printed out by command ${*it}. Also, the current item
               becomes the current model position aka current model node. The Variable “index” stores the current item
               index.
             </td>
@@ -816,8 +816,8 @@ Item1
 
           <tr>
             <td>
-              <no-br>${For @value:"list"}</no-br><br>
-              &nbsp;&nbsp;${$index} <guide-b>${@}</guide-b><br>
+              <no-br>${For *value:"list"}</no-br><br>
+              &nbsp;&nbsp;${$index} <guide-b>${*}</guide-b><br>
               ${EndFor}
             </td>
             <td>
@@ -827,7 +827,7 @@ Item1
             <td>
               The list is accessed through model property "list". During iteration the current item becomes the current
               model position aka current model node. When no "as"-attribute is used, the current model node can be
-              printed with command ${@}. The Variable “index” stores the current item index.
+              printed with command ${*}. The Variable “index” stores the current item index.
             </td>
           </tr>
         </table>
@@ -1315,7 +1315,7 @@ ${Date $value:"date"}</code></pre>
           </tr>
           <tr>
             <td>activeModelPathPrefix</td>
-            <td>registers a prefix that has to be used in model paths (see @as in for-loops)</td>
+            <td>registers a prefix that has to be used in model paths (see *as in for-loops)</td>
           </tr>
         </table>
 

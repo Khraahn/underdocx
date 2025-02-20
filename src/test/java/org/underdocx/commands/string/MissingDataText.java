@@ -38,13 +38,13 @@ public class MissingDataText extends AbstractOdtTest {
                 {"a":"Test"}
                 """;
         String documentStr = "" +
-                "A ${@b onNull:\"fallback\", fallback:\"hugo\"} A          \n" + // A hugo A
-                "B ${@b onNull:\"empty\"}B                                 \n" + // B B
-                "C ${@b onNull:\"deletePlaceholderKeepParagraph\"}C        \n" + // C C
-                "D ${@b onNull:\"deletePlaceholderDeleteEmptyParagraph\"}D \n" + // D D
-                "E ${@b onNull:\"deletePlaceholderDeleteParagraph\"}E      \n" + // -
-                "F ${@b onNull:\"keepPlaceholder\"}F                       \n" + // F ${@b onNull:"keepPlaceholder"}F
-                "  ${@b onNull:\"deletePlaceholderDeleteEmptyParagraph\"}  \n" + // -
+                "A ${*b onNull:\"fallback\", fallback:\"hugo\"} A          \n" + // A hugo A
+                "B ${*b onNull:\"empty\"}B                                 \n" + // B B
+                "C ${*b onNull:\"deletePlaceholderKeepParagraph\"}C        \n" + // C C
+                "D ${*b onNull:\"deletePlaceholderDeleteEmptyParagraph\"}D \n" + // D D
+                "E ${*b onNull:\"deletePlaceholderDeleteParagraph\"}E      \n" + // -
+                "F ${*b onNull:\"keepPlaceholder\"}F                       \n" + // F ${*b onNull:"keepPlaceholder"}F
+                "  ${*b onNull:\"deletePlaceholderDeleteEmptyParagraph\"}  \n" + // -
                 "";
         OdtContainer doc = new OdtContainer(documentStr);
         OdtEngine engine = new OdtEngine(doc);
@@ -55,7 +55,7 @@ public class MissingDataText extends AbstractOdtTest {
         assertContains(doc, "C C");
         assertContains(doc, "D D");
         assertNotContains(doc, "E");
-        assertContains(doc, "F ${@b onNull:\"keepPlaceholder\"}F");
+        assertContains(doc, "F ${*b onNull:\"keepPlaceholder\"}F");
     }
 
     @Test
@@ -64,13 +64,13 @@ public class MissingDataText extends AbstractOdtTest {
                 {"b":""}
                 """;
         String documentStr = "" +
-                "A ${@b onEmpty:\"fallback\", fallback:\"hugo\"} A          \n" + // A hugo A
-                "B ${@b onEmpty:\"empty\"}B                                 \n" + // B B
-                "C ${@b onEmpty:\"deletePlaceholderKeepParagraph\"}C        \n" + // C C
-                "D ${@b onEmpty:\"deletePlaceholderDeleteEmptyParagraph\"}D \n" + // D D
-                "EE ${@b onEmpty:\"deletePlaceholderDeleteParagraph\"}E     \n" + // -
-                "F ${@b onEmpty:\"keepPlaceholder\"}F                       \n" + // F ${@b onNull:"keepPlaceholder"}F
-                "  ${@b onEmpty:\"deletePlaceholderDeleteEmptyParagraph\"}  \n" + // -
+                "A ${*b onEmpty:\"fallback\", fallback:\"hugo\"} A          \n" + // A hugo A
+                "B ${*b onEmpty:\"empty\"}B                                 \n" + // B B
+                "C ${*b onEmpty:\"deletePlaceholderKeepParagraph\"}C        \n" + // C C
+                "D ${*b onEmpty:\"deletePlaceholderDeleteEmptyParagraph\"}D \n" + // D D
+                "EE ${*b onEmpty:\"deletePlaceholderDeleteParagraph\"}E     \n" + // -
+                "F ${*b onEmpty:\"keepPlaceholder\"}F                       \n" + // F ${*b onNull:"keepPlaceholder"}F
+                "  ${*b onEmpty:\"deletePlaceholderDeleteEmptyParagraph\"}  \n" + // -
                 "";
         OdtContainer doc = new OdtContainer(documentStr);
         OdtEngine engine = new OdtEngine(doc);
@@ -81,7 +81,7 @@ public class MissingDataText extends AbstractOdtTest {
         assertContains(doc, "C C");
         assertContains(doc, "D D");
         assertNotContains(doc, "EE");
-        assertContains(doc, "F ${@b onEmpty:\"keepPlaceholder\"}F");
+        assertContains(doc, "F ${*b onEmpty:\"keepPlaceholder\"}F");
     }
 
     @Test
@@ -90,13 +90,13 @@ public class MissingDataText extends AbstractOdtTest {
                 {"b":[]}
                 """;
         String documentStr = "" +
-                "A ${@b onError:\"fallback\", fallback:\"hugo\"} A          \n" + // A hugo A
-                "B ${@b onError:\"empty\"}B                                 \n" + // B B
-                "C ${@b onError:\"deletePlaceholderKeepParagraph\"}C        \n" + // C C
-                "D ${@b onError:\"deletePlaceholderDeleteEmptyParagraph\"}D \n" + // D D
-                "EE ${@b onError:\"deletePlaceholderDeleteParagraph\"}E     \n" + // -
-                "F ${@b onError:\"keepPlaceholder\"}F                       \n" + // F ${@b onNull:"keepPlaceholder"}F
-                "  ${@b onError:\"deletePlaceholderDeleteEmptyParagraph\"}  \n" + // -
+                "A ${*b onError:\"fallback\", fallback:\"hugo\"} A          \n" + // A hugo A
+                "B ${*b onError:\"empty\"}B                                 \n" + // B B
+                "C ${*b onError:\"deletePlaceholderKeepParagraph\"}C        \n" + // C C
+                "D ${*b onError:\"deletePlaceholderDeleteEmptyParagraph\"}D \n" + // D D
+                "EE ${*b onError:\"deletePlaceholderDeleteParagraph\"}E     \n" + // -
+                "F ${*b onError:\"keepPlaceholder\"}F                       \n" + // F ${*b onNull:"keepPlaceholder"}F
+                "  ${*b onError:\"deletePlaceholderDeleteEmptyParagraph\"}  \n" + // -
                 "";
         OdtContainer doc = new OdtContainer(documentStr);
         OdtEngine engine = new OdtEngine(doc);
@@ -107,6 +107,6 @@ public class MissingDataText extends AbstractOdtTest {
         assertContains(doc, "C C");
         assertContains(doc, "D D");
         assertNotContains(doc, "EE");
-        assertContains(doc, "F ${@b onError:\"keepPlaceholder\"}F");
+        assertContains(doc, "F ${*b onError:\"keepPlaceholder\"}F");
     }
 }

@@ -236,25 +236,25 @@ public abstract class AbstractForCommandHandler<C extends DocContainer<D>, D> ex
 
     /*
 
-    ${For @value:"aList", $as:"element"}
+    ${For *value:"aList", $as:"element"}
       ${$element}
     ${EndFor}
 
     =>
 
-    ${Push key:"element", @value:"aList[0]"}
+    ${Push key:"element", *value:"aList[0]"}
     ${Push key:"index", value:0}
       ${$element}
     ${Pop key:"element"}
     ${Pop key:"index"}
 
-    ${Push key:"element", @value:"aList[1]"}
+    ${Push key:"element", *value:"aList[1]"}
     ${Push key:"index", value:1}
       ${$element}
     ${Pop key:"element"}
     ${Pop key:"index"}
 
-    ${Push key:"element", @value:"aList[2]"}
+    ${Push key:"element", *value:"aList[2]"}
     ${Push key:"index", value:2}
       ${$element}
     ${Pop key:"element"}
@@ -284,25 +284,25 @@ public abstract class AbstractForCommandHandler<C extends DocContainer<D>, D> ex
 
     /*
 
-    ${For @value:"aList", @as:"element"}
-      ${@element}
+    ${For *value:"aList", *as:"element"}
+      ${*element}
     ${EndFor}
 
     =>
 
     ${Model value:"current.path.aList[0]", activeModelPathPrefix:"element"}
     ${Push key:"index", value:0}
-      ${@element}
+      ${*element}
     ${Pop key:"index"}
 
     ${Model value:"current.path.aList[1]", activeModelPathPrefix:"element"}
     ${Push key:"index", value:1}
-      ${@element}
+      ${*element}
     ${Pop key:"index"}
 
     ${Model value:"current.path.aList[2]", activeModelPathPrefix:"element"}
     ${Push key:"index", value:2}
-      ${@element}
+      ${*element}
     ${Pop key:"index"}
     ${Model value:"current.path"}
      */
@@ -312,25 +312,25 @@ public abstract class AbstractForCommandHandler<C extends DocContainer<D>, D> ex
 
     /*
 
-    ${For @value:"aList"}
-      ${@}
+    ${For *value:"aList"}
+      ${*}
     ${EndFor}
 
     =>
 
     ${Model value:"current.path.aList[0]"}
     ${Push key:"index", value:0}
-      ${@}
+      ${*}
     ${Pop key:"index"}
 
     ${Model value:"current.path.aList[1]"}
     ${Push key:"index", value:1}
-      ${@}
+      ${*}
     ${Pop key:"index"}
 
     ${Model value:"current.path.aList[2]"}
     ${Push key:"index", value:2}
-      ${@}
+      ${*}
     ${Pop key:"index"}
     ${Model value:"current.path"}
      */
@@ -365,7 +365,7 @@ public abstract class AbstractForCommandHandler<C extends DocContainer<D>, D> ex
 
         A2M:
 
-        ${For value:["1", "2", "3"], @as:"element"}
+        ${For value:["1", "2", "3"], *as:"element"}
           ${$element}
         ${EndFor}
 
@@ -385,7 +385,7 @@ public abstract class AbstractForCommandHandler<C extends DocContainer<D>, D> ex
 
         V2M:
 
-        ${For $value:"aList", @as:"element"}
+        ${For $value:"aList", *as:"element"}
           ${$element}
         ${EndFor}
 

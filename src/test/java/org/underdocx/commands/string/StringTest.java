@@ -45,11 +45,11 @@ public class StringTest extends AbstractOdtTest {
                 }
                 """;
         String documentStr = "" +
-                "A ${String @value:\"a.b[0]\"} A       \n" +
+                "A ${String *value:\"a.b[0]\"} A       \n" +
                 "${Model value:\"a.b[0]\"}             \n" +
                 "B ${String} B                         \n" +
-                "C ${String @value:\"^c.d[1]\"} C      \n" +
-                "D ${String @value:\"^no\"} D          \n";
+                "C ${String *value:\"^c.d[1]\"} C      \n" +
+                "D ${String *value:\"^no\"} D          \n";
         OdtContainer doc = new OdtContainer(documentStr);
         OdtEngine engine = new OdtEngine(doc);
         engine.setModel(new MapModelNode(jsonString));
@@ -78,7 +78,7 @@ public class StringTest extends AbstractOdtTest {
                 "${Push key:\"x\", value:\"attX1\"}     \n" +
                 "A ${String $value:\"x\"} A             \n" + // A attX1 A
 
-                "${Push key:\"x\", @value:\"a.b[0]\"}   \n" +
+                "${Push key:\"x\", *value:\"a.b[0]\"}   \n" +
                 "B ${String $value:\"x\"} B             \n" + // B Test0 B
 
                 "${Pop key:\"x\"}                       \n" +
@@ -87,7 +87,7 @@ public class StringTest extends AbstractOdtTest {
                 "${Pop key:\"x\"}                       \n" +
                 "D ${String $value:\"x\"} D             \n" + // D  D
 
-                "${Push @key:\"varName\", value:42}     \n" +
+                "${Push *key:\"varName\", value:42}     \n" +
                 "E ${String $value:\"y\"} E             \n" + // E 42 E
 
                 "";

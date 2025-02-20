@@ -73,14 +73,14 @@ public class IfTest extends AbstractOdtTest {
                 J ${If not:{$testFalse:true}}J${EndIf} J
                 K ${If not:{$testNull:"test"}}K${EndIf} K
                 L ${If not:{$testEmpty:[1]}}L${EndIf} L
-                M ${If @model:"model"}M${EndIf} M
+                M ${If *model:"model"}M${EndIf} M
                 O ${If $testString:"x"} INVALID ${EndIf}O
                 P ${If $testTrue:false} INVALID ${EndIf}P
                 Q ${If $testFalse:true} INVALID ${EndIf}Q 
                 R ${If $testNull:"test"} INVALID ${EndIf}R
                 S ${If $testNumber:0} INVALID ${EndIf}S
                 T ${If $testEmpty:[1]} INVALID ${EndIf}T
-                U ${If @model:"x"} INVALID ${EndIf}U        
+                U ${If *model:"x"} INVALID ${EndIf}U        
                 """;
         OdtContainer doc = new OdtContainer(documentStr);
         OdtEngine engine = new OdtEngine(doc);

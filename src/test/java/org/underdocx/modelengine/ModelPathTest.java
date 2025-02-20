@@ -124,7 +124,7 @@ public class ModelPathTest extends AbstractOdtTest {
                 """;
         String documentStr = "" +
                 "${Model value:\"aList\", activeModelPathPrefix:\"element\" } \n" +
-                "${String @value:\"element[1]\"}                              \n";
+                "${String *value:\"element[1]\"}                              \n";
         OdtContainer doc = new OdtContainer(documentStr);
         OdtEngine engine = new OdtEngine(doc);
         engine.setModel(new MapModelNode(jsonString));

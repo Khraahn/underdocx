@@ -32,7 +32,7 @@ import org.underdocx.enginelayers.modelengine.model.ModelNode;
 /**
  * This is a {@link ExtendedDataPicker} that resolves a value from model, variable registry or from json attribute.
  * It analyses the prefix of the json attribute to find out the
- * source of the value (e.g. "value", "$value", "@value").
+ * source of the value (e.g. "value", "$value", "*value").
  * If source is model or variable registry, the attribute value is used as new name to look up for the value
  * Depending on used prefix this {@link DataPicker} calls {@link AttributeModelDataPicker},
  * {@link AttributeVarDataPicker} or {@link AttributeValueDataPicker}
@@ -40,7 +40,7 @@ import org.underdocx.enginelayers.modelengine.model.ModelNode;
  * Examples:
  * pick("x") and json x:"y" => returns y
  * pick("x") and json $x:"y" => returns value of registered variable y
- * pick("x") and json @x:"y" => returns value of model path y
+ * pick("x") and json *x:"y" => returns value of model path y
  */
 public class AttributeNodeDataPicker extends AbstractDataPicker<ModelNode, String> {
 

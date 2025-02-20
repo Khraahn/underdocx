@@ -1,7 +1,7 @@
 package org.underdocx.enginelayers.defaultodtengine.commands.internal.attrinterpreter.accesstype;
 
 public enum AccessType {
-    ACCESS_MODEL_BY_NAME("@"),
+    ACCESS_MODEL_BY_NAME("*"),
     ACCESS_VARIABLE_BY_NAME("$"),
     ACCESS_ATTR_VALUE(""),
     ACCESS_CURRENT_MODEL_NODE(null),

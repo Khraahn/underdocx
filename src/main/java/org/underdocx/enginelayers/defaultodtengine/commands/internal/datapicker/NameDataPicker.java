@@ -31,10 +31,10 @@ import org.underdocx.enginelayers.modelengine.model.ModelNode;
 /**
  * A {@link DataPicker} that uses the provided name to lookup in model or variable registry.
  * The names prefix character is used to determine the {@link AccessType} by using the {@link AccessTypeNameInterpreter}
- * JSON attributes are ignored when "$" or "@" are used as name prefix, when no prefix is used the
+ * JSON attributes are ignored when "$" or "*" are used as name prefix, when no prefix is used the
  * attribute value of the attribute with the same name is returned, e.g.:
  * pickData("$x") returns the value of the registered variable "x". All JSON attributes are ignored
- * pickData("@x") returns the model value of the path "x". All JSON attributes are ignored
+ * pickData("*x") returns the model value of the path "x". All JSON attributes are ignored
  * pickData("x") return the value of the JSON attribute "x".
  */
 public class NameDataPicker extends AbstractDataPicker<ModelNode, String> {

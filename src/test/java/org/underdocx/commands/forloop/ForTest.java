@@ -132,25 +132,25 @@ public class ForTest extends AbstractOdtTest {
 
     /*
 
-    ${For @value:"aList", $as:"element"}
+    ${For *value:"aList", $as:"element"}
       ${$element}
     ${EndFor}
 
     =>
 
-    ${Push key:"element", @value:"aList[0]"}
+    ${Push key:"element", *value:"aList[0]"}
     ${Push key:"index", value:0}
       ${$element}
     ${Pop key:"element"}
     ${Pop key:"index"}
 
-    ${Push key:"element", @value:"aList[1]"}
+    ${Push key:"element", *value:"aList[1]"}
     ${Push key:"index", value:1}
       ${$element}
     ${Pop key:"element"}
     ${Pop key:"index"}
 
-    ${Push key:"element", @value:"aList[2]"}
+    ${Push key:"element", *value:"aList[2]"}
     ${Push key:"index", value:2}
       ${$element}
     ${Pop key:"element"}
@@ -164,7 +164,7 @@ public class ForTest extends AbstractOdtTest {
                 }
                 """;
         String documentStr = "" +
-                "${For @value:\"aList\", $as:\"element\"}     \n" +
+                "${For *value:\"aList\", $as:\"element\"}     \n" +
                 "${$index} ${$element}                                    \n" +
                 "${EndFor}                                               \n";
         OdtContainer doc = new OdtContainer(documentStr);
@@ -181,25 +181,25 @@ public class ForTest extends AbstractOdtTest {
 
     /*
 
-    ${For @value:"aList", @as:"element"}
-      ${@element}
+    ${For *value:"aList", *as:"element"}
+      ${*element}
     ${EndFor}
 
     =>
 
     ${Model value:"current.path.aList[0]", activeModelPathPrefix:"element"}
     ${Push key:"index", value:0}
-      ${@element}
+      ${*element}
     ${Pop key:"index"}
 
     ${Model value:"current.path.aList[1]", activeModelPathPrefix:"element"}
     ${Push key:"index", value:1}
-      ${@element}
+      ${*element}
     ${Pop key:"index"}
 
     ${Model value:"current.path.aList[2]", activeModelPathPrefix:"element"}
     ${Push key:"index", value:2}
-      ${@element}
+      ${*element}
     ${Pop key:"index"}
     ${Model value:"current.path"}
      */
@@ -211,8 +211,8 @@ public class ForTest extends AbstractOdtTest {
                 }
                 """;
         String documentStr = "" +
-                "${For @value:\"aList\", @as:\"element\"}     \n" +
-                "${$index} ${@element}                                    \n" +
+                "${For *value:\"aList\", *as:\"element\"}     \n" +
+                "${$index} ${*element}                                    \n" +
                 "${EndFor}                                               \n";
         OdtContainer doc = new OdtContainer(documentStr);
         OdtEngine engine = new OdtEngine(doc);
@@ -228,25 +228,25 @@ public class ForTest extends AbstractOdtTest {
 
     /*
 
-    ${For @value:"aList"}
-      ${@}
+    ${For *value:"aList"}
+      ${*}
     ${EndFor}
 
     =>
 
     ${Model value:"current.path.aList[0]"}
     ${Push key:"index", value:0}
-      ${@}
+      ${*}
     ${Pop key:"index"}
 
     ${Model value:"current.path.aList[1]"}
     ${Push key:"index", value:1}
-      ${@}
+      ${*}
     ${Pop key:"index"}
 
     ${Model value:"current.path.aList[2]"}
     ${Push key:"index", value:2}
-      ${@}
+      ${*}
     ${Pop key:"index"}
     ${Model value:"current.path"}
      */
@@ -258,8 +258,8 @@ public class ForTest extends AbstractOdtTest {
                 }
                 """;
         String documentStr = "" +
-                "${For @value:\"aList\"}     \n" +
-                "${$index} ${@}                                    \n" +
+                "${For *value:\"aList\"}     \n" +
+                "${$index} ${*}                                    \n" +
                 "${EndFor}                                               \n";
         OdtContainer doc = new OdtContainer(documentStr);
         OdtEngine engine = new OdtEngine(doc);

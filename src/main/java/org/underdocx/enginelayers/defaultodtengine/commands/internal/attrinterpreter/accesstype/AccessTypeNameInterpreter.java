@@ -33,7 +33,7 @@ import org.underdocx.enginelayers.defaultodtengine.commands.internal.attrinterpr
  * For example:
  * interpreteAttribute("a") returns AccessType.ACCESS_ATTR_VALUE,
  * interpreteAttribute("$a") returns AccessType.ACCESS_VARIABLE_BY_NAME,
- * interpreteAttribute("@a") returns AccessType.ACCESS_MODEL_BY_NAME,
+ * interpreteAttribute("*a") returns AccessType.ACCESS_MODEL_BY_NAME,
  *
  * @see AccessTypeJsonNameInterpreter
  */

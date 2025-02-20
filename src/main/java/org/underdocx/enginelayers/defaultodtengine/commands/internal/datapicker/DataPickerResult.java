@@ -50,7 +50,7 @@ public class DataPickerResult<T> {
     public enum ResultType {
         RESOLVED(true), // value received, null value might be valid
         UNRESOLVED_INVALID_VALUE(false), // For example invalid ModelPath syntax
-        UNRESOLVED_MISSING_ATTR(false), // For example mandatory "@value" attribute is missing
+        UNRESOLVED_MISSING_ATTR(false), // For example mandatory "*value" attribute is missing
         UNRESOLVED_MISSING_VALUE(false); // For example model does not contain requiested data
 
         private final boolean resolved;

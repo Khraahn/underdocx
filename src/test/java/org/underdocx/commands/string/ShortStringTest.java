@@ -45,11 +45,11 @@ public class ShortStringTest extends AbstractOdtTest {
                 }
                 """;
         String documentStr = "" +
-                "A ${@a.b[0]} A             \n" +
+                "A ${*a.b[0]} A             \n" +
                 "${Model value:\"a.b[0]\"}  \n" +
-                "B ${@} B                   \n" +
-                "C ${@^c.d[1]} C            \n" +
-                "D ${@^no} D                \n";
+                "B ${*} B                   \n" +
+                "C ${*^c.d[1]} C            \n" +
+                "D ${*^no} D                \n";
         OdtContainer doc = new OdtContainer(documentStr);
         OdtEngine engine = new OdtEngine(doc);
         engine.setModel(new MapModelNode(jsonString));
@@ -78,7 +78,7 @@ public class ShortStringTest extends AbstractOdtTest {
                 "${Push key:\"x\", value:\"attX1\"}     \n" +
                 "A ${$x} A                              \n" + // A attX1 A
 
-                "${Push key:\"x\", @value:\"a.b[0]\"}   \n" +
+                "${Push key:\"x\", *value:\"a.b[0]\"}   \n" +
                 "B ${$x} B                              \n" + // B Test0 B
 
                 "${Pop key:\"x\"}                       \n" +
@@ -87,7 +87,7 @@ public class ShortStringTest extends AbstractOdtTest {
                 "${Pop key:\"x\"}                       \n" +
                 "D ${$x} D                               \n" + // D  D
 
-                "${Push @key:\"varName\", value:42}     \n" +
+                "${Push *key:\"varName\", value:42}     \n" +
                 "E ${$y} E                               \n" + // E 42 E
 
                 "";

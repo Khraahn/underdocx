@@ -32,7 +32,7 @@ import org.underdocx.common.types.Regex;
 
 public class ShortModelStringCommandHandler<C extends DocContainer<D>, D> extends AbstractStringCommandHandler<C, D> {
 
-    public final static Regex KEYS = new Regex("@\\S*");
+    public final static Regex KEYS = new Regex("\\*\\S*");
 
     public ShortModelStringCommandHandler() {
         super(KEYS);

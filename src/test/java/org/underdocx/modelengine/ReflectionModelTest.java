@@ -70,7 +70,7 @@ public class ReflectionModelTest extends AbstractOdtTest {
 
     @Test
     public void testReflectionModelEngine() {
-        OdtContainer doc = new OdtContainer("${String @value:\"b.c[0]\"}");
+        OdtContainer doc = new OdtContainer("${String *value:\"b.c[0]\"}");
         OdtEngine engine = new OdtEngine(doc);
         engine.setModel(new TestClassA());
         engine.run();
@@ -81,9 +81,9 @@ public class ReflectionModelTest extends AbstractOdtTest {
     @Test
     public void testResolve() {
         OdtContainer doc = new OdtContainer("" +
-                "${String @value:\"b.x\"}      \n" +
-                "${String @value:\"b.c[0]\"}   \n" +
-                "${String @value:\"b.c[0]\"}   \n");
+                "${String *value:\"b.x\"}      \n" +
+                "${String *value:\"b.c[0]\"}   \n" +
+                "${String *value:\"b.c[0]\"}   \n");
         OdtEngine engine = new OdtEngine(doc);
         engine.setModel(new TestClassA(),
                 (object, name) -> name.equals("x")
@@ -98,8 +98,8 @@ public class ReflectionModelTest extends AbstractOdtTest {
     @Test
     public void testResolve2() {
         String content = """
-                ${@b.x}
-                ${@b.c[0]}
+                ${*b.x}
+                ${*b.c[0]}
                 """;
         OdtContainer doc = new OdtContainer(content);
         ReflectionModelNode.Resolver resolver = (object, name) -> name.equals("x")
@@ -117,8 +117,8 @@ public class ReflectionModelTest extends AbstractOdtTest {
     @Test
     public void testInterceptor() {
         OdtContainer doc = new OdtContainer("" +
-                "${@a}      \n" +
-                "${@c}      \n");
+                "${*a}      \n" +
+                "${*c}      \n");
         OdtEngine engine = new OdtEngine(doc);
         engine.setModel(new TestClassA());
         ReflectionInterceptorRegistry.DEFAULT.register(TestClassA.class, "c",

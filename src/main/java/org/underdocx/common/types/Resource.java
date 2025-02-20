@@ -85,12 +85,17 @@ public interface Resource {
 
     class DataResource implements Resource {
 
-        private String cachedIdentifier = null;
+        protected String cachedIdentifier = null;
 
-        private final byte[] data;
+        protected final byte[] data;
 
         public DataResource(byte[] data) {
             this.data = data;
+        }
+
+        public DataResource(byte[] data, String identifier) {
+            this.data = data;
+            this.cachedIdentifier = identifier;
         }
 
         @Override
@@ -149,4 +154,5 @@ public interface Resource {
             return Optional.of(uri);
         }
     }
+
 }

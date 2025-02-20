@@ -45,7 +45,7 @@ public class ModelVariableTest extends AbstractOdtTest {
                 }
                 """;
         String documentStr = "" +
-                "${Push key:\"x\", @value:\"a\"}   \n" +
+                "${Push key:\"x\", *value:\"a\"}   \n" +
                 "${Push key:\"y\", $value:\"x.b[0]\"}   \n" +
                 "B ${$y} B                              \n" + // B Test0 B
                 "";
@@ -70,7 +70,7 @@ public class ModelVariableTest extends AbstractOdtTest {
                 }
                 """;
         String documentStr = "" +
-                "${Push key:\"model\", @value:\"\"}   \n" +
+                "${Push key:\"model\", *value:\"\"}   \n" +
                 "B ${$model.a.b[0]} B                 \n" + // B Test0 B
                 "";
         OdtContainer doc = new OdtContainer(documentStr);

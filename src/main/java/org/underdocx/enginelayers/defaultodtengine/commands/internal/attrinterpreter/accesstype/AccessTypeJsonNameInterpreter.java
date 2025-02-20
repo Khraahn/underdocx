@@ -32,7 +32,7 @@ import org.underdocx.enginelayers.defaultodtengine.commands.internal.attrinterpr
  * A {@link AttributesInterpreter}
  * that returns a {@link AccessType} according to the prefix of the corresponding json attribute.
  * For example:
- * Given JSON: {a:"a", $b:"b", @c:"c"},
+ * Given JSON: {a:"a", $b:"b", *c:"c"},
  * interpreteAttribute("a") returns AccessType.ACCESS_ATTR_VALUE,
  * interpreteAttribute("b") returns AccessType.ACCESS_VARIABLE_BY_NAME,
  * interpreteAttribute("c") returns AccessType.ACCESS_MODEL_BY_NAME,

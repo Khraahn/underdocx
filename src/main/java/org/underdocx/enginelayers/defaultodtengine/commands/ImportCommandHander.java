@@ -31,10 +31,8 @@ import org.underdocx.doctypes.odf.odt.OdtContainer;
 import org.underdocx.enginelayers.baseengine.CommandHandlerResult;
 import org.underdocx.enginelayers.baseengine.modifiers.deleteplaceholder.DeletePlaceholderModifier;
 import org.underdocx.enginelayers.defaultodtengine.commands.internal.AbstractTextualCommandHandler;
-import org.underdocx.enginelayers.defaultodtengine.commands.internal.datapicker.BinaryDataPicker;
+import org.underdocx.enginelayers.defaultodtengine.commands.internal.datapicker.BooleanDataPicker;
 import org.underdocx.enginelayers.defaultodtengine.commands.internal.datapicker.PredefinedDataPicker;
-import org.underdocx.enginelayers.defaultodtengine.commands.internal.datapicker.ResourceDataPicker;
-import org.underdocx.enginelayers.defaultodtengine.commands.internal.datapicker.StringConvertDataPicker;
 import org.underdocx.enginelayers.defaultodtengine.commands.internal.modifiermodule.resource.ResourceCommandModule;
 import org.underdocx.enginelayers.defaultodtengine.modifiers.importmodifier.ImportModifier;
 import org.underdocx.enginelayers.defaultodtengine.modifiers.importmodifier.ImportModifierData;
@@ -50,37 +48,39 @@ public class ImportCommandHander extends AbstractTextualCommandHandler<OdtContai
     public static final String BEGIN_KEY = "Import";
     public static final Regex KEYS = new Regex(BEGIN_KEY);
 
-    public static final String URI_ATTR = "uri";
-    public static final String DATA_ATTR = "data";
-    public static final String RESOURCE_ATTR = "resource";
+    public static final String CACHE_ATTR = "cache";
 
-    private static final PredefinedDataPicker<byte[]> binaryDataPicker = new BinaryDataPicker().asPredefined(DATA_ATTR);
-    private static final PredefinedDataPicker<String> uriStringPicker = new StringConvertDataPicker().asPredefined(URI_ATTR);
-    private static PredefinedDataPicker<Resource> resourcePicker = new ResourceDataPicker().asPredefined(RESOURCE_ATTR);
-
+    private static final PredefinedDataPicker<Boolean> useCacheAttr = new BooleanDataPicker().asPredefined(CACHE_ATTR);
 
     public ImportCommandHander() {
         super(KEYS);
     }
 
-    HashMap<String, OdtContainer> cache = new HashMap<>();
+    HashMap<String, byte[]> cache = new HashMap<>();
 
     @Override
     protected CommandHandlerResult tryExecuteTextualCommand() {
         Resource resource = new ResourceCommandModule<OdtContainer, ParametersPlaceholderData, OdfTextDocument>(placeholderData.getJson()).execute(selection);
-        OdtContainer importDoc = getDoc(resource);
+        boolean useCache = useCacheAttr.getData(modelAccess, placeholderData.getJson()).orElse(true);
+        OdtContainer importDoc = getDoc(resource, useCache);
         ImportModifierData modifiedData = new ImportModifierData.Simple(resource.getIdentifier(), importDoc, selection.getDocContainer(), selection.getNode(), true);
         new ImportModifier().modify(modifiedData);
         return CommandHandlerResult.FACTORY.convert(DeletePlaceholderModifier.modify(selection.getNode()));
     }
 
-    private OdtContainer getDoc(Resource resource) {
+    private OdtContainer getDoc(final Resource resource, boolean useCache) {
         String resourceId = resource.getIdentifier();
-        OdtContainer result = cache.get(resourceId);
-        if (result == null) {
-            result = Problems.IO_EXCEPTION.exec(() -> new OdtContainer(resource));
-            cache.put(resourceId, result);
+        byte[] data = cache.get(resourceId);
+        if (data != null) {
+            return Problems.IO_EXCEPTION.exec(() -> new OdtContainer(data));
+        } else {
+            if (useCache) {
+                final byte[] cacheData = Problems.IO_EXCEPTION.exec(() -> resource.getData());
+                cache.put(resourceId, cacheData);
+                return Problems.IO_EXCEPTION.exec(() -> new OdtContainer(cacheData));
+            } else {
+                return Problems.IO_EXCEPTION.exec(() -> new OdtContainer(resource));
+            }
         }
-        return result;
     }
 }
