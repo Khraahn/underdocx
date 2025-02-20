@@ -18,7 +18,7 @@ Add Underdocx as dependency to your project, for example in your pom.xml add:
 <dependency>
     <groupId>io.github.winterrifier</groupId>
     <artifactId>underdocx</artifactId>
-    <version>0.6.1</version>
+    <version>0.7.0</version>
 </dependency>
 ```
 
@@ -29,7 +29,7 @@ processed by the template engine:
 public class HelloWorld {
     public static void main(String[] args) throws IOException {
         OdtContainer doc = new OdtContainer("Hello ${$name}");
-        DefaultODTEngine engine = new DefaultODTEngine(doc);
+        OdtEngine engine = new OdtEngine(doc);
         engine.pushVariable("name", "World");
         engine.run();
         File tmpFile = File.createTempFile("Test_", ".odt");
@@ -53,7 +53,7 @@ This code snipped reads the template document above and replaces the placeholder
 ```java
 // Prepare document and engine
 OdtContainer doc = new OdtContainer(is);
-DefaultODTEngine engine = new DefaultODTEngine(doc);
+OdtEngine engine = new OdtEngine(doc);
 
 // Alias placeholders
 engine.registerStringReplacement("addHeaderAndFooter", "${Export $resource:\"master\"} ");
