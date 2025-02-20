@@ -32,14 +32,14 @@ import org.underdocx.common.tree.TreeSplitter;
 import org.underdocx.common.types.Pair;
 import org.underdocx.doctypes.TextNodeInterpreter;
 import org.underdocx.doctypes.odf.tools.OdfNodes;
-import org.underdocx.enginelayers.baseengine.modifiers.ModifierResult;
+import org.underdocx.enginelayers.baseengine.modifiers.ModifierNodeResult;
 import org.underdocx.enginelayers.modelengine.MSelection;
 import org.w3c.dom.Node;
 
 import java.util.List;
 import java.util.function.BiFunction;
 
-public abstract class AbstractAreaModifier<C extends DocContainer<D>, P, D, M extends AreaModifierData, R extends ModifierResult> implements MModifier<C, P, D, M, R> {
+public abstract class AbstractAreaModifier<C extends DocContainer<D>, P, D, M extends AreaModifierData, R extends ModifierNodeResult> implements MModifier<C, P, D, M, R> {
 
     protected static final BiFunction<Node, Node, Node> COMMON_ANCESTOR_P_OR_TABLE_PARENT =
             (first, second) -> OdfNodes.findOldestParagraphOrTableParent(first).get();

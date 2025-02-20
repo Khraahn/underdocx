@@ -26,13 +26,14 @@ package org.underdocx.enginelayers.defaultodtengine.commands.forcommand;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import org.underdocx.common.doc.DocContainer;
+import org.underdocx.common.types.Range;
+import org.underdocx.enginelayers.baseengine.modifiers.ModifierNodeResult;
 import org.underdocx.enginelayers.defaultodtengine.commands.internal.attrinterpreter.PredefinedAttributesInterpreter;
 import org.underdocx.enginelayers.defaultodtengine.commands.internal.attrinterpreter.single.AttributeInterpreterFactory;
 import org.underdocx.enginelayers.defaultodtengine.modifiers.formodifier.ForModifierData;
 import org.underdocx.enginelayers.defaultodtengine.modifiers.forrowsmodifier.ForRowsModifier;
 import org.underdocx.enginelayers.defaultodtengine.modifiers.forrowsmodifier.ForRowsModifierData;
 import org.underdocx.environment.err.Problems;
-import org.underdocx.common.types.Range;
 
 import java.util.List;
 import java.util.Optional;
@@ -49,7 +50,7 @@ public class ForRowsCommandHandler<C extends DocContainer<D>, D> extends Abstrac
             AttributeInterpreterFactory.createIntegerAttributeInterpreter(ROWGROUPSIZE_ATTR);
 
     @Override
-    protected void callModifier(ForModifierData forModifierData) {
+    protected ModifierNodeResult callModifier(ForModifierData forModifierData) {
         Range range = null;
         Optional<List<Integer>> intList = rowsListInterpreter.interpretAttributes(attributes);
         if (intList.isPresent()) {
@@ -60,7 +61,7 @@ public class ForRowsCommandHandler<C extends DocContainer<D>, D> extends Abstrac
         int rowGroupSize = groupSizeInterpreter.interpretAttributes(attributes).orElse(1);
         ForRowsModifierData.DefaultForRowsModifierData modifierData
                 = new ForRowsModifierData.DefaultForRowsModifierData(forModifierData, range, rowGroupSize);
-        new ForRowsModifier<C, D>().modify(selection, modifierData);
+        return new ForRowsModifier<C, D>().modify(selection, modifierData);
     }
 
     @Override

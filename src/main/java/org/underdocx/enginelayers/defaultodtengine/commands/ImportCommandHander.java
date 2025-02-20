@@ -25,7 +25,6 @@ SOFTWARE.
 package org.underdocx.enginelayers.defaultodtengine.commands;
 
 import org.odftoolkit.odfdom.doc.OdfTextDocument;
-import org.underdocx.common.tools.Convenience;
 import org.underdocx.common.types.Regex;
 import org.underdocx.common.types.Resource;
 import org.underdocx.doctypes.odf.odt.OdtContainer;
@@ -64,12 +63,10 @@ public class ImportCommandHander extends AbstractTextualCommandHandler<OdtContai
 
     @Override
     protected CommandHandlerResult tryExecuteTextualCommand() {
-        return Convenience.build(CommandHandlerResult.EXECUTED_FULL_RESCAN, result -> {
-            Resource resource = new ResourceCommandModule<OdtContainer, ParametersPlaceholderData, OdfTextDocument>(placeholderData.getJson()).execute(selection);
-            OdtContainer importDoc = Problems.ODF_FRAMEWORK_OPERARTION_EXCEPTION.exec(() -> new OdtContainer(resource));
-            ImportModifierData modifiedData = new ImportModifierData.Simple(resource.getIdentifier(), importDoc, selection.getDocContainer(), selection.getNode(), true);
-            new ImportModifier().modify(modifiedData);
-            DeletePlaceholderModifier.modify(selection.getNode());
-        });
+        Resource resource = new ResourceCommandModule<OdtContainer, ParametersPlaceholderData, OdfTextDocument>(placeholderData.getJson()).execute(selection);
+        OdtContainer importDoc = Problems.ODF_FRAMEWORK_OPERARTION_EXCEPTION.exec(() -> new OdtContainer(resource));
+        ImportModifierData modifiedData = new ImportModifierData.Simple(resource.getIdentifier(), importDoc, selection.getDocContainer(), selection.getNode(), true);
+        new ImportModifier().modify(modifiedData);
+        return CommandHandlerResult.FACTORY.convert(DeletePlaceholderModifier.modify(selection.getNode()));
     }
 }

@@ -59,7 +59,7 @@ public class StringOutputCommandModule<C extends DocContainer<D>, D> extends Abs
                 } else {
                     new ReplaceWithTextModifier<C, ParametersPlaceholderData, D>().modify(selection, moduleResult.value);
                 }
-                yield shouldRescan ? CommandHandlerResult.EXECUTED_FULL_RESCAN : CommandHandlerResult.EXECUTED_PROCEED;
+                yield shouldRescan ? CommandHandlerResult.FACTORY.startAtNode(selection.getNode()) : CommandHandlerResult.EXECUTED_PROCEED;
             }
             case STRATEGY_EXECUTED -> CommandHandlerResult.EXECUTED_PROCEED;
             case SKIP -> CommandHandlerResult.IGNORED;

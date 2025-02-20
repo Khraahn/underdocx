@@ -30,6 +30,7 @@ import org.underdocx.common.types.Pair;
 import org.underdocx.common.types.Regex;
 import org.underdocx.enginelayers.baseengine.CommandHandlerResult;
 import org.underdocx.enginelayers.baseengine.SelectedNode;
+import org.underdocx.enginelayers.baseengine.modifiers.ModifierNodeResult;
 import org.underdocx.enginelayers.defaultodtengine.commands.ModelCommandHandler;
 import org.underdocx.enginelayers.defaultodtengine.commands.VariableCommandHandler;
 import org.underdocx.enginelayers.defaultodtengine.commands.internal.AbstractTextualCommandHandler;
@@ -114,12 +115,10 @@ public abstract class AbstractForCommandHandler<C extends DocContainer<D>, D> ex
         asAttributeType = AccessTypeJsonNameInterpreter.DEFAULT.interpretAttributes(placeholderData.getJson(), AS_ATTR);
         checkAsAttr();
         asAttrValue = getAsStrAttr.interpretAttributes(placeholderData.getJson()).orElse(null);
-        callModifier(createModifierData());
-
-        return CommandHandlerResult.EXECUTED_FULL_RESCAN;
+        return CommandHandlerResult.FACTORY.convert(callModifier(createModifierData()));
     }
 
-    protected abstract void callModifier(ForModifierData forModifierData);
+    protected abstract ModifierNodeResult callModifier(ForModifierData forModifierData);
 
     protected abstract boolean isResponsible(JsonNode attributes);
 
