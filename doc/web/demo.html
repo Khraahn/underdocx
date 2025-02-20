@@ -35,7 +35,7 @@
 
         <pre class="highlightjs highlight nowrap"><code class="language-java hljs" data-lang="java">// Prepare document and engine
     OdtContainer doc = new OdtContainer(is);
-    DefaultODTEngine engine = new DefaultODTEngine(doc);
+    OdtEngine engine = new OdtEngine(doc);
     
     // Alias placeholders
     engine.registerStringReplacement("addHeaderAndFooter", "${Export $resource:\"master\"} ");

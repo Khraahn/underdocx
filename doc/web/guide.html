@@ -80,12 +80,12 @@
         <pre class="highlightjs highlight nowrap"><code class="language-xml hljs" data-lang="xml">&lt;dependency&gt;
     &lt;groupId&gt;io.github.winterrifier&lt;/groupId&gt;
     &lt;artifactId&gt;underdocx&lt;/artifactId&gt;
-    &lt;version&gt;0.6.1&lt;/version&gt;
+    &lt;version&gt;0.7.0&lt;/version&gt;
 &lt;/dependency&gt;</code></pre>
 
         When you use Gradle your dependency should look like this
 
-        <pre class="padding"><code>implementation 'io.github.winterrifier:underdocx:0.6.1'</code></pre>
+        <pre class="padding"><code>implementation 'io.github.winterrifier:underdocx:0.7.0'</code></pre>
 
         You can also visit <a href="https://central.sonatype.com/artifact/io.github.winterrifier/underdocx"
           target="_blank">
@@ -100,7 +100,7 @@
         <pre class="highlightjs highlight nowrap"><code class="language-java hljs" data-lang="java">public class HelloWorld {
   public static void main(String[] args) throws IOException {
     OdtContainer doc = new OdtContainer("Hello ${$name}");
-    DefaultODTEngine engine = new DefaultODTEngine(doc);
+    OdtEngine engine = new OdtEngine(doc);
     engine.pushVariable("name", "World");
     engine.run();
     File tmpFile = File.createTempFile("Test_", ".odt");
@@ -296,7 +296,7 @@ engine.setModel(model);</code></pre>
   }
 }</code></pre>
 
-        <h3>DefaultODTEngine</h3>
+        <h3>OdtEngine</h3>
 
         This is the main class to process a document, exchange its placeholder and to
         register custom extensions to provide more placeholders or functionalities. This
@@ -306,7 +306,7 @@ engine.setModel(model);</code></pre>
         <pre class="highlightjs highlight nowrap"><code class="language-java hljs" data-lang="java">public class Main {
   public static void main(String[] args) throws IOException {
     OdtContainer doc = new OdtContainer("Hello ${$name}");
-    DefaultODTEngine engine = new DefaultODTEngine(doc);
+    OdtEngine engine = new OdtEngine(doc);
     engine.pushVariable("name", "World");
     engine.run();
     File tmpFile = File.createTempFile("Test_", ".odt");
@@ -356,7 +356,7 @@ Resource resource = new Resouce.UriResource(URI uri);      </code></pre>
       ]}
     """);
     OdtContainer doc = new OdtContainer("Hello ${$persons[1].name}");
-    DefaultODTEngine engine = new DefaultODTEngine(doc);
+    OdtEngine engine = new OdtEngine(doc);
     engine.pushVariable("persons", persons);
     engine.run();
     File tmpFile = File.createTempFile("Test_", ".odt");
@@ -430,7 +430,7 @@ public static void main (String[] args) {
     name.equals("x")
     ? java.util.Optional.of(new LeafModelNode("42"))
     : Optional.empty();
-  DefaultODTEngine engine = new DefaultODTEngine(doc);
+  OdtEngine engine = new OdtEngine(doc);
   engine.setModel(new TestClassA(), resolver);
   engine.run();
   File tmpFile = File.createTempFile("Test_", ".odt");
@@ -709,7 +709,7 @@ Item1
                        size="20"&gt;large&lt;/font&gt;"
         }
       """;
-      DefaultODTEngine engine = new DefaultODTEngine(doc);;
+      OdtEngine engine = new OdtEngine(doc);;
       engine.pushVariable("text", "Variable");
       engine.setModel(new MapModelNode(modelData));
       engine.run();
@@ -1015,7 +1015,7 @@ ${EndIf}</code></pre>
               ${Import $resource:"resource"}
               """.formatted("file:///home/User/doc1.odt");
       OdtContainer doc = new OdtContainer(content);
-      DefaultODTEngine engine = new DefaultODTEngine(doc);
+      OdtEngine engine = new OdtEngine(doc);
       byte[] data = Files.readAllBytes(Paths.get(file));
       engine.pushLeafVariable("data", data);
       Resource resource = new Resource.FileResource(file);
@@ -1364,7 +1364,7 @@ ${Date $value:"date"}</code></pre>
             <guide-b>${End}</guide-b>
           """;
 OdtContainer doc = new OdtContainer(documentStr);
-DefaultODTEngine engine = new DefaultODTEngine(doc);
+OdtEngine engine = new OdtEngine(doc);
 engine.registerStringReplacement(<guide-b>"Begin"</guide-b>, 
   "${For value:[\"A\", \"B\", \"C\"], $as:\"element\"} ");
 engine.registerStringReplacement(<guide-b>"End"</guide-b>, "${EndFor}");
@@ -1424,7 +1424,7 @@ engine.run();</code></pre>
               ${$sum}
               """;
       OdtContainer doc = new OdtContainer(content);
-      DefaultODTEngine engine = new DefaultODTEngine(doc);
+      OdtEngine engine = new OdtEngine(doc);
       engine.registerParametersCommandHandler(new AddCommandHandler());
       engine.run();
       File tmpFile = File.createTempFile("Test_", ".odt");
@@ -1504,7 +1504,7 @@ engine.run();</code></pre>
   public static void main(String[] args) throws IOException {
       String content = "Hello &lt;name&gt;";
       OdtContainer doc = new OdtContainer(content);
-      DefaultODTEngine engine = new DefaultODTEngine(doc);
+      OdtEngine engine = new OdtEngine(doc);
       engine.registerCommandHandler(new MyPlaceholdersProvider.MyPlaceholderProviderFactory(), new UpperCaseCommandHandler());
       engine.run();
       File tmpFile = File.createTempFile("Test_", ".odt");

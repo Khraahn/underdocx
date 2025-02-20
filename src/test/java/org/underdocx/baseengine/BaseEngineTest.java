@@ -48,7 +48,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class BaseEngineTest extends AbstractOdtTest {
 
     @Test
-    public void testHelloWorldDefaultODTEngine() {
+    public void testHelloWorldDefaultOdtEngine() {
         OdtContainer doc = new OdtContainer("Hello $name");
         OdtEngine engine = new OdtEngine(doc);
         engine.registerSimpleDollarReplacement("name", "World");
