@@ -25,7 +25,7 @@ SOFTWARE.
 package org.underdocx.enginelayers.odtengine.commands.internal.datapicker;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import org.underdocx.enginelayers.modelengine.modelaccess.ModelAccess;
+import org.underdocx.enginelayers.modelengine.dataaccess.DataAccess;
 import org.underdocx.enginelayers.odtengine.commands.internal.attrinterpreter.AttributesInterpreter;
 import org.underdocx.enginelayers.odtengine.commands.internal.attrinterpreter.accesstype.AccessType;
 
@@ -34,7 +34,7 @@ import java.util.Optional;
 public abstract class AbstractDataPicker<T, N> implements ExtendedDataPicker<T> {
 
     protected JsonNode attributes;
-    protected ModelAccess model;
+    protected DataAccess model;
     protected AttributesInterpreter<Optional<N>, String> attributeInterpreter;
     protected AttributesInterpreter<AccessType, String> typeInterpreter;
 
@@ -50,14 +50,14 @@ public abstract class AbstractDataPicker<T, N> implements ExtendedDataPicker<T> 
         return attributes;
     }
 
-    public ModelAccess getModel() {
+    public DataAccess getModel() {
         return model;
     }
 
     @Override
-    public DataPickerResult<T> pickData(String name, ModelAccess modelAccess, JsonNode attributes) {
+    public DataPickerResult<T> pickData(String name, DataAccess dataAccess, JsonNode attributes) {
         this.attributes = attributes;
-        this.model = modelAccess;
+        this.model = dataAccess;
         return pickData(name);
     }
 

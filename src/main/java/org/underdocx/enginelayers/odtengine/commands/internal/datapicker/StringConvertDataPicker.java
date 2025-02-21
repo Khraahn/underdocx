@@ -26,22 +26,22 @@ package org.underdocx.enginelayers.odtengine.commands.internal.datapicker;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import org.underdocx.common.types.Wrapper;
-import org.underdocx.enginelayers.modelengine.model.ModelNode;
-import org.underdocx.enginelayers.modelengine.modelaccess.ModelAccess;
+import org.underdocx.enginelayers.modelengine.dataaccess.DataAccess;
+import org.underdocx.enginelayers.modelengine.model.DataNode;
 
 import java.util.Optional;
 
 public class StringConvertDataPicker implements ExtendedDataPicker<String> {
 
     private final Model2StringConverter converter;
-    private final ExtendedDataPicker<ModelNode> dataPicker;
+    private final ExtendedDataPicker<DataNode> dataPicker;
 
     public StringConvertDataPicker() {
         this(new AttributeNodeDataPicker(), new DefaultModel2StringConverter());
     }
 
     public StringConvertDataPicker(
-            ExtendedDataPicker<ModelNode> dataPicker,
+            ExtendedDataPicker<DataNode> dataPicker,
             Model2StringConverter converter
     ) {
         this.converter = converter;
@@ -49,14 +49,14 @@ public class StringConvertDataPicker implements ExtendedDataPicker<String> {
     }
 
     public StringConvertDataPicker(
-            ExtendedDataPicker<ModelNode> dataPicker
+            ExtendedDataPicker<DataNode> dataPicker
     ) {
         this.converter = new DefaultModel2StringConverter();
         this.dataPicker = dataPicker;
     }
 
-    public DataPickerResult<String> pickData(String name, ModelAccess modelAccess, JsonNode attributes) {
-        DataPickerResult<ModelNode> tmpResult = dataPicker.pickData(name, modelAccess, attributes);
+    public DataPickerResult<String> pickData(String name, DataAccess dataAccess, JsonNode attributes) {
+        DataPickerResult<DataNode> tmpResult = dataPicker.pickData(name, dataAccess, attributes);
         if (!tmpResult.isResolved()) {
             return DataPickerResult.convert(null, tmpResult);
         } else {
@@ -70,17 +70,17 @@ public class StringConvertDataPicker implements ExtendedDataPicker<String> {
     }
 
     public interface Model2StringConverter {
-        Optional<Wrapper<String>> convert(ModelNode node);
+        Optional<Wrapper<String>> convert(DataNode node);
     }
 
     public static class DefaultModel2StringConverter implements Model2StringConverter {
 
         @Override
-        public Optional<Wrapper<String>> convert(ModelNode node) {
+        public Optional<Wrapper<String>> convert(DataNode node) {
             if (node == null || node.isNull()) {
                 return Optional.of(new Wrapper<>(null));
             }
-            if (node.getType() == ModelNode.ModelNodeType.LEAF) {
+            if (node.getType() == DataNode.ModelNodeType.LEAF) {
                 return Optional.of(new Wrapper<>(String.valueOf(node.getValue())));
             }
             return Optional.empty();

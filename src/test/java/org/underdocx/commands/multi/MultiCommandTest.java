@@ -24,11 +24,11 @@ SOFTWARE.
 
 package org.underdocx.commands.multi;
 
+import org.junit.jupiter.api.Test;
 import org.underdocx.AbstractOdtTest;
 import org.underdocx.doctypes.odf.odt.OdtContainer;
 import org.underdocx.doctypes.odf.odt.OdtEngine;
-import org.underdocx.enginelayers.modelengine.model.simple.MapModelNode;
-import org.junit.jupiter.api.Test;
+import org.underdocx.enginelayers.modelengine.model.simple.MapDataNode;
 
 public class MultiCommandTest extends AbstractOdtTest {
 
@@ -46,7 +46,7 @@ public class MultiCommandTest extends AbstractOdtTest {
         OdtEngine engine = new OdtEngine(doc);
         engine.registerStringReplacement("Begin", "${For value:[\"A\", \"B\", \"C\"], $as:\"element\"} ");
         engine.registerStringReplacement("End", "${EndFor}");
-        engine.setModel(new MapModelNode(jsonString));
+        engine.setModel(new MapDataNode(jsonString));
         engine.run();
         //show(doc);
         assertContains(doc, "0 A");

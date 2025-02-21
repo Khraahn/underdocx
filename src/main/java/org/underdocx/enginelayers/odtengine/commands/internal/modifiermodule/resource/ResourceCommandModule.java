@@ -27,7 +27,7 @@ package org.underdocx.enginelayers.odtengine.commands.internal.modifiermodule.re
 import com.fasterxml.jackson.databind.JsonNode;
 import org.underdocx.common.doc.DocContainer;
 import org.underdocx.common.types.Resource;
-import org.underdocx.enginelayers.modelengine.modelaccess.ModelAccess;
+import org.underdocx.enginelayers.modelengine.dataaccess.DataAccess;
 import org.underdocx.enginelayers.odtengine.commands.internal.attrinterpreter.accesstype.AccessTypeJsonNameInterpreter;
 import org.underdocx.enginelayers.odtengine.commands.internal.datapicker.BinaryDataPicker;
 import org.underdocx.enginelayers.odtengine.commands.internal.datapicker.PredefinedDataPicker;
@@ -55,13 +55,13 @@ public class ResourceCommandModule<C extends DocContainer<D>, P, D> extends Abst
 
     @Override
     protected Resource execute() {
-        ModelAccess modelAccess = selection.getModelAccess().get();
+        DataAccess dataAccess = selection.getDataAccess().get();
         if (AccessTypeJsonNameInterpreter.attributeExists(configuration, URI_ATTR)) {
-            return Problems.IO_EXCEPTION.exec(() -> new Resource.UriResource(uriPicker.pickData(modelAccess, configuration).getOrThrow(URI_ATTR)));
+            return Problems.IO_EXCEPTION.exec(() -> new Resource.UriResource(uriPicker.pickData(dataAccess, configuration).getOrThrow(URI_ATTR)));
         } else if (AccessTypeJsonNameInterpreter.attributeExists(configuration, DATA_ATTR)) {
-            return Problems.IO_EXCEPTION.exec(() -> new Resource.DataResource(binaryPicker.pickData(modelAccess, configuration).getOrThrow(DATA_ATTR)));
+            return Problems.IO_EXCEPTION.exec(() -> new Resource.DataResource(binaryPicker.pickData(dataAccess, configuration).getOrThrow(DATA_ATTR)));
         } else {
-            return Problems.IO_EXCEPTION.exec(() -> resourcePicker.pickData(modelAccess, configuration).getOrThrow(RESOURCE_ATTR));
+            return Problems.IO_EXCEPTION.exec(() -> resourcePicker.pickData(dataAccess, configuration).getOrThrow(RESOURCE_ATTR));
         }
     }
 }

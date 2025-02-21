@@ -24,7 +24,7 @@ SOFTWARE.
 
 package org.underdocx.enginelayers.odtengine.commands.internal.datapicker;
 
-import org.underdocx.enginelayers.modelengine.model.ModelNode;
+import org.underdocx.enginelayers.modelengine.model.DataNode;
 import org.underdocx.enginelayers.odtengine.commands.internal.attrinterpreter.AttributesInterpreter;
 import org.underdocx.enginelayers.odtengine.commands.internal.attrinterpreter.accesstype.AccessType;
 import org.underdocx.enginelayers.odtengine.commands.internal.attrinterpreter.accesstype.AccessTypeJsonNameInterpreter;
@@ -32,7 +32,7 @@ import org.underdocx.enginelayers.odtengine.commands.internal.attrinterpreter.si
 
 import java.util.Optional;
 
-public class AttributeValueDataPicker extends AbstractDataPicker<ModelNode, ModelNode> {
+public class AttributeValueDataPicker extends AbstractDataPicker<DataNode, DataNode> {
 
     public AttributeValueDataPicker() {
         this(new AccessTypeJsonNameInterpreter(), AttributeInterpreterFactory.createModelNodeAttributeInterpreter(true));
@@ -44,19 +44,19 @@ public class AttributeValueDataPicker extends AbstractDataPicker<ModelNode, Mode
 
     public AttributeValueDataPicker(
             AttributesInterpreter<AccessType, String> typeInterpreter,
-            AttributesInterpreter<Optional<ModelNode>, String> attributeInterpreter
+            AttributesInterpreter<Optional<DataNode>, String> attributeInterpreter
     ) {
         super(typeInterpreter, attributeInterpreter);
     }
 
     @Override
-    protected DataPickerResult<ModelNode> pickData(String name) {
+    protected DataPickerResult<DataNode> pickData(String name) {
         AccessType type = typeInterpreter.interpretAttributes(attributes, name);
         if (type != AccessType.ACCESS_ATTR_VALUE) {
             return DataPickerResult.unresolvedMissingAttr(DataPickerResult.ResultSource.ATTR_VALUE);
         }
         String attrName = type.rename(name);
-        Optional<ModelNode> oNode = attributeInterpreter.interpretAttributes(attributes, attrName);
+        Optional<DataNode> oNode = attributeInterpreter.interpretAttributes(attributes, attrName);
         if (oNode.isEmpty()) {
             return DataPickerResult.unresolvedInvalidAttrValue(DataPickerResult.ResultSource.ATTR_VALUE);
         } else {

@@ -24,11 +24,11 @@ SOFTWARE.
 
 package org.underdocx.commands.string;
 
+import org.junit.jupiter.api.Test;
 import org.underdocx.AbstractOdtTest;
 import org.underdocx.doctypes.odf.odt.OdtContainer;
 import org.underdocx.doctypes.odf.odt.OdtEngine;
-import org.underdocx.enginelayers.modelengine.model.simple.MapModelNode;
-import org.junit.jupiter.api.Test;
+import org.underdocx.enginelayers.modelengine.model.simple.MapDataNode;
 
 public class MissingDataText extends AbstractOdtTest {
 
@@ -48,7 +48,7 @@ public class MissingDataText extends AbstractOdtTest {
                 "";
         OdtContainer doc = new OdtContainer(documentStr);
         OdtEngine engine = new OdtEngine(doc);
-        engine.setModel(new MapModelNode(jsonString));
+        engine.setModel(new MapDataNode(jsonString));
         engine.run();
         assertContains(doc, "A hugo A");
         assertContains(doc, "B B");
@@ -74,7 +74,7 @@ public class MissingDataText extends AbstractOdtTest {
                 "";
         OdtContainer doc = new OdtContainer(documentStr);
         OdtEngine engine = new OdtEngine(doc);
-        engine.setModel(new MapModelNode(jsonString));
+        engine.setModel(new MapDataNode(jsonString));
         engine.run();
         assertContains(doc, "A hugo A");
         assertContains(doc, "B B");
@@ -100,7 +100,7 @@ public class MissingDataText extends AbstractOdtTest {
                 "";
         OdtContainer doc = new OdtContainer(documentStr);
         OdtEngine engine = new OdtEngine(doc);
-        engine.setModel(new MapModelNode(jsonString));
+        engine.setModel(new MapDataNode(jsonString));
         engine.run();
         assertContains(doc, "A hugo A");
         assertContains(doc, "B B");

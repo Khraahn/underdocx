@@ -24,11 +24,11 @@ SOFTWARE.
 
 package org.underdocx.modelengine;
 
+import org.junit.jupiter.api.Test;
 import org.underdocx.AbstractOdtTest;
 import org.underdocx.doctypes.odf.odt.OdtContainer;
 import org.underdocx.doctypes.odf.odt.OdtEngine;
-import org.underdocx.enginelayers.modelengine.model.simple.MapModelNode;
-import org.junit.jupiter.api.Test;
+import org.underdocx.enginelayers.modelengine.model.simple.MapDataNode;
 
 public class ModelVariableTest extends AbstractOdtTest {
 
@@ -51,7 +51,7 @@ public class ModelVariableTest extends AbstractOdtTest {
                 "";
         OdtContainer doc = new OdtContainer(documentStr);
         OdtEngine engine = new OdtEngine(doc);
-        engine.setModel(new MapModelNode(jsonString));
+        engine.setModel(new MapDataNode(jsonString));
         engine.run();
         assertContains(doc, "B Test0 B");
         assertNoPlaceholders(doc);
@@ -75,7 +75,7 @@ public class ModelVariableTest extends AbstractOdtTest {
                 "";
         OdtContainer doc = new OdtContainer(documentStr);
         OdtEngine engine = new OdtEngine(doc);
-        engine.setModel(new MapModelNode(jsonString));
+        engine.setModel(new MapDataNode(jsonString));
         engine.run();
         assertContains(doc, "B Test0 B");
         assertNoPlaceholders(doc);
@@ -98,7 +98,7 @@ public class ModelVariableTest extends AbstractOdtTest {
                 "";
         OdtContainer doc = new OdtContainer(documentStr);
         OdtEngine engine = new OdtEngine(doc);
-        engine.pushVariable("model", new MapModelNode(jsonString));
+        engine.pushVariable("model", new MapDataNode(jsonString));
         engine.run();
         assertContains(doc, "B Test0 B");
         assertNoPlaceholders(doc);

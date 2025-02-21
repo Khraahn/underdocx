@@ -25,86 +25,86 @@ SOFTWARE.
 package org.underdocx.enginelayers.modelengine;
 
 import org.underdocx.common.doc.DocContainer;
+import org.underdocx.common.types.Pair;
 import org.underdocx.enginelayers.baseengine.BaseEngine;
 import org.underdocx.enginelayers.baseengine.EngineAccess;
 import org.underdocx.enginelayers.baseengine.PlaceholdersProvider;
 import org.underdocx.enginelayers.baseengine.Selection;
+import org.underdocx.enginelayers.modelengine.dataaccess.DataAccess;
 import org.underdocx.enginelayers.modelengine.internal.MSelectionWrapper;
-import org.underdocx.enginelayers.modelengine.model.ModelNode;
-import org.underdocx.enginelayers.modelengine.model.simple.MapModelNode;
-import org.underdocx.enginelayers.modelengine.modelaccess.ModelAccess;
-import org.underdocx.enginelayers.modelengine.modelpath.ModelPath;
-import org.underdocx.enginelayers.modelengine.modelpath.elements.ModelPathElement;
-import org.underdocx.enginelayers.modelengine.modelpath.elements.PropertyModelPathElement;
+import org.underdocx.enginelayers.modelengine.model.DataNode;
+import org.underdocx.enginelayers.modelengine.model.simple.MapDataNode;
+import org.underdocx.enginelayers.modelengine.modelpath.DataPath;
+import org.underdocx.enginelayers.modelengine.modelpath.elements.DataPathElement;
+import org.underdocx.enginelayers.modelengine.modelpath.elements.PropertyDataPathElement;
 import org.underdocx.environment.err.Problems;
-import org.underdocx.common.types.Pair;
 import org.w3c.dom.Node;
 
 import java.util.*;
 
 public class ModelEngine<C extends DocContainer<D>, D> extends BaseEngine {
 
-    protected ModelNode modelRoot = new MapModelNode();
-    protected ModelPath currentModelPath = new ModelPath();
-    protected Map<String, Deque<ModelNode>> variableStacks = new HashMap<>();
+    protected DataNode modelRoot = new MapDataNode();
+    protected DataPath currentDataPath = new DataPath();
+    protected Map<String, Deque<DataNode>> variableStacks = new HashMap<>();
 
 
     public ModelEngine(DocContainer doc) {
         super(doc);
     }
 
-    public void setModelRoot(ModelNode modelRoot) {
+    public void setModelRoot(DataNode modelRoot) {
         this.modelRoot = modelRoot;
-        this.currentModelPath = new ModelPath();
+        this.currentDataPath = new DataPath();
     }
 
-    public void pushVariable(String varName, ModelNode value) {
-        new ModelEngineModelAccess().pushVariable(varName, value);
+    public void pushVariable(String varName, DataNode value) {
+        new ModelEngineDataAccess().pushVariable(varName, value);
     }
 
     @Override
     protected Selection createSelection(PlaceholdersProvider provider, Node node, EngineAccess engineAccess) {
         Selection baseSelection = super.createSelection(provider, node, engineAccess);
-        return new MSelectionWrapper(baseSelection, new ModelEngineModelAccess());
+        return new MSelectionWrapper(baseSelection, new ModelEngineDataAccess());
     }
 
-    private class ModelEngineModelAccess implements ModelAccess {
+    private class ModelEngineDataAccess implements DataAccess {
 
         @Override
-        public Optional<ModelNode> getCurrentModelNode() {
-            return currentModelPath.interpret(modelRoot);
+        public Optional<DataNode> getCurrentModelNode() {
+            return currentDataPath.interpret(modelRoot);
         }
 
         @Override
-        public ModelNode getRootModelNode() {
+        public DataNode getRootModelNode() {
             return modelRoot;
         }
 
         @Override
-        public ModelPath getCurrentModelPath() {
-            return currentModelPath.clone();
+        public DataPath getCurrentModelPath() {
+            return currentDataPath.clone();
         }
 
         @Override
-        public void setCurrentModelPath(ModelPath modelPath) {
-            currentModelPath = modelPath;
+        public void setCurrentModelPath(DataPath dataPath) {
+            currentDataPath = dataPath;
         }
 
         public void popVariable(String name) {
-            Deque<ModelNode> stack = variableStacks.get(name);
+            Deque<DataNode> stack = variableStacks.get(name);
             if (stack != null) {
                 stack.pop();
             }
         }
 
-        public Optional<ModelNode> getVariable(String name) {
-            ModelPath path = new ModelPath(name);
-            ModelPathElement first = (path.getElements().size() > 0) ? path.getElements().get(0) : null;
+        public Optional<DataNode> getVariable(String name) {
+            DataPath path = new DataPath(name);
+            DataPathElement first = (path.getElements().size() > 0) ? path.getElements().get(0) : null;
             Problems.INVALID_VALUE.checkNot(
-                    (first == null || !(first instanceof PropertyModelPathElement)), null, name);
-            Deque<ModelNode> stack = variableStacks.get(((PropertyModelPathElement) first).getProperty());
+                    (first == null || !(first instanceof PropertyDataPathElement)), null, name);
+            Deque<DataNode> stack = variableStacks.get(((PropertyDataPathElement) first).getProperty());
             if (stack != null) {
-                ModelNode varValue = stack.peek();
+                DataNode varValue = stack.peek();
                 if (varValue != null) {
                     path.subPath(1);
                     return path.interpret(varValue);
@@ -113,11 +113,11 @@ public class ModelEngine<C extends DocContainer<D>, D> extends BaseEngine {
             return Optional.empty();
         }
 
-        public void pushVariable(String name, ModelNode value) {
+        public void pushVariable(String name, DataNode value) {
             Problems.INVALID_VALUE.checkNot(
                     (name == null || name.isBlank() || name.contains(".") || name.contains("[") || name.contains("^") || name.contains("<")),
                     null, name);
-            Deque<ModelNode> stack = variableStacks.get(name);
+            Deque<DataNode> stack = variableStacks.get(name);
             if (stack == null) {
                 stack = new LinkedList<>();
                 variableStacks.put(name, stack);
@@ -126,16 +126,16 @@ public class ModelEngine<C extends DocContainer<D>, D> extends BaseEngine {
         }
 
         @Override
-        public Pair<String, Optional<ModelNode>> interpret(String suffix, boolean setAsCurrent) {
-            ModelPath p = setAsCurrent ? currentModelPath : currentModelPath.clone();
+        public Pair<String, Optional<DataNode>> interpret(String suffix, boolean setAsCurrent) {
+            DataPath p = setAsCurrent ? currentDataPath : currentDataPath.clone();
             p.interpret(suffix);
-            Optional<ModelNode> subNode = p.interpret(modelRoot);
+            Optional<DataNode> subNode = p.interpret(modelRoot);
             return new Pair<>(p.toString(), subNode);
         }
 
         @Override
         public void setCurrentPath(String modelPath) {
-            currentModelPath = new ModelPath(modelPath);
+            currentDataPath = new DataPath(modelPath);
         }
     }
 

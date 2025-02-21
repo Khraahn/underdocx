@@ -24,7 +24,7 @@ SOFTWARE.
 
 package org.underdocx.enginelayers.odtengine.commands.internal.datapicker;
 
-import org.underdocx.enginelayers.modelengine.model.ModelNode;
+import org.underdocx.enginelayers.modelengine.model.DataNode;
 import org.underdocx.enginelayers.odtengine.commands.internal.attrinterpreter.AttributesInterpreter;
 import org.underdocx.enginelayers.odtengine.commands.internal.attrinterpreter.accesstype.AccessType;
 import org.underdocx.enginelayers.odtengine.commands.internal.attrinterpreter.accesstype.AccessTypeJsonNameInterpreter;
@@ -42,7 +42,7 @@ import org.underdocx.enginelayers.odtengine.commands.internal.attrinterpreter.ac
  * pick("x") and json $x:"y" => returns value of registered variable y
  * pick("x") and json *x:"y" => returns value of model path y
  */
-public class AttributeNodeDataPicker extends AbstractDataPicker<ModelNode, String> {
+public class AttributeNodeDataPicker extends AbstractDataPicker<DataNode, String> {
 
     public AttributeNodeDataPicker() {
         this(new AccessTypeJsonNameInterpreter());
@@ -55,7 +55,7 @@ public class AttributeNodeDataPicker extends AbstractDataPicker<ModelNode, Strin
     }
 
     @Override
-    protected DataPickerResult<ModelNode> pickData(String name) {
+    protected DataPickerResult<DataNode> pickData(String name) {
         AccessType accessType = typeInterpreter.interpretAttributes(attributes, name);
         return switch (accessType) {
             case ACCESS_CURRENT_MODEL_NODE, ACCESS_MODEL_BY_NAME ->

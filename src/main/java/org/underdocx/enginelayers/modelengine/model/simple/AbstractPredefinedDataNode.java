@@ -27,28 +27,28 @@ package org.underdocx.enginelayers.modelengine.model.simple;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import org.underdocx.common.codec.JsonCodec;
-import org.underdocx.enginelayers.modelengine.model.ModelNode;
 import org.underdocx.common.tools.Convenience;
+import org.underdocx.enginelayers.modelengine.model.DataNode;
 
 import java.util.*;
 
-public abstract class AbstractPredefinedModelNode<T> extends AbstractModelNode<T> implements ModelNode {
+public abstract class AbstractPredefinedDataNode<T> extends AbstractDataNode<T> implements DataNode {
 
     protected static final JsonCodec jsonCodec = new JsonCodec(true, true, true);
 
 
     @Override
-    public ModelNode getProperty(String name) {
+    public DataNode getProperty(String name) {
         return null;
     }
 
     @Override
-    public ModelNode getProperty(int index) {
+    public DataNode getProperty(int index) {
         return null;
     }
 
     @Override
-    public ModelNode getParent() {
+    public DataNode getParent() {
         return parent;
     }
 
@@ -73,45 +73,45 @@ public abstract class AbstractPredefinedModelNode<T> extends AbstractModelNode<T
     }
 
     @Override
-    protected AbstractPredefinedModelNode<?> create(Object object) {
+    protected AbstractPredefinedDataNode<?> create(Object object) {
         return Convenience.also(createRootNode(object), result -> result.setParent(this));
     }
 
     /**
-     * converts a {@link Map}, {@link List} or Leaf object into a {@link ModelNode} tree
+     * converts a {@link Map}, {@link List} or Leaf object into a {@link DataNode} tree
      */
-    public static AbstractPredefinedModelNode<?> createRootNode(Object object) {
+    public static AbstractPredefinedDataNode<?> createRootNode(Object object) {
         return Convenience.build(w -> {
             if (object == null) {
-                w.value = new LeafModelNode<>(null);
+                w.value = new LeafDataNode<>(null);
             } else if (object instanceof Collection<?>) {
-                w.value = Convenience.also(new ListModelNode(),
+                w.value = Convenience.also(new ListDataNode(),
                         node -> ((List<?>) object).forEach(
                                 child -> node.add(node.create(child))));
             } else if (object instanceof Map<?, ?>) {
-                w.value = Convenience.also(new MapModelNode(),
+                w.value = Convenience.also(new MapDataNode(),
                         node -> ((Map<?, ?>) object).forEach(
                                 (key, value) -> node.add(String.valueOf(key), node.create(value))));
             } else {
-                w.value = new LeafModelNode<>(object);
+                w.value = new LeafDataNode<>(object);
             }
         });
     }
 
     /**
-     * unpacks the {@link ModelNode} Tree and creates a new tree of {@link Map}, {@link List} and Leaf objects
+     * unpacks the {@link DataNode} Tree and creates a new tree of {@link Map}, {@link List} and Leaf objects
      */
     @SuppressWarnings("unchecked")
-    protected static Object convert(AbstractPredefinedModelNode<?> node) {
+    protected static Object convert(AbstractPredefinedDataNode<?> node) {
         if (node.getValue() == null) {
             return null;
-        } else if (node instanceof MapModelNode) {
+        } else if (node instanceof MapDataNode) {
             return Convenience.also(new HashMap<String, Object>(),
-                    map -> ((Map<String, AbstractPredefinedModelNode<?>>) node.getValue()).forEach(
+                    map -> ((Map<String, AbstractPredefinedDataNode<?>>) node.getValue()).forEach(
                             (key, value) -> map.put(key, convert(value))));
-        } else if (node instanceof ListModelNode) {
+        } else if (node instanceof ListDataNode) {
             return Convenience.also(new ArrayList<>(),
-                    list -> ((List<AbstractPredefinedModelNode<?>>) node.getValue()).forEach(
+                    list -> ((List<AbstractPredefinedDataNode<?>>) node.getValue()).forEach(
                             value -> list.add(convert(value))));
         } else {
             return node.getValue();
@@ -123,9 +123,9 @@ public abstract class AbstractPredefinedModelNode<T> extends AbstractModelNode<T
     }
 
     /**
-     * Creates a {@link ModelNode} tree based on a JSON string using the {@link JsonCodec}
+     * Creates a {@link DataNode} tree based on a JSON string using the {@link JsonCodec}
      */
-    public static AbstractPredefinedModelNode<?> createFromJson(String json) throws JsonProcessingException {
+    public static AbstractPredefinedDataNode<?> createFromJson(String json) throws JsonProcessingException {
         JsonNode parsed = jsonCodec.parse(json);
         if (parsed.isArray()) {
             List<Object> list = jsonCodec.getAsList(parsed);

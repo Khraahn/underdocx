@@ -6,7 +6,7 @@ import org.underdocx.doctypes.odf.odt.OdtContainer;
 import org.underdocx.doctypes.odf.odt.OdtEngine;
 import org.underdocx.enginelayers.baseengine.CommandHandlerResult;
 import org.underdocx.enginelayers.baseengine.modifiers.deleteplaceholder.DeletePlaceholderModifier;
-import org.underdocx.enginelayers.modelengine.model.simple.LeafModelNode;
+import org.underdocx.enginelayers.modelengine.model.simple.LeafDataNode;
 import org.underdocx.enginelayers.odtengine.commands.internal.AbstractTextualCommandHandler;
 import org.underdocx.enginelayers.odtengine.commands.internal.datapicker.DataPickerResult;
 import org.underdocx.enginelayers.odtengine.commands.internal.datapicker.IntegerDataPicker;
@@ -24,13 +24,13 @@ public class AddExample {
 
         @Override
         protected CommandHandlerResult tryExecuteTextualCommand() {
-            DataPickerResult<Integer> aValue = new IntegerDataPicker().asPredefined("a").pickData(modelAccess, placeholderData.getJson());
-            DataPickerResult<Integer> bValue = new IntegerDataPicker().asPredefined("b").pickData(modelAccess, placeholderData.getJson());
-            DataPickerResult<String> target = new StringConvertDataPicker().asPredefined("target").pickData(modelAccess, placeholderData.getJson());
+            DataPickerResult<Integer> aValue = new IntegerDataPicker().asPredefined("a").pickData(dataAccess, placeholderData.getJson());
+            DataPickerResult<Integer> bValue = new IntegerDataPicker().asPredefined("b").pickData(dataAccess, placeholderData.getJson());
+            DataPickerResult<String> target = new StringConvertDataPicker().asPredefined("target").pickData(dataAccess, placeholderData.getJson());
             if (!(aValue.isResolvedNotNull() && bValue.isResolvedNotNull() && target.isResolvedNotNull()))
                 return CommandHandlerResult.IGNORED;
             int result = aValue.value + bValue.value;
-            modelAccess.pushVariable(target.value, new LeafModelNode<>(result));
+            dataAccess.pushVariable(target.value, new LeafDataNode<>(result));
             DeletePlaceholderModifier.modify(selection.getNode());
             return CommandHandlerResult.EXECUTED_PROCEED;
         }

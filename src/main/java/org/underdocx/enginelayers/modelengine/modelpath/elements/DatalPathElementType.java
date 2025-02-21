@@ -24,17 +24,16 @@ SOFTWARE.
 
 package org.underdocx.enginelayers.modelengine.modelpath.elements;
 
-import org.underdocx.enginelayers.modelengine.model.ModelNode;
+public enum DatalPathElementType {
+    BACK("<"), ROOT("^"), INDEX("[]"), PROPERTY("*");
 
-import java.util.List;
-import java.util.Optional;
+    private final String str;
 
-public interface ModelPathElement {
+    DatalPathElementType(String s) {
+        this.str = s;
+    }
 
-    ModelPathElementType getType();
-
-    Optional<ModelNode> interpret(ModelNode node);
-
-    void interpret(List<ModelPathElement> elementsWithoutThis);
-
+    public String toString() {
+        return str;
+    }
 }

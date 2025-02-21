@@ -22,22 +22,34 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-package org.underdocx.enginelayers.modelengine.model.simple;
+package org.underdocx.enginelayers.modelengine.dataaccess;
 
-public class LeafModelNode<T> extends AbstractPredefinedModelNode<T> {
+import org.underdocx.common.types.Pair;
+import org.underdocx.enginelayers.modelengine.model.DataNode;
+import org.underdocx.enginelayers.modelengine.modelpath.DataPath;
 
-    public LeafModelNode(T value) {
-        this.containedValue = value;
-    }
+import java.util.Optional;
 
-    @Override
-    protected void removeChild(AbstractModelNode<?> node) {
-    }
+public interface DataAccess {
 
-    @Override
-    public ModelNodeType getType() {
-        return ModelNodeType.LEAF;
-    }
+    Optional<DataNode> getCurrentModelNode();
+
+    DataNode getRootModelNode();
+
+    DataPath getCurrentModelPath();
+
+    void setCurrentModelPath(DataPath dataPath);
+
+    Pair<String, Optional<DataNode>> interpret(String suffix, boolean setAsCurrent);
+
+    @Deprecated
+    void setCurrentPath(String modelPath);
+
+    void popVariable(String name);
+
+    Optional<DataNode> getVariable(String name);
+
+    void pushVariable(String name, DataNode value);
 
 
 }

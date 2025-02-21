@@ -25,13 +25,13 @@ SOFTWARE.
 package org.underdocx.enginelayers.odtengine.commands.internal.datapicker;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import org.underdocx.enginelayers.modelengine.modelaccess.ModelAccess;
+import org.underdocx.enginelayers.modelengine.dataaccess.DataAccess;
 
 import java.util.Optional;
 
 /**
  * A {@link ExtendedDataPicker} is an implementation that tries to resolve requested resources
- * by a given string (usualy a name), a {@link ModelAccess} object to receive variables or model data
+ * by a given string (usualy a name), a {@link DataAccess} object to receive variables or model data
  * and a {@link JsonNode} instance to read out json attributes (of the placeholder)
  * <p>
  * All {@link ExtendedDataPicker} can behave very different, it depends on their concrete implementations
@@ -39,17 +39,17 @@ import java.util.Optional;
  */
 public interface ExtendedDataPicker<T> {
 
-    DataPickerResult<T> pickData(String name, ModelAccess modelAccess, JsonNode jsonNode);
+    DataPickerResult<T> pickData(String name, DataAccess dataAccess, JsonNode jsonNode);
 
-    default Optional<T> getData(String name, ModelAccess modelAccess, JsonNode jsonNode) {
-        return pickData(name, modelAccess, jsonNode).getOptionalValue();
+    default Optional<T> getData(String name, DataAccess dataAccess, JsonNode jsonNode) {
+        return pickData(name, dataAccess, jsonNode).getOptionalValue();
     }
 
     default PredefinedDataPicker<T> asPredefined(String name) {
         return new PredefinedDataPicker<>() {
             @Override
-            public DataPickerResult<T> pickData(ModelAccess modelAccess, JsonNode jsonNode) {
-                return ExtendedDataPicker.this.pickData(name, modelAccess, jsonNode);
+            public DataPickerResult<T> pickData(DataAccess dataAccess, JsonNode jsonNode) {
+                return ExtendedDataPicker.this.pickData(name, dataAccess, jsonNode);
             }
 
             @Override

@@ -28,7 +28,7 @@ import org.junit.jupiter.api.Test;
 import org.underdocx.AbstractOdtTest;
 import org.underdocx.doctypes.odf.odt.OdtContainer;
 import org.underdocx.doctypes.odf.odt.OdtEngine;
-import org.underdocx.enginelayers.modelengine.model.simple.MapModelNode;
+import org.underdocx.enginelayers.modelengine.model.simple.MapDataNode;
 
 public class IfTest extends AbstractOdtTest {
     @Test
@@ -84,7 +84,7 @@ public class IfTest extends AbstractOdtTest {
                 """;
         OdtContainer doc = new OdtContainer(documentStr);
         OdtEngine engine = new OdtEngine(doc);
-        engine.setModel(new MapModelNode(jsonString));
+        engine.setModel(new MapDataNode(jsonString));
         engine.run();
         //show(doc);
         assertContains(doc, "A A A");

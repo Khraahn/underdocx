@@ -24,7 +24,7 @@ SOFTWARE.
 
 package org.underdocx.enginelayers.odtengine.commands.internal.datapicker;
 
-import org.underdocx.enginelayers.modelengine.model.ModelNode;
+import org.underdocx.enginelayers.modelengine.model.DataNode;
 
 import java.util.Optional;
 
@@ -34,7 +34,7 @@ import java.util.Optional;
 public class BinaryDataPicker extends AbstractConvertDataPicker<byte[]> {
 
     @Override
-    Optional<byte[]> convert(ModelNode node) {
+    Optional<byte[]> convert(DataNode node) {
         Object value = node.getValue();
         if (value instanceof byte[]) {
             return Optional.of((byte[]) value);

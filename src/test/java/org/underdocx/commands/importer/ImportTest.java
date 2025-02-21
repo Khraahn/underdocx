@@ -24,11 +24,11 @@ SOFTWARE.
 
 package org.underdocx.commands.importer;
 
+import org.junit.jupiter.api.Test;
 import org.underdocx.AbstractOdtTest;
 import org.underdocx.doctypes.odf.odt.OdtContainer;
 import org.underdocx.doctypes.odf.odt.OdtEngine;
-import org.underdocx.enginelayers.modelengine.model.simple.LeafModelNode;
-import org.junit.jupiter.api.Test;
+import org.underdocx.enginelayers.modelengine.model.simple.LeafDataNode;
 
 import java.io.File;
 import java.io.IOException;
@@ -42,7 +42,7 @@ public class ImportTest extends AbstractOdtTest {
                 ${Import $data:"binaryDocument"}
                 End""");
         OdtEngine engine = new OdtEngine(doc);
-        engine.pushVariable("binaryDocument", new LeafModelNode<>(readData("Source.odt")));
+        engine.pushVariable("binaryDocument", new LeafDataNode<>(readData("Source.odt")));
         engine.run();
         //show(doc);
         assertNoPlaceholders(doc);
@@ -72,7 +72,7 @@ public class ImportTest extends AbstractOdtTest {
                 ${Import $resource:"resourceDoc"}
                 End""");
         OdtEngine engine = new OdtEngine(doc);
-        engine.pushVariable("resourceDoc", new LeafModelNode<>(readResource("Source.odt")));
+        engine.pushVariable("resourceDoc", new LeafDataNode<>(readResource("Source.odt")));
         engine.run();
         // show(doc);
         assertNoPlaceholders(doc);

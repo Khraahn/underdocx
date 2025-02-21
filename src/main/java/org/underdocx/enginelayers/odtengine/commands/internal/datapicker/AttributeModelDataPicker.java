@@ -24,7 +24,7 @@ SOFTWARE.
 
 package org.underdocx.enginelayers.odtengine.commands.internal.datapicker;
 
-import org.underdocx.enginelayers.modelengine.model.ModelNode;
+import org.underdocx.enginelayers.modelengine.model.DataNode;
 import org.underdocx.enginelayers.odtengine.commands.internal.attrinterpreter.AttributesInterpreter;
 import org.underdocx.enginelayers.odtengine.commands.internal.attrinterpreter.accesstype.AccessType;
 import org.underdocx.enginelayers.odtengine.commands.internal.attrinterpreter.accesstype.AccessTypeJsonNameInterpreter;
@@ -32,7 +32,7 @@ import org.underdocx.enginelayers.odtengine.commands.internal.attrinterpreter.si
 
 import java.util.Optional;
 
-public class AttributeModelDataPicker extends AbstractDataPicker<ModelNode, String> {
+public class AttributeModelDataPicker extends AbstractDataPicker<DataNode, String> {
 
     private ModelNameDataPicker nameDataPicker = new ModelNameDataPicker();
 
@@ -52,7 +52,7 @@ public class AttributeModelDataPicker extends AbstractDataPicker<ModelNode, Stri
     }
 
     @Override
-    protected DataPickerResult<ModelNode> pickData(String name) {
+    protected DataPickerResult<DataNode> pickData(String name) {
         AccessType type = typeInterpreter.interpretAttributes(attributes, name);
         if (name == null) {
             if (type != AccessType.ACCESS_CURRENT_MODEL_NODE) {
@@ -70,7 +70,7 @@ public class AttributeModelDataPicker extends AbstractDataPicker<ModelNode, Stri
         return fetchModelNode(modelName);
     }
 
-    private DataPickerResult<ModelNode> fetchModelNode(String modelName) {
+    private DataPickerResult<DataNode> fetchModelNode(String modelName) {
         return nameDataPicker.pickData(modelName, model, null);
     }
 }

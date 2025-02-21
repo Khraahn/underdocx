@@ -31,8 +31,8 @@ import org.underdocx.common.types.Regex;
 import org.underdocx.enginelayers.baseengine.CommandHandlerResult;
 import org.underdocx.enginelayers.baseengine.SelectedNode;
 import org.underdocx.enginelayers.baseengine.modifiers.ModifierNodeResult;
-import org.underdocx.enginelayers.modelengine.model.ModelNode;
-import org.underdocx.enginelayers.modelengine.model.simple.ListModelNode;
+import org.underdocx.enginelayers.modelengine.model.DataNode;
+import org.underdocx.enginelayers.modelengine.model.simple.ListDataNode;
 import org.underdocx.enginelayers.odtengine.commands.ModelCommandHandler;
 import org.underdocx.enginelayers.odtengine.commands.VariableCommandHandler;
 import org.underdocx.enginelayers.odtengine.commands.internal.AbstractTextualCommandHandler;
@@ -70,7 +70,7 @@ public abstract class AbstractForCommandHandler<C extends DocContainer<D>, D> ex
     protected static final PredefinedAttributesInterpreter<Optional<JsonNode>> getValueJsonAttr = AttributeInterpreterFactory.createJsonAttributeInterpreter(VALUE_ATTR);
     protected static final PredefinedAttributesInterpreter<Optional<String>> getAsStrAttr = AttributeInterpreterFactory.createStringAttributeInterpreter(AS_ATTR);
 
-    protected static final PredefinedDataPicker<ModelNode> listPicker = new ListDataPicker().asPredefined(VALUE_ATTR);
+    protected static final PredefinedDataPicker<DataNode> listPicker = new ListDataPicker().asPredefined(VALUE_ATTR);
 
     public static final String INDEX = "index";
 
@@ -81,7 +81,7 @@ public abstract class AbstractForCommandHandler<C extends DocContainer<D>, D> ex
     protected AccessType asAttributeType;
     protected String asAttrValue;
 
-    protected ModelNode listNode;
+    protected DataNode listNode;
     protected DataPickerResult.ResultSource source;
 
     protected JsonNode attributes;
@@ -104,12 +104,12 @@ public abstract class AbstractForCommandHandler<C extends DocContainer<D>, D> ex
         Optional<Pair<SelectedNode<ParametersPlaceholderData>, SelectedNode<ParametersPlaceholderData>>> area =
                 AreaTools.findArea(selection.getEngineAccess().lookAhead(null), selection, END_KEY);
         endNode = Problems.INVALID_PLACEHOLDER_STRUCTURE.get(area, "EndFor").right.getNode();
-        DataPickerResult<ModelNode> listNodeLookup = listPicker.pickData(modelAccess, attributes);
+        DataPickerResult<DataNode> listNodeLookup = listPicker.pickData(dataAccess, attributes);
         source = listNodeLookup.source;
         if (listNodeLookup.isResolvedNotNull()) {
             listNode = listNodeLookup.value;
         } else {
-            listNode = new ListModelNode();
+            listNode = new ListDataNode();
         }
 
         asAttributeType = AccessTypeJsonNameInterpreter.DEFAULT.interpretAttributes(placeholderData.getJson(), AS_ATTR);
@@ -340,7 +340,7 @@ public abstract class AbstractForCommandHandler<C extends DocContainer<D>, D> ex
 
     private void m2x(boolean createPrefix) {
         replaceData.left.add(also(new ParametersPlaceholderData.Simple(ModelCommandHandler.KEY), placeholder -> {
-            String subPath = modelAccess.interpret(getValueStringAttr.interpretAttributes(attributes).get(), false).left + "[" + index + "]";
+            String subPath = dataAccess.interpret(getValueStringAttr.interpretAttributes(attributes).get(), false).left + "[" + index + "]";
             placeholder.addStringAttribute(ModelCommandHandler.ATTR_VALUE, subPath);
             if (createPrefix) {
                 placeholder.addStringAttribute(ModelCommandHandler.ATTR_PREFIX, asAttrValue);
@@ -354,7 +354,7 @@ public abstract class AbstractForCommandHandler<C extends DocContainer<D>, D> ex
                 placeholder.addStringAttribute(VariableCommandHandler.KEY_ATTR, asAttrValue)));
         if (index == listNode.getSize() - 1) {
             replaceData.right.add(also(new ParametersPlaceholderData.Simple(ModelCommandHandler.KEY), placeholder -> {
-                String path = modelAccess.getCurrentModelPath().toString();
+                String path = dataAccess.getCurrentModelPath().toString();
                 placeholder.addStringAttribute(ModelCommandHandler.ATTR_VALUE, path);
             }));
         }

@@ -29,7 +29,7 @@ import org.underdocx.common.placeholder.TextualPlaceholderToolkit;
 import org.underdocx.enginelayers.baseengine.EngineAccess;
 import org.underdocx.enginelayers.baseengine.Selection;
 import org.underdocx.enginelayers.modelengine.MSelection;
-import org.underdocx.enginelayers.modelengine.modelaccess.ModelAccess;
+import org.underdocx.enginelayers.modelengine.dataaccess.DataAccess;
 import org.w3c.dom.Node;
 
 import java.util.Optional;
@@ -37,9 +37,9 @@ import java.util.Optional;
 public class MSelectionWrapper<C extends DocContainer<D>, P, D> implements MSelection<C, P, D> {
 
     private final Selection<C, P, D> selection;
-    private final ModelAccess access;
+    private final DataAccess access;
 
-    public MSelectionWrapper(Selection<C, P, D> selection, ModelAccess access) {
+    public MSelectionWrapper(Selection<C, P, D> selection, DataAccess access) {
         this.selection = selection;
         this.access = access;
     }
@@ -49,7 +49,7 @@ public class MSelectionWrapper<C extends DocContainer<D>, P, D> implements MSele
     }
 
     @Override
-    public Optional<ModelAccess> getModelAccess() {
+    public Optional<DataAccess> getDataAccess() {
         return Optional.ofNullable(access);
     }
 

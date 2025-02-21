@@ -24,34 +24,34 @@ SOFTWARE.
 
 package org.underdocx.enginelayers.modelengine.model.simple;
 
-import org.underdocx.enginelayers.modelengine.model.ModelNode;
-import org.underdocx.environment.UnderdocxEnv;
 import org.underdocx.common.tools.Convenience;
+import org.underdocx.enginelayers.modelengine.model.DataNode;
+import org.underdocx.environment.UnderdocxEnv;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.*;
 
-public class ReflectionModelNode extends AbstractModelNode<Object> implements ModelNode {
+public class ReflectionDataNode extends AbstractDataNode<Object> implements DataNode {
 
     private final Object containedValue;
-    protected ModelNode parent;
+    protected DataNode parent;
     protected Resolver resolver = ReflectionInterceptorRegistry.DEFAULT;
 
-    public ReflectionModelNode(Object object) {
+    public ReflectionDataNode(Object object) {
         this.containedValue = object;
         this.parent = null;
     }
 
-    public ReflectionModelNode(Object object, Resolver resolver) {
+    public ReflectionDataNode(Object object, Resolver resolver) {
         this.containedValue = object;
         this.parent = null;
         this.resolver = resolver;
     }
 
     @Override
-    protected ReflectionModelNode create(Object object) {
-        return Convenience.also(new ReflectionModelNode(object, resolver), result -> result.parent = this);
+    protected ReflectionDataNode create(Object object) {
+        return Convenience.also(new ReflectionDataNode(object, resolver), result -> result.parent = this);
     }
 
     @Override
@@ -80,7 +80,7 @@ public class ReflectionModelNode extends AbstractModelNode<Object> implements Mo
     }
 
     @Override
-    protected void removeChild(AbstractModelNode<?> node) {
+    protected void removeChild(AbstractDataNode<?> node) {
     }
 
     @Override
@@ -89,9 +89,9 @@ public class ReflectionModelNode extends AbstractModelNode<Object> implements Mo
     }
 
     @Override
-    public ModelNode getProperty(String name) {
+    public DataNode getProperty(String name) {
         if (resolver != null) {
-            Optional<AbstractModelNode> resolved = resolver.resolve(containedValue, name);
+            Optional<AbstractDataNode> resolved = resolver.resolve(containedValue, name);
             if (resolved.isPresent()) {
                 resolved.get().setParent(this);
                 return resolved.get();
@@ -113,7 +113,7 @@ public class ReflectionModelNode extends AbstractModelNode<Object> implements Mo
     }
 
     @Override
-    public ModelNode getProperty(int index) {
+    public DataNode getProperty(int index) {
         if (getType() != ModelNodeType.LIST) {
             return null;
         } else if (getValue() instanceof List<?>) {
@@ -128,7 +128,7 @@ public class ReflectionModelNode extends AbstractModelNode<Object> implements Mo
     }
 
     @Override
-    public ModelNode getParent() {
+    public DataNode getParent() {
         return parent;
     }
 
@@ -169,7 +169,7 @@ public class ReflectionModelNode extends AbstractModelNode<Object> implements Mo
         return containedValue == null;
     }
 
-    protected Optional<ReflectionModelNode> callGetMethod(Method method) {
+    protected Optional<ReflectionDataNode> callGetMethod(Method method) {
         Object result;
         try {
             method.setAccessible(true);
@@ -192,7 +192,7 @@ public class ReflectionModelNode extends AbstractModelNode<Object> implements Mo
         });
     }
 
-    protected Optional<ReflectionModelNode> readField(Field field) {
+    protected Optional<ReflectionDataNode> readField(Field field) {
         Object result;
         try {
             field.setAccessible(true);
@@ -211,7 +211,7 @@ public class ReflectionModelNode extends AbstractModelNode<Object> implements Mo
     }
 
     public interface Resolver {
-        Optional<AbstractModelNode> resolve(Object reflectionObject, String requestedProperty);
+        Optional<AbstractDataNode> resolve(Object reflectionObject, String requestedProperty);
     }
 
     @Override

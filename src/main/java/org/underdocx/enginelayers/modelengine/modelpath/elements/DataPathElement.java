@@ -24,35 +24,17 @@ SOFTWARE.
 
 package org.underdocx.enginelayers.modelengine.modelpath.elements;
 
-import org.underdocx.enginelayers.modelengine.model.ModelNode;
-import org.underdocx.common.tools.Convenience;
+import org.underdocx.enginelayers.modelengine.model.DataNode;
 
 import java.util.List;
 import java.util.Optional;
 
-public class RootModelPathElement implements ModelPathElement {
+public interface DataPathElement {
 
-    public String toString() {
-        return getType().toString();
-    }
+    DatalPathElementType getType();
 
+    Optional<DataNode> interpret(DataNode node);
 
-    @Override
-    public ModelPathElementType getType() {
-        return ModelPathElementType.ROOT;
-    }
+    void interpret(List<DataPathElement> elementsWithoutThis);
 
-    @Override
-    public Optional<ModelNode> interpret(ModelNode node) {
-        return Convenience.buildOptional(node, w -> {
-            while (w.value.getParent() != null) {
-                w.value = w.value.getParent();
-            }
-        });
-    }
-
-    @Override
-    public void interpret(List<ModelPathElement> elementsWithoutThis) {
-        elementsWithoutThis.clear();
-    }
 }

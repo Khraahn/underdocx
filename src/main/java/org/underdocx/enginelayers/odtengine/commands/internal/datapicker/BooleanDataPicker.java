@@ -24,7 +24,7 @@ SOFTWARE.
 
 package org.underdocx.enginelayers.odtengine.commands.internal.datapicker;
 
-import org.underdocx.enginelayers.modelengine.model.ModelNode;
+import org.underdocx.enginelayers.modelengine.model.DataNode;
 
 import java.util.Optional;
 
@@ -34,7 +34,7 @@ import java.util.Optional;
 public class BooleanDataPicker extends AbstractConvertDataPicker<Boolean> {
 
     @Override
-    Optional<Boolean> convert(ModelNode node) {
+    Optional<Boolean> convert(DataNode node) {
         Object value = node.getValue();
         if (value instanceof Boolean) {
             return Optional.of((Boolean) value);

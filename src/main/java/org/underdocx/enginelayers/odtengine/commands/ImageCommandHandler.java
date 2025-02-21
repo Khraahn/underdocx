@@ -63,9 +63,9 @@ public class ImageCommandHandler extends AbstractCommandHandler<OdtContainer, Im
     @Override
     protected CommandHandlerResult tryExecuteCommand() {
         return Convenience.build(CommandHandlerResult.EXECUTED_PROCEED, result -> {
-            String name = namePicker.expect(modelAccess, placeholderData.getJson());
-            String title = titlePicker.pickData(modelAccess, placeholderData.getJson()).getOptionalValue().orElse(null);
-            Boolean keepWidth = keepWidthPicker.expect(modelAccess, placeholderData.getJson());
+            String name = namePicker.expect(dataAccess, placeholderData.getJson());
+            String title = titlePicker.pickData(dataAccess, placeholderData.getJson()).getOptionalValue().orElse(null);
+            Boolean keepWidth = keepWidthPicker.expect(dataAccess, placeholderData.getJson());
             Resource resource = new ResourceCommandModule<OdtContainer, ImagePlaceholderData, OdfTextDocument>(placeholderData.getJson()).execute(selection);
             ExistingImageModifierData modifierData = new ExistingImageModifierData.Simple(keepWidth, resource, name, title);
             new ExistingImageModifier<OdtContainer, ImagePlaceholderData, OdfTextDocument>().modify(selection, modifierData);

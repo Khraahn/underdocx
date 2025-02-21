@@ -32,8 +32,8 @@ import org.underdocx.enginelayers.baseengine.EngineAccess;
 import org.underdocx.enginelayers.baseengine.modifiers.EngineListener;
 import org.underdocx.enginelayers.baseengine.modifiers.deleteplaceholder.DeletePlaceholderModifier;
 import org.underdocx.enginelayers.baseengine.modifiers.deleteplaceholder.DeletePlaceholderModifierData;
-import org.underdocx.enginelayers.modelengine.modelpath.ActivePrefixModelPath;
-import org.underdocx.enginelayers.modelengine.modelpath.ModelPath;
+import org.underdocx.enginelayers.modelengine.modelpath.ActivePrefixDataPath;
+import org.underdocx.enginelayers.modelengine.modelpath.DataPath;
 import org.underdocx.enginelayers.odtengine.commands.internal.AbstractTextualCommandHandler;
 import org.underdocx.enginelayers.parameterengine.ParametersPlaceholderData;
 
@@ -68,28 +68,28 @@ public class ModelCommandHandler<C extends DocContainer<D>, D> extends AbstractT
     protected CommandHandlerResult tryExecuteTextualCommand() {
         return Convenience.build(CommandHandlerResult.EXECUTED_PROCEED, result -> {
             engineAccess.addListener(this);
-            ModelPath newPath = Convenience.build(modelAccess.getCurrentModelPath(), p ->
+            DataPath newPath = Convenience.build(dataAccess.getCurrentModelPath(), p ->
                     resolveStringByAttr(ATTR_VALUE).ifPresentOrElse(
                             value -> p.value = setPath(value),
                             () -> resolveStringByAttr(ATTR_INTERPRET).ifPresent(interpret ->
                                     p.value = interpret(interpret))));
             newPath = prepareModelPathPrefix(newPath);
-            modelAccess.setCurrentModelPath(newPath);
+            dataAccess.setCurrentModelPath(newPath);
         });
     }
 
-    private ModelPath prepareModelPathPrefix(ModelPath currentModelPath) {
+    private DataPath prepareModelPathPrefix(DataPath currentDataPath) {
         Optional<String> prefix = resolveStringByAttr(ATTR_PREFIX);
-        ActivePrefixModelPath result = new ActivePrefixModelPath(prefix.orElse(null), currentModelPath);
+        ActivePrefixDataPath result = new ActivePrefixDataPath(prefix.orElse(null), currentDataPath);
         return result;
     }
 
-    private ModelPath interpret(String interpretValue) {
-        return Convenience.also(modelAccess.getCurrentModelPath(), result -> result.interpret(interpretValue));
+    private DataPath interpret(String interpretValue) {
+        return Convenience.also(dataAccess.getCurrentModelPath(), result -> result.interpret(interpretValue));
     }
 
-    private ModelPath setPath(String path) {
-        return new ModelPath(path);
+    private DataPath setPath(String path) {
+        return new DataPath(path);
     }
 
 

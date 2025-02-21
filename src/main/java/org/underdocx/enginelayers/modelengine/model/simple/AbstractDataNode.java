@@ -22,42 +22,34 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-package org.underdocx.enginelayers.modelengine.modelpath.elements;
+package org.underdocx.enginelayers.modelengine.model.simple;
 
-import org.underdocx.enginelayers.modelengine.model.ModelNode;
-import org.underdocx.common.tools.Convenience;
+import org.underdocx.enginelayers.modelengine.model.DataNode;
 
-import java.util.List;
-import java.util.Optional;
+public abstract class AbstractDataNode<T> implements DataNode {
 
-public class PropertyModelPathElement implements ModelPathElement {
-    private final String property;
+    protected T containedValue;
+    protected AbstractDataNode<?> parent;
 
-    public String getProperty() {
-        return property;
+    protected void setParent(AbstractDataNode<?> node) {
+        if (node != null && this.parent != null && this.parent != node) {
+            this.parent.removeChild(node);
+        }
+        this.parent = node;
     }
 
-    public PropertyModelPathElement(String property) {
-        this.property = property;
-    }
+    protected abstract void removeChild(AbstractDataNode<?> node);
 
-    public String toString() {
-        return property;
-    }
-
-
-    @Override
-    public ModelPathElementType getType() {
-        return ModelPathElementType.PROPERTY;
+    protected void checkParentOfChild(AbstractDataNode<?> node) {
+        if (node.parent != null && node.parent != this) {
+            node.setParent(null);
+        }
     }
 
     @Override
-    public Optional<ModelNode> interpret(ModelNode node) {
-        return Convenience.buildOptional(w -> w.value = node.hasProperty(property) ? node.getProperty(property) : null);
+    public T getValue() {
+        return containedValue;
     }
 
-    @Override
-    public void interpret(List<ModelPathElement> elementsWithoutThis) {
-        elementsWithoutThis.add(this);
-    }
+    abstract protected AbstractDataNode<?> create(Object object);
 }

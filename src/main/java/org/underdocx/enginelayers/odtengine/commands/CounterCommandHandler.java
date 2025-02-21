@@ -30,7 +30,7 @@ import org.underdocx.enginelayers.baseengine.CommandHandlerResult;
 import org.underdocx.enginelayers.baseengine.modifiers.deleteplaceholder.DeletePlaceholderModifier;
 import org.underdocx.enginelayers.baseengine.modifiers.deleteplaceholder.DeletePlaceholderModifierData;
 import org.underdocx.enginelayers.baseengine.modifiers.stringmodifier.ReplaceWithTextModifier;
-import org.underdocx.enginelayers.modelengine.model.ModelNode;
+import org.underdocx.enginelayers.modelengine.model.DataNode;
 import org.underdocx.enginelayers.odtengine.commands.internal.AbstractTextualCommandHandler;
 import org.underdocx.enginelayers.odtengine.commands.internal.datapicker.VarNameDataPicker;
 import org.underdocx.enginelayers.parameterengine.ParametersPlaceholderData;
@@ -42,9 +42,9 @@ public class CounterCommandHandler<C extends DocContainer<D>, D> extends Abstrac
 
     @Override
     protected CommandHandlerResult tryExecuteTextualCommand() {
-        ModelNode indexNode = new VarNameDataPicker().pickData(
-                "index", modelAccess, placeholderData.getJson()).getOptionalValue().orElse(null);
-        if (indexNode != null && !indexNode.isNull() && indexNode.getType() == ModelNode.ModelNodeType.LEAF && indexNode.getValue() instanceof Integer) {
+        DataNode indexNode = new VarNameDataPicker().pickData(
+                "index", dataAccess, placeholderData.getJson()).getOptionalValue().orElse(null);
+        if (indexNode != null && !indexNode.isNull() && indexNode.getType() == DataNode.ModelNodeType.LEAF && indexNode.getValue() instanceof Integer) {
             int counter = ((Integer) indexNode.getValue()) + 1;
             new ReplaceWithTextModifier<C, ParametersPlaceholderData, D>().modify(selection, String.valueOf(counter));
         } else {

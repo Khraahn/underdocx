@@ -27,7 +27,7 @@ package org.underdocx.enginelayers.odtengine.commands.internal;
 import org.underdocx.common.doc.DocContainer;
 import org.underdocx.common.types.Regex;
 import org.underdocx.enginelayers.baseengine.CommandHandlerResult;
-import org.underdocx.enginelayers.modelengine.model.ModelNode;
+import org.underdocx.enginelayers.modelengine.model.DataNode;
 import org.underdocx.enginelayers.odtengine.commands.internal.datapicker.ExtendedDataPicker;
 import org.underdocx.enginelayers.odtengine.commands.internal.datapicker.StringConvertDataPicker;
 import org.underdocx.enginelayers.odtengine.commands.internal.modifiermodule.stringoutput.StringOutputCommandModule;
@@ -46,7 +46,7 @@ public abstract class AbstractStringCommandHandler<C extends DocContainer<D>, D>
 
     protected abstract StringOutputModuleConfig getConfig();
 
-    protected static StringOutputModuleConfig buildConfig(String path, ExtendedDataPicker<ModelNode> picker) {
+    protected static StringOutputModuleConfig buildConfig(String path, ExtendedDataPicker<DataNode> picker) {
         return () -> new StringConvertDataPicker(picker,
                 new StringConvertDataPicker.DefaultModel2StringConverter()).asPredefined(path);
     }

@@ -24,11 +24,11 @@ SOFTWARE.
 
 package org.underdocx.commands.forloop;
 
+import org.junit.jupiter.api.Test;
 import org.underdocx.AbstractOdtTest;
 import org.underdocx.doctypes.odf.odt.OdtContainer;
 import org.underdocx.doctypes.odf.odt.OdtEngine;
-import org.underdocx.enginelayers.modelengine.model.simple.MapModelNode;
-import org.junit.jupiter.api.Test;
+import org.underdocx.enginelayers.modelengine.model.simple.MapDataNode;
 
 import java.util.Arrays;
 
@@ -71,7 +71,7 @@ public class ForTest extends AbstractOdtTest {
                 "${EndFor}                                               \n";
         OdtContainer doc = new OdtContainer(documentStr);
         OdtEngine engine = new OdtEngine(doc);
-        engine.setModel(new MapModelNode(jsonString));
+        engine.setModel(new MapDataNode(jsonString));
         engine.run();
         //show(doc);
         assertContains(doc, "0 A");
@@ -119,7 +119,7 @@ public class ForTest extends AbstractOdtTest {
                 "${EndFor}                                               \n";
         OdtContainer doc = new OdtContainer(documentStr);
         OdtEngine engine = new OdtEngine(doc);
-        engine.setModel(new MapModelNode(jsonString));
+        engine.setModel(new MapDataNode(jsonString));
         engine.pushVariable("aList", Arrays.asList("A", "B", "C"));
         engine.run();
         assertContains(doc, "0 A");
@@ -169,7 +169,7 @@ public class ForTest extends AbstractOdtTest {
                 "${EndFor}                                               \n";
         OdtContainer doc = new OdtContainer(documentStr);
         OdtEngine engine = new OdtEngine(doc);
-        engine.setModel(new MapModelNode(jsonString));
+        engine.setModel(new MapDataNode(jsonString));
         engine.run();
         assertContains(doc, "0 A");
         assertContains(doc, "1 B");
@@ -216,7 +216,7 @@ public class ForTest extends AbstractOdtTest {
                 "${EndFor}                                               \n";
         OdtContainer doc = new OdtContainer(documentStr);
         OdtEngine engine = new OdtEngine(doc);
-        engine.setModel(new MapModelNode(jsonString));
+        engine.setModel(new MapDataNode(jsonString));
         engine.run();
         assertContains(doc, "0 A");
         assertContains(doc, "1 B");
@@ -263,7 +263,7 @@ public class ForTest extends AbstractOdtTest {
                 "${EndFor}                                               \n";
         OdtContainer doc = new OdtContainer(documentStr);
         OdtEngine engine = new OdtEngine(doc);
-        engine.setModel(new MapModelNode(jsonString));
+        engine.setModel(new MapDataNode(jsonString));
         engine.run();
         assertContains(doc, "0 A");
         assertContains(doc, "1 B");

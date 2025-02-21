@@ -48,7 +48,7 @@ public class MissingDataCommandModule<C extends DocContainer<D>, D, M> extends A
     @Override
     protected MissingDataCommandModuleResult<M> execute() {
         DataPickerResult<M> value = configuration.getDataPicker().pickData(
-                selection.getModelAccess().orElse(null),
+                selection.getDataAccess().orElse(null),
                 selection.getPlaceholderData().getJson());
 
         MissingDataConfig config = interpreter.interpretAttributes(selection.getPlaceholderData().getJson(), configuration.getMissingDataConfig());

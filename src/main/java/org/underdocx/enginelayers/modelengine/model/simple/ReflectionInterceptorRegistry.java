@@ -31,17 +31,17 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
-public class ReflectionInterceptorRegistry implements ReflectionModelNode.Resolver {
+public class ReflectionInterceptorRegistry implements ReflectionDataNode.Resolver {
 
     public static ReflectionInterceptorRegistry DEFAULT = new ReflectionInterceptorRegistry();
 
-    private Map<Pair<String, String>, ReflectionModelNode.Resolver> interceptors = new HashMap<>();
+    private Map<Pair<String, String>, ReflectionDataNode.Resolver> interceptors = new HashMap<>();
 
-    public void register(Class<?> clazz, String property, ReflectionModelNode.Resolver interceptor) {
+    public void register(Class<?> clazz, String property, ReflectionDataNode.Resolver interceptor) {
         interceptors.put(new Pair<>(getClassName(clazz), property), interceptor);
     }
 
-    public void register(Collection<Class<?>> classes, Collection<String> properties, ReflectionModelNode.Resolver interceptor) {
+    public void register(Collection<Class<?>> classes, Collection<String> properties, ReflectionDataNode.Resolver interceptor) {
         classes.forEach(clazz -> properties.forEach(property -> register(clazz, property, interceptor)));
     }
 
@@ -50,8 +50,8 @@ public class ReflectionInterceptorRegistry implements ReflectionModelNode.Resolv
     }
 
     @Override
-    public Optional<AbstractModelNode> resolve(Object reflectionObject, String requestedProperty) {
-        ReflectionModelNode.Resolver interceptor = interceptors.get(new Pair(getClassName(reflectionObject.getClass()), requestedProperty));
+    public Optional<AbstractDataNode> resolve(Object reflectionObject, String requestedProperty) {
+        ReflectionDataNode.Resolver interceptor = interceptors.get(new Pair(getClassName(reflectionObject.getClass()), requestedProperty));
         if (interceptor != null) {
             return interceptor.resolve(reflectionObject, requestedProperty);
         }

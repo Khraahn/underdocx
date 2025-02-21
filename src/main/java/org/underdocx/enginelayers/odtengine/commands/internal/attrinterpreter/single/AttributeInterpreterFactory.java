@@ -25,7 +25,7 @@ SOFTWARE.
 package org.underdocx.enginelayers.odtengine.commands.internal.attrinterpreter.single;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import org.underdocx.enginelayers.modelengine.model.ModelNode;
+import org.underdocx.enginelayers.modelengine.model.DataNode;
 import org.underdocx.enginelayers.odtengine.commands.internal.attrinterpreter.AttributesInterpreter;
 import org.underdocx.enginelayers.odtengine.commands.internal.attrinterpreter.PredefinedAttributesInterpreter;
 
@@ -74,11 +74,11 @@ public class AttributeInterpreterFactory {
         return new SinglePropertyInterpreter<>(AttributesInterpreter::getComplexAttribute);
     }
 
-    public static AttributesInterpreter<Optional<ModelNode>, String> createModelNodeAttributeInterpreter(boolean ignoreAccessPrefix) {
+    public static AttributesInterpreter<Optional<DataNode>, String> createModelNodeAttributeInterpreter(boolean ignoreAccessPrefix) {
         return new SinglePropertyInterpreter<>(ignoreAccessPrefix, AttributesInterpreter::getModelNodeAttribute);
     }
 
-    public static AttributesInterpreter<Optional<ModelNode>, String> createModelNodeAttributeInterpreter() {
+    public static AttributesInterpreter<Optional<DataNode>, String> createModelNodeAttributeInterpreter() {
         return new SinglePropertyInterpreter<>(AttributesInterpreter::getModelNodeAttribute);
     }
 

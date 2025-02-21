@@ -22,34 +22,31 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-package org.underdocx.enginelayers.modelengine.modelaccess;
+package org.underdocx.enginelayers.modelengine.model;
 
-import org.underdocx.enginelayers.modelengine.model.ModelNode;
-import org.underdocx.enginelayers.modelengine.modelpath.ModelPath;
-import org.underdocx.common.types.Pair;
+public interface DataNode {
 
-import java.util.Optional;
+    enum ModelNodeType {
+        MAP,
+        LIST,
+        LEAF
+    }
 
-public interface ModelAccess {
+    ModelNodeType getType();
 
-    Optional<ModelNode> getCurrentModelNode();
+    Object getValue();
 
-    ModelNode getRootModelNode();
+    DataNode getProperty(String name);
 
-    ModelPath getCurrentModelPath();
+    DataNode getProperty(int index);
 
-    void setCurrentModelPath(ModelPath modelPath);
+    DataNode getParent();
 
-    Pair<String, Optional<ModelNode>> interpret(String suffix, boolean setAsCurrent);
+    int getSize();
 
-    @Deprecated
-    void setCurrentPath(String modelPath);
+    boolean hasProperty(String name);
 
-    void popVariable(String name);
+    boolean hasProperty(int index);
 
-    Optional<ModelNode> getVariable(String name);
-
-    void pushVariable(String name, ModelNode value);
-
-
+    boolean isNull();
 }

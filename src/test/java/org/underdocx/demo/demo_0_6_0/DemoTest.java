@@ -24,13 +24,13 @@ SOFTWARE.
 
 package org.underdocx.demo.demo_0_6_0;
 
+import org.junit.jupiter.api.Test;
 import org.underdocx.AbstractOdtTest;
 import org.underdocx.doctypes.odf.odt.OdtContainer;
 import org.underdocx.doctypes.odf.odt.OdtEngine;
-import org.underdocx.enginelayers.modelengine.model.ModelNode;
-import org.underdocx.enginelayers.modelengine.model.simple.ModelBuilder;
+import org.underdocx.enginelayers.modelengine.model.DataNode;
+import org.underdocx.enginelayers.modelengine.model.simple.DataTreeBuilder;
 import org.underdocx.environment.UnderdocxEnv;
-import org.junit.jupiter.api.Test;
 
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -75,8 +75,8 @@ public class DemoTest extends AbstractOdtTest {
         assertNoPlaceholders(doc);
     }
 
-    private ModelNode createPersonsData() throws IOException {
-        ModelNode data = ModelBuilder
+    private DataNode createPersonsData() throws IOException {
+        DataNode data = DataTreeBuilder
                 /*  */.beginList()
 
                 /*    */.beginMap()

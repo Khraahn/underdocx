@@ -22,31 +22,37 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-package org.underdocx.enginelayers.modelengine.model;
+package org.underdocx.enginelayers.modelengine.modelpath.elements;
 
-public interface ModelNode {
+import org.underdocx.common.tools.Convenience;
+import org.underdocx.enginelayers.modelengine.model.DataNode;
 
-    enum ModelNodeType {
-        MAP,
-        LIST,
-        LEAF
+import java.util.List;
+import java.util.Optional;
+
+public class RootDataPathElement implements DataPathElement {
+
+    public String toString() {
+        return getType().toString();
     }
 
-    ModelNodeType getType();
 
-    Object getValue();
-    
-    ModelNode getProperty(String name);
+    @Override
+    public DatalPathElementType getType() {
+        return DatalPathElementType.ROOT;
+    }
 
-    ModelNode getProperty(int index);
+    @Override
+    public Optional<DataNode> interpret(DataNode node) {
+        return Convenience.buildOptional(node, w -> {
+            while (w.value.getParent() != null) {
+                w.value = w.value.getParent();
+            }
+        });
+    }
 
-    ModelNode getParent();
-
-    int getSize();
-
-    boolean hasProperty(String name);
-
-    boolean hasProperty(int index);
-
-    boolean isNull();
+    @Override
+    public void interpret(List<DataPathElement> elementsWithoutThis) {
+        elementsWithoutThis.clear();
+    }
 }

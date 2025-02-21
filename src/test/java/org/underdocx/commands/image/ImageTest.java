@@ -24,16 +24,16 @@ SOFTWARE.
 
 package org.underdocx.commands.image;
 
-import org.underdocx.AbstractOdtTest;
-import org.underdocx.common.tree.Nodes;
-import org.underdocx.common.tools.TmpFile;
-import org.underdocx.doctypes.odf.constants.OdfElement;
-import org.underdocx.doctypes.odf.odt.OdtContainer;
-import org.underdocx.doctypes.odf.odt.OdtEngine;
-import org.underdocx.enginelayers.modelengine.model.simple.LeafModelNode;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.odftoolkit.odfdom.dom.element.draw.DrawFrameElement;
+import org.underdocx.AbstractOdtTest;
+import org.underdocx.common.tools.TmpFile;
+import org.underdocx.common.tree.Nodes;
+import org.underdocx.doctypes.odf.constants.OdfElement;
+import org.underdocx.doctypes.odf.odt.OdtContainer;
+import org.underdocx.doctypes.odf.odt.OdtEngine;
+import org.underdocx.enginelayers.modelengine.model.simple.LeafDataNode;
 import org.w3c.dom.Node;
 
 import java.io.File;
@@ -52,10 +52,10 @@ public class ImageTest extends AbstractOdtTest {
 
         OdtContainer doc = readOdt("ImageTest.odt");
         OdtEngine engine = new OdtEngine(doc);
-        engine.pushVariable("name1", new LeafModelNode<>("Smile1.png"));
-        engine.pushVariable("data", new LeafModelNode<>(binaryData));
-        engine.pushVariable("name2", new LeafModelNode<>("Smile2.png"));
-        engine.pushVariable("uri", new LeafModelNode<>(uri));
+        engine.pushVariable("name1", new LeafDataNode<>("Smile1.png"));
+        engine.pushVariable("data", new LeafDataNode<>(binaryData));
+        engine.pushVariable("name2", new LeafDataNode<>("Smile2.png"));
+        engine.pushVariable("uri", new LeafDataNode<>(uri));
         engine.run();
         //show(doc);
         assertNoPlaceholders(doc);

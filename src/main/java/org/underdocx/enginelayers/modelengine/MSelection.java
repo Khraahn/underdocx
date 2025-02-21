@@ -26,12 +26,12 @@ package org.underdocx.enginelayers.modelengine;
 
 import org.underdocx.common.doc.DocContainer;
 import org.underdocx.enginelayers.baseengine.Selection;
-import org.underdocx.enginelayers.modelengine.modelaccess.ModelAccess;
+import org.underdocx.enginelayers.modelengine.dataaccess.DataAccess;
 
 import java.util.Optional;
 
 public interface MSelection<C extends DocContainer<D>, P, D> extends Selection<C, P, D> {
 
-    Optional<ModelAccess> getModelAccess();
+    Optional<DataAccess> getDataAccess();
 
 }

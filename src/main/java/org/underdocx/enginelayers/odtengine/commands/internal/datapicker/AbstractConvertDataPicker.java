@@ -26,28 +26,28 @@ package org.underdocx.enginelayers.odtengine.commands.internal.datapicker;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import org.underdocx.common.tools.Convenience;
-import org.underdocx.enginelayers.modelengine.model.ModelNode;
-import org.underdocx.enginelayers.modelengine.modelaccess.ModelAccess;
+import org.underdocx.enginelayers.modelengine.dataaccess.DataAccess;
+import org.underdocx.enginelayers.modelengine.model.DataNode;
 
 import java.util.Optional;
 
 /**
- * An abstract implementation of {@link ExtendedDataPicker} that tries to convert a {@link ModelNode} to requested type
+ * An abstract implementation of {@link ExtendedDataPicker} that tries to convert a {@link DataNode} to requested type
  */
 public abstract class AbstractConvertDataPicker<T> implements ExtendedDataPicker<T> {
 
-    private final ExtendedDataPicker<ModelNode> dataPicker;
+    private final ExtendedDataPicker<DataNode> dataPicker;
 
     public AbstractConvertDataPicker() {
         this(new AttributeNodeDataPicker());
     }
 
-    public AbstractConvertDataPicker(ExtendedDataPicker<ModelNode> dataPicker) {
+    public AbstractConvertDataPicker(ExtendedDataPicker<DataNode> dataPicker) {
         this.dataPicker = dataPicker;
     }
 
-    public DataPickerResult<T> pickData(String name, ModelAccess modelAccess, JsonNode attributes) {
-        DataPickerResult<ModelNode> tmpResult = dataPicker.pickData(name, modelAccess, attributes);
+    public DataPickerResult<T> pickData(String name, DataAccess dataAccess, JsonNode attributes) {
+        DataPickerResult<DataNode> tmpResult = dataPicker.pickData(name, dataAccess, attributes);
         if (!tmpResult.isResolved()) {
             return DataPickerResult.convert(null, tmpResult);
         } else {
@@ -61,5 +61,5 @@ public abstract class AbstractConvertDataPicker<T> implements ExtendedDataPicker
         }
     }
 
-    abstract Optional<T> convert(ModelNode node);
+    abstract Optional<T> convert(DataNode node);
 }

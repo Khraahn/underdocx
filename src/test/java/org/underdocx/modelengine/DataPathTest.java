@@ -24,20 +24,20 @@ SOFTWARE.
 
 package org.underdocx.modelengine;
 
-import org.underdocx.AbstractOdtTest;
-import org.underdocx.doctypes.odf.odt.OdtContainer;
-import org.underdocx.doctypes.odf.odt.OdtEngine;
-import org.underdocx.enginelayers.modelengine.model.ModelNode;
-import org.underdocx.enginelayers.modelengine.model.simple.MapModelNode;
-import org.underdocx.enginelayers.modelengine.modelpath.ActivePrefixModelPath;
-import org.underdocx.enginelayers.modelengine.modelpath.ModelPath;
-import org.underdocx.common.types.Wrapper;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.underdocx.AbstractOdtTest;
+import org.underdocx.common.types.Wrapper;
+import org.underdocx.doctypes.odf.odt.OdtContainer;
+import org.underdocx.doctypes.odf.odt.OdtEngine;
+import org.underdocx.enginelayers.modelengine.model.DataNode;
+import org.underdocx.enginelayers.modelengine.model.simple.MapDataNode;
+import org.underdocx.enginelayers.modelengine.modelpath.ActivePrefixDataPath;
+import org.underdocx.enginelayers.modelengine.modelpath.DataPath;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class ModelPathTest extends AbstractOdtTest {
+public class DataPathTest extends AbstractOdtTest {
 
     @Test
     public void testModelPath() {
@@ -52,9 +52,9 @@ public class ModelPathTest extends AbstractOdtTest {
                   "g": "h"
                 }
                 """;
-        ModelNode model = new MapModelNode(jsonStr);
+        DataNode model = new MapDataNode(jsonStr);
         String path = "a.b[1][0]";
-        assertThat(ModelPath.interpret(path, model).get().getValue()).isEqualTo("e");
+        assertThat(DataPath.interpret(path, model).get().getValue()).isEqualTo("e");
     }
 
     @Test
@@ -71,9 +71,9 @@ public class ModelPathTest extends AbstractOdtTest {
                   "g": "h"
                 }
                 """;
-        ModelNode model = new MapModelNode(jsonStr);
+        DataNode model = new MapDataNode(jsonStr);
         String path = "a.b[1][0]<<<x";
-        assertThat(ModelPath.interpret(path, model).get().getValue()).isEqualTo("Test");
+        assertThat(DataPath.interpret(path, model).get().getValue()).isEqualTo("Test");
     }
 
     @Test
@@ -90,17 +90,17 @@ public class ModelPathTest extends AbstractOdtTest {
                   "g": "h"
                 }
                 """;
-        ModelNode model = new MapModelNode(jsonStr);
+        DataNode model = new MapDataNode(jsonStr);
         String path = "a.b[1][0]^g";
-        assertThat(ModelPath.interpret(path, model).get().getValue()).isEqualTo("h");
+        assertThat(DataPath.interpret(path, model).get().getValue()).isEqualTo("h");
     }
 
     @Test
     public void testActivePrefixModelPath() {
         Wrapper<String> prefixSupplier = new Wrapper<>("x");
-        ModelPath path = new ActivePrefixModelPath(prefixSupplier, "a.b");
+        DataPath path = new ActivePrefixDataPath(prefixSupplier, "a.b");
 
-        ModelPath testPath = path.clone();
+        DataPath testPath = path.clone();
         testPath.interpret("x.c");
         Assertions.assertThat(testPath.toString()).isEqualTo("a.b.c");
 
@@ -127,7 +127,7 @@ public class ModelPathTest extends AbstractOdtTest {
                 "${String *value:\"element[1]\"}                              \n";
         OdtContainer doc = new OdtContainer(documentStr);
         OdtEngine engine = new OdtEngine(doc);
-        engine.setModel(new MapModelNode(jsonString));
+        engine.setModel(new MapDataNode(jsonString));
         engine.run();
         assertContains(doc, "B");
         assertNoPlaceholders(doc);

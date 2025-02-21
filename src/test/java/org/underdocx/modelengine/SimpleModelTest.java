@@ -25,13 +25,13 @@ SOFTWARE.
 package org.underdocx.modelengine;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import org.underdocx.AbstractTest;
-import org.underdocx.common.codec.JsonCodec;
-import org.underdocx.enginelayers.modelengine.model.ModelNode;
-import org.underdocx.enginelayers.modelengine.model.simple.MapModelNode;
-import org.underdocx.common.tools.Convenience;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.underdocx.AbstractTest;
+import org.underdocx.common.codec.JsonCodec;
+import org.underdocx.common.tools.Convenience;
+import org.underdocx.enginelayers.modelengine.model.DataNode;
+import org.underdocx.enginelayers.modelengine.model.simple.MapDataNode;
 
 public class SimpleModelTest extends AbstractTest {
 
@@ -46,7 +46,7 @@ public class SimpleModelTest extends AbstractTest {
                   }
                 }                
                 """;
-        ModelNode model = new MapModelNode(jsonString);
+        DataNode model = new MapDataNode(jsonString);
         String newJsonString = model.toString();
         Convenience.also(new JsonCodec(), codec -> {
             JsonNode parsed = codec.tryParse(newJsonString).get();

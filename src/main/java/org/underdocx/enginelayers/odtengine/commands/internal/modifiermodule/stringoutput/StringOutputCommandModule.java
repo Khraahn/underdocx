@@ -48,8 +48,8 @@ public class StringOutputCommandModule<C extends DocContainer<D>, D> extends Abs
 
     @Override
     protected CommandHandlerResult execute() {
-        boolean shouldRescan = rescanDataPicker.pickData(selection.getModelAccess().get(), selection.getPlaceholderData().getJson()).getOptionalValue().orElse(false);
-        boolean useMarkup = markupDataPicker.pickData(selection.getModelAccess().get(), selection.getPlaceholderData().getJson()).getOptionalValue().orElse(false);
+        boolean shouldRescan = rescanDataPicker.pickData(selection.getDataAccess().get(), selection.getPlaceholderData().getJson()).getOptionalValue().orElse(false);
+        boolean useMarkup = markupDataPicker.pickData(selection.getDataAccess().get(), selection.getPlaceholderData().getJson()).getOptionalValue().orElse(false);
         MissingDataCommandModule<C, D, String> module = new MissingDataCommandModule<>(configuration);
         MissingDataCommandModuleResult<String> moduleResult = module.execute(selection);
         return switch (moduleResult.resultType) {

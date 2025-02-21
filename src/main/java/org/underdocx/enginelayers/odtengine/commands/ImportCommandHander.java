@@ -61,7 +61,7 @@ public class ImportCommandHander extends AbstractTextualCommandHandler<OdtContai
     @Override
     protected CommandHandlerResult tryExecuteTextualCommand() {
         Resource resource = new ResourceCommandModule<OdtContainer, ParametersPlaceholderData, OdfTextDocument>(placeholderData.getJson()).execute(selection);
-        boolean useCache = useCacheAttr.getData(modelAccess, placeholderData.getJson()).orElse(true);
+        boolean useCache = useCacheAttr.getData(dataAccess, placeholderData.getJson()).orElse(true);
         OdtContainer importDoc = getDoc(resource, useCache);
         ImportModifierData modifiedData = new ImportModifierData.Simple(resource.getIdentifier(), importDoc, selection.getDocContainer(), selection.getNode(), true);
         new ImportModifier().modify(modifiedData);

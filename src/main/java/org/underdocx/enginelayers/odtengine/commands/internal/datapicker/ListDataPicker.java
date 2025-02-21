@@ -24,18 +24,18 @@ SOFTWARE.
 
 package org.underdocx.enginelayers.odtengine.commands.internal.datapicker;
 
-import org.underdocx.enginelayers.modelengine.model.ModelNode;
+import org.underdocx.enginelayers.modelengine.model.DataNode;
 
 import java.util.Optional;
 
 /**
  * A {@link ExtendedDataPicker} that checks if provided node represents a list
  */
-public class ListDataPicker extends AbstractConvertDataPicker<ModelNode> {
+public class ListDataPicker extends AbstractConvertDataPicker<DataNode> {
 
     @Override
-    Optional<ModelNode> convert(ModelNode node) {
-        if (node.getType() == ModelNode.ModelNodeType.LIST) {
+    Optional<DataNode> convert(DataNode node) {
+        if (node.getType() == DataNode.ModelNodeType.LIST) {
             return Optional.of(node);
         } else {
             return Optional.empty();

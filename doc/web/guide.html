@@ -225,7 +225,7 @@ engine.pushVariable("dateToShow", lastYear);</code></pre>
         This example shows how to register a model and how to address a node:
         <pre class="padding"><code>Example: ${Date *value:"persons[1].birthday" outputFormat:"dd.MM.yyyy"}</code></pre>
         and this code snipped:
-        <pre class="highlightjs highlight nowrap"><code class="language-java hljs" data-lang="java">ModelNode model = new MapModelNode("""
+        <pre class="highlightjs highlight nowrap"><code class="language-java hljs" data-lang="java">DataNode model = new MapDataNode("""
           {
               persons: [
                   {birthday: "1975-05-14"},
@@ -238,13 +238,13 @@ engine.setModel(model);</code></pre>
         <pre class="padding"><code>Example: 07.03.2021</code></pre>
         In this example,
         the model is defined by using the JSON syntax, which is converted to a data-tree using the
-        <code-word>MapModelNode</code-word>-class.
+        <code-word>MapDataNode</code-word>-class.
         The <code-word>*value</code-word> parameter uses the model-path-syntax to address a certain node in the model
         data tree.
 
-        <h4>ModelPath-Syntax</h4>
+        <h4>DataPath-Syntax</h4>
 
-        Variables and models can store hierarchical data. The ModelPath-Syntax can be used to address certain
+        Variables and models can store hierarchical data. The DataPath-Syntax can be used to address certain
         (sub-)nodes in the tree, or even to address parent nodes. There is an overview of characters that have
         a special meaning:
         <table>
@@ -333,23 +333,23 @@ Resource resource = new Resouce.UriResource(String uri);
 // Creates a Resource instance based on an URI/URL
 Resource resource = new Resouce.UriResource(URI uri);      </code></pre>
 
-        <h3>ModelNode</h3>
+        <h3>DataNode</h3>
 
         All type of values (model and variables) are stored as a tree structure that implement the
-        interface <code-word>ModelNode</code-word>. You can write your own implementation to provide data to the engine.
+        interface <code-word>DataNode</code-word>. You can write your own implementation to provide data to the engine.
         But there are also some predefined implementation you can easily use, such as
-        <code-word>MapModelNode</code-word>, <code-word>ModelNodeBuilder</code-word> and
-        <code-word>ReflectionModelNode</code-word>
+        <code-word>MapDataNode</code-word>, <code-word>DataTreeBuilder</code-word> and
+        <code-word>ReflectionDataNode</code-word>
 
-        <h4>MapModelNode</h4>
-        Use <code-word>MapModelNode</code-word> to manually register values in a map. These values might also
-        be maps, lists or single (leaf) values. <code-word>MapModelNode</code-word> also allows to convert
-        JSON text into ModelNodes. The following example uses a JSON to create a <code-word>ModelNode</code-word>
+        <h4>MapDataNode</h4>
+        Use <code-word>MapDataNode</code-word> to manually register values in a map. These values might also
+        be maps, lists or single (leaf) values. <code-word>MapDataNode</code-word> also allows to convert
+        JSON text into DataNodes. The following example uses a JSON to create a <code-word>DataNode</code-word>
         that is stored as variable "persons". The resulting document will contain text "Hello Jenny"
 
         <pre class="highlightjs highlight nowrap"><code class="language-java hljs" data-lang="java">public class Main {
   public static void main(String[] args) throws IOException {
-    ModelNode persons = new MapModelNode("""{
+    DataNode persons = new MapDataNode("""{
       persons: [
         {name: "Hans"},
         {name: "Jenny"}
@@ -364,16 +364,16 @@ Resource resource = new Resouce.UriResource(URI uri);      </code></pre>
   }
 }</code></pre>
 
-        <h4>ModelNodeBuilder</h4>
+        <h4>DataTreeBuilder</h4>
 
-        The <code-word>ModelNodeBuilder</code-word> provides a fluent API to build up a tree data structure. It helps
+        The <code-word>DataTreeBuilder</code-word> provides a fluent API to build up a tree data structure. It helps
         to construct structures that can not be expressed by JSON, for example structures that
         contains non primitive objects. The next example create a list of persons that contain
         <code-word>Resource</code-word>-objects representing images.
-        <pre class="highlightjs highlight nowrap"><code class="language-java hljs" data-lang="java">private ModelNode createPersonsData() throws IOException {
+        <pre class="highlightjs highlight nowrap"><code class="language-java hljs" data-lang="java">private DataNode createPersonsData() throws IOException {
   Resource resource1 = new Resource.FileResource("image1.png");
   Resource resource2 = new Resource.FileResource("image2.png");
-  ModelNode data = ModelBuilder
+  DataNode data = DataTreeBuilder
     .beginList()
       .beginMap()
         .add("firstName", "Hans")
@@ -399,10 +399,10 @@ Resource resource = new Resouce.UriResource(URI uri);      </code></pre>
  return data;
 }</code></pre>
 
-        <h4>ReflectionModelNode</h4>
+        <h4>ReflectionDataNode</h4>
 
-        <code-word>ReflectionModelNode</code-word> provides a convenient way to convert any object
-        dynamically to ModelNode instances. Fields and get methods are
+        <code-word>ReflectionDataNode</code-word> provides a convenient way to convert any object
+        dynamically to DataNode instances. Fields and get methods are
         called by the java reflection API to build up the tree dynamically.
 
         Additionally the definition of <code-word>Resolver</code-word> allows to dynamically
@@ -426,9 +426,9 @@ public static void main (String[] args) {
     ${*b.c[0]}
   """;
   OdtContainer doc = new OdtContainer(content);
-  ReflectionModelNode.Resolver resolver = (object, name) -> 
+  ReflectionDataNode.Resolver resolver = (object, name) -> 
     name.equals("x")
-    ? java.util.Optional.of(new LeafModelNode("42"))
+    ? java.util.Optional.of(new LeafDataNode("42"))
     : Optional.empty();
   OdtEngine engine = new OdtEngine(doc);
   engine.setModel(new TestClassA(), resolver);
@@ -442,11 +442,11 @@ public static void main (String[] args) {
         <pre class="padding"><code>42
 Item1
 </code></pre>
-        Reason: <code-word>${*b.c[0]}</code-word> is a placeholder to print out model node addresses by ModelPath
+        Reason: <code-word>${*b.c[0]}</code-word> is a placeholder to print out model node addresses by DataPath
         <code-word>b.c[0]</code-word>.
-        Also <code-word>${*b.x}</code-word> is a placeholder to print out model node addresses by ModelPath "b.x".
+        Also <code-word>${*b.x}</code-word> is a placeholder to print out model node addresses by DataPath "b.x".
         The call of <code-word>engine.setModel(new TestClassA())</code-word> creates an instance of TestClassA and
-        converts it into a ReflectionModelNode. This node is now declared as model data.
+        converts it into a ReflectionDataNode. This node is now declared as model data.
         The Additional "resolver" provides value 42 when property "x"
         is requested by an placeholder. "x" is not part of the reflected classes.
 
@@ -711,7 +711,7 @@ Item1
       """;
       OdtEngine engine = new OdtEngine(doc);;
       engine.pushVariable("text", "Variable");
-      engine.setModel(new MapModelNode(modelData));
+      engine.setModel(new MapDataNode(modelData));
       engine.run();
       doc.createTmpFile("Test", false, null);
   }
@@ -1431,7 +1431,7 @@ engine.run();</code></pre>
         The <code-word>AddCommandHandler</code-word> extends class <code-word>AbstractTextualCommandHandler</code-word>
         and uses
         <code-word>ExtendedDataPicker</code-word> instances that read out the attributes of the placeholder.
-        The result is stored in the variable stack with help of the provided <code-word>ModelAccess</code-word>
+        The result is stored in the variable stack with help of the provided <code-word>DataAccess</code-word>
         instance.
         The <code-word>${Add}</code-word> placeholder itself will be deleted by the
         <code-word>DeletePlaceholderModifier</code-word> that
@@ -1452,13 +1452,13 @@ engine.run();</code></pre>
 
       @Override
       protected CommandHandlerResult tryExecuteTextualCommand() {
-          DataPickerResult&lt;Integer&gt; aValue = new IntegerDataPicker().asPredefined("a").pickData(modelAccess, placeholderData.getJson());
-          DataPickerResult&lt;Integer&gt; bValue = new IntegerDataPicker().asPredefined("b").pickData(modelAccess, placeholderData.getJson());
-          DataPickerResult&lt;String&gt; target = new StringConvertDataPicker().asPredefined("target").pickData(modelAccess, placeholderData.getJson());
+          DataPickerResult&lt;Integer&gt; aValue = new IntegerDataPicker().asPredefined("a").pickData(dataAccess, placeholderData.getJson());
+          DataPickerResult&lt;Integer&gt; bValue = new IntegerDataPicker().asPredefined("b").pickData(dataAccess, placeholderData.getJson());
+          DataPickerResult&lt;String&gt; target = new StringConvertDataPicker().asPredefined("target").pickData(dataAccess, placeholderData.getJson());
           if (!(aValue.isResolvedNotNull() && bValue.isResolvedNotNull() && target.isResolvedNotNull()))
               return CommandHandlerResult.IGNORED;
           int result = aValue.value + bValue.value;
-          modelAccess.pushVariable(target.value, new LeafModelNode&lt;&gt;(result));
+          dataAccess.pushVariable(target.value, new LeafDataNode&lt;&gt;(result));
           DeletePlaceholderModifier.modify(selection.getNode());
           return CommandHandlerResult.EXECUTED;
       }

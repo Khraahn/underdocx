@@ -24,16 +24,16 @@ SOFTWARE.
 
 package org.underdocx.commands.pagestyle;
 
+import org.assertj.core.api.Assertions;
+import org.junit.jupiter.api.Test;
 import org.underdocx.AbstractOdtTest;
+import org.underdocx.common.types.Wrapper;
 import org.underdocx.doctypes.odf.odt.OdtContainer;
 import org.underdocx.doctypes.odf.odt.OdtEngine;
-import org.underdocx.enginelayers.modelengine.model.simple.MapModelNode;
-import org.underdocx.common.types.Wrapper;
 import org.underdocx.doctypes.odf.odt.pagestyle.PageStyle;
 import org.underdocx.doctypes.odf.odt.pagestyle.PageStyleReader;
 import org.underdocx.doctypes.odf.odt.pagestyle.PageStyleWriter;
-import org.assertj.core.api.Assertions;
-import org.junit.jupiter.api.Test;
+import org.underdocx.enginelayers.modelengine.model.simple.MapDataNode;
 
 public class PageStyleReaderWriterTest extends AbstractOdtTest {
 
@@ -118,7 +118,7 @@ public class PageStyleReaderWriterTest extends AbstractOdtTest {
                 }
                 """;
         OdtEngine engine = new OdtEngine(doc);
-        engine.setModel(new MapModelNode(json));
+        engine.setModel(new MapDataNode(json));
         engine.run();
         testStyledDoc(doc);
         assertContains(doc, "!");

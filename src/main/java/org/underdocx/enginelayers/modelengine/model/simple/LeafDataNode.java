@@ -24,44 +24,20 @@ SOFTWARE.
 
 package org.underdocx.enginelayers.modelengine.model.simple;
 
-import java.util.ArrayList;
-import java.util.List;
+public class LeafDataNode<T> extends AbstractPredefinedDataNode<T> {
 
-public class ListModelNode extends AbstractPredefinedModelNode<List<AbstractModelNode<?>>> {
-
-    public ListModelNode() {
-        this.containedValue = new ArrayList<>();
+    public LeafDataNode(T value) {
+        this.containedValue = value;
     }
 
-
     @Override
-    protected void removeChild(AbstractModelNode<?> node) {
-        getValue().remove(node);
+    protected void removeChild(AbstractDataNode<?> node) {
     }
 
     @Override
     public ModelNodeType getType() {
-        return ModelNodeType.LIST;
+        return ModelNodeType.LEAF;
     }
 
-    @Override
-    public AbstractModelNode<?> getProperty(int index) {
-        return index < containedValue.size() ? containedValue.get(index) : null;
-    }
 
-    @Override
-    public boolean hasProperty(int index) {
-        return index < containedValue.size();
-    }
-
-    public <T extends AbstractPredefinedModelNode<?>> void add(T node) {
-        checkParentOfChild(node);
-        node.setParent(this);
-        containedValue.add(node);
-    }
-
-    @Override
-    public int getSize() {
-        return containedValue.size();
-    }
 }

@@ -24,16 +24,39 @@ SOFTWARE.
 
 package org.underdocx.enginelayers.modelengine.modelpath.elements;
 
-public enum ModelPathElementType {
-    BACK("<"), ROOT("^"), INDEX("[]"), PROPERTY("*");
+import org.underdocx.common.tools.Convenience;
+import org.underdocx.enginelayers.modelengine.model.DataNode;
 
-    private final String str;
+import java.util.List;
+import java.util.Optional;
 
-    ModelPathElementType(String s) {
-        this.str = s;
+public class IndexDataPathElement implements DataPathElement {
+    private final int index;
+
+    public int getIndex() {
+        return index;
+    }
+
+    public IndexDataPathElement(int index) {
+        this.index = index;
     }
 
     public String toString() {
-        return str;
+        return "[" + index + "]";
+    }
+
+    @Override
+    public DatalPathElementType getType() {
+        return DatalPathElementType.INDEX;
+    }
+
+    @Override
+    public Optional<DataNode> interpret(DataNode node) {
+        return Convenience.buildOptional(w -> w.value = node.hasProperty(index) ? node.getProperty(index) : null);
+    }
+
+    @Override
+    public void interpret(List<DataPathElement> elementsWithoutThis) {
+        elementsWithoutThis.add(this);
     }
 }

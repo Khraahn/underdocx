@@ -25,7 +25,7 @@ SOFTWARE.
 package org.underdocx.enginelayers.odtengine.commands.internal.datapicker;
 
 import org.underdocx.common.types.Resource;
-import org.underdocx.enginelayers.modelengine.model.ModelNode;
+import org.underdocx.enginelayers.modelengine.model.DataNode;
 
 import java.util.Optional;
 
@@ -35,7 +35,7 @@ import java.util.Optional;
 public class ResourceDataPicker extends AbstractConvertDataPicker<Resource> {
 
     @Override
-    Optional<Resource> convert(ModelNode node) {
+    Optional<Resource> convert(DataNode node) {
         Object value = node.getValue();
         if (value instanceof Resource) {
             return Optional.of((Resource) value);

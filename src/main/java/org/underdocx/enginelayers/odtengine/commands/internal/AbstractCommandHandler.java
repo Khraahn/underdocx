@@ -29,14 +29,14 @@ import org.underdocx.enginelayers.baseengine.CommandHandlerResult;
 import org.underdocx.enginelayers.baseengine.EngineAccess;
 import org.underdocx.enginelayers.modelengine.MCommandHandler;
 import org.underdocx.enginelayers.modelengine.MSelection;
-import org.underdocx.enginelayers.modelengine.modelaccess.ModelAccess;
+import org.underdocx.enginelayers.modelengine.dataaccess.DataAccess;
 import org.underdocx.environment.err.Problems;
 
 
 public abstract class AbstractCommandHandler<C extends DocContainer<D>, P, D> implements MCommandHandler<C, P, D> {
 
     protected MSelection<C, P, D> selection = null;
-    protected ModelAccess modelAccess = null;
+    protected DataAccess dataAccess = null;
     protected EngineAccess<C, D> engineAccess = null;
     protected P placeholderData = null;
 
@@ -44,7 +44,7 @@ public abstract class AbstractCommandHandler<C extends DocContainer<D>, P, D> im
     @Override
     public CommandHandlerResult tryExecuteCommand(MSelection<C, P, D> selection) {
         this.selection = selection;
-        this.modelAccess = Problems.MISSING_VALUE.get(selection.getModelAccess(), "modelAccess");
+        this.dataAccess = Problems.MISSING_VALUE.get(selection.getDataAccess(), "modelAccess");
         this.engineAccess = selection.getEngineAccess();
         this.placeholderData = selection.getPlaceholderData();
         return tryExecuteCommand();

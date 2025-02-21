@@ -22,33 +22,46 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-package org.underdocx.enginelayers.modelengine.modelpath.elements;
+package org.underdocx.enginelayers.modelengine.model.simple;
 
-import org.underdocx.enginelayers.modelengine.model.ModelNode;
-
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
-public class BackModelPathElement implements ModelPathElement {
+public class ListDataNode extends AbstractPredefinedDataNode<List<AbstractDataNode<?>>> {
 
-    public String toString() {
-        return getType().toString();
+    public ListDataNode() {
+        this.containedValue = new ArrayList<>();
+    }
+
+
+    @Override
+    protected void removeChild(AbstractDataNode<?> node) {
+        getValue().remove(node);
     }
 
     @Override
-    public ModelPathElementType getType() {
-        return ModelPathElementType.BACK;
+    public ModelNodeType getType() {
+        return ModelNodeType.LIST;
     }
 
     @Override
-    public Optional<ModelNode> interpret(ModelNode node) {
-        return Optional.ofNullable(node.getParent());
+    public AbstractDataNode<?> getProperty(int index) {
+        return index < containedValue.size() ? containedValue.get(index) : null;
     }
 
     @Override
-    public void interpret(List<ModelPathElement> elementsWithoutThis) {
-        if (elementsWithoutThis.size() > 0) {
-            elementsWithoutThis.remove(elementsWithoutThis.size() - 1);
-        }
+    public boolean hasProperty(int index) {
+        return index < containedValue.size();
+    }
+
+    public <T extends AbstractPredefinedDataNode<?>> void add(T node) {
+        checkParentOfChild(node);
+        node.setParent(this);
+        containedValue.add(node);
+    }
+
+    @Override
+    public int getSize() {
+        return containedValue.size();
     }
 }

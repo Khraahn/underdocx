@@ -24,18 +24,18 @@ SOFTWARE.
 
 package org.underdocx.modelengine;
 
-import org.underdocx.AbstractTest;
-import org.underdocx.enginelayers.modelengine.model.ModelNode;
-import org.underdocx.enginelayers.modelengine.model.simple.MapModelNode;
-import org.underdocx.enginelayers.modelengine.model.simple.ModelBuilder;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.underdocx.AbstractTest;
+import org.underdocx.enginelayers.modelengine.model.DataNode;
+import org.underdocx.enginelayers.modelengine.model.simple.DataTreeBuilder;
+import org.underdocx.enginelayers.modelengine.model.simple.MapDataNode;
 
-public class ModelBuilderTest extends AbstractTest {
+public class DataTreeBuilderTest extends AbstractTest {
 
     @Test
-    public void testModelBuilder() {
-        ModelNode data = ModelBuilder
+    public void testBuilder() {
+        DataNode data = DataTreeBuilder
                 /*  */.beginMap() //
                 /*    */.add("projectName", "Project") //
                 /*    */.beginList("members") //
@@ -51,7 +51,7 @@ public class ModelBuilderTest extends AbstractTest {
                 /*  */.end() //
                 /*  */.build();
 
-        MapModelNode node = new MapModelNode("""
+        MapDataNode node = new MapDataNode("""
                 {
                     persons: [
                         {birthday: "1975-05-14"},

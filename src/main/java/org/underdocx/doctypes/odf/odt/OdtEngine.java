@@ -35,10 +35,10 @@ import org.underdocx.enginelayers.baseengine.internal.placeholdersprovider.dolla
 import org.underdocx.enginelayers.baseengine.internal.placeholdersprovider.dollar.image.SimpleDollarImagePlaceholdersProvider;
 import org.underdocx.enginelayers.modelengine.MCommandHandler;
 import org.underdocx.enginelayers.modelengine.ModelEngine;
-import org.underdocx.enginelayers.modelengine.model.ModelNode;
-import org.underdocx.enginelayers.modelengine.model.simple.AbstractPredefinedModelNode;
-import org.underdocx.enginelayers.modelengine.model.simple.LeafModelNode;
-import org.underdocx.enginelayers.modelengine.model.simple.ReflectionModelNode;
+import org.underdocx.enginelayers.modelengine.model.DataNode;
+import org.underdocx.enginelayers.modelengine.model.simple.AbstractPredefinedDataNode;
+import org.underdocx.enginelayers.modelengine.model.simple.LeafDataNode;
+import org.underdocx.enginelayers.modelengine.model.simple.ReflectionDataNode;
 import org.underdocx.enginelayers.odtengine.commands.*;
 import org.underdocx.enginelayers.odtengine.commands.forcommand.ForCommandHandler;
 import org.underdocx.enginelayers.odtengine.commands.forcommand.ForListCommandHandler;
@@ -151,37 +151,37 @@ public class OdtEngine {
         );
     }
 
-    public void setModel(ModelNode tree) {
+    public void setModel(DataNode tree) {
         engine.setModelRoot(tree);
     }
 
 
     public void setModel(Object object) {
-        engine.setModelRoot(new ReflectionModelNode(object));
+        engine.setModelRoot(new ReflectionDataNode(object));
     }
 
-    public void setModel(Object object, ReflectionModelNode.Resolver resolver) {
-        engine.setModelRoot(new ReflectionModelNode(object, resolver));
+    public void setModel(Object object, ReflectionDataNode.Resolver resolver) {
+        engine.setModelRoot(new ReflectionDataNode(object, resolver));
     }
 
-    public void pushVariable(String name, ModelNode tree) {
+    public void pushVariable(String name, DataNode tree) {
         engine.pushVariable(name, tree);
     }
 
     public void pushVariable(String name, Object object) {
-        engine.pushVariable(name, new ReflectionModelNode(object));
+        engine.pushVariable(name, new ReflectionDataNode(object));
     }
 
-    public void pushVariable(String name, Object object, ReflectionModelNode.Resolver resolver) {
-        engine.pushVariable(name, new ReflectionModelNode(object, resolver));
+    public void pushVariable(String name, Object object, ReflectionDataNode.Resolver resolver) {
+        engine.pushVariable(name, new ReflectionDataNode(object, resolver));
     }
 
     public void pushLeafVariable(String name, Object value) {
-        engine.pushVariable(name, new LeafModelNode<>(value));
+        engine.pushVariable(name, new LeafDataNode<>(value));
     }
 
     public void pushJsonVariable(String name, String json) throws JsonProcessingException {
-        pushVariable(name, AbstractPredefinedModelNode.createFromJson(json));
+        pushVariable(name, AbstractPredefinedDataNode.createFromJson(json));
     }
 
     public Optional<Problem> run() {

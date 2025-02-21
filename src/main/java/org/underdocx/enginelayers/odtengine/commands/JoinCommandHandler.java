@@ -28,7 +28,7 @@ import org.underdocx.common.doc.DocContainer;
 import org.underdocx.common.types.Regex;
 import org.underdocx.enginelayers.baseengine.CommandHandlerResult;
 import org.underdocx.enginelayers.baseengine.modifiers.stringmodifier.ReplaceWithTextModifier;
-import org.underdocx.enginelayers.modelengine.model.ModelNode;
+import org.underdocx.enginelayers.modelengine.model.DataNode;
 import org.underdocx.enginelayers.odtengine.commands.internal.AbstractTextualCommandHandler;
 import org.underdocx.enginelayers.odtengine.commands.internal.datapicker.IntegerDataPicker;
 import org.underdocx.enginelayers.odtengine.commands.internal.datapicker.ListDataPicker;
@@ -54,7 +54,7 @@ public class JoinCommandHandler<C extends DocContainer<D>, D> extends AbstractTe
     private static final PredefinedDataPicker<String> truncatedPicker = new StringConvertDataPicker().asPredefined("truncated");
 
 
-    private final MissingDataCommandModule<C, D, ModelNode> module = new MissingDataCommandModule(new Config());
+    private final MissingDataCommandModule<C, D, DataNode> module = new MissingDataCommandModule(new Config());
 
     public JoinCommandHandler() {
         super(KEYS);
@@ -62,7 +62,7 @@ public class JoinCommandHandler<C extends DocContainer<D>, D> extends AbstractTe
 
     @Override
     protected CommandHandlerResult tryExecuteTextualCommand() {
-        MissingDataCommandModuleResult<ModelNode> moduleResult = module.execute(selection);
+        MissingDataCommandModuleResult<DataNode> moduleResult = module.execute(selection);
         return switch (moduleResult.resultType) {
             case VALUE_RECEIVED ->
                     CommandHandlerResult.FACTORY.convert(new ReplaceWithTextModifier<C, ParametersPlaceholderData, D>().modify(selection, getText(moduleResult.value)));
@@ -71,14 +71,14 @@ public class JoinCommandHandler<C extends DocContainer<D>, D> extends AbstractTe
         };
     }
 
-    private String getText(ModelNode value) {
-        String separator = separatorPicker.pickData(modelAccess, placeholderData.getJson()).getOptionalValue().orElse(", ");
-        String lastSeparator = lastSeparatorPicker.pickData(modelAccess, placeholderData.getJson()).getOptionalValue().orElse(separator);
-        int limit = limitPicker.pickData(modelAccess, placeholderData.getJson()).getOptionalValue().orElse(-1);
-        String truncated = truncatedPicker.pickData(modelAccess, placeholderData.getJson()).getOptionalValue().orElse("...");
+    private String getText(DataNode value) {
+        String separator = separatorPicker.pickData(dataAccess, placeholderData.getJson()).getOptionalValue().orElse(", ");
+        String lastSeparator = lastSeparatorPicker.pickData(dataAccess, placeholderData.getJson()).getOptionalValue().orElse(separator);
+        int limit = limitPicker.pickData(dataAccess, placeholderData.getJson()).getOptionalValue().orElse(-1);
+        String truncated = truncatedPicker.pickData(dataAccess, placeholderData.getJson()).getOptionalValue().orElse("...");
         List<String> stringList = new ArrayList<>();
         for (int i = 0; i < value.getSize(); i++) {
-            ModelNode item = value.getProperty(i);
+            DataNode item = value.getProperty(i);
             if (item != null && !item.isNull()) {
                 stringList.add(item.getValue().toString());
             }
@@ -104,15 +104,15 @@ public class JoinCommandHandler<C extends DocContainer<D>, D> extends AbstractTe
     }
 
 
-    private static class Config implements MissingDataCommandModuleConfig<ModelNode> {
+    private static class Config implements MissingDataCommandModuleConfig<DataNode> {
         @Override
-        public PredefinedDataPicker<ModelNode> getDataPicker() {
+        public PredefinedDataPicker<DataNode> getDataPicker() {
             return new ListDataPicker().asPredefined("value");
         }
 
         @Override
-        public Predicate<ModelNode> getIsEmptyPredicate() {
-            return (ModelNode node) -> node.getSize() == 0;
+        public Predicate<DataNode> getIsEmptyPredicate() {
+            return (DataNode node) -> node.getSize() == 0;
         }
     }
 }

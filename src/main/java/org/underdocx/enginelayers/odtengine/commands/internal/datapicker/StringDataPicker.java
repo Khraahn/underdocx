@@ -25,22 +25,22 @@ SOFTWARE.
 package org.underdocx.enginelayers.odtengine.commands.internal.datapicker;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import org.underdocx.enginelayers.modelengine.model.ModelNode;
-import org.underdocx.enginelayers.modelengine.model.simple.LeafModelNode;
-import org.underdocx.enginelayers.modelengine.modelaccess.ModelAccess;
+import org.underdocx.enginelayers.modelengine.dataaccess.DataAccess;
+import org.underdocx.enginelayers.modelengine.model.DataNode;
+import org.underdocx.enginelayers.modelengine.model.simple.LeafDataNode;
 
-public class StringDataPicker implements DataPicker<ModelNode>, ExtendedDataPicker<ModelNode> {
+public class StringDataPicker implements DataPicker<DataNode>, ExtendedDataPicker<DataNode> {
     @Override
-    public DataPickerResult<ModelNode> pickData(String name) {
+    public DataPickerResult<DataNode> pickData(String name) {
         if (name == null) {
             return DataPickerResult.unresolvedMissingValue(DataPickerResult.ResultSource.UNKNOWN);
         } else {
-            return DataPickerResult.resolvedUnknownSource(new LeafModelNode<>(name));
+            return DataPickerResult.resolvedUnknownSource(new LeafDataNode<>(name));
         }
     }
 
     @Override
-    public DataPickerResult<ModelNode> pickData(String name, ModelAccess modelAccess, JsonNode jsonNode) {
+    public DataPickerResult<DataNode> pickData(String name, DataAccess dataAccess, JsonNode jsonNode) {
         return pickData(name);
     }
 

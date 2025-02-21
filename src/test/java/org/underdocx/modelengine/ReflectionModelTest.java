@@ -24,14 +24,14 @@ SOFTWARE.
 
 package org.underdocx.modelengine;
 
+import org.junit.jupiter.api.Test;
 import org.underdocx.AbstractOdtTest;
 import org.underdocx.doctypes.odf.odt.OdtContainer;
 import org.underdocx.doctypes.odf.odt.OdtEngine;
-import org.underdocx.enginelayers.modelengine.model.ModelNode;
-import org.underdocx.enginelayers.modelengine.model.simple.LeafModelNode;
+import org.underdocx.enginelayers.modelengine.model.DataNode;
+import org.underdocx.enginelayers.modelengine.model.simple.LeafDataNode;
+import org.underdocx.enginelayers.modelengine.model.simple.ReflectionDataNode;
 import org.underdocx.enginelayers.modelengine.model.simple.ReflectionInterceptorRegistry;
-import org.underdocx.enginelayers.modelengine.model.simple.ReflectionModelNode;
-import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
 import java.util.List;
@@ -43,7 +43,7 @@ public class ReflectionModelTest extends AbstractOdtTest {
 
     @Test
     public void testReflectionModel() {
-        ModelNode node = new ReflectionModelNode(new TestClassA());
+        DataNode node = new ReflectionDataNode(new TestClassA());
         assertThat(node.getProperty("a").getValue()).isEqualTo("Hallo");
         assertThat(node.getProperty("b").getProperty("c").getProperty(0).getValue()).isEqualTo("Item1");
         assertThat(node.getProperty("b").getProperty("c").getProperty(1).getValue()).isEqualTo("Item2");
@@ -87,7 +87,7 @@ public class ReflectionModelTest extends AbstractOdtTest {
         OdtEngine engine = new OdtEngine(doc);
         engine.setModel(new TestClassA(),
                 (object, name) -> name.equals("x")
-                        ? java.util.Optional.of(new LeafModelNode("42"))
+                        ? java.util.Optional.of(new LeafDataNode("42"))
                         : Optional.empty());
         engine.run();
         assertContains(doc, "Item1");
@@ -102,8 +102,8 @@ public class ReflectionModelTest extends AbstractOdtTest {
                 ${*b.c[0]}
                 """;
         OdtContainer doc = new OdtContainer(content);
-        ReflectionModelNode.Resolver resolver = (object, name) -> name.equals("x")
-                ? java.util.Optional.of(new LeafModelNode("42"))
+        ReflectionDataNode.Resolver resolver = (object, name) -> name.equals("x")
+                ? java.util.Optional.of(new LeafDataNode("42"))
                 : Optional.empty();
         OdtEngine engine = new OdtEngine(doc);
         engine.setModel(new TestClassA(), resolver);
@@ -122,7 +122,7 @@ public class ReflectionModelTest extends AbstractOdtTest {
         OdtEngine engine = new OdtEngine(doc);
         engine.setModel(new TestClassA());
         ReflectionInterceptorRegistry.DEFAULT.register(TestClassA.class, "c",
-                (reflectionObject, requestedProperty) -> Optional.of(new LeafModelNode("Hugo")));
+                (reflectionObject, requestedProperty) -> Optional.of(new LeafDataNode("Hugo")));
         engine.run();
         assertContains(doc, "Hallo");
         assertContains(doc, "Hugo");

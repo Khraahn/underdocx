@@ -48,9 +48,9 @@ public class DateCommandHandler<C extends DocContainer<D>, D> extends AbstractTe
 
     @Override
     protected CommandHandlerResult tryExecuteTextualCommand() {
-        String inFormat = inputFormatDataPicker.pickData(modelAccess, placeholderData.getJson()).getOptionalValue().orElse("yyyy-MM-dd");
-        String outFormat = outputFormatDataPicker.pickData(modelAccess, placeholderData.getJson()).getOptionalValue().orElse("yyyy-MM-dd");
-        String dateStr = valueDataPicker.pickData(modelAccess, placeholderData.getJson()).getOptionalValue().orElse(null);
+        String inFormat = inputFormatDataPicker.pickData(dataAccess, placeholderData.getJson()).getOptionalValue().orElse("yyyy-MM-dd");
+        String outFormat = outputFormatDataPicker.pickData(dataAccess, placeholderData.getJson()).getOptionalValue().orElse("yyyy-MM-dd");
+        String dateStr = valueDataPicker.pickData(dataAccess, placeholderData.getJson()).getOptionalValue().orElse(null);
         LocalDate date = dateStr == null ? LocalDate.now() : LocalDate.parse(dateStr, DateTimeFormatter.ofPattern(inFormat));
         String result = date.format(DateTimeFormatter.ofPattern(outFormat));
         new ReplaceWithTextModifier<C, ParametersPlaceholderData, D>().modify(selection, result);

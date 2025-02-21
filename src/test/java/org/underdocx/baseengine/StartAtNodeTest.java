@@ -33,7 +33,7 @@ import org.underdocx.common.tree.nodepath.TreeNodeCollector;
 import org.underdocx.doctypes.odf.odt.OdtContainer;
 import org.underdocx.doctypes.odf.odt.OdtEngine;
 import org.underdocx.enginelayers.baseengine.CommandHandlerResult;
-import org.underdocx.enginelayers.modelengine.model.simple.LeafModelNode;
+import org.underdocx.enginelayers.modelengine.model.simple.LeafDataNode;
 import org.underdocx.enginelayers.odtengine.commands.internal.AbstractTextualCommandHandler;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
@@ -49,9 +49,9 @@ public class StartAtNodeTest extends AbstractOdtTest {
 
         @Override
         protected CommandHandlerResult tryExecuteTextualCommand() {
-            int counter = (Integer) (selection.getModelAccess().get().getVariable("testcounter").orElse(new LeafModelNode<>(0))).getValue();
+            int counter = (Integer) (selection.getDataAccess().get().getVariable("testcounter").orElse(new LeafDataNode<>(0))).getValue();
             counter++;
-            selection.getModelAccess().get().pushVariable("testcounter", new LeafModelNode<>(counter));
+            selection.getDataAccess().get().pushVariable("testcounter", new LeafDataNode<>(counter));
             return CommandHandlerResult.EXECUTED_PROCEED;
         }
     }

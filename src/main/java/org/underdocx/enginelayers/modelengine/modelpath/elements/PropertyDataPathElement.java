@@ -22,14 +22,42 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-package org.underdocx.enginelayers.modelengine.modelpath.parser;
+package org.underdocx.enginelayers.modelengine.modelpath.elements;
 
-public class ModelPathParseException extends Exception {
-    public ModelPathParseException(String message, Exception e) {
-        super(message, e);
+import org.underdocx.common.tools.Convenience;
+import org.underdocx.enginelayers.modelengine.model.DataNode;
+
+import java.util.List;
+import java.util.Optional;
+
+public class PropertyDataPathElement implements DataPathElement {
+    private final String property;
+
+    public String getProperty() {
+        return property;
     }
 
-    public ModelPathParseException(String message) {
-        super(message);
+    public PropertyDataPathElement(String property) {
+        this.property = property;
+    }
+
+    public String toString() {
+        return property;
+    }
+
+
+    @Override
+    public DatalPathElementType getType() {
+        return DatalPathElementType.PROPERTY;
+    }
+
+    @Override
+    public Optional<DataNode> interpret(DataNode node) {
+        return Convenience.buildOptional(w -> w.value = node.hasProperty(property) ? node.getProperty(property) : null);
+    }
+
+    @Override
+    public void interpret(List<DataPathElement> elementsWithoutThis) {
+        elementsWithoutThis.add(this);
     }
 }

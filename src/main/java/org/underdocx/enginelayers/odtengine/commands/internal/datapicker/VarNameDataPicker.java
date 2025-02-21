@@ -24,19 +24,19 @@ SOFTWARE.
 
 package org.underdocx.enginelayers.odtengine.commands.internal.datapicker;
 
-import org.underdocx.enginelayers.modelengine.model.ModelNode;
+import org.underdocx.enginelayers.modelengine.model.DataNode;
 
 import java.util.Optional;
 
-public class VarNameDataPicker extends AbstractDataPicker<ModelNode, Object> {
+public class VarNameDataPicker extends AbstractDataPicker<DataNode, Object> {
 
     public VarNameDataPicker() {
         super(null, null);
     }
 
     @Override
-    protected DataPickerResult<ModelNode> pickData(String variableName) {
-        Optional<ModelNode> variable = model.getVariable(variableName);
+    protected DataPickerResult<DataNode> pickData(String variableName) {
+        Optional<DataNode> variable = model.getVariable(variableName);
         if (variable.isEmpty()) {
             return DataPickerResult.unresolvedMissingValue(DataPickerResult.ResultSource.VAR);
         }

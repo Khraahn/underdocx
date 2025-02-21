@@ -25,22 +25,22 @@ SOFTWARE.
 package org.underdocx.enginelayers.odtengine.commands.internal.datapicker;
 
 import org.underdocx.common.types.Pair;
-import org.underdocx.enginelayers.modelengine.model.ModelNode;
+import org.underdocx.enginelayers.modelengine.model.DataNode;
 
 import java.util.Optional;
 
-public class ModelNameDataPicker extends AbstractDataPicker<ModelNode, Object> {
+public class ModelNameDataPicker extends AbstractDataPicker<DataNode, Object> {
 
     public ModelNameDataPicker() {
         super(null, null);
     }
 
     @Override
-    protected DataPickerResult<ModelNode> pickData(String name) {
+    protected DataPickerResult<DataNode> pickData(String name) {
         if (name == null) {
             name = "";
         }
-        Pair<String, Optional<ModelNode>> modelNode = model.interpret(name, false);
+        Pair<String, Optional<DataNode>> modelNode = model.interpret(name, false);
         if (modelNode.right.isEmpty()) {
             return DataPickerResult.unresolvedMissingValue(DataPickerResult.ResultSource.MODEL);
         }

@@ -31,7 +31,7 @@ import org.underdocx.common.types.Regex;
 import org.underdocx.enginelayers.baseengine.CommandHandlerResult;
 import org.underdocx.enginelayers.baseengine.SelectedNode;
 import org.underdocx.enginelayers.baseengine.modifiers.ModifierNodeResult;
-import org.underdocx.enginelayers.modelengine.model.ModelNode;
+import org.underdocx.enginelayers.modelengine.model.DataNode;
 import org.underdocx.enginelayers.odtengine.commands.ifcondition.ConditionAttributeInterpreter;
 import org.underdocx.enginelayers.odtengine.commands.internal.AbstractTextualCommandHandler;
 import org.underdocx.enginelayers.odtengine.commands.internal.AreaTools;
@@ -54,7 +54,7 @@ public class IfCommandHandler<C extends DocContainer<D>, D> extends AbstractText
     public static final String END_KEY = "EndIf";
     public static final Regex KEYS = new Regex(BEGIN_KEY + "|" + END_KEY);
 
-    private static final ExtendedDataPicker<ModelNode> dataPicker = new NameDataPicker();
+    private static final ExtendedDataPicker<DataNode> dataPicker = new NameDataPicker();
     private static final ConditionAttributeInterpreter conditionInterpreter = new ConditionAttributeInterpreter();
 
     public IfCommandHandler() {
@@ -70,7 +70,7 @@ public class IfCommandHandler<C extends DocContainer<D>, D> extends AbstractText
                         AreaTools.findArea(selection.getEngineAccess().lookAhead(null), selection, END_KEY), END_KEY);
         boolean match = conditionInterpreter.interpretAttributes(attributes, valueResolver -> {
             String property = valueResolver.left;
-            ModelNode foundNode = dataPicker.pickData(property, modelAccess, attributes).getOptionalValue().orElse(null);
+            DataNode foundNode = dataPicker.pickData(property, dataAccess, attributes).getOptionalValue().orElse(null);
             Object toCompareWith = valueResolver.right;
             return compare(foundNode, toCompareWith);
         });
@@ -81,7 +81,7 @@ public class IfCommandHandler<C extends DocContainer<D>, D> extends AbstractText
         return CommandHandlerResult.FACTORY.convert(modiferResult);
     }
 
-    private boolean compare(ModelNode foundNode, Object toCompareWith) {
+    private boolean compare(DataNode foundNode, Object toCompareWith) {
         // ${if $toCheck:null}
         if (toCompareWith == null) {
             return foundNode == null || foundNode.isNull();
@@ -91,9 +91,9 @@ public class IfCommandHandler<C extends DocContainer<D>, D> extends AbstractText
         }
         // ${if $toCheck:[]}
         if (toCompareWith instanceof Collection<?> collection) {
-            return (collection.size() == 0 && foundNode.getType() == ModelNode.ModelNodeType.LIST && foundNode.getSize() == 0);
+            return (collection.size() == 0 && foundNode.getType() == DataNode.ModelNodeType.LIST && foundNode.getSize() == 0);
         }
-        if (foundNode.getType() != ModelNode.ModelNodeType.LEAF) {
+        if (foundNode.getType() != DataNode.ModelNodeType.LEAF) {
             return false;
         }
         // ${if $toCheck:2}

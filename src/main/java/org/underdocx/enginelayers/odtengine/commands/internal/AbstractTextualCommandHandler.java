@@ -31,7 +31,7 @@ import org.underdocx.common.types.Pair;
 import org.underdocx.common.types.Regex;
 import org.underdocx.enginelayers.baseengine.CommandHandlerResult;
 import org.underdocx.enginelayers.baseengine.SelectedNode;
-import org.underdocx.enginelayers.modelengine.model.ModelNode;
+import org.underdocx.enginelayers.modelengine.model.DataNode;
 import org.underdocx.enginelayers.odtengine.commands.internal.datapicker.AttributeNodeDataPicker;
 import org.underdocx.enginelayers.odtengine.commands.internal.datapicker.StringConvertDataPicker;
 import org.underdocx.enginelayers.parameterengine.ParametersPlaceholderData;
@@ -57,11 +57,11 @@ public abstract class AbstractTextualCommandHandler<C extends DocContainer<D>, D
     }
 
     protected Optional<String> resolveStringByAttr(String attrName) {
-        return new StringConvertDataPicker().pickData(attrName, modelAccess, placeholderData.getJson()).getOptionalValue();
+        return new StringConvertDataPicker().pickData(attrName, dataAccess, placeholderData.getJson()).getOptionalValue();
     }
 
-    protected Optional<ModelNode> resolveNodeByAttr(String attrName) {
-        return new AttributeNodeDataPicker().pickData(attrName, modelAccess, placeholderData.getJson()).getOptionalValue();
+    protected Optional<DataNode> resolveNodeByAttr(String attrName) {
+        return new AttributeNodeDataPicker().pickData(attrName, dataAccess, placeholderData.getJson()).getOptionalValue();
     }
 
 

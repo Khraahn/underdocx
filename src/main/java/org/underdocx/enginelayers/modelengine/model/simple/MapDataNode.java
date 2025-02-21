@@ -29,33 +29,33 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-public class MapModelNode extends AbstractPredefinedModelNode<Map<String, AbstractModelNode<?>>> {
+public class MapDataNode extends AbstractPredefinedDataNode<Map<String, AbstractDataNode<?>>> {
 
 
-    public MapModelNode() {
+    public MapDataNode() {
         this.containedValue = new LinkedHashMap<>();
     }
 
     @SuppressWarnings("OptionalGetWithoutIsPresent")
-    public MapModelNode(InputStream is) {
+    public MapDataNode(InputStream is) {
         this(jsonCodec.getAsMap(is).get());
     }
 
     @SuppressWarnings("OptionalGetWithoutIsPresent")
-    public MapModelNode(String jsonString) {
+    public MapDataNode(String jsonString) {
         this(jsonCodec.getAsMap(jsonString).get());
     }
 
-    public MapModelNode(Map<String, Object> map) {
+    public MapDataNode(Map<String, Object> map) {
         if (map != null)
             //noinspection unchecked
-            this.containedValue = (Map<String, AbstractModelNode<?>>) create(map).containedValue;
+            this.containedValue = (Map<String, AbstractDataNode<?>>) create(map).containedValue;
         else
             this.containedValue = new LinkedHashMap<>();
     }
 
     @Override
-    protected void removeChild(AbstractModelNode<?> node) {
+    protected void removeChild(AbstractDataNode<?> node) {
         new HashMap<>(getValue()).forEach((key, value) -> {
             if (value == node) getValue().remove(key);
         });
@@ -67,7 +67,7 @@ public class MapModelNode extends AbstractPredefinedModelNode<Map<String, Abstra
     }
 
     @Override
-    public AbstractModelNode<?> getProperty(String name) {
+    public AbstractDataNode<?> getProperty(String name) {
         return containedValue.get(name);
     }
 
@@ -76,7 +76,7 @@ public class MapModelNode extends AbstractPredefinedModelNode<Map<String, Abstra
         return getValue().containsKey(name);
     }
 
-    public void add(String property, AbstractModelNode<?> node) {
+    public void add(String property, AbstractDataNode<?> node) {
         checkParentOfChild(node);
         node.setParent(this);
         containedValue.put(property, node);

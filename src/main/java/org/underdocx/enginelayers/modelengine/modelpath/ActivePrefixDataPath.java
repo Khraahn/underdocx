@@ -24,36 +24,36 @@ SOFTWARE.
 
 package org.underdocx.enginelayers.modelengine.modelpath;
 
-import org.underdocx.enginelayers.modelengine.modelpath.elements.ModelPathElement;
-import org.underdocx.enginelayers.modelengine.modelpath.elements.ModelPathElementType;
-import org.underdocx.enginelayers.modelengine.modelpath.elements.PropertyModelPathElement;
+import org.underdocx.enginelayers.modelengine.modelpath.elements.DataPathElement;
+import org.underdocx.enginelayers.modelengine.modelpath.elements.DatalPathElementType;
+import org.underdocx.enginelayers.modelengine.modelpath.elements.PropertyDataPathElement;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Supplier;
 
-public class ActivePrefixModelPath extends ModelPath {
+public class ActivePrefixDataPath extends DataPath {
 
     private Supplier<String> prefixSupplier = null;
 
-    public ActivePrefixModelPath(Supplier<String> prefixSupplier, List<ModelPathElement> elements) {
+    public ActivePrefixDataPath(Supplier<String> prefixSupplier, List<DataPathElement> elements) {
         super(elements);
         setPrefix(prefixSupplier);
     }
 
-    public ActivePrefixModelPath(Supplier<String> prefixSupplier, ModelPath modelPath) {
-        this(prefixSupplier, modelPath.elements);
+    public ActivePrefixDataPath(Supplier<String> prefixSupplier, DataPath dataPath) {
+        this(prefixSupplier, dataPath.elements);
     }
 
-    public ActivePrefixModelPath(String prefix, ModelPath modelPath) {
-        this(() -> prefix, modelPath.elements);
+    public ActivePrefixDataPath(String prefix, DataPath dataPath) {
+        this(() -> prefix, dataPath.elements);
     }
 
-    public ActivePrefixModelPath(Supplier<String> prefixSupplier, String pathToParse) {
-        this(prefixSupplier, new ModelPath(pathToParse));
+    public ActivePrefixDataPath(Supplier<String> prefixSupplier, String pathToParse) {
+        this(prefixSupplier, new DataPath(pathToParse));
     }
 
-    public ActivePrefixModelPath(ActivePrefixModelPath toClone) {
+    public ActivePrefixDataPath(ActivePrefixDataPath toClone) {
         this(toClone.prefixSupplier, new ArrayList<>(toClone.elements));
     }
 
@@ -68,19 +68,19 @@ public class ActivePrefixModelPath extends ModelPath {
 
     @Override
     public void interpret(String path) {
-        List<ModelPathElement> subPath = new ModelPath(path).getElements();
+        List<DataPathElement> subPath = new DataPath(path).getElements();
         String prefix = prefixSupplier != null ? prefixSupplier.get() : null;
         if (prefix != null
                 && subPath.size() > 0
-                && subPath.get(0).getType() == ModelPathElementType.PROPERTY
-                && ((PropertyModelPathElement) subPath.get(0)).getProperty().equals(prefix)) {
+                && subPath.get(0).getType() == DatalPathElementType.PROPERTY
+                && ((PropertyDataPathElement) subPath.get(0)).getProperty().equals(prefix)) {
             subPath.remove(0);
         }
         super.interpret(subPath);
     }
 
-    public ModelPath clone() {
-        return new ActivePrefixModelPath(this);
+    public DataPath clone() {
+        return new ActivePrefixDataPath(this);
     }
 
 }

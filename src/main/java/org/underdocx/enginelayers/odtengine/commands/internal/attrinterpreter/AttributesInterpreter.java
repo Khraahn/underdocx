@@ -26,8 +26,8 @@ package org.underdocx.enginelayers.odtengine.commands.internal.attrinterpreter;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import org.underdocx.common.codec.JsonCodec;
-import org.underdocx.enginelayers.modelengine.model.ModelNode;
-import org.underdocx.enginelayers.modelengine.model.simple.AbstractPredefinedModelNode;
+import org.underdocx.enginelayers.modelengine.model.DataNode;
+import org.underdocx.enginelayers.modelengine.model.simple.AbstractPredefinedDataNode;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -57,12 +57,12 @@ public interface AttributesInterpreter<R, C> {
                 json -> ifIs(json.get(property), jp -> jp != null, jp -> w.value = jp)));
     }
 
-    static Optional<ModelNode> getModelNodeAttribute(JsonNode attributes, String property) {
+    static Optional<DataNode> getModelNodeAttribute(JsonNode attributes, String property) {
         Optional<JsonNode> attrValue = getComplexAttribute(attributes, property);
         if (attrValue.isPresent()) {
             JsonNode json = attrValue.get();
             Object obj = new JsonCodec().getAsObject(json);
-            return Optional.of(AbstractPredefinedModelNode.createRootNode(obj));
+            return Optional.of(AbstractPredefinedDataNode.createRootNode(obj));
         }
         return Optional.empty();
     }

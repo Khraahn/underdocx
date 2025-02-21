@@ -27,22 +27,22 @@ package org.underdocx.enginelayers.modelengine.modelpath.parser;
 import org.underdocx.common.codec.Codec;
 import org.underdocx.common.tools.Convenience;
 import org.underdocx.common.types.Wrapper;
-import org.underdocx.enginelayers.modelengine.modelpath.ModelPath;
+import org.underdocx.enginelayers.modelengine.modelpath.DataPath;
 import org.underdocx.enginelayers.modelengine.modelpath.elements.*;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.StringTokenizer;
 
-public class ModelPathCodec implements Codec<ModelPath> {
+public class DataPathCodec implements Codec<DataPath> {
 
     @Override
-    public ModelPath parse(String string) throws ModelPathParseException {
-        return new ModelPath(ModelPathParser.parse(string));
+    public DataPath parse(String string) throws DataPathParseException {
+        return new DataPath(ModelPathParser.parse(string));
     }
 
     @Override
-    public String getTextContent(ModelPath data) {
+    public String getTextContent(DataPath data) {
         return Convenience.buildString(builder -> {
             Wrapper<String> delim = new Wrapper<>("");
             data.getElements().forEach(element -> {
@@ -63,7 +63,7 @@ public class ModelPathCodec implements Codec<ModelPath> {
 
         private final String toParse;
         private String lastString = null;
-        private final List<ModelPathElement> result = new ArrayList<>();
+        private final List<DataPathElement> result = new ArrayList<>();
         private State state = State.NORMAL;
 
 
@@ -71,11 +71,11 @@ public class ModelPathCodec implements Codec<ModelPath> {
             this.toParse = toParse;
         }
 
-        public static List<ModelPathElement> parse(String toParse) throws ModelPathParseException {
+        public static List<DataPathElement> parse(String toParse) throws DataPathParseException {
             return new ModelPathParser(toParse).parse();
         }
 
-        private List<ModelPathElement> parse() throws ModelPathParseException {
+        private List<DataPathElement> parse() throws DataPathParseException {
             if (!toParse.isBlank()) {
                 StringTokenizer t = new StringTokenizer(toParse, "<^[].", true);
                 while (t.hasMoreTokens()) {
@@ -96,71 +96,71 @@ public class ModelPathCodec implements Codec<ModelPath> {
 
         private void storeProperty() {
             if (lastString != null) {
-                result.add(new PropertyModelPathElement(lastString));
+                result.add(new PropertyDataPathElement(lastString));
                 lastString = null;
             }
         }
 
-        public void storeIndex() throws ModelPathParseException {
+        public void storeIndex() throws DataPathParseException {
             if (lastString != null) {
                 try {
-                    result.add(new IndexModelPathElement(Integer.parseInt(lastString)));
+                    result.add(new IndexDataPathElement(Integer.parseInt(lastString)));
                     lastString = null;
                 } catch (Exception e) {
-                    throw new ModelPathParseException("Expected index number", e);
+                    throw new DataPathParseException("Expected index number", e);
                 }
             }
         }
 
-        private void parseBack() throws ModelPathParseException {
+        private void parseBack() throws DataPathParseException {
             switch (state) {
                 case NORMAL, INDEX_ENDED -> {
                     storeProperty();
-                    result.add(new BackModelPathElement());
+                    result.add(new BackDataPathElement());
                     state = State.NORMAL;
                 }
-                default -> throw new ModelPathParseException("Unexpected back character");
+                default -> throw new DataPathParseException("Unexpected back character");
             }
         }
 
-        private void parseRoot() throws ModelPathParseException {
+        private void parseRoot() throws DataPathParseException {
             switch (state) {
                 case NORMAL, INDEX_ENDED -> {
                     storeProperty();
-                    result.add(new RootModelPathElement());
+                    result.add(new RootDataPathElement());
                     state = State.NORMAL;
                 }
-                default -> throw new ModelPathParseException("Unexpected root character");
+                default -> throw new DataPathParseException("Unexpected root character");
             }
         }
 
-        private void parseBeginIndex() throws ModelPathParseException {
+        private void parseBeginIndex() throws DataPathParseException {
             switch (state) {
                 case NORMAL, INDEX_ENDED -> {
                     storeProperty();
                     state = State.INDEX_STARTED;
                 }
-                default -> throw new ModelPathParseException("Unexpected index start");
+                default -> throw new DataPathParseException("Unexpected index start");
             }
         }
 
-        private void parseEndIndex() throws ModelPathParseException {
+        private void parseEndIndex() throws DataPathParseException {
             switch (state) {
                 case INDEX_STARTED -> {
                     storeIndex();
                     state = State.INDEX_ENDED;
                 }
-                default -> throw new ModelPathParseException("Unexpected index end");
+                default -> throw new DataPathParseException("Unexpected index end");
             }
         }
 
-        private void parseSeparator() throws ModelPathParseException {
+        private void parseSeparator() throws DataPathParseException {
             switch (state) {
                 case NORMAL, INDEX_ENDED -> {
                     storeProperty();
                     state = State.NORMAL;
                 }
-                default -> throw new ModelPathParseException("Unexpected separator");
+                default -> throw new DataPathParseException("Unexpected separator");
             }
         }
 

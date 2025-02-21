@@ -24,84 +24,84 @@ SOFTWARE.
 
 package org.underdocx.enginelayers.modelengine.model.simple;
 
-import org.underdocx.enginelayers.modelengine.model.ModelNode;
+import org.underdocx.enginelayers.modelengine.model.DataNode;
 
 /**
- * This class provides a fluent API to build up {@link ModelNode}-data-trees
+ * This class provides a fluent API to build up {@link DataNode}-data-trees
  */
-public class ModelBuilder {
+public class DataTreeBuilder {
 
-    private ModelBuilder() {
+    private DataTreeBuilder() {
     }
 
     /**
      * Creates a root ModelNode that represents a List
      *
-     * @return a {@link ModelNodeWrapper} that contains a {@link ListModelNode}
+     * @return a {@link DataNodeWrapper} that contains a {@link ListDataNode}
      */
-    public static ModelNodeWrapper beginList() {
-        return new ModelNodeWrapper(new ListModelNode());
+    public static DataNodeWrapper beginList() {
+        return new DataNodeWrapper(new ListDataNode());
     }
 
     /**
      * Creates a root ModelNode that represents a Map.
      *
-     * @return a {@link ModelNodeWrapper} that contains a {@link MapModelNode}
+     * @return a {@link DataNodeWrapper} that contains a {@link MapDataNode}
      */
-    public static ModelNodeWrapper beginMap() {
-        return new ModelNodeWrapper(new MapModelNode());
+    public static DataNodeWrapper beginMap() {
+        return new DataNodeWrapper(new MapDataNode());
     }
 
     /**
-     * Fluent API to build up a {@link ModelNode}-data-tree
+     * Fluent API to build up a {@link DataNode}-data-tree
      * Use {@link #build()} to finish the tree construction, use
      * the begin*-Methods to increase the tree depth, use end*
      * to decrease the tree depth and use the
      * add methods to add data on the same level.
      */
-    public static class ModelNodeWrapper {
-        private ModelNode currentNode;
-        private ModelNodeWrapper parent = null;
+    public static class DataNodeWrapper {
+        private DataNode currentNode;
+        private DataNodeWrapper parent = null;
 
-        protected ModelNodeWrapper(ModelNode node) {
+        protected DataNodeWrapper(DataNode node) {
             currentNode = node;
         }
 
-        protected ModelNodeWrapper(ModelNodeWrapper parent, ModelNode node) {
+        protected DataNodeWrapper(DataNodeWrapper parent, DataNode node) {
             currentNode = node;
             this.parent = parent;
         }
 
-        public ModelNodeWrapper beginList(String listName) {
-            if (currentNode instanceof MapModelNode mapModelNode) {
-                ListModelNode newList = new ListModelNode();
+        public DataNodeWrapper beginList(String listName) {
+            if (currentNode instanceof MapDataNode mapModelNode) {
+                ListDataNode newList = new ListDataNode();
                 mapModelNode.add(listName, newList);
-                return new ModelNodeWrapper(this, newList);
+                return new DataNodeWrapper(this, newList);
             } else return unsupportedCall();
         }
 
-        public ModelNodeWrapper beginList() {
-            if (currentNode instanceof ListModelNode listModelNode) {
-                ListModelNode newList = new ListModelNode();
+        public DataNodeWrapper beginList() {
+            if (currentNode instanceof ListDataNode listModelNode) {
+                ListDataNode newList = new ListDataNode();
                 listModelNode.add(newList);
-                return new ModelNodeWrapper(this, newList);
+                return new DataNodeWrapper(this, newList);
             } else return unsupportedCall();
         }
 
 
-        public ModelNodeWrapper beginMap(String mapName) {
-            if (currentNode instanceof MapModelNode mapModelNode) {
-                MapModelNode newMap = new MapModelNode();
+        public DataNodeWrapper beginMap(String mapName) {
+            if (currentNode instanceof MapDataNode mapModelNode) {
+                MapDataNode newMap = new MapDataNode();
                 mapModelNode.add(mapName, newMap);
-                return new ModelNodeWrapper(this, newMap);
+                return new DataNodeWrapper(this, newMap);
             } else return unsupportedCall();
         }
 
-        public ModelNodeWrapper beginMap() {
-            if (currentNode instanceof ListModelNode mapModelNode) {
-                MapModelNode newMap = new MapModelNode();
+        public DataNodeWrapper beginMap() {
+            if (currentNode instanceof ListDataNode mapModelNode) {
+                MapDataNode newMap = new MapDataNode();
                 mapModelNode.add(newMap);
-                return new ModelNodeWrapper(this, newMap);
+                return new DataNodeWrapper(this, newMap);
             } else return unsupportedCall();
         }
 
@@ -109,55 +109,55 @@ public class ModelBuilder {
             throw new UnsupportedOperationException("invalid method call, adding nodes with name only allowed for map node, adding nodes without name only allowed for list nodes");
         }
 
-        public ModelNodeWrapper add(String name, String value) {
+        public DataNodeWrapper add(String name, String value) {
             return addObj(name, value);
         }
 
-        public ModelNodeWrapper add(String value) {
+        public DataNodeWrapper add(String value) {
             return addObj(value);
         }
 
-        public ModelNodeWrapper add(String name, int value) {
+        public DataNodeWrapper add(String name, int value) {
             return addObj(name, value);
         }
 
-        public ModelNodeWrapper add(int value) {
+        public DataNodeWrapper add(int value) {
             return addObj(value);
         }
 
-        public ModelNodeWrapper add(String name, boolean value) {
+        public DataNodeWrapper add(String name, boolean value) {
             return addObj(name, value);
         }
 
-        public ModelNodeWrapper add(boolean value) {
+        public DataNodeWrapper add(boolean value) {
             return addObj(value);
         }
 
-        public ModelNodeWrapper add(String name, double value) {
+        public DataNodeWrapper add(String name, double value) {
             return addObj(name, value);
         }
 
-        public ModelNodeWrapper add(double value) {
+        public DataNodeWrapper add(double value) {
             return addObj(value);
         }
 
 
-        public ModelNodeWrapper addObj(String name, Object value) {
-            if (currentNode instanceof MapModelNode mapModelNode) {
-                mapModelNode.add(name, new LeafModelNode<>(value));
+        public DataNodeWrapper addObj(String name, Object value) {
+            if (currentNode instanceof MapDataNode mapModelNode) {
+                mapModelNode.add(name, new LeafDataNode<>(value));
                 return this;
             } else return unsupportedCall();
         }
 
-        public ModelNodeWrapper addObj(Object value) {
-            if (currentNode instanceof ListModelNode listModelNode) {
-                listModelNode.add(new LeafModelNode<>(value));
+        public DataNodeWrapper addObj(Object value) {
+            if (currentNode instanceof ListDataNode listModelNode) {
+                listModelNode.add(new LeafDataNode<>(value));
                 return this;
             } else return unsupportedCall();
         }
 
 
-        public ModelNodeWrapper end() {
+        public DataNodeWrapper end() {
             if (parent != null) {
                 return parent;
             } else {
@@ -165,7 +165,7 @@ public class ModelBuilder {
             }
         }
 
-        public ModelNode build() {
+        public DataNode build() {
             if (parent != null) {
                 return parent.build();
             } else {

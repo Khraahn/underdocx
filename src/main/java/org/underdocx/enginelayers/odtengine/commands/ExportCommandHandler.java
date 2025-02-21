@@ -72,7 +72,7 @@ public class ExportCommandHandler extends AbstractTextualCommandHandler<OdtConta
     @Override
     protected CommandHandlerResult tryExecuteTextualCommand() {
         OdtContainer targetDoc = getTargetDoc();
-        String targetName = namePicker.pickData(modelAccess, placeholderData.getJson()).getOptionalValue().orElse(null);
+        String targetName = namePicker.pickData(dataAccess, placeholderData.getJson()).getOptionalValue().orElse(null);
         Node refNode = findRefNode(targetDoc, targetName);
         DeletePlaceholderModifier.modify(selection.getNode());
         ImportModifierData modifiedData = new ImportModifierData.Simple(randomStr(), selection.getDocContainer(), targetDoc, refNode, true);

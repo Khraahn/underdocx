@@ -24,38 +24,38 @@ SOFTWARE.
 
 package org.underdocx.enginelayers.modelengine.modelpath;
 
-import org.underdocx.enginelayers.modelengine.model.ModelNode;
-import org.underdocx.enginelayers.modelengine.modelpath.elements.ModelPathElement;
-import org.underdocx.enginelayers.modelengine.modelpath.parser.ModelPathCodec;
-import org.underdocx.environment.err.Problems;
 import org.underdocx.common.tools.Convenience;
+import org.underdocx.enginelayers.modelengine.model.DataNode;
+import org.underdocx.enginelayers.modelengine.modelpath.elements.DataPathElement;
+import org.underdocx.enginelayers.modelengine.modelpath.parser.DataPathCodec;
+import org.underdocx.environment.err.Problems;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-public class ModelPath {
+public class DataPath {
 
-    private static final ModelPathCodec codec = new ModelPathCodec();
+    private static final DataPathCodec codec = new DataPathCodec();
 
-    protected List<ModelPathElement> elements = new ArrayList<>();
+    protected List<DataPathElement> elements = new ArrayList<>();
 
-    public ModelPath(List<ModelPathElement> elements) {
+    public DataPath(List<DataPathElement> elements) {
         this.elements.addAll(elements);
     }
 
-    public ModelPath(ModelPath toClone) {
+    public DataPath(DataPath toClone) {
         this.elements.addAll(toClone.elements);
     }
 
-    public ModelPath() {
+    public DataPath() {
     }
 
-    public ModelPath(String toParse) {
+    public DataPath(String toParse) {
         this.elements = Problems.CODEC_PARSE_ERROR.exec(() -> codec.parse(toParse), null, toParse).getElements();
     }
 
-    public List<ModelPathElement> getElements() {
+    public List<DataPathElement> getElements() {
         return new ArrayList<>(elements);
     }
 
@@ -63,12 +63,12 @@ public class ModelPath {
         return codec.getTextContent(this);
     }
 
-    public static Optional<ModelNode> interpret(String path, ModelNode node) {
-        return new ModelPath(path).interpret(node);
+    public static Optional<DataNode> interpret(String path, DataNode node) {
+        return new DataPath(path).interpret(node);
     }
 
-    public Optional<ModelNode> interpret(ModelNode rootModelNode) {
-        return Convenience.buildOptional(rootModelNode, w -> {
+    public Optional<DataNode> interpret(DataNode rootDataNode) {
+        return Convenience.buildOptional(rootDataNode, w -> {
             elements.forEach(element -> {
                 if (w.value != null) {
                     w.value = element.interpret(w.value).orElse(null);
@@ -78,11 +78,11 @@ public class ModelPath {
     }
 
     public void interpret(String path) {
-        List<ModelPathElement> subPath = new ModelPath(path).getElements();
+        List<DataPathElement> subPath = new DataPath(path).getElements();
         interpret(subPath);
     }
 
-    protected void interpret(List<ModelPathElement> subPath) {
+    protected void interpret(List<DataPathElement> subPath) {
         subPath.forEach(subElement -> subElement.interpret(elements));
     }
 
@@ -90,8 +90,8 @@ public class ModelPath {
         elements = elements.subList(index, elements.size());
     }
 
-    public ModelPath clone() {
-        return new ModelPath(this);
+    public DataPath clone() {
+        return new DataPath(this);
     }
 
 

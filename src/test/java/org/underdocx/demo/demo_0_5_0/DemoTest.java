@@ -24,12 +24,12 @@ SOFTWARE.
 
 package org.underdocx.demo.demo_0_5_0;
 
+import org.junit.jupiter.api.Test;
 import org.underdocx.AbstractOdtTest;
 import org.underdocx.doctypes.odf.odt.OdtContainer;
 import org.underdocx.doctypes.odf.odt.OdtEngine;
-import org.underdocx.enginelayers.modelengine.model.simple.LeafModelNode;
+import org.underdocx.enginelayers.modelengine.model.simple.LeafDataNode;
 import org.underdocx.environment.UnderdocxEnv;
-import org.junit.jupiter.api.Test;
 
 import java.io.FileOutputStream;
 import java.io.InputStream;
@@ -44,7 +44,7 @@ public class DemoTest extends AbstractOdtTest {
 
         OdtContainer doc = new OdtContainer(is);
         OdtEngine engine = new OdtEngine(doc);
-        engine.pushVariable("header", new LeafModelNode<>(readData("header.odt")));
+        engine.pushVariable("header", new LeafDataNode<>(readData("header.odt")));
 
         engine.run();
         //show(doc);

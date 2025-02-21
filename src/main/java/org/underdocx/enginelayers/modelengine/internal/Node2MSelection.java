@@ -29,7 +29,7 @@ import org.underdocx.common.placeholder.TextualPlaceholderToolkit;
 import org.underdocx.enginelayers.baseengine.EngineAccess;
 import org.underdocx.enginelayers.baseengine.SelectedNode;
 import org.underdocx.enginelayers.modelengine.MSelection;
-import org.underdocx.enginelayers.modelengine.modelaccess.ModelAccess;
+import org.underdocx.enginelayers.modelengine.dataaccess.DataAccess;
 import org.w3c.dom.Node;
 
 import java.util.Optional;
@@ -39,8 +39,8 @@ public class Node2MSelection {
     public static <C extends DocContainer<D>, P, D> MSelection<C, P, D> createMSelection(MSelection<C, P, D> origin, SelectedNode<P> newNode) {
         return new MSelection<C, P, D>() {
             @Override
-            public Optional<ModelAccess> getModelAccess() {
-                return origin.getModelAccess();
+            public Optional<DataAccess> getDataAccess() {
+                return origin.getDataAccess();
             }
 
             @Override

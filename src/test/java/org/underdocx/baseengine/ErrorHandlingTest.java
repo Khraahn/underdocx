@@ -24,13 +24,13 @@ SOFTWARE.
 
 package org.underdocx.baseengine;
 
+import org.assertj.core.api.Assertions;
+import org.junit.jupiter.api.Test;
 import org.underdocx.AbstractOdtTest;
 import org.underdocx.doctypes.odf.odt.OdtContainer;
 import org.underdocx.doctypes.odf.odt.OdtEngine;
-import org.underdocx.enginelayers.modelengine.model.simple.MapModelNode;
+import org.underdocx.enginelayers.modelengine.model.simple.MapDataNode;
 import org.underdocx.environment.err.Problem;
-import org.assertj.core.api.Assertions;
-import org.junit.jupiter.api.Test;
 
 public class ErrorHandlingTest extends AbstractOdtTest {
 
@@ -44,7 +44,7 @@ public class ErrorHandlingTest extends AbstractOdtTest {
                 "";
         OdtContainer doc = new OdtContainer(documentStr);
         OdtEngine engine = new OdtEngine(doc);
-        engine.setModel(new MapModelNode(jsonString));
+        engine.setModel(new MapDataNode(jsonString));
         Problem error = engine.run().get();
         //show(doc);
         Assertions.assertThat(error).isNotNull();

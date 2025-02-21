@@ -22,34 +22,33 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-package org.underdocx.enginelayers.modelengine.model.simple;
+package org.underdocx.enginelayers.modelengine.modelpath.elements;
 
-import org.underdocx.enginelayers.modelengine.model.ModelNode;
+import org.underdocx.enginelayers.modelengine.model.DataNode;
 
-public abstract class AbstractModelNode<T> implements ModelNode {
+import java.util.List;
+import java.util.Optional;
 
-    protected T containedValue;
-    protected AbstractModelNode<?> parent;
+public class BackDataPathElement implements DataPathElement {
 
-    protected void setParent(AbstractModelNode<?> node) {
-        if (node != null && this.parent != null && this.parent != node) {
-            this.parent.removeChild(node);
-        }
-        this.parent = node;
-    }
-
-    protected abstract void removeChild(AbstractModelNode<?> node);
-
-    protected void checkParentOfChild(AbstractModelNode<?> node) {
-        if (node.parent != null && node.parent != this) {
-            node.setParent(null);
-        }
+    public String toString() {
+        return getType().toString();
     }
 
     @Override
-    public T getValue() {
-        return containedValue;
+    public DatalPathElementType getType() {
+        return DatalPathElementType.BACK;
     }
 
-    abstract protected AbstractModelNode<?> create(Object object);
+    @Override
+    public Optional<DataNode> interpret(DataNode node) {
+        return Optional.ofNullable(node.getParent());
+    }
+
+    @Override
+    public void interpret(List<DataPathElement> elementsWithoutThis) {
+        if (elementsWithoutThis.size() > 0) {
+            elementsWithoutThis.remove(elementsWithoutThis.size() - 1);
+        }
+    }
 }

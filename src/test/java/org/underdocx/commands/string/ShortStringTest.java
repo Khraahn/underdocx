@@ -24,11 +24,11 @@ SOFTWARE.
 
 package org.underdocx.commands.string;
 
+import org.junit.jupiter.api.Test;
 import org.underdocx.AbstractOdtTest;
 import org.underdocx.doctypes.odf.odt.OdtContainer;
 import org.underdocx.doctypes.odf.odt.OdtEngine;
-import org.underdocx.enginelayers.modelengine.model.simple.MapModelNode;
-import org.junit.jupiter.api.Test;
+import org.underdocx.enginelayers.modelengine.model.simple.MapDataNode;
 
 public class ShortStringTest extends AbstractOdtTest {
 
@@ -52,7 +52,7 @@ public class ShortStringTest extends AbstractOdtTest {
                 "D ${*^no} D                \n";
         OdtContainer doc = new OdtContainer(documentStr);
         OdtEngine engine = new OdtEngine(doc);
-        engine.setModel(new MapModelNode(jsonString));
+        engine.setModel(new MapDataNode(jsonString));
         engine.run();
         assertContains(doc, "A Test0 A");
         assertContains(doc, "B Test0 B");
@@ -93,7 +93,7 @@ public class ShortStringTest extends AbstractOdtTest {
                 "";
         OdtContainer doc = new OdtContainer(documentStr);
         OdtEngine engine = new OdtEngine(doc);
-        engine.setModel(new MapModelNode(jsonString));
+        engine.setModel(new MapDataNode(jsonString));
         engine.run();
         assertContains(doc, "A attX1 A");
         assertContains(doc, "B Test0 B");

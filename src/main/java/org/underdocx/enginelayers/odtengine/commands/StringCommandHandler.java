@@ -27,7 +27,7 @@ package org.underdocx.enginelayers.odtengine.commands;
 import com.fasterxml.jackson.databind.JsonNode;
 import org.underdocx.common.doc.DocContainer;
 import org.underdocx.common.types.Regex;
-import org.underdocx.enginelayers.modelengine.modelaccess.ModelAccess;
+import org.underdocx.enginelayers.modelengine.dataaccess.DataAccess;
 import org.underdocx.enginelayers.odtengine.commands.internal.AbstractStringCommandHandler;
 import org.underdocx.enginelayers.odtengine.commands.internal.attrinterpreter.accesstype.AccessType;
 import org.underdocx.enginelayers.odtengine.commands.internal.attrinterpreter.accesstype.AccessTypeJsonNameInterpreter;
@@ -56,10 +56,10 @@ public class StringCommandHandler<C extends DocContainer<D>, D> extends Abstract
     protected StringOutputModuleConfig getConfig() {
         return () -> new PredefinedDataPicker<>() {
             @Override
-            public DataPickerResult<String> pickData(ModelAccess modelAccess, JsonNode jsonNode) {
+            public DataPickerResult<String> pickData(DataAccess dataAccess, JsonNode jsonNode) {
                 return isDirectAccess.test(jsonNode)
-                        ? directDataPicker.pickData(modelAccess, jsonNode)
-                        : valueDataPicker.pickData(modelAccess, jsonNode);
+                        ? directDataPicker.pickData(dataAccess, jsonNode)
+                        : valueDataPicker.pickData(dataAccess, jsonNode);
             }
 
             @Override

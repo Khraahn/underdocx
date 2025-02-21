@@ -64,13 +64,13 @@ public class VariableCommandHandler<C extends DocContainer<D>, D> extends Abstra
         return Convenience.build(CommandHandlerResult.EXECUTED_PROCEED, result ->
                 resolveStringByAttr(KEY_ATTR).ifPresent(key ->
                         resolveNodeByAttr(VALUE_ATTR).ifPresent(modelValue ->
-                                modelAccess.pushVariable(key, modelValue))));
+                                dataAccess.pushVariable(key, modelValue))));
     }
 
     private CommandHandlerResult handlePopCommand() {
         return Convenience.build(CommandHandlerResult.EXECUTED_PROCEED, result ->
                 resolveStringByAttr(KEY_ATTR).ifPresent(key ->
-                        modelAccess.popVariable(key)));
+                        dataAccess.popVariable(key)));
     }
 
     @Override
