@@ -33,17 +33,17 @@ import org.underdocx.enginelayers.baseengine.commands.SimpleDollarImageReplaceCo
 import org.underdocx.enginelayers.baseengine.commands.SimpleReplaceFunctionCommand;
 import org.underdocx.enginelayers.baseengine.internal.placeholdersprovider.dollar.SimpleDollarPlaceholdersProvider;
 import org.underdocx.enginelayers.baseengine.internal.placeholdersprovider.dollar.image.SimpleDollarImagePlaceholdersProvider;
-import org.underdocx.enginelayers.defaultodtengine.commands.*;
-import org.underdocx.enginelayers.defaultodtengine.commands.forcommand.ForCommandHandler;
-import org.underdocx.enginelayers.defaultodtengine.commands.forcommand.ForListCommandHandler;
-import org.underdocx.enginelayers.defaultodtengine.commands.forcommand.ForRowsCommandHandler;
-import org.underdocx.enginelayers.defaultodtengine.commands.image.ImagePlaceholdersProvider;
 import org.underdocx.enginelayers.modelengine.MCommandHandler;
 import org.underdocx.enginelayers.modelengine.ModelEngine;
 import org.underdocx.enginelayers.modelengine.model.ModelNode;
 import org.underdocx.enginelayers.modelengine.model.simple.AbstractPredefinedModelNode;
 import org.underdocx.enginelayers.modelengine.model.simple.LeafModelNode;
 import org.underdocx.enginelayers.modelengine.model.simple.ReflectionModelNode;
+import org.underdocx.enginelayers.odtengine.commands.*;
+import org.underdocx.enginelayers.odtengine.commands.forcommand.ForCommandHandler;
+import org.underdocx.enginelayers.odtengine.commands.forcommand.ForListCommandHandler;
+import org.underdocx.enginelayers.odtengine.commands.forcommand.ForRowsCommandHandler;
+import org.underdocx.enginelayers.odtengine.commands.image.ImagePlaceholdersProvider;
 import org.underdocx.enginelayers.parameterengine.ParametersPlaceholderData;
 import org.underdocx.enginelayers.parameterengine.ParametersPlaceholderProvider;
 import org.underdocx.enginelayers.parameterengine.commands.CurrentDateCommand;
@@ -89,6 +89,7 @@ public class OdtEngine {
         engine.registerCommandHandler(parameters, new PageStyleCommandHandler<>());
         engine.registerCommandHandler(parameters, new ExportCommandHandler());
         engine.registerCommandHandler(parameters, multiCommandHandler);
+        engine.registerCommandHandler(parameters, new JoinCommandHandler<>());
     }
 
     public void registerStringReplacement(Regex key, String replacement, boolean forceRescan) {

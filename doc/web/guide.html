@@ -1202,6 +1202,52 @@ ${Date value:"24.12.2024" inputFormat:"dd.MM.yyyy"}
 // prints the date stored in variable "date" 
 ${Date $value:"date"}</code></pre>
 
+        <h3>${Join}-Command</h3>
+        Use this command to combine a list of strings and separate them with a separator. You can also limit the output
+        or set and secial separator to use before the last item.
+
+        <table>
+          <tr>
+            <th>
+              Attribute
+            </th>
+            <th>
+              Description
+            </th>
+          </tr>
+          <tr>
+            <td>value</td>
+            <td>the list of ModeNodes. Ensure each item provides a valid toString implementation</td>
+          </tr>
+          <tr>
+            <td>separator</td>
+            <td>optional, sets the separator to use between the items, default value is ", "</td>
+          </tr>
+          <tr>
+            <td>lastSeparator</td>
+            <td>optional, sets the last before the last item, default value is value of separator</td>
+          </tr>
+          <tr>
+            <td>limit</td>
+            <td>optional, sets the maximum number of items to print, default value is -1, which means no limit</td>
+          </tr>   
+          <tr>
+            <td>truncated</td>
+            <td>optional, sets suffix text to use when limit value has been exceeded</td>
+          </tr>                      
+        </table>    
+        
+        Examples:
+        <pre class="padding"><code>// prints: Bibi, Tina, Amadeus, Sabrina
+${Join value:["Bibi", "Tina", "Amadeus", "Sabrina"]}
+          
+// prints: Bibi, Tina, Amadeus und Sabrina             
+${Join value:["Bibi", "Tina", "Amadeus", "Sabrina"], lastSeparator:" und "}
+          
+// prints: Bibi, Tina usw.
+${Join value:["Bibi", "Tina", "Amadeus", "Sabrina"], limit: 2, truncated:" usw."}</code></pre>        
+
+
         <h3>${PageStyle}-Command</h3>
 
         PageBreaks, Page-Orientation-Changes and new page numbers can be forced with

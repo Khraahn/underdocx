@@ -24,12 +24,12 @@ SOFTWARE.
 
 package org.underdocx.parameterengine;
 
-import org.underdocx.AbstractTest;
-import org.underdocx.enginelayers.defaultodtengine.commands.internal.attrinterpreter.AttributesInterpreter;
-import org.underdocx.enginelayers.parameterengine.ParametersPlaceholderData;
-import org.underdocx.enginelayers.parameterengine.internal.ParametersPlaceholderCodec;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.underdocx.AbstractTest;
+import org.underdocx.enginelayers.odtengine.commands.internal.attrinterpreter.AttributesInterpreter;
+import org.underdocx.enginelayers.parameterengine.ParametersPlaceholderData;
+import org.underdocx.enginelayers.parameterengine.internal.ParametersPlaceholderCodec;
 
 import static org.assertj.core.api.Assertions.assertThat;
 

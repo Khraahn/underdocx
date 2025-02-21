@@ -33,8 +33,8 @@ import org.underdocx.common.tree.nodepath.TreeNodeCollector;
 import org.underdocx.doctypes.odf.odt.OdtContainer;
 import org.underdocx.doctypes.odf.odt.OdtEngine;
 import org.underdocx.enginelayers.baseengine.CommandHandlerResult;
-import org.underdocx.enginelayers.defaultodtengine.commands.internal.AbstractTextualCommandHandler;
 import org.underdocx.enginelayers.modelengine.model.simple.LeafModelNode;
+import org.underdocx.enginelayers.odtengine.commands.internal.AbstractTextualCommandHandler;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 

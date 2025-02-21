@@ -31,7 +31,7 @@ import org.underdocx.doctypes.odf.odt.OdtContainer;
 import org.underdocx.doctypes.odf.odt.OdtEngine;
 import org.underdocx.enginelayers.baseengine.CommandHandlerResult;
 import org.underdocx.enginelayers.baseengine.modifiers.stringmodifier.ReplaceWithTextModifier;
-import org.underdocx.enginelayers.defaultodtengine.commands.internal.attrinterpreter.AttributesInterpreter;
+import org.underdocx.enginelayers.odtengine.commands.internal.attrinterpreter.AttributesInterpreter;
 import org.underdocx.enginelayers.parameterengine.ParametersPlaceholderData;
 
 public class ParametersEngineTest extends AbstractOdtTest {

@@ -1,4 +1,6 @@
 - Features
+  - ModelNode umbenennen in DataNode, andere Klassen analog umbenennen
+  - Extra-CommandHandler der markierte Knoten am Ende des Dokument wegräumt
   - Auf weitere LibreOffice-Formate erweitern
   - später ggf. docx unterstützen
 - Bekannte Probleme:

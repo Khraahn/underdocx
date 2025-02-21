@@ -30,8 +30,8 @@ import org.underdocx.enginelayers.baseengine.CommandHandler;
 import org.underdocx.enginelayers.baseengine.CommandHandlerResult;
 import org.underdocx.enginelayers.baseengine.Selection;
 import org.underdocx.enginelayers.baseengine.modifiers.stringmodifier.ReplaceWithTextModifier;
-import org.underdocx.enginelayers.defaultodtengine.commands.internal.attrinterpreter.PredefinedAttributesInterpreter;
-import org.underdocx.enginelayers.defaultodtengine.commands.internal.attrinterpreter.single.AttributeInterpreterFactory;
+import org.underdocx.enginelayers.odtengine.commands.internal.attrinterpreter.PredefinedAttributesInterpreter;
+import org.underdocx.enginelayers.odtengine.commands.internal.attrinterpreter.single.AttributeInterpreterFactory;
 import org.underdocx.enginelayers.parameterengine.ParametersPlaceholderData;
 
 import java.text.SimpleDateFormat;
