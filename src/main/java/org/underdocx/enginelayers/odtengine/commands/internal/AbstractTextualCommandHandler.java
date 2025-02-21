@@ -26,19 +26,15 @@ package org.underdocx.enginelayers.odtengine.commands.internal;
 
 import org.underdocx.common.doc.DocContainer;
 import org.underdocx.common.placeholder.TextualPlaceholderToolkit;
-import org.underdocx.common.tools.Convenience;
-import org.underdocx.common.types.Pair;
 import org.underdocx.common.types.Regex;
 import org.underdocx.enginelayers.baseengine.CommandHandlerResult;
-import org.underdocx.enginelayers.baseengine.SelectedNode;
 import org.underdocx.enginelayers.modelengine.model.DataNode;
+import org.underdocx.enginelayers.odtengine.commands.DeleteNodesEodHandler;
 import org.underdocx.enginelayers.odtengine.commands.internal.datapicker.AttributeNodeDataPicker;
 import org.underdocx.enginelayers.odtengine.commands.internal.datapicker.StringConvertDataPicker;
 import org.underdocx.enginelayers.parameterengine.ParametersPlaceholderData;
-import org.underdocx.enginelayers.parameterengine.internal.ParametersPlaceholderCodec;
 import org.underdocx.environment.UnderdocxEnv;
 import org.underdocx.environment.err.Problems;
-import org.w3c.dom.Node;
 
 import java.util.Optional;
 import java.util.regex.Pattern;
@@ -76,25 +72,13 @@ public abstract class AbstractTextualCommandHandler<C extends DocContainer<D>, D
         }
     }
 
-    protected Optional<ParametersPlaceholderData> examineNode(Node node) {
-        return Convenience.buildOptional(w -> {
-            if (node.getParentNode() != null && node.getOwnerDocument() != null) {
-                String content = node.getTextContent();
-                if (content != null) {
-                    ParametersPlaceholderCodec.INSTANCE.tryParse(content).ifPresent(data -> w.value = data);
-                }
-            }
-        });
-    }
 
     protected abstract CommandHandlerResult tryExecuteTextualCommand();
-
-    Optional<SelectedNode<ParametersPlaceholderData>> findEndNode(String endKey) {
-        Optional<Pair<SelectedNode<ParametersPlaceholderData>, SelectedNode<ParametersPlaceholderData>>> pair = AreaTools.findArea(selection.getEngineAccess().lookAhead(null), selection, endKey);
-        if (pair.isPresent()) {
-            return Optional.of(pair.get().right);
-        } else {
-            return Optional.of(null);
+    
+    protected void markForEodDeletion() {
+        if (!DeleteNodesEodHandler.isMarkedForEodDeletion(placeholderData)) {
+            DeleteNodesEodHandler.markForEodDeletion(placeholderData);
+            selection.getPlaceholderToolkit().get().setPlaceholder(selection.getNode(), placeholderData);
         }
     }
 }

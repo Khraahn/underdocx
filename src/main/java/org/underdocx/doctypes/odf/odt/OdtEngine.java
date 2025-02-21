@@ -90,6 +90,7 @@ public class OdtEngine {
         engine.registerCommandHandler(parameters, new ExportCommandHandler());
         engine.registerCommandHandler(parameters, multiCommandHandler);
         engine.registerCommandHandler(parameters, new JoinCommandHandler<>());
+        engine.registerCommandHandler(parameters, new DeleteNodesEodHandler());
     }
 
     public void registerStringReplacement(Regex key, String replacement, boolean forceRescan) {

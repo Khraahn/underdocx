@@ -28,16 +28,9 @@ import org.underdocx.common.doc.DocContainer;
 import org.underdocx.common.tools.Convenience;
 import org.underdocx.common.types.Regex;
 import org.underdocx.enginelayers.baseengine.CommandHandlerResult;
-import org.underdocx.enginelayers.baseengine.EngineAccess;
-import org.underdocx.enginelayers.baseengine.modifiers.EngineListener;
-import org.underdocx.enginelayers.baseengine.modifiers.deleteplaceholder.DeletePlaceholderModifier;
-import org.underdocx.enginelayers.baseengine.modifiers.deleteplaceholder.DeletePlaceholderModifierData;
 import org.underdocx.enginelayers.odtengine.commands.internal.AbstractTextualCommandHandler;
-import org.underdocx.enginelayers.parameterengine.ParametersPlaceholderData;
 
-import java.util.Optional;
-
-public class VariableCommandHandler<C extends DocContainer<D>, D> extends AbstractTextualCommandHandler<C, D> implements EngineListener<C, D> {
+public class VariableCommandHandler<C extends DocContainer<D>, D> extends AbstractTextualCommandHandler<C, D> {
 
     public static final String KEY_POP = "Pop";
     public static final String KEY_PUSH = "Push";
@@ -52,7 +45,7 @@ public class VariableCommandHandler<C extends DocContainer<D>, D> extends Abstra
 
     @Override
     protected CommandHandlerResult tryExecuteTextualCommand() {
-        engineAccess.addListener(this);
+        markForEodDeletion();
         return switch (placeholderData.getKey()) {
             case "Pop" -> handlePopCommand();
             case "Push" -> handlePushCommand();
@@ -72,13 +65,4 @@ public class VariableCommandHandler<C extends DocContainer<D>, D> extends Abstra
                 resolveStringByAttr(KEY_ATTR).ifPresent(key ->
                         dataAccess.popVariable(key)));
     }
-
-    @Override
-    public void eodReached(C doc, EngineAccess<C, D> engineAccess) {
-        engineAccess.lookBack(node -> {
-            Optional<ParametersPlaceholderData> placeholderData = examineNode(node);
-            return placeholderData.isPresent() && KEYS.matches(placeholderData.get().getKey());
-        }).forEach(placeholderNode -> DeletePlaceholderModifier.modify(placeholderNode, DeletePlaceholderModifierData.DEFAULT));
-    }
-
 }

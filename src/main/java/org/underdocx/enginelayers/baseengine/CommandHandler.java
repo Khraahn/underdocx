@@ -28,6 +28,9 @@ import org.underdocx.common.doc.DocContainer;
 
 public interface CommandHandler<C extends DocContainer<D>, P, D> {
 
+    default void init(C container, EngineAccess engineAccess) {
+    }
+
     CommandHandlerResult tryExecuteCommand(Selection<C, P, D> selection);
 
     default String getName() {

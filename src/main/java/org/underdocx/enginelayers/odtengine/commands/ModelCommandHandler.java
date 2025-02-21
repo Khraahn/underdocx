@@ -28,20 +28,14 @@ import org.underdocx.common.doc.DocContainer;
 import org.underdocx.common.tools.Convenience;
 import org.underdocx.common.types.Regex;
 import org.underdocx.enginelayers.baseengine.CommandHandlerResult;
-import org.underdocx.enginelayers.baseengine.EngineAccess;
-import org.underdocx.enginelayers.baseengine.modifiers.EngineListener;
-import org.underdocx.enginelayers.baseengine.modifiers.deleteplaceholder.DeletePlaceholderModifier;
-import org.underdocx.enginelayers.baseengine.modifiers.deleteplaceholder.DeletePlaceholderModifierData;
 import org.underdocx.enginelayers.modelengine.modelpath.ActivePrefixDataPath;
 import org.underdocx.enginelayers.modelengine.modelpath.DataPath;
 import org.underdocx.enginelayers.odtengine.commands.internal.AbstractTextualCommandHandler;
-import org.underdocx.enginelayers.parameterengine.ParametersPlaceholderData;
 
 import java.util.Optional;
 import java.util.regex.Pattern;
 
-public class ModelCommandHandler<C extends DocContainer<D>, D> extends AbstractTextualCommandHandler<C, D>
-        implements EngineListener<C, D> {
+public class ModelCommandHandler<C extends DocContainer<D>, D> extends AbstractTextualCommandHandler<C, D> {
 
     public static final String KEY = "Model";
     public static final Regex KEYS = new Regex(Pattern.quote(KEY));
@@ -49,25 +43,14 @@ public class ModelCommandHandler<C extends DocContainer<D>, D> extends AbstractT
     public static final String ATTR_PREFIX = "activeModelPathPrefix";
     public static final String ATTR_VALUE = "value";
 
-
     public ModelCommandHandler() {
         super(KEYS);
     }
 
-    public static ParametersPlaceholderData createPlaceholderData(String modelPath, String prefix) {
-        ParametersPlaceholderData placeholder = new ParametersPlaceholderData.Simple(KEY);
-        placeholder.addStringAttribute(ATTR_VALUE, modelPath);
-        if (prefix != null) {
-            placeholder.addStringAttribute(ATTR_PREFIX, prefix);
-        }
-        return placeholder;
-    }
-
-
     @Override
     protected CommandHandlerResult tryExecuteTextualCommand() {
+        markForEodDeletion();
         return Convenience.build(CommandHandlerResult.EXECUTED_PROCEED, result -> {
-            engineAccess.addListener(this);
             DataPath newPath = Convenience.build(dataAccess.getCurrentModelPath(), p ->
                     resolveStringByAttr(ATTR_VALUE).ifPresentOrElse(
                             value -> p.value = setPath(value),
@@ -91,15 +74,5 @@ public class ModelCommandHandler<C extends DocContainer<D>, D> extends AbstractT
     private DataPath setPath(String path) {
         return new DataPath(path);
     }
-
-
-    @Override
-    public void eodReached(C doc, EngineAccess<C, D> engineAccess) {
-        engineAccess.lookBack(node -> {
-            Optional<ParametersPlaceholderData> placeholderData = examineNode(node);
-            return placeholderData.isPresent() && (placeholderData.get()).getKey().equals(KEY);
-        }).forEach(placeholderNode -> DeletePlaceholderModifier.modify(placeholderNode, DeletePlaceholderModifierData.DEFAULT));
-    }
-
 
 }

@@ -50,6 +50,7 @@ public class BaseEngine<C extends DocContainer<D>, D> {
 
     protected int step = 0;
     protected boolean rescan = true;
+    protected boolean initialized = false;
 
     protected ArrayListValuedHashMap<PlaceholdersProvider<C, ?, D>, CommandHandler<C, ?, D>> registry = new ArrayListValuedHashMap<>();
     protected IdentityHashMap<PlaceholdersProvider.Factory<C, ?, D>, PlaceholdersProvider<C, ?, D>> factoryProviderMap = new IdentityHashMap<>();
@@ -172,11 +173,16 @@ public class BaseEngine<C extends DocContainer<D>, D> {
     }
 
     protected void runUncatched() {
+        initialized = false;
         while (rescan) {
             placeholderEnumerator = createPlaceholdersEnumerator();
             List<Node> visited = new ArrayList<>();
             rescan = false;
             EngineAccess<C, D> engineAccess = new EngineAccessImpl<>(listeners, () -> rescan = true, () -> placeholderEnumerator, () -> visited);
+            if (!initialized) {
+                registry.values().forEach(handler -> handler.init(doc, engineAccess));
+                initialized = true;
+            }
             while (!rescan && placeholderEnumerator.hasNext()) {
                 step++;
                 Pair<PlaceholdersProvider<C, ?, D>, Node> placeholder = placeholderEnumerator.next();

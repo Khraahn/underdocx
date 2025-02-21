@@ -34,20 +34,20 @@ import org.underdocx.enginelayers.baseengine.SelectedNode;
 import org.underdocx.enginelayers.baseengine.modifiers.EngineListener;
 import org.w3c.dom.Node;
 
-import java.util.Collection;
 import java.util.List;
+import java.util.Set;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 
 public class EngineAccessImpl<C extends DocContainer<D>, D> implements EngineAccess<C, D> {
 
-    private final Collection<EngineListener<C, D>> listeners;
+    private final Set<EngineListener<C, D>> listeners;
     private final Runnable rescan;
     private final Supplier<List<Node>> lookBack;
     private final Supplier<LookAheadEnumerator<Pair<PlaceholdersProvider<C, ?, D>, Node>>> lookAhead;
 
 
-    public EngineAccessImpl(Collection<EngineListener<C, D>> listeners, Runnable forceRescan, Supplier<LookAheadEnumerator<Pair<PlaceholdersProvider<C, ?, D>, Node>>> lookAhead, Supplier<List<Node>> lookBack) {
+    public EngineAccessImpl(Set<EngineListener<C, D>> listeners, Runnable forceRescan, Supplier<LookAheadEnumerator<Pair<PlaceholdersProvider<C, ?, D>, Node>>> lookAhead, Supplier<List<Node>> lookBack) {
         this.listeners = listeners;
         this.rescan = forceRescan;
         this.lookAhead = lookAhead;

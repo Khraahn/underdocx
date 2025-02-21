@@ -1,17 +1,8 @@
 - Features
-  - ModelNode umbenennen in DataNode, andere Klassen analog umbenennen
-  - Extra-CommandHandler der markierte Knoten am Ende des Dokument wegräumt
   - Auf weitere LibreOffice-Formate erweitern
   - später ggf. docx unterstützen
 - Bekannte Probleme:
   - Sicherstellen das Paragraphen mit leeren Ifs immer gelöscht werden (auch in Zellen)
   - Prüfen ob Vectorgrafiken als Bilder verwendet werden können
 - Optimierungsmöglichkeiten:
-  - Prio 1: Rescan optional ab aktiven/übergebenen Knoten beginnen und Status beibehalten //reduziert die erneute Interpreration "alter" Knoten und redundantes Suchen von Platzhalter
-  - Prio 2: Cache für Paar-Knoten (For-EndFor, If-EndIf) // reduziert das Scannen zukünftiger Knoten)
-  - Prio 3: Cachen von Import-Daten
- - Weitere Optimierungsmöglichkeiten die vermutlich durch die obigen obsolete werden
-  - Kommandos die effektlos den ModelPfad setzen löschen
-  - Effektlose Pop/Push Sequencen löschen
-  - Schleifen/If/Import möglichst unmittelbar und direkt mit W2C API
-  - Validität von Knoten prüfen um Rescans zu reduzieren (z.B. Löschen von Blöcken durch If)
+  - Cache für Paar-Knoten (For-EndFor, If-EndIf) // reduziert das Scannen zukünftiger Knoten)
