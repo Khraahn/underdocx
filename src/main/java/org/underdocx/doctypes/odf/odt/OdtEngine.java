@@ -91,6 +91,7 @@ public class OdtEngine {
         engine.registerCommandHandler(parameters, multiCommandHandler);
         engine.registerCommandHandler(parameters, new JoinCommandHandler<>());
         engine.registerCommandHandler(parameters, new DeleteNodesEodHandler());
+        engine.registerCommandHandler(parameters, new UnderdocxCommandHandler());
     }
 
     public void registerStringReplacement(Regex key, String replacement, boolean forceRescan) {

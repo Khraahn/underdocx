@@ -122,6 +122,37 @@ public interface Resource {
         }
     }
 
+    class ClassResource implements Resource {
+
+        private Class clazz;
+        private String resourceName;
+
+        public ClassResource(Class clazz, String resourceName) {
+            this.clazz = clazz;
+            this.resourceName = resourceName;
+        }
+
+        @Override
+        public InputStream openStream() throws IOException {
+            return clazz.getResourceAsStream(resourceName);
+        }
+
+        @Override
+        public String getIdentifier() {
+            return clazz.getName() + ":" + resourceName;
+        }
+
+        @Override
+        public byte[] getData() throws IOException {
+            return IOUtils.toByteArray(openStream());
+        }
+
+        @Override
+        public Optional<URI> getURI() {
+            return Optional.empty();
+        }
+    }
+
     class UriResource implements Resource {
 
         private final URI uri;
