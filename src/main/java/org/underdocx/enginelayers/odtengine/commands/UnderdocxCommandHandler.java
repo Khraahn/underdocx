@@ -29,13 +29,19 @@ import org.underdocx.common.types.Regex;
 import org.underdocx.common.types.Resource;
 import org.underdocx.doctypes.odf.odt.OdtContainer;
 import org.underdocx.enginelayers.baseengine.CommandHandlerResult;
+import org.underdocx.enginelayers.baseengine.EngineAccess;
+import org.underdocx.enginelayers.baseengine.modifiers.EngineListener;
 import org.underdocx.enginelayers.baseengine.modifiers.deleteplaceholder.DeletePlaceholderModifier;
 import org.underdocx.enginelayers.odtengine.commands.internal.AbstractTextualCommandHandler;
 import org.underdocx.enginelayers.odtengine.modifiers.importmodifier.ImportModifier;
 import org.underdocx.enginelayers.odtengine.modifiers.importmodifier.ImportModifierData;
+import org.underdocx.enginelayers.parameterengine.ParametersPlaceholderData;
 import org.underdocx.environment.err.Problems;
+import org.w3c.dom.Node;
 
-public class UnderdocxCommandHandler extends AbstractTextualCommandHandler<OdtContainer, OdfTextDocument> {
+import java.util.Optional;
+
+public class UnderdocxCommandHandler extends AbstractTextualCommandHandler<OdtContainer, OdfTextDocument> implements EngineListener<OdtContainer, OdfTextDocument> {
 
     private final static Regex KEYS = new Regex("underdocx|Underdocx");
     private final static Resource resource = new Resource.ClassResource(UnderdocxCommandHandler.class, "underdocx.odt");
@@ -45,10 +51,29 @@ public class UnderdocxCommandHandler extends AbstractTextualCommandHandler<OdtCo
     }
 
     @Override
+    public void init(OdtContainer container, EngineAccess engineAccess) {
+        engineAccess.addListener(this);
+    }
+
+    @Override
     protected CommandHandlerResult tryExecuteTextualCommand() {
+        return CommandHandlerResult.IGNORED;
+    }
+
+    @Override
+    public void eodReached(OdtContainer doc, EngineAccess<OdtContainer, OdfTextDocument> engineAccess) {
+        engineAccess.lookBack(node -> {
+            Optional<ParametersPlaceholderData> placeholderData = AbstractTextualCommandHandler.examineNode(node);
+            return placeholderData.filter(parametersPlaceholderData -> KEYS.matches(parametersPlaceholderData.getKey())).isPresent();
+        }).forEach(node -> {
+            modify(doc, node);
+        });
+    }
+
+    private void modify(OdtContainer doc, Node node) {
         OdtContainer importDoc = Problems.IO_EXCEPTION.exec(() -> new OdtContainer(resource));
-        ImportModifierData modifiedData = new ImportModifierData.Simple(resource.getIdentifier(), importDoc, selection.getDocContainer(), selection.getNode(), true);
+        ImportModifierData modifiedData = new ImportModifierData.Simple(resource.getIdentifier(), importDoc, doc, node, true);
         new ImportModifier().modify(modifiedData);
-        return CommandHandlerResult.FACTORY.convert(DeletePlaceholderModifier.modify(selection.getNode()));
+        DeletePlaceholderModifier.modify(node);
     }
 }

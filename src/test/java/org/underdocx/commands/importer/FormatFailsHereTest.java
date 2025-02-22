@@ -22,29 +22,24 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-package org.underdocx.commands.underdocx;
+package org.underdocx.commands.importer;
 
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.underdocx.AbstractOdtTest;
-import org.underdocx.common.tree.Nodes;
-import org.underdocx.doctypes.odf.constants.OdfElement;
 import org.underdocx.doctypes.odf.odt.OdtContainer;
 import org.underdocx.doctypes.odf.odt.OdtEngine;
-import org.w3c.dom.Node;
 
-import java.util.List;
+import java.io.IOException;
 
-public class UnderdocxCommandHandlerTest extends AbstractOdtTest {
+public class FormatFailsHereTest extends AbstractOdtTest {
 
     @Test
-    public void testUnderdocx() {
-        OdtContainer doc = new OdtContainer("${underdocx}");
+    public void testFailingFormat() throws IOException {
+        OdtContainer doc = new OdtContainer("""
+                ${Import $resource:"toImport"}""");
         OdtEngine engine = new OdtEngine(doc);
+        engine.pushLeafVariable("toImport", readResource("underdocx_.odt"));
         engine.run();
         //show(doc);
-        assertNoPlaceholders(doc);
-        List<Node> drawImagesNodes = Nodes.findDescendantNodes(doc.getContentDom(), OdfElement.FRAME.getQualifiedName(), true);
-        Assertions.assertThat(drawImagesNodes.size()).isEqualTo(2);
     }
 }

@@ -24,17 +24,22 @@ SOFTWARE.
 
 package org.underdocx.enginelayers.odtengine.commands.internal;
 
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.underdocx.common.doc.DocContainer;
 import org.underdocx.common.placeholder.TextualPlaceholderToolkit;
+import org.underdocx.common.tools.Convenience;
 import org.underdocx.common.types.Regex;
 import org.underdocx.enginelayers.baseengine.CommandHandlerResult;
 import org.underdocx.enginelayers.modelengine.model.DataNode;
-import org.underdocx.enginelayers.odtengine.commands.DeleteNodesEodHandler;
+import org.underdocx.enginelayers.odtengine.commands.internal.attrinterpreter.PredefinedAttributesInterpreter;
+import org.underdocx.enginelayers.odtengine.commands.internal.attrinterpreter.single.AttributeInterpreterFactory;
 import org.underdocx.enginelayers.odtengine.commands.internal.datapicker.AttributeNodeDataPicker;
 import org.underdocx.enginelayers.odtengine.commands.internal.datapicker.StringConvertDataPicker;
 import org.underdocx.enginelayers.parameterengine.ParametersPlaceholderData;
+import org.underdocx.enginelayers.parameterengine.internal.ParametersPlaceholderCodec;
 import org.underdocx.environment.UnderdocxEnv;
 import org.underdocx.environment.err.Problems;
+import org.w3c.dom.Node;
 
 import java.util.Optional;
 import java.util.regex.Pattern;
@@ -74,11 +79,33 @@ public abstract class AbstractTextualCommandHandler<C extends DocContainer<D>, D
 
 
     protected abstract CommandHandlerResult tryExecuteTextualCommand();
-    
+
+    private static final String DELETE_ON_EOD_ATTR = "deleteOnEod";
+    private static PredefinedAttributesInterpreter<Optional<Boolean>> attr = AttributeInterpreterFactory.createBooleanAttributeInterpreter(false).asPredefined(DELETE_ON_EOD_ATTR);
+
     protected void markForEodDeletion() {
-        if (!DeleteNodesEodHandler.isMarkedForEodDeletion(placeholderData)) {
-            DeleteNodesEodHandler.markForEodDeletion(placeholderData);
+        if (!isMarkedForEodDeletion(placeholderData)) {
+            markForEodDeletion(placeholderData);
             selection.getPlaceholderToolkit().get().setPlaceholder(selection.getNode(), placeholderData);
         }
+    }
+
+    public static boolean isMarkedForEodDeletion(ParametersPlaceholderData data) {
+        return attr.interpretAttributes(data.getJson()).orElse(false);
+    }
+
+    public static void markForEodDeletion(ParametersPlaceholderData data) {
+        ((ObjectNode) data.getJson()).put(DELETE_ON_EOD_ATTR, true);
+    }
+
+    public static Optional<ParametersPlaceholderData> examineNode(Node node) {
+        return Convenience.buildOptional(w -> {
+            if (node.getParentNode() != null && node.getOwnerDocument() != null) {
+                String content = node.getTextContent();
+                if (content != null) {
+                    ParametersPlaceholderCodec.INSTANCE.tryParse(content).ifPresent(data -> w.value = data);
+                }
+            }
+        });
     }
 }
