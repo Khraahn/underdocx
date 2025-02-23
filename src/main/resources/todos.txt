@@ -1,5 +1,5 @@
 - Prio
-  - prüfen warum die Formatierung kaputt geht: org.underdocx.commands.importer.FormatFailsHereTest.testFailingFormat
+  - prüfen / umsetzen: style-Familien auch umbenennen und kopieren
 - Features
   - Auf weitere LibreOffice-Formate erweitern
   - später ggf. docx unterstützen

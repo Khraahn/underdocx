@@ -42,4 +42,13 @@ public class FormatFailsHereTest extends AbstractOdtTest {
         engine.run();
         //show(doc);
     }
+
+    @Test
+    public void testNotFailingSameDocumentBase() throws IOException {
+        OdtContainer doc = new OdtContainer(readResource("underdocxempty.odt"));
+        OdtEngine engine = new OdtEngine(doc);
+        engine.pushLeafVariable("toImport", readResource("underdocx_.odt"));
+        engine.run();
+        //show(doc);
+    }
 }
