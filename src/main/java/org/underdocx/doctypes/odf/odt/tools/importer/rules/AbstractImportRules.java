@@ -24,6 +24,8 @@ SOFTWARE.
 
 package org.underdocx.doctypes.odf.odt.tools.importer.rules;
 
+import org.w3c.dom.Node;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -75,6 +77,10 @@ public abstract class AbstractImportRules {
 
     protected static TagDescr t(String s) {
         return new TagDescr(s);
+    }
+
+    protected static TagDescr t(Node node) {
+        return new TagDescr(node.getNodeName());
     }
 
 }

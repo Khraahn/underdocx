@@ -41,6 +41,13 @@ public class FormatFailsHereTest extends AbstractOdtTest {
         engine.pushLeafVariable("toImport", readResource("underdocx_.odt"));
         engine.run();
         //show(doc);
+
+        /**
+         * Layout fails imported nodes use "family"-styles from target document. This might
+         * change used fonts etc and lead to strange behaviour.
+         * To solve the problem, family styles of source document must be transferred into new
+         * style nodes, and all nodes using the family must derive from these style nodes.
+         */
     }
 
     @Test

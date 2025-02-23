@@ -24,13 +24,13 @@ SOFTWARE.
 
 package org.underdocx.doctypes.odf.odt.tools.importer.rules;
 
+import org.odftoolkit.odfdom.dom.element.text.TextPElement;
 import org.underdocx.common.debug.NodePrinter;
-import org.underdocx.common.tree.Nodes;
 import org.underdocx.common.tools.Convenience;
+import org.underdocx.common.tree.Nodes;
 import org.underdocx.doctypes.odf.odt.OdtContainer;
 import org.underdocx.doctypes.odf.tools.OdfNodes;
 import org.underdocx.environment.UnderdocxEnv;
-import org.odftoolkit.odfdom.dom.element.text.TextPElement;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 
@@ -54,8 +54,8 @@ public class TagPathDescr {
         this.path = path;
     }
 
-    public TagPathDescr(boolean isContent, NodeFilter... filter) {
-        this(isContent, Arrays.asList(filter));
+    public TagPathDescr(boolean isContent, NodeFilter... path) {
+        this(isContent, Arrays.asList(path));
     }
 
     public List<Node> findAll(OdtContainer container) {
