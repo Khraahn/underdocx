@@ -24,11 +24,11 @@ SOFTWARE.
 
 package org.underdocx.doctypes.odf.odt.tools.importer.internal;
 
+import org.underdocx.common.tools.Convenience;
+import org.underdocx.common.tree.TreeWalkers;
 import org.underdocx.doctypes.odf.odt.OdtContainer;
 import org.underdocx.doctypes.odf.odt.tools.importer.rules.ConsumerDescr;
 import org.underdocx.doctypes.odf.odt.tools.importer.rules.Renameable;
-import org.underdocx.common.tools.Convenience;
-import org.underdocx.common.tree.TreeWalkers;
 
 import java.util.List;
 
@@ -56,4 +56,5 @@ public class ConsumerScanner implements Renameable {
             });
         }
     }
+
 }

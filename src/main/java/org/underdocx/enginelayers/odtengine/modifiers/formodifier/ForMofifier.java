@@ -47,7 +47,6 @@ public class ForMofifier<C extends DocContainer<D>, D> extends AbstractAreaModif
         modifierResult = null;
         this.areaNodes = getAreaNodes();
         List<Pair<Node, Node>> areas = createAreas();
-        selection.getDocContainer().createDebugFile("for");
         replaceBeginEndNodes(areas);
         return modifierResult;
     }

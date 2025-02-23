@@ -24,15 +24,16 @@ SOFTWARE.
 
 package org.underdocx.doctypes.odf.odt.tools.importer;
 
+import org.odftoolkit.odfdom.pkg.OdfPackage;
 import org.underdocx.common.tree.Nodes;
 import org.underdocx.common.types.Pair;
 import org.underdocx.doctypes.odf.odt.OdtContainer;
 import org.underdocx.doctypes.odf.odt.tools.importer.internal.ConsumerScanner;
 import org.underdocx.doctypes.odf.odt.tools.importer.internal.FontImporter;
 import org.underdocx.doctypes.odf.odt.tools.importer.internal.ProviderScanner;
+import org.underdocx.doctypes.odf.odt.tools.importer.proxyfamilystyle.ProxyFamilyStyleInserter;
 import org.underdocx.doctypes.odf.odt.tools.importer.rules.AbstractImportRules;
 import org.underdocx.doctypes.odf.odt.tools.importer.rules.AttrDescr;
-import org.odftoolkit.odfdom.pkg.OdfPackage;
 import org.w3c.dom.Node;
 
 import java.util.Map;
@@ -53,6 +54,9 @@ public class Importer {
     }
 
     public void importDoc(String sourceResourceName, OdtContainer source, OdtContainer target, Node targetRefNodeInsertAfter) {
+
+        // insert proxy family nodes
+        new ProxyFamilyStyleInserter(source).insertProxyStyleNodes();
 
         // copy (unchanged) font declarations
         FontImporter.importFonts(target, source);
