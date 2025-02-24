@@ -68,7 +68,7 @@
   }
 } 
 
-@media screen and (min-width: 700px) {
+@media screen and (min-width: 750px) {
     .topnav .logo {
         float: right;
         height: 30px;
