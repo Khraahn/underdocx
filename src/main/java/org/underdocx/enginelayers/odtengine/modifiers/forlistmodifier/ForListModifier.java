@@ -44,6 +44,13 @@ import org.w3c.dom.Node;
 import java.util.*;
 
 public class ForListModifier<C extends DocContainer<D>, D> extends AbstractAreaModifier<C, ParametersPlaceholderData, D, ForListModifierData, ModifierNodeResult> {
+
+
+    @Override
+    protected Node getCommonAncestorNode(ForListModifierData modifierData) {
+        return COMMON_ANCESTOR_P_OR_TABLE_PARENT.apply(modifierData.getAreaPlaceholderNodes().left, modifierData.getAreaPlaceholderNodes().right);
+    }
+
     @Override
     protected ModifierNodeResult modify() {
         List<Node> clonedListItems = cloneListItems();

@@ -24,14 +24,14 @@ SOFTWARE.
 
 package org.underdocx.doctypes.odf.tools;
 
-import org.underdocx.common.tree.Nodes;
-import org.underdocx.common.tools.Convenience;
-import org.underdocx.doctypes.odf.odt.OdtContainer;
 import org.odftoolkit.odfdom.dom.element.OdfStylableElement;
 import org.odftoolkit.odfdom.dom.element.office.OfficeTextElement;
 import org.odftoolkit.odfdom.dom.element.table.TableTableElement;
 import org.odftoolkit.odfdom.dom.element.text.TextParagraphElementBase;
 import org.odftoolkit.odfdom.pkg.OdfFileDom;
+import org.underdocx.common.tools.Convenience;
+import org.underdocx.common.tree.Nodes;
+import org.underdocx.doctypes.odf.odt.OdtContainer;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
@@ -66,6 +66,20 @@ public class OdfNodes {
             return Optional.empty();
         }
     }
+
+    public static Optional<OdfStylableElement> findAncestorParagraphOrTable(Node node) {
+        return Nodes.findAscendantNode(node, currentNode -> currentNode instanceof TextParagraphElementBase || currentNode instanceof TableTableElement).map(x -> (OdfStylableElement) x);
+    }
+
+    public static Optional<Node> findAncestorParagraphOrTableParent(Node node) {
+        Optional<OdfStylableElement> p = findAncestorParagraphOrTable(node);
+        if (p.isPresent()) {
+            return Optional.ofNullable(p.get().getParentNode());
+        } else {
+            return Optional.empty();
+        }
+    }
+
 
     public static Optional<Node> findFirstParagraphOrTableChild(OdtContainer doc) {
         return Convenience.buildOptional(result -> {

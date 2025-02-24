@@ -42,6 +42,12 @@ public class ForMofifier<C extends DocContainer<D>, D> extends AbstractAreaModif
     private List<Node> areaNodes;
     private ModifierNodeResult modifierResult = null;
 
+
+    @Override
+    protected Node getCommonAncestorNode(ForModifierData modifierData) {
+        return COMMON_ANCESTOR_P_OR_TABLE_PARENT.apply(modifierData.getAreaPlaceholderNodes().left, modifierData.getAreaPlaceholderNodes().right);
+    }
+
     @Override
     protected ModifierNodeResult modify() {
         modifierResult = null;

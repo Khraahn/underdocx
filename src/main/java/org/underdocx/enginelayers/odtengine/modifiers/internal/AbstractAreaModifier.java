@@ -41,10 +41,12 @@ import java.util.function.BiFunction;
 
 public abstract class AbstractAreaModifier<C extends DocContainer<D>, P, D, M extends AreaModifierData, R extends ModifierNodeResult> implements MModifier<C, P, D, M, R> {
 
-    protected static final BiFunction<Node, Node, Node> COMMON_ANCESTOR_P_OR_TABLE_PARENT =
+    protected static final BiFunction<Node, Node, Node> COMMON_OLDEST_ANCESTOR_P_OR_TABLE_PARENT =
             (first, second) -> OdfNodes.findOldestParagraphOrTableParent(first).get();
     protected static final BiFunction<Node, Node, Node> COMMON_ANCESTOR_NEAREST =
             (first, second) -> Nodes.findCommonAncestor(first, second).get();
+    protected static final BiFunction<Node, Node, Node> COMMON_ANCESTOR_P_OR_TABLE_PARENT =
+            (first, second) -> OdfNodes.findAncestorParagraphOrTableParent(first).get();
 
 
     protected MSelection<C, P, D> selection;
@@ -56,7 +58,7 @@ public abstract class AbstractAreaModifier<C extends DocContainer<D>, P, D, M ex
     }
 
     protected Node getCommonAncestorNode(M modifierData) {
-        return COMMON_ANCESTOR_P_OR_TABLE_PARENT.apply(modifierData.getAreaPlaceholderNodes().left, modifierData.getAreaPlaceholderNodes().right);
+        return COMMON_OLDEST_ANCESTOR_P_OR_TABLE_PARENT.apply(modifierData.getAreaPlaceholderNodes().left, modifierData.getAreaPlaceholderNodes().right);
     }
 
     @Override

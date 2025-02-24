@@ -2,8 +2,6 @@
   - Auf weitere LibreOffice-Formate erweitern
   - später ggf. docx unterstützen
 - Bekannte Probleme:
-  - Importierte Knoten nutzen letztlich die family-styles vom Importziel, was im schlimmsten Formatierungen ändern kann. Lösung wäre die family-styles des Quell-Dokument in styles zu überführen und in die Vererbungskette einzufügen
-  - Sicherstellen das Paragraphen mit leeren Ifs immer gelöscht werden (auch in Zellen)
   - Prüfen ob Vectorgrafiken als Bilder verwendet werden können
 - Optimierungsmöglichkeiten:
   - Cache für Paar-Knoten (For-EndFor, If-EndIf) // reduziert das Scannen zukünftiger Knoten)
