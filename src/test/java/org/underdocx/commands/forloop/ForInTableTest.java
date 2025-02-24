@@ -38,7 +38,7 @@ public class ForInTableTest extends AbstractOdtTest {
         OdtContainer doc = new OdtContainer(readResource("LoopInTableCells.odt"));
         OdtEngine engine = new OdtEngine(doc);
         engine.run();
-        show(doc);
+        //show(doc);
         assertNoPlaceholders(doc);
         assertOrder(doc, "A1", "A2", "A3", "B1", "B2", "B3", "true");
     }

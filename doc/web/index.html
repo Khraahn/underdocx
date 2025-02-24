@@ -1,44 +1,67 @@
 <html lang="de">
+
 <head>
-    <link rel="icon" type="image/png" sizes="16x16" href="images/favicon_16.png"/>
-    <link rel="icon" type="image/png" sizes="32x32" href="images/favicon_32.png"/>
-    <link rel="icon" type="image/png" sizes="48x48" href="images/favicon_48.png"/>
-    <link rel="icon" type="image/png" sizes="192x192" href="images/favicon_192.png"/>
-    <link rel="icon" type="image/png" sizes="180x180" href="images/favicon_180.png"/>
-    <link rel="icon" type="image/png" sizes="167x167" href="images/favicon_167.png"/>
+    <link rel="icon" type="image/png" sizes="16x16" href="images/favicon_16.png" />
+    <link rel="icon" type="image/png" sizes="32x32" href="images/favicon_32.png" />
+    <link rel="icon" type="image/png" sizes="48x48" href="images/favicon_48.png" />
+    <link rel="icon" type="image/png" sizes="192x192" href="images/favicon_192.png" />
+    <link rel="icon" type="image/png" sizes="180x180" href="images/favicon_180.png" />
+    <link rel="icon" type="image/png" sizes="167x167" href="images/favicon_167.png" />
     <title>Underdocx</title>
-    <link rel="stylesheet" type="text/css" href="index.css"/>
+    <link rel="stylesheet" type="text/css" href="index.css" />
+    <link href="content.css" rel="stylesheet">
+    <link href="guide.css" rel="stylesheet">
     <script src="index.js" type="text/javascript"></script>
 
-    <meta name="author" content="Gerald Winter"/>
+    <meta name="author" content="Gerald Winter" />
     <meta name="keywords"
-          content="ODT, Template, Template Engine, Engine, Engine Processor, Libre Office, Open Office, Underdocx"/>
-    <meta name="description" content="Extendable Template Engine For Office Documents"/>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <meta http-equiv="content-type" content="text/html; charset=utf-8"/>
+        content="ODT, Template, Template Engine, Engine, Engine Processor, Libre Office, Open Office, Underdocx" />
+    <meta name="description" content="Extendable Template Engine For Office Documents" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
 </head>
 
-<body onresize="resizeFrame()">
-<div class="topnav" id="myTopnav">
-    <a id="home" href="javascript:showContent('home');">Home</a>
-    <a id="demo" href="javascript:showContent('demo');">Demo</a>
-    <a id="gettingstarted" href="javascript:showContent('gettingstarted');"
-    >Getting Started</a>
-    <a id="guide" href="javascript:showContent('guide');">Guide</a>
-    <a id="contact" href="javascript:showContent('contact');">Contact</a>
-    <a href="javascript:void(0);" class="icon" onclick="myFunction()">
-        <img src="images/menu-icon.png" class="iconimage"/>
-    </a>
-    <img src="images/logo_white.svg" class="logo"/>
-</div>
+<body>
+    <div class="topnav" id="myTopnav"></div>
 
-<div id="content">
-    <iframe id="contentObject" src="home.html" style="width:100%;height:1200px" frameborder="0" scrolling="yes"
-            onload="resizeFrame()"></iframe>
-</div>
+    <div id="mainContentContainer">
+        <div id="mainContent">
+            Welcome to
+            <div class="centerImageContainer"><img src="images/logo_black.svg" style="max-width:350px" /></div>
+            Underdocx is an extendable open source framework to manipulate ODT Documents
+            (LibreOffice / OpenOffice). It is a template engine and
+            uses different types of placeholders that can be
+            found and replaced by custom texts, images, tables and other documents.
+            Also documents can be converted to PDF if LibreOffice has been installed.
 
-<script>
-    checkNavParam();
-</script>
+            <div class="imageContainer"><img src="images/overview.png" /></div>
+
+            <h1>Further Information</h1>
+
+            Visit <a href="gettingstarted.html">Getting Started</a> to include underdocx
+            into your project.<br>
+            For more Details how to use underdocx visit the <a href="guide.html">User Guide</a><br>
+            A small demonstration of underdocx can be found on the <a href="demo.html">Demo</a> page.<br>
+            <br>
+            Underdocx is free and uses the
+            <a href="https://github.com/winterrifier/underdocx/blob/main/LICENSE" target="_blank">MIT
+                License</a>.<br>
+            The Source Code is hosted at <a href="https://github.com/winterrifier/underdocx"
+                target="_blank">GitHub</a>.<br>
+            Releases are provided by
+            <a href="https://central.sonatype.com/artifact/io.github.winterrifier/underdocx" target="_blank">Maven
+                Central
+                Repository</a>.<br>
+            This documentation and more information can be found at
+            <a href="https://underdocx.org" target="_blank">Underdocx.org</a><br>
+            <a href="https://underdocx.org/imprint.html" target="_blank">Imprint and Privacy Statement </a> of
+            Underdocx.org
+        </div>
+    </div>
+
+    <script>
+        buildNavBar();
+    </script>
 </body>
+
 </html>

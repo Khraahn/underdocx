@@ -4,6 +4,7 @@
   <title>User Guide</title>
   <link href="content.css" rel="stylesheet" media="" />
   <link href="guide.css" rel="stylesheet" media="" />
+  <link href="index.css" rel="stylesheet" media="" />
   <meta name="author" content="Gerald Winter" />
   <meta name="keywords"
     content="ODT, Template, Template Engine, Engine, Engine Processor, Libre Office, Open Office, Underdocx, User Guide" />
@@ -12,17 +13,17 @@
   <meta http-equiv="content-type" content="text/html; charset=utf-8" />
   <script src="index.js" type="text/javascript"></script>
   <script src="buildMenu.js" type="text/javascript"></script>
-    <link rel="icon" type="image/png" sizes="16x16" href="images/favicon_16.png"/>
-    <link rel="icon" type="image/png" sizes="32x32" href="images/favicon_32.png"/>
-    <link rel="icon" type="image/png" sizes="48x48" href="images/favicon_48.png"/>
-    <link rel="icon" type="image/png" sizes="192x192" href="images/favicon_192.png"/>
-    <link rel="icon" type="image/png" sizes="180x180" href="images/favicon_180.png"/>
-    <link rel="icon" type="image/png" sizes="167x167" href="images/favicon_167.png"/>
+  <link rel="icon" type="image/png" sizes="16x16" href="images/favicon_16.png" />
+  <link rel="icon" type="image/png" sizes="32x32" href="images/favicon_32.png" />
+  <link rel="icon" type="image/png" sizes="48x48" href="images/favicon_48.png" />
+  <link rel="icon" type="image/png" sizes="192x192" href="images/favicon_192.png" />
+  <link rel="icon" type="image/png" sizes="180x180" href="images/favicon_180.png" />
+  <link rel="icon" type="image/png" sizes="167x167" href="images/favicon_167.png" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.3/styles/lightfair.min.css">
 </head>
 
 <body class="bodyclass">
-
+  <div class="topnav" id="myTopnav"></div>
   <div id="guideContainer">
     <div id="guideMenu" class="hide">
       <span class="menuTitle">Table of Contents</span>
@@ -1230,13 +1231,13 @@ ${Date $value:"date"}</code></pre>
           <tr>
             <td>limit</td>
             <td>optional, sets the maximum number of items to print, default value is -1, which means no limit</td>
-          </tr>   
+          </tr>
           <tr>
             <td>truncated</td>
             <td>optional, sets suffix text to use when limit value has been exceeded</td>
-          </tr>                      
-        </table>    
-        
+          </tr>
+        </table>
+
         Examples:
         <pre class="padding"><code>// prints: Bibi, Tina, Amadeus, Sabrina
 ${Join value:["Bibi", "Tina", "Amadeus", "Sabrina"]}
@@ -1245,7 +1246,7 @@ ${Join value:["Bibi", "Tina", "Amadeus", "Sabrina"]}
 ${Join value:["Bibi", "Tina", "Amadeus", "Sabrina"], lastSeparator:" und "}
           
 // prints: Bibi, Tina usw.
-${Join value:["Bibi", "Tina", "Amadeus", "Sabrina"], limit: 2, truncated:" usw."}</code></pre>        
+${Join value:["Bibi", "Tina", "Amadeus", "Sabrina"], limit: 2, truncated:" usw."}</code></pre>
 
 
         <h3>${PageStyle}-Command</h3>
@@ -1562,18 +1563,20 @@ engine.run();</code></pre>
 
       </div>
     </div>
+  </div>
 
-    <script>
-      ensureNavBarVisible("guide");
+  <script>
+    buildNavBar();
+    buildMenu("guideMenu");
+  </script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.3/highlight.min.js"></script>
+  <script>
+    if (!hljs.initHighlighting.called) {
+      hljs.initHighlighting.called = true
+        ;[].slice.call(document.querySelectorAll('pre.highlight > code[data-lang]')).forEach(function (el) { hljs.highlightBlock(el) })
+    }
+  </script>
 
-    </script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.3/highlight.min.js"></script>
-    <script>
-      if (!hljs.initHighlighting.called) {
-        hljs.initHighlighting.called = true
-          ;[].slice.call(document.querySelectorAll('pre.highlight > code[data-lang]')).forEach(function (el) { hljs.highlightBlock(el) })
-      }
-    </script>
 </body>
 
 </html>
