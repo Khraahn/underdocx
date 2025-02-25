@@ -1249,6 +1249,59 @@ ${Join value:["Bibi", "Tina", "Amadeus", "Sabrina"], lastSeparator:" und "}
 ${Join value:["Bibi", "Tina", "Amadeus", "Sabrina"], limit: 2, truncated:" usw."}</code></pre>
 
 
+          <h3>${Alias}-Command</h3>
+
+          An alias is a placeholder representing an other placeholder and its parameters. It can be used
+          to reduce complexity or
+          to define new default parameters of the replaced placeholder. To support alias playeholders
+          an alias definition has to be registered first.
+          There are two ways to register new alias placeholder definitions, the <code-word>${Alias}</code-word> 
+          command and the method <code-word>registerAlias</code-word> of the Engine API, which might be
+          the best way to hide complexity. In case you prefer alias definition in the documemt, the
+          <code-word>${Alias}</code-word> commmand provides these attributes:
+          
+          <table>
+            <tr>
+              <th>
+                Attribute
+              </th>
+              <th>
+                Description
+              </th>
+            </tr>
+            <tr>
+              <td>key</td>
+              <td>placeholders that have this key will be replaced with "replaceKey"</td>
+            </tr>
+            <tr>
+              <td>replaceKey</td>
+              <td>new key to use when a placeholder with "key" has been found</td>
+            </tr>
+            <tr>
+              <td>attributes</td>
+              <td>This optional list defines the default attributes to use. The list contains objects with properties "key" and "value". </td>
+            </tr>
+          </table>
+
+          An alias placeholder may still use parameters, even when the registered alias definition already defines
+          the same parameters as default values. In this case the parameters of the alias definition are overwritten.
+
+          <pre class="padding"><code>// alias definition
+${Alias key:"myDate", replaceKey:"Date", attributes:[ {key:"outputFormat", value:"dd.MM.yyyy"} ] }
+
+// prints current date similar to 2025-02-25
+${Date}
+
+// prints current date similar to 25.02.2025
+${myDate}
+
+// prints current date similar to 2025/02/25
+${myDate outputFormat:"yyyy/MM/dd"}
+          
+// prints: 12.12.2024
+${myDate value:"2024-12-12"}</code></pre>
+            
+
         <h3>${PageStyle}-Command</h3>
 
         PageBreaks, Page-Orientation-Changes and new page numbers can be forced with

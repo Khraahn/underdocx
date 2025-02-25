@@ -67,6 +67,7 @@ public class OdtEngine {
             = new ImagePlaceholdersProvider.ImagePlaceholdersProviderFactory();
 
     private final MultiCommandHandler<OdtContainer, OdfTextDocument> multiCommandHandler = new MultiCommandHandler<>();
+    private final AliasCommandHandler<OdtContainer, OdfTextDocument> aliasCommandHandler = new AliasCommandHandler<>();
 
     private final ModelEngine<OdtContainer, OdfTextDocument> engine;
 
@@ -90,16 +91,21 @@ public class OdtEngine {
         engine.registerCommandHandler(parameters, new ExportCommandHandler());
         engine.registerCommandHandler(parameters, multiCommandHandler);
         engine.registerCommandHandler(parameters, new JoinCommandHandler<>());
-        engine.registerCommandHandler(parameters, new DeleteNodesEodHandler());
+        engine.registerCommandHandler(parameters, new DeleteNodesEodHandler<>());
         engine.registerCommandHandler(parameters, new UnderdocxCommandHandler());
-    }
-
-    public void registerStringReplacement(Regex key, String replacement, boolean forceRescan) {
-        multiCommandHandler.registerStringReplacement(key, replacement, forceRescan);
+        engine.registerCommandHandler(parameters, aliasCommandHandler);
     }
 
     public void registerStringReplacement(String key, String replacement) {
         multiCommandHandler.registerStringReplacement(key, replacement);
+    }
+
+    public void registerAlias(String key, String placeholder) {
+        aliasCommandHandler.registerAlias(key, placeholder);
+    }
+
+    public void registerAlias(String key, ParametersPlaceholderData placeholder) {
+        aliasCommandHandler.registerAlias(key, placeholder);
     }
 
     public OdtEngine(OdtContainer doc) {

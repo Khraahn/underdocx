@@ -43,46 +43,29 @@ public class MultiCommandHandler<C extends DocContainer<D>, D> extends AbstractC
 
     private List<MCommandHandler<C, ParametersPlaceholderData, D>> subCommandHandlerRegistry = new ArrayList<>();
 
-    public void registerSubCommandHandler(MCommandHandler<C, ParametersPlaceholderData, D> handler) {
+    private void registerSubCommandHandler(MCommandHandler<C, ParametersPlaceholderData, D> handler) {
         subCommandHandlerRegistry.add(handler);
     }
 
-    public void registerStringReplacement(Regex key, String replacement, boolean forceRescan) {
-        registerSubCommandHandler(new SimpleKey2StringCommandHandler<>(key, replacement, forceRescan));
-    }
-
     public void registerStringReplacement(String key, String replacement) {
-        registerSubCommandHandler(new SimpleKey2StringCommandHandler<>(new Regex(Pattern.quote(key)), replacement, true));
+        registerSubCommandHandler(new SimpleKey2StringCommandHandler<>(new Regex(Pattern.quote(key)), replacement));
     }
 
     @Override
     protected CommandHandlerResult tryExecuteCommand() {
-        CommandHandlerResult result = CommandHandlerResult.IGNORED;
-        if (trySelection(selection) != CommandHandlerResult.IGNORED) {
+        CommandHandlerResult result = trySelection(selection);
+        if (result != CommandHandlerResult.IGNORED) {
             List<SelectedNode<?>> allWaiting = selection.getEngineAccess().lookAhead(null);
             for (SelectedNode<?> waiting : allWaiting) {
                 if (waiting.getPlaceholderData() instanceof ParametersPlaceholderData) {
                     MSelection<C, ParametersPlaceholderData, D> newSelection = Node2MSelection.createMSelection(selection, (SelectedNode<ParametersPlaceholderData>) waiting);
-                    CommandHandlerResult localResult = trySelection(newSelection);
-                    result = combineResults(result, localResult);
+                    trySelection(newSelection);
                 }
             }
         }
         return result;
     }
 
-    private CommandHandlerResult combineResults(CommandHandlerResult last, CommandHandlerResult current) {
-        return switch (current.getResultType()) {
-            case IGNORED, EXECUTED_PROCEED -> last;
-            case EXECUTED_FULL_RESCAN -> current;
-            case EXECUTED_RESTART_AT_NODE -> switch (last.getResultType()) {
-                case IGNORED, EXECUTED_PROCEED -> current;
-                case EXECUTED_FULL_RESCAN, EXECUTED_RESTART_AT_NODE, EXECUTED_END_OF_DOC ->
-                        CommandHandlerResult.EXECUTED_FULL_RESCAN;
-            };
-            case EXECUTED_END_OF_DOC -> CommandHandlerResult.EXECUTED_FULL_RESCAN;
-        };
-    }
 
     protected CommandHandlerResult trySelection(MSelection selection) {
         for (MCommandHandler<C, ParametersPlaceholderData, D> handler : subCommandHandlerRegistry) {
@@ -94,15 +77,13 @@ public class MultiCommandHandler<C extends DocContainer<D>, D> extends AbstractC
         return CommandHandlerResult.IGNORED;
     }
 
-    public class SimpleKey2StringCommandHandler<C extends DocContainer<D>, D> extends AbstractTextualCommandHandler<C, D> {
+    public static class SimpleKey2StringCommandHandler<C extends DocContainer<D>, D> extends AbstractTextualCommandHandler<C, D> {
 
-        private final boolean forceRescan;
         private final String replacement;
 
-        protected SimpleKey2StringCommandHandler(Regex keys, String replacement, boolean forceRescan) {
+        protected SimpleKey2StringCommandHandler(Regex keys, String replacement) {
             super(keys);
             this.replacement = replacement;
-            this.forceRescan = forceRescan;
         }
 
         @Override
@@ -110,8 +91,7 @@ public class MultiCommandHandler<C extends DocContainer<D>, D> extends AbstractC
             selection.getPlaceholderToolkit().ifPresent(toolkit -> {
                 toolkit.replacePlaceholderWithText(selection.getNode(), replacement);
             });
-            if (forceRescan) return CommandHandlerResult.EXECUTED_FULL_RESCAN;
-            else return CommandHandlerResult.EXECUTED_PROCEED;
+            return CommandHandlerResult.FACTORY.startAtNode(selection.getNode());
         }
     }
 }

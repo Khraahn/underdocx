@@ -37,6 +37,8 @@ public interface ParametersPlaceholderData {
 
     JsonNode getJson();
 
+    JsonNode getOrCreateJson();
+
     void setJson(JsonNode json);
 
     void clearAttributes();
@@ -63,6 +65,13 @@ public interface ParametersPlaceholderData {
 
         @Override
         public JsonNode getJson() {
+            return json;
+        }
+
+        public JsonNode getOrCreateJson() {
+            if (json == null) {
+                this.json = JsonNodeFactory.instance.objectNode();
+            }
             return json;
         }
 

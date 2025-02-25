@@ -48,7 +48,7 @@ public class MultiCommandTest extends AbstractOdtTest {
         engine.registerStringReplacement("End", "${EndFor}");
         engine.setModel(new MapDataNode(jsonString));
         engine.run();
-        //show(doc);
+        // show(doc);
         assertContains(doc, "0 A");
         assertContains(doc, "1 B");
         assertContains(doc, "2 C");

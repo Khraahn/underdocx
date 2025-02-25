@@ -61,5 +61,5 @@ public abstract class AbstractConvertDataPicker<T> implements ExtendedDataPicker
         }
     }
 
-    abstract Optional<T> convert(DataNode node);
+    protected abstract Optional<T> convert(DataNode node);
 }

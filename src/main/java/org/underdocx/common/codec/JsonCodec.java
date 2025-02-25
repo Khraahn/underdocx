@@ -29,10 +29,10 @@ import com.fasterxml.jackson.core.json.JsonReadFeature;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.JsonNodeType;
+import org.apache.commons.io.IOUtils;
+import org.underdocx.common.tools.Convenience;
 import org.underdocx.environment.UnderdocxEnv;
 import org.underdocx.environment.err.Problems;
-import org.underdocx.common.tools.Convenience;
-import org.apache.commons.io.IOUtils;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -129,6 +129,16 @@ public class JsonCodec implements Codec<JsonNode> {
         try {
             JsonNode tree = mapper.valueToTree(mapStructure);
             return Optional.of(getTextContent(tree));
+        } catch (Exception e) {
+            UnderdocxEnv.getInstance().logger.error(e);
+            return Optional.empty();
+        }
+    }
+
+    public Optional<JsonNode> convertMapToJson(Object mapStructure) {
+        try {
+            JsonNode tree = mapper.valueToTree(mapStructure);
+            return Optional.of(tree);
         } catch (Exception e) {
             UnderdocxEnv.getInstance().logger.error(e);
             return Optional.empty();
