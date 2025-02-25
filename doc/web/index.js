@@ -6,14 +6,20 @@ var menuEntries=[
   {id:"contact", title:"Contact", file:"contact.html"},
 ]
 
-function buildNavBar() {
+function buildNavBar(selectId) {
     let innerContent = "";
     for(i = 0; i < menuEntries.length; i++) {
-        innerContent += "<a href=\""+menuEntries[i].file+"\">"+menuEntries[i].title+"</a>";
+        innerContent += "<a id=\""+menuEntries[i].id+"\" href=\""+menuEntries[i].file+"\">"+menuEntries[i].title+"</a>";
     }
     innerContent += "<a href=\"javascript:void(0);\" class=\"icon\" onclick=\"myFunction()\"><img src=\"images/menu-icon.png\" class=\"iconimage\"/></a>"
     innerContent += "<img src=\"images/logo_white.svg\" class=\"logo\"/>"
     topNav = document.getElementById("myTopnav").innerHTML=innerContent;
+    if (selectId) {
+        setTimeout(() => {
+            document.getElementById(selectId).classList.add("selected")
+        }, 10)
+
+    }
 }
 
 
