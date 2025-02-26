@@ -35,7 +35,7 @@ import java.util.Optional;
 public class ResourceDataPicker extends AbstractConvertDataPicker<Resource> {
 
     @Override
-    Optional<Resource> convert(DataNode node) {
+    protected Optional<Resource> convert(DataNode node) {
         Object value = node.getValue();
         if (value instanceof Resource) {
             return Optional.of((Resource) value);
