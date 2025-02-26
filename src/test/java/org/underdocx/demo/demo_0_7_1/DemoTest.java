@@ -22,7 +22,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-package org.underdocx.demo.demo_0_6_0;
+package org.underdocx.demo.demo_0_7_1;
 
 import org.junit.jupiter.api.Test;
 import org.underdocx.AbstractOdtTest;
@@ -49,8 +49,8 @@ public class DemoTest extends AbstractOdtTest {
         OdtEngine engine = new OdtEngine(doc);
 
         // Alias placeholders
-        engine.registerStringReplacement("addHeaderAndFooter", "${Export $resource:\"master\"} ");
-        engine.registerStringReplacement("membersTable", "${Import $resource:\"membersTable\"} ");
+        engine.registerAlias("addHeaderAndFooter", "${Export $resource:\"master\"}");
+        engine.registerAlias("membersTable", "${Import $resource:\"membersTable\"}");
 
         // Variables / Data
         engine.pushLeafVariable("membersTable", readResource("membertable.odt"));

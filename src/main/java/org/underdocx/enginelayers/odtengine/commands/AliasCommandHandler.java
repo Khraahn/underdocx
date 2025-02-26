@@ -155,7 +155,7 @@ public class AliasCommandHandler<C extends DocContainer<D>, D> extends AbstractC
     }
 
     public void registerAlias(String key, String placeholderToParse) {
-        ParametersPlaceholderData parametersPlaceholderData = Problems.PLACEHOLDER_PARSE_ERROR.exec(() -> ParametersPlaceholderCodec.INSTANCE.parse(placeholderToParse));
+        ParametersPlaceholderData parametersPlaceholderData = Problems.PLACEHOLDER_PARSE_ERROR.exec(() -> ParametersPlaceholderCodec.INSTANCE.parse(placeholderToParse.trim()));
         registerAlias(key, parametersPlaceholderData);
     }
 
