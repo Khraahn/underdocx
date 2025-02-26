@@ -37,7 +37,7 @@ public class AliasTest extends AbstractOdtTest {
     @Test
     public void testAlias() {
         String content = """
-                ${Alias key:"myDate", replaceKey:"Date", attributes:[ {key:"outputFormat", value:"dd.MM.yyyy"} ] }
+                ${Alias key:"myDate", replaceKey:"Date", attributes:{outputFormat:"dd.MM.yyyy"}}
                 ${Push key:"varFormat", value:"yyyy/MM/dd"}
                 A: ${myDate}
                 B: ${myDate $outputFormat:"varFormat"}

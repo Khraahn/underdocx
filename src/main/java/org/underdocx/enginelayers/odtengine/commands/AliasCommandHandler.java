@@ -85,30 +85,16 @@ public class AliasCommandHandler<C extends DocContainer<D>, D> extends AbstractC
         @Override
         protected Optional<Set<AttrKeyValue>> convert(DataNode attributesNode) {
             return Convenience.buildOptional(new HashSet<>(), result -> {
-                if (attributesNode != null && attributesNode.getType() != DataNode.ModelNodeType.LIST) {
+                if (attributesNode != null && attributesNode.getType() != DataNode.ModelNodeType.MAP) {
                     result.value = null;
                     return;
                 }
-                if (attributesNode == null || attributesNode.isNull() || attributesNode.getSize() == 0) return;
-                for (int i = 0; i < attributesNode.getSize(); i++) {
-                    DataNode itemNode = attributesNode.getProperty(i);
-                    if (itemNode == null || itemNode.isNull() || !itemNode.hasProperty("key") || !itemNode.hasProperty("value")) {
-                        result.value = null;
-                        return;
-                    }
-                    String attrKey = getStringOrNull(itemNode.getProperty("key"));
-                    if (attrKey == null) {
-                        result.value = null;
-                        return;
-                    }
-                    result.value.add(new AttrKeyValue(attrKey, itemNode.getProperty("value")));
+                if (attributesNode != null) {
+                    attributesNode.getPropertyNames().forEach(propertyName -> {
+                        result.value.add(new AttrKeyValue(propertyName, attributesNode.getProperty(propertyName)));
+                    });
                 }
             });
-        }
-
-        private static String getStringOrNull(DataNode node) {
-            if (node == null || node.isNull() || !(node.getValue() instanceof String)) return null;
-            return node.getValue().toString();
         }
     }
 

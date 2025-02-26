@@ -81,12 +81,12 @@
         <pre class="highlightjs highlight nowrap"><code class="language-xml hljs" data-lang="xml">&lt;dependency&gt;
     &lt;groupId&gt;io.github.winterrifier&lt;/groupId&gt;
     &lt;artifactId&gt;underdocx&lt;/artifactId&gt;
-    &lt;version&gt;0.7.1&lt;/version&gt;
+    &lt;version&gt;0.7.2&lt;/version&gt;
 &lt;/dependency&gt;</code></pre>
 
         When you use Gradle your dependency should look like this
 
-        <pre class="padding"><code>implementation 'io.github.winterrifier:underdocx:0.7.1'</code></pre>
+        <pre class="padding"><code>implementation 'io.github.winterrifier:underdocx:0.7.2'</code></pre>
 
         You can also visit <a href="https://central.sonatype.com/artifact/io.github.winterrifier/underdocx"
           target="_blank">
@@ -1255,7 +1255,7 @@ ${Join value:["Bibi", "Tina", "Amadeus", "Sabrina"], limit: 2, truncated:" usw."
           to reduce complexity or
           to define new default parameters of the replaced placeholder. To support alias playeholders
           an alias definition has to be registered first.
-          There are two ways to register new alias placeholder definitions, the <code-word>${Alias}</code-word> 
+          There are two ways to register new alias definitions, the <code-word>${Alias}</code-word> 
           command and the method <code-word>registerAlias</code-word> of the Engine API, which might be
           the best way to hide complexity. In case you prefer alias definition in the documemt, the
           <code-word>${Alias}</code-word> commmand provides these attributes:
@@ -1279,7 +1279,7 @@ ${Join value:["Bibi", "Tina", "Amadeus", "Sabrina"], limit: 2, truncated:" usw."
             </tr>
             <tr>
               <td>attributes</td>
-              <td>This optional list defines the default attributes to use. The list contains objects with properties "key" and "value". </td>
+              <td>This attribute is optional and contains an object of the default property key-value-pairs </td>
             </tr>
           </table>
 
@@ -1287,7 +1287,7 @@ ${Join value:["Bibi", "Tina", "Amadeus", "Sabrina"], limit: 2, truncated:" usw."
           the same parameters as default values. In this case the parameters of the alias definition are overwritten.
 
           <pre class="padding"><code>// alias definition
-${Alias key:"myDate", replaceKey:"Date", attributes:[ {key:"outputFormat", value:"dd.MM.yyyy"} ] }
+${Alias key: "myDate", replaceKey: "Date", attributes: {outputFormat: "dd.MM.yyyy"} }
 
 // prints current date similar to 2025-02-25
 ${Date}

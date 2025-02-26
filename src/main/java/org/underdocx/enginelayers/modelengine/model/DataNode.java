@@ -24,6 +24,8 @@ SOFTWARE.
 
 package org.underdocx.enginelayers.modelengine.model;
 
+import java.util.Set;
+
 public interface DataNode {
 
     enum ModelNodeType {
@@ -49,4 +51,6 @@ public interface DataNode {
     boolean hasProperty(int index);
 
     boolean isNull();
+
+    Set<String> getPropertyNames();
 }

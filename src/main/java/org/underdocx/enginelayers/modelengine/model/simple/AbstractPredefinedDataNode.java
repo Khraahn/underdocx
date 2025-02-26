@@ -77,6 +77,11 @@ public abstract class AbstractPredefinedDataNode<T> extends AbstractDataNode<T> 
         return Convenience.also(createRootNode(object), result -> result.setParent(this));
     }
 
+    @Override
+    public Set<String> getPropertyNames() {
+        return Set.of();
+    }
+
     /**
      * converts a {@link Map}, {@link List} or Leaf object into a {@link DataNode} tree
      */

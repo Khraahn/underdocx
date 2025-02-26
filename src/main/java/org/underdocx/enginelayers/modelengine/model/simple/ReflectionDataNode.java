@@ -192,6 +192,29 @@ public class ReflectionDataNode extends AbstractDataNode<Object> implements Data
         });
     }
 
+
+    protected List<String> findGetMethodNames() {
+        return Convenience.buildList(result -> {
+            Arrays.asList(containedValue.getClass().getMethods()).forEach(method -> {
+                boolean returnFits = method.getReturnType() != Void.class;
+                boolean parametersFits = method.getParameterTypes().length == 0;
+                if (returnFits && parametersFits) {
+                    String name = method.getName();
+                    if (name.length() > 3 && name.startsWith("get") && Character.isUpperCase(Character.valueOf(name.charAt(3)))) {
+                        name = Character.valueOf(name.charAt(3)).toString().toLowerCase() + name.substring(4);
+                    } else if (name.length() > 4 && name.startsWith("get_")) {
+                        name = name.substring(4);
+                    } else if (name.length() > 2 && name.startsWith("is") && Character.isUpperCase(Character.valueOf(name.charAt(2)))) {
+                        name = Character.valueOf(name.charAt(2)).toString().toLowerCase() + name.substring(3);
+                    } else if (name.length() > 3 && name.startsWith("is_")) {
+                        name = name.substring(3);
+                    }
+                    result.add(name);
+                }
+            });
+        });
+    }
+
     protected Optional<ReflectionDataNode> readField(Field field) {
         Object result;
         try {
@@ -208,6 +231,18 @@ public class ReflectionDataNode extends AbstractDataNode<Object> implements Data
         return Convenience.findFirst(Arrays.asList(containedValue.getClass().getFields()),
                 field -> field.getName().equalsIgnoreCase(name) ||
                         field.getName().equalsIgnoreCase(("is" + name)));
+    }
+
+    public List<String> findFieldNames() {
+        return Convenience.buildList(result -> Arrays.asList(containedValue.getClass().getFields()).forEach(field -> result.add(field.getName())));
+    }
+
+    @Override
+    public Set<String> getPropertyNames() {
+        return Convenience.also(new HashSet<>(), result -> {
+            result.addAll(findFieldNames());
+            result.addAll(findGetMethodNames());
+        });
     }
 
     public interface Resolver {

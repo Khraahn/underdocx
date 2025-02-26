@@ -28,6 +28,7 @@ import java.io.InputStream;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Set;
 
 public class MapDataNode extends AbstractPredefinedDataNode<Map<String, AbstractDataNode<?>>> {
 
@@ -82,5 +83,8 @@ public class MapDataNode extends AbstractPredefinedDataNode<Map<String, Abstract
         containedValue.put(property, node);
     }
 
-
+    @Override
+    public Set<String> getPropertyNames() {
+        return containedValue.keySet();
+    }
 }
