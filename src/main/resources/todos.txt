@@ -1,8 +1,6 @@
 - Features
   - Import für ODG, ODP
-  - Löschen leerer Textboxen
   - engine.importData
-  - Resourcen sollte Base64 unterstützen
   - später ggf. docx unterstützen
 - Bekannte Probleme:
   - Prüfen ob Vectorgrafiken als Bilder verwendet werden können

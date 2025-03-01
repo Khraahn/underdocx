@@ -31,6 +31,7 @@ import org.underdocx.common.tools.StringHash;
 import java.io.*;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.Base64;
 import java.util.Optional;
 
 /**
@@ -183,6 +184,40 @@ public interface Resource {
         @Override
         public Optional<URI> getURI() {
             return Optional.of(uri);
+        }
+    }
+
+    class Base64Resource implements Resource {
+
+        DataResource innerResource = null;
+
+        public Base64Resource(String base64) {
+            innerResource = new DataResource(Base64.getDecoder().decode(base64), base64);
+        }
+
+        public Base64Resource(String base64, String identifier) {
+            innerResource = new DataResource(Base64.getDecoder().decode(base64), identifier);
+        }
+
+
+        @Override
+        public InputStream openStream() throws IOException {
+            return innerResource.openStream();
+        }
+
+        @Override
+        public String getIdentifier() {
+            return innerResource.getIdentifier();
+        }
+
+        @Override
+        public byte[] getData() throws IOException {
+            return innerResource.getData();
+        }
+
+        @Override
+        public Optional<URI> getURI() {
+            return innerResource.getURI();
         }
     }
 

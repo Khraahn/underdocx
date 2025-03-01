@@ -34,7 +34,9 @@ import org.underdocx.enginelayers.baseengine.modifiers.existingimage.ExistingIma
 import org.underdocx.enginelayers.odtengine.commands.ifcondition.ConditionAttributeInterpreter;
 import org.underdocx.enginelayers.odtengine.commands.image.ImagePlaceholderData;
 import org.underdocx.enginelayers.odtengine.commands.internal.AbstractCommandHandler;
-import org.underdocx.enginelayers.odtengine.commands.internal.datapicker.*;
+import org.underdocx.enginelayers.odtengine.commands.internal.datapicker.BooleanDataPicker;
+import org.underdocx.enginelayers.odtengine.commands.internal.datapicker.PredefinedDataPicker;
+import org.underdocx.enginelayers.odtengine.commands.internal.datapicker.StringConvertDataPicker;
 import org.underdocx.enginelayers.odtengine.commands.internal.modifiermodule.resource.ResourceCommandModule;
 import org.underdocx.enginelayers.odtengine.modifiers.ifmodifier.IfModifier;
 
@@ -44,20 +46,13 @@ import org.underdocx.enginelayers.odtengine.modifiers.ifmodifier.IfModifier;
  * It uses the {@link IfModifier} to manipulate the DOM
  */
 public class ImageCommandHandler<C extends AbstractOdfContainer<D>, D extends OdfDocument> extends AbstractCommandHandler<C, ImagePlaceholderData, D> {
-    public static final String KEY = "Image";
-    public static final String URI_ATTR = "uri";
-    public static final String DATA_ATTR = "data";
-    public static final String RESOURCE_ATTR = "resource";
     public static final String NAME_ATTR = "name";
     public static final String DESC_ATTR = "desc";
     public static final String KEEP_WIDTH_ATTR = "keepWidth";
 
-    private static PredefinedDataPicker<String> namePicker = new StringConvertDataPicker().asPredefined(NAME_ATTR);
-    private static PredefinedDataPicker<String> descPicker = new StringConvertDataPicker().asPredefined(DESC_ATTR);
-    private static PredefinedDataPicker<String> uriPicker = new StringConvertDataPicker().asPredefined(URI_ATTR);
-    private static PredefinedDataPicker<Resource> resourcePicker = new ResourceDataPicker().asPredefined(RESOURCE_ATTR);
-    private static PredefinedDataPicker<byte[]> binaryPicker = new BinaryDataPicker().asPredefined(DATA_ATTR);
-    private static PredefinedDataPicker<Boolean> keepWidthPicker = new BooleanDataPicker().asPredefined(KEEP_WIDTH_ATTR);
+    private static final PredefinedDataPicker<String> namePicker = new StringConvertDataPicker().asPredefined(NAME_ATTR);
+    private static final PredefinedDataPicker<String> descPicker = new StringConvertDataPicker().asPredefined(DESC_ATTR);
+    private static final PredefinedDataPicker<Boolean> keepWidthPicker = new BooleanDataPicker().asPredefined(KEEP_WIDTH_ATTR);
 
 
     @Override

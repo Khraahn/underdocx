@@ -24,6 +24,7 @@ SOFTWARE.
 
 package org.underdocx.enginelayers.baseengine.modifiers.deleteplaceholder;
 
+import org.odftoolkit.odfdom.dom.element.draw.DrawTextBoxElement;
 import org.underdocx.common.doc.DocContainer;
 import org.underdocx.common.placeholder.TextualPlaceholderToolkit;
 import org.underdocx.common.placeholder.basic.textnodeinterpreter.OdfTextNodeInterpreter;
@@ -100,7 +101,11 @@ public class DeletePlaceholderModifier<C extends DocContainer<D>, P, D> implemen
         }
 
         result.value = ModifierNodeResult.FACTORY.success(p, true);
-        p.getParentNode().removeChild(p);
+        Node parent = p.getParentNode();
+        parent.removeChild(p);
+        if (parent instanceof DrawTextBoxElement && !parent.hasChildNodes()) {
+            parent.getParentNode().removeChild(parent);
+        }
     }
 
 

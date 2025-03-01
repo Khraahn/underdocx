@@ -44,10 +44,12 @@ public class ResourceCommandModule<C extends DocContainer<D>, P, D> extends Abst
     public static final String URI_ATTR = "uri";
     public static final String DATA_ATTR = "data";
     public static final String RESOURCE_ATTR = "resource";
+    public static final String B64_ATTR = "base64";
 
     private static PredefinedDataPicker<String> uriPicker = new StringConvertDataPicker().asPredefined(URI_ATTR);
     private static PredefinedDataPicker<Resource> resourcePicker = new ResourceDataPicker().asPredefined(RESOURCE_ATTR);
     private static PredefinedDataPicker<byte[]> binaryPicker = new BinaryDataPicker().asPredefined(DATA_ATTR);
+    private static PredefinedDataPicker<String> b64Picker = new StringConvertDataPicker().asPredefined(B64_ATTR);
 
     public ResourceCommandModule(JsonNode json) {
         super(json);
@@ -60,6 +62,8 @@ public class ResourceCommandModule<C extends DocContainer<D>, P, D> extends Abst
             return Problems.IO_EXCEPTION.exec(() -> new Resource.UriResource(uriPicker.pickData(dataAccess, configuration).getOrThrow(URI_ATTR)));
         } else if (AccessTypeJsonNameInterpreter.attributeExists(configuration, DATA_ATTR)) {
             return Problems.IO_EXCEPTION.exec(() -> new Resource.DataResource(binaryPicker.pickData(dataAccess, configuration).getOrThrow(DATA_ATTR)));
+        } else if (AccessTypeJsonNameInterpreter.attributeExists(configuration, B64_ATTR)) {
+            return Problems.IO_EXCEPTION.exec(() -> new Resource.Base64Resource(b64Picker.pickData(dataAccess, configuration).getOrThrow(B64_ATTR)));
         } else {
             return Problems.IO_EXCEPTION.exec(() -> resourcePicker.pickData(dataAccess, configuration).getOrThrow(RESOURCE_ATTR));
         }
