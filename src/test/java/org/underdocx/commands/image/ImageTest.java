@@ -26,7 +26,7 @@ package org.underdocx.commands.image;
 
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
-import org.odftoolkit.odfdom.dom.element.draw.DrawFrameElement;
+import org.odftoolkit.odfdom.dom.element.svg.SvgDescElement;
 import org.underdocx.AbstractOdtTest;
 import org.underdocx.common.tools.TmpFile;
 import org.underdocx.common.tree.Nodes;
@@ -59,11 +59,11 @@ public class ImageTest extends AbstractOdtTest {
         engine.run();
         //show(doc);
         assertNoPlaceholders(doc);
-        List<Node> drawImagesNodes = Nodes.findDescendantNodes(doc.getContentDom(), OdfElement.FRAME.getQualifiedName(), true);
-        Assertions.assertThat(drawImagesNodes.size()).isEqualTo(2);
-        DrawFrameElement element0 = ((DrawFrameElement) drawImagesNodes.get(0));
-        DrawFrameElement element1 = ((DrawFrameElement) drawImagesNodes.get(1));
-        Assertions.assertThat((element0.getDrawNameAttribute())).isEqualTo("Smile1.png");
-        Assertions.assertThat((element1.getDrawNameAttribute())).isEqualTo("Smile2.png");
+        List<Node> descNodes = Nodes.findDescendantNodes(doc.getContentDom(), OdfElement.DESC.getQualifiedName(), true);
+        Assertions.assertThat(descNodes.size()).isEqualTo(2);
+        SvgDescElement element0 = ((SvgDescElement) descNodes.get(0));
+        SvgDescElement element1 = ((SvgDescElement) descNodes.get(1));
+        Assertions.assertThat((element0.getTextContent())).isEqualTo("Smile1.png");
+        Assertions.assertThat((element1.getTextContent())).isEqualTo("Smile2.png");
     }
 }

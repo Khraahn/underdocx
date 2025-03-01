@@ -4,7 +4,9 @@
   - Import für ODG, ODP
   - Löschen leerer Textboxen
   - engine.importData
-  - später ggf. docx unterstützen
+  - Image Platzhalter in <svg:descr>
+  - Resourcen sollte Base64 unterstützen
+    - später ggf. docx unterstützen
 - Bekannte Probleme:
   - Prüfen ob Vectorgrafiken als Bilder verwendet werden können
 - Optimierungsmöglichkeiten:

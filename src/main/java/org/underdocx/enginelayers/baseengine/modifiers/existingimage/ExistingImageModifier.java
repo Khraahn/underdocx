@@ -66,8 +66,8 @@ public class ExistingImageModifier<C extends DocContainer<D>, P extends BasicIma
             UnderdocxEnv.getInstance().logger.trace("calculated width: " + width);
             placeholder.setWidth(width, newWidthUnit);
         }
-        String title = modifierData.getTitle();
-        placeholder.setName(title == null ? newName : title);
+        String title = modifierData.getNewDesc();
+        placeholder.setDesc(title == null ? newName : title);
         return ModifierResult.SUCCESS;
     }
 }

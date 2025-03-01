@@ -49,11 +49,11 @@ public class ImageCommandHandler<C extends AbstractOdfContainer<D>, D extends Od
     public static final String DATA_ATTR = "data";
     public static final String RESOURCE_ATTR = "resource";
     public static final String NAME_ATTR = "name";
-    public static final String TITLE_ATTR = "title";
+    public static final String DESC_ATTR = "desc";
     public static final String KEEP_WIDTH_ATTR = "keepWidth";
 
     private static PredefinedDataPicker<String> namePicker = new StringConvertDataPicker().asPredefined(NAME_ATTR);
-    private static PredefinedDataPicker<String> titlePicker = new StringConvertDataPicker().asPredefined(TITLE_ATTR);
+    private static PredefinedDataPicker<String> descPicker = new StringConvertDataPicker().asPredefined(DESC_ATTR);
     private static PredefinedDataPicker<String> uriPicker = new StringConvertDataPicker().asPredefined(URI_ATTR);
     private static PredefinedDataPicker<Resource> resourcePicker = new ResourceDataPicker().asPredefined(RESOURCE_ATTR);
     private static PredefinedDataPicker<byte[]> binaryPicker = new BinaryDataPicker().asPredefined(DATA_ATTR);
@@ -64,10 +64,10 @@ public class ImageCommandHandler<C extends AbstractOdfContainer<D>, D extends Od
     protected CommandHandlerResult tryExecuteCommand() {
         return Convenience.build(CommandHandlerResult.EXECUTED_PROCEED, result -> {
             String name = namePicker.expect(dataAccess, placeholderData.getJson());
-            String title = titlePicker.pickData(dataAccess, placeholderData.getJson()).getOptionalValue().orElse(null);
+            String newDesc = descPicker.pickData(dataAccess, placeholderData.getJson()).getOptionalValue().orElse(null);
             Boolean keepWidth = keepWidthPicker.expect(dataAccess, placeholderData.getJson());
             Resource resource = new ResourceCommandModule<C, ImagePlaceholderData, D>(placeholderData.getJson()).execute(selection);
-            ExistingImageModifierData modifierData = new ExistingImageModifierData.Simple(keepWidth, resource, name, title);
+            ExistingImageModifierData modifierData = new ExistingImageModifierData.Simple(keepWidth, resource, name, newDesc);
             new ExistingImageModifier<C, ImagePlaceholderData, D>().modify(selection, modifierData);
         });
     }

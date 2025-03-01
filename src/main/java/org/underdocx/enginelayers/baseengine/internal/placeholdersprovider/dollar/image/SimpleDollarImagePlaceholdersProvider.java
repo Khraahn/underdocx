@@ -27,6 +27,7 @@ package org.underdocx.enginelayers.baseengine.internal.placeholdersprovider.doll
 import org.odftoolkit.odfdom.doc.OdfDocument;
 import org.odftoolkit.odfdom.dom.element.draw.DrawFrameElement;
 import org.odftoolkit.odfdom.dom.element.draw.DrawImageElement;
+import org.odftoolkit.odfdom.dom.element.svg.SvgDescElement;
 import org.underdocx.common.enumerator.Enumerator;
 import org.underdocx.common.placeholder.EncapsulatedNodesExtractor;
 import org.underdocx.common.placeholder.TextualPlaceholderToolkit;
@@ -34,7 +35,7 @@ import org.underdocx.common.placeholder.basic.textnodeinterpreter.OdfTextNodeInt
 import org.underdocx.common.tools.Convenience;
 import org.underdocx.common.tree.Nodes;
 import org.underdocx.common.tree.nodepath.TreeNodeCollector;
-import org.underdocx.common.types.Pair;
+import org.underdocx.common.types.Tripple;
 import org.underdocx.doctypes.TextNodeInterpreter;
 import org.underdocx.doctypes.odf.AbstractOdfContainer;
 import org.underdocx.doctypes.odf.constants.OdfElement;
@@ -67,11 +68,18 @@ public class SimpleDollarImagePlaceholdersProvider<C extends AbstractOdfContaine
         return child.map(c -> (DrawImageElement) c);
     }
 
-    private Optional<Pair<DrawFrameElement, DrawImageElement>> getImageElements(Node node) {
-        return Optional.ofNullable(Convenience.build(pairWrapper -> {
+    private Optional<SvgDescElement> getSvgDesc(DrawFrameElement node) {
+        Optional<Node> child = Nodes.findFirstDescendantNode(node, OdfElement.DESC.getQualifiedName());
+        return child.map(c -> (SvgDescElement) c);
+    }
+
+    private Optional<Tripple<DrawFrameElement, DrawImageElement, SvgDescElement>> getImageElements(Node node) {
+        return Optional.ofNullable(Convenience.build(trippleWrapper -> {
             getFrame(node).ifPresent(frame -> {
                 getImage(frame).ifPresent(image -> {
-                    pairWrapper.value = new Pair<>(frame, image);
+                    getSvgDesc(frame).ifPresent(desc -> {
+                        trippleWrapper.value = new Tripple<>(frame, image, desc);
+                    });
                 });
             });
         }));
@@ -101,7 +109,7 @@ public class SimpleDollarImagePlaceholdersProvider<C extends AbstractOdfContaine
     @Override
     public boolean isEncapsulatedNode(Node node) {
         return Convenience.build(false, w -> {
-            getImageDate(node).ifPresent(imageData -> w.value = SimpleDollarPlaceholdersProvider.regex.matches(imageData.getName()));
+            getImageDate(node).ifPresent(imageData -> w.value = SimpleDollarPlaceholdersProvider.regex.matches(imageData.getDesc()));
         });
     }
 

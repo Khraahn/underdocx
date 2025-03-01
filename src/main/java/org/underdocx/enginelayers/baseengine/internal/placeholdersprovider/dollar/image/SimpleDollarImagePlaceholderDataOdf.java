@@ -24,15 +24,16 @@ SOFTWARE.
 
 package org.underdocx.enginelayers.baseengine.internal.placeholdersprovider.dollar.image;
 
-import org.underdocx.common.types.Pair;
+import org.odftoolkit.odfdom.dom.element.draw.DrawFrameElement;
+import org.odftoolkit.odfdom.dom.element.draw.DrawImageElement;
+import org.odftoolkit.odfdom.dom.element.svg.SvgDescElement;
+import org.odftoolkit.odfdom.incubator.doc.draw.OdfDrawImage;
 import org.underdocx.common.types.Regex;
 import org.underdocx.common.types.Resource;
+import org.underdocx.common.types.Tripple;
 import org.underdocx.doctypes.odf.AbstractOdfContainer;
 import org.underdocx.doctypes.odf.constants.OdfLengthUnit;
 import org.underdocx.environment.err.Problems;
-import org.odftoolkit.odfdom.dom.element.draw.DrawFrameElement;
-import org.odftoolkit.odfdom.dom.element.draw.DrawImageElement;
-import org.odftoolkit.odfdom.incubator.doc.draw.OdfDrawImage;
 
 import java.net.URI;
 
@@ -40,10 +41,10 @@ public class SimpleDollarImagePlaceholderDataOdf implements SimpleDollarImagePla
 
 
     private final AbstractOdfContainer<?> doc;
-    private Pair<DrawFrameElement, DrawImageElement> elements = null;
+    private Tripple<DrawFrameElement, DrawImageElement, SvgDescElement> elements = null;
     private final static Regex number = new Regex("[0-9]+(\\.[0-9]+)?");
 
-    public SimpleDollarImagePlaceholderDataOdf(AbstractOdfContainer<?> doc, Pair<DrawFrameElement, DrawImageElement> odfElements) {
+    public SimpleDollarImagePlaceholderDataOdf(AbstractOdfContainer<?> doc, Tripple<DrawFrameElement, DrawImageElement, SvgDescElement> odfElements) {
         this.doc = doc;
         this.elements = odfElements;
     }
@@ -68,17 +69,17 @@ public class SimpleDollarImagePlaceholderDataOdf implements SimpleDollarImagePla
         elements.left.setSvgHeightAttribute(value);
     }
 
-    public String getName() {
-        return elements.left.getDrawNameAttribute();
+    public String getDesc() {
+        return elements.right.getTextContent();
     }
 
     public String getVariableName() {
-        String name = getName();
+        String name = getDesc().trim();
         return name.startsWith("$") ? name.substring(1) : name;
     }
 
-    public void setName(String name) {
-        elements.left.setDrawNameAttribute(name);
+    public void setDesc(String name) {
+        elements.right.setTextContent(name);
     }
 
     public double getWidthValue() {
@@ -105,8 +106,8 @@ public class SimpleDollarImagePlaceholderDataOdf implements SimpleDollarImagePla
         OdfDrawImage image = new OdfDrawImage(doc.getContentDom());
         try {
             String packagePath = image.newImage(imageUri);
-            elements.right.setXlinkHrefAttribute(packagePath);
-            setName(packagePath);
+            elements.middle.setXlinkHrefAttribute(packagePath);
+            setDesc(packagePath);
             // TODO set mimetype? String mimeType = OdfFileEntry.getMediaTypeString(imageUri.toString());
         } catch (Exception e) {
             Problems.ODF_FRAMEWORK_OPERARTION_EXCEPTION.fire(e);

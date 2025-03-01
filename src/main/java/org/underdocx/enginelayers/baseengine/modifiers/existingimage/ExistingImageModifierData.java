@@ -34,19 +34,19 @@ public interface ExistingImageModifierData {
 
     boolean isKeepWidth();
 
-    String getTitle();
+    String getNewDesc();
 
     class Simple implements ExistingImageModifierData {
         boolean keepWidth;
         Resource resource;
         String newName;
-        String title;
+        String newDesc;
 
-        public Simple(boolean keepWidth, Resource resource, String newName, String title) {
+        public Simple(boolean keepWidth, Resource resource, String newName, String newDesc) {
             this.keepWidth = keepWidth;
             this.resource = resource;
             this.newName = newName;
-            this.title = title;
+            this.newDesc = newDesc;
         }
 
         @Override
@@ -64,8 +64,8 @@ public interface ExistingImageModifierData {
         }
 
         @Override
-        public String getTitle() {
-            return title;
+        public String getNewDesc() {
+            return newDesc;
         }
     }
 }

@@ -43,6 +43,8 @@ public enum OdfElement {
 
     IMAGE(OdfNameSpace.DRAW, "image"),
 
+    DESC(OdfNameSpace.SVG, "desc"),
+
     TABLE(OdfNameSpace.TABLE, "table"),
     TABLE_ROW(OdfNameSpace.TABLE, "table-row"),
     TABLE_CELL(OdfNameSpace.TABLE, "table-cell"),

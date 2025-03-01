@@ -28,6 +28,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import org.odftoolkit.odfdom.dom.OdfContentDom;
 import org.odftoolkit.odfdom.dom.element.draw.DrawFrameElement;
 import org.odftoolkit.odfdom.dom.element.draw.DrawImageElement;
+import org.odftoolkit.odfdom.dom.element.svg.SvgDescElement;
 import org.odftoolkit.odfdom.incubator.doc.draw.OdfDrawImage;
 import org.underdocx.common.tools.Convenience;
 import org.underdocx.common.tools.TmpFile;
@@ -56,10 +57,12 @@ public class ImagePlaceholderData implements BasicImagePlaceholderData {
     private final ParametersPlaceholderData parameterizedPlaceholder;
     private final DrawFrameElement drawFrameElement;
     private final OdfContentDom dom;
+    private final SvgDescElement svgDesc;
 
-    public ImagePlaceholderData(OdfContentDom dom, DrawFrameElement drawFrameElement, DrawImageElement drawImageElement, ParametersPlaceholderData parameterizedPlaceholder) {
+    public ImagePlaceholderData(OdfContentDom dom, DrawFrameElement drawFrameElement, DrawImageElement drawImageElement, SvgDescElement svgDesc, ParametersPlaceholderData parameterizedPlaceholder) {
         this.drawImageElement = drawImageElement;
         this.drawFrameElement = drawFrameElement;
+        this.svgDesc = svgDesc;
         this.parameterizedPlaceholder = parameterizedPlaceholder;
         this.dom = dom;
     }
@@ -74,27 +77,37 @@ public class ImagePlaceholderData implements BasicImagePlaceholderData {
         return child.map(c -> (DrawImageElement) c);
     }
 
-    private static Optional<Tripple<DrawFrameElement, DrawImageElement, String>> getImageElements(Node node) {
-        return Convenience.buildOptional(result -> {
+    private static Optional<SvgDescElement> getSvgDesc(DrawFrameElement node) {
+        Optional<Node> child = Nodes.findFirstDescendantNode(node, OdfElement.DESC.getQualifiedName());
+        return child.map(c -> (SvgDescElement) c);
+    }
+
+    private static Optional<Tripple<DrawFrameElement, DrawImageElement, SvgDescElement>> getImageElements(Node node) {
+        return Optional.ofNullable(Convenience.build(trippleWrapper -> {
             getFrame(node).ifPresent(frame -> {
                 getImage(frame).ifPresent(image -> {
-                    String name = frame.getDrawNameAttribute();
-                    result.value = new Tripple<>(frame, image, name);
+                    getSvgDesc(frame).ifPresent(desc -> {
+                        trippleWrapper.value = new Tripple<>(frame, image, desc);
+                    });
                 });
             });
-        });
+        }));
     }
 
     private static Optional<ParametersPlaceholderData> parse(String imageName) {
         return ParametersPlaceholderCodec.INSTANCE.tryParse(imageName);
     }
 
+    private static String getDescrStatic(SvgDescElement svgDesc) {
+        String content = svgDesc.getTextContent();
+        return content == null ? "" : content.trim();
+    }
 
     public static Optional<ImagePlaceholderData> createPlaceholder(Node node, AbstractOdfContainer doc) {
         if (!(node instanceof DrawFrameElement)) return Optional.empty(); // fast check
         return Convenience.buildOptional(w ->
-                getImageElements(node).ifPresent(elements -> parse(elements.right).ifPresent(phd ->
-                        w.value = new ImagePlaceholderData(doc.getContentDom(), elements.left, elements.middle, phd))));
+                getImageElements(node).ifPresent(elements -> parse(getDescrStatic(elements.right)).ifPresent(phd ->
+                        w.value = new ImagePlaceholderData(doc.getContentDom(), elements.left, elements.middle, elements.right, phd))));
 
     }
 
@@ -129,12 +142,12 @@ public class ImagePlaceholderData implements BasicImagePlaceholderData {
         drawFrameElement.setSvgHeightAttribute(value);
     }
 
-    public String getName() {
-        return drawFrameElement.getDrawNameAttribute();
+    public String getDesc() {
+        return getDescrStatic(svgDesc);
     }
 
-    public void setName(String name) {
-        drawFrameElement.setDrawNameAttribute(name);
+    public void setDesc(String name) {
+        svgDesc.setTextContent(name);
     }
 
     public double getWidthValue() {
@@ -162,7 +175,7 @@ public class ImagePlaceholderData implements BasicImagePlaceholderData {
         try {
             String packagePath = image.newImage(imageUri);
             drawImageElement.setXlinkHrefAttribute(packagePath);
-            setName(packagePath);
+            setDesc(packagePath);
             // TODO set mimetype? String mimeType = OdfFileEntry.getMediaTypeString(imageUri.toString());
         } catch (Exception e) {
             Problems.ODF_FRAMEWORK_OPERARTION_EXCEPTION.fire(e);

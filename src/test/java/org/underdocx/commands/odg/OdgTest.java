@@ -60,12 +60,13 @@ public class OdgTest extends AbstractOdtTest {
         OdgEngine engine = new OdgEngine(graphics);
         engine.pushVariable("image", readResource("smile.png"));
         engine.run();
+        //show(graphics);
         Assertions.assertThat(findTextNode(graphics, "$")).isFalse();
         Assertions.assertThat(findTextNode(graphics, "A")).isTrue();
         Assertions.assertThat(findTextNode(graphics, "B")).isTrue();
         Assertions.assertThat(findTextNode(graphics, "Hans")).isTrue();
         Assertions.assertThat(findTextNode(graphics, "Müller")).isTrue();
-        show(graphics);
+
 
     }
 }

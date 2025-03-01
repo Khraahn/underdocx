@@ -24,9 +24,9 @@ SOFTWARE.
 
 package org.underdocx.enginelayers.baseengine.internal.placeholdersprovider.dollar.image;
 
-import org.underdocx.environment.err.Problems;
 import org.underdocx.common.types.Pair;
 import org.underdocx.common.types.Resource;
+import org.underdocx.environment.err.Problems;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
@@ -41,7 +41,7 @@ public interface BasicImagePlaceholderData {
 
     String getHeightAttr();
 
-    String getName();
+    String getDesc();
 
     double getWidthValue();
 
@@ -75,5 +75,5 @@ public interface BasicImagePlaceholderData {
         }
     }
 
-    void setName(String name);
+    void setDesc(String name);
 }
