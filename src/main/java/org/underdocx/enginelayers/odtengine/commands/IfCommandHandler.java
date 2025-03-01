@@ -91,9 +91,9 @@ public class IfCommandHandler<C extends DocContainer<D>, D> extends AbstractText
         }
         // ${if $toCheck:[]}
         if (toCompareWith instanceof Collection<?> collection) {
-            return (collection.size() == 0 && foundNode.getType() == DataNode.ModelNodeType.LIST && foundNode.getSize() == 0);
+            return (collection.size() == 0 && foundNode.getType() == DataNode.DataNodeType.LIST && foundNode.getSize() == 0);
         }
-        if (foundNode.getType() != DataNode.ModelNodeType.LEAF) {
+        if (foundNode.getType() != DataNode.DataNodeType.LEAF) {
             return false;
         }
         // ${if $toCheck:2}

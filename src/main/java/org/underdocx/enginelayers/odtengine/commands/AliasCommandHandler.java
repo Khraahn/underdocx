@@ -85,7 +85,7 @@ public class AliasCommandHandler<C extends DocContainer<D>, D> extends AbstractC
         @Override
         protected Optional<Set<AttrKeyValue>> convert(DataNode attributesNode) {
             return Convenience.buildOptional(new HashSet<>(), result -> {
-                if (attributesNode != null && attributesNode.getType() != DataNode.ModelNodeType.MAP) {
+                if (attributesNode != null && attributesNode.getType() != DataNode.DataNodeType.MAP) {
                     result.value = null;
                     return;
                 }
@@ -123,7 +123,7 @@ public class AliasCommandHandler<C extends DocContainer<D>, D> extends AbstractC
         return CommandHandlerResult.FACTORY.convert(DeletePlaceholderModifier.modify(selection.getNode()));
     }
 
-    private void registerAlias(AliasData data) {
+    public void registerAlias(AliasData data) {
         registry.put(data.aliasKey, data);
     }
 

@@ -28,13 +28,13 @@ import java.util.Set;
 
 public interface DataNode {
 
-    enum ModelNodeType {
+    enum DataNodeType {
         MAP,
         LIST,
         LEAF
     }
 
-    ModelNodeType getType();
+    DataNodeType getType();
 
     Object getValue();
 

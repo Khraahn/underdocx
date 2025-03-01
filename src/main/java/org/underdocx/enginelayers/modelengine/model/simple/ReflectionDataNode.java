@@ -55,27 +55,27 @@ public class ReflectionDataNode extends AbstractDataNode<Object> implements Data
     }
 
     @Override
-    public ModelNodeType getType() {
+    public DataNodeType getType() {
         if (containedValue == null) {
-            return ModelNodeType.LEAF;
+            return DataNodeType.LEAF;
         } else if (containedValue instanceof Collection<?>) {
-            return ModelNodeType.LIST;
+            return DataNodeType.LIST;
         } else if (containedValue instanceof Map<?, ?>) {
-            return ModelNodeType.MAP;
+            return DataNodeType.MAP;
         } else if (containedValue instanceof Boolean) {
-            return ModelNodeType.LEAF;
+            return DataNodeType.LEAF;
         } else if (containedValue instanceof Integer) {
-            return ModelNodeType.LEAF;
+            return DataNodeType.LEAF;
         } else if (containedValue instanceof Long) {
-            return ModelNodeType.LEAF;
+            return DataNodeType.LEAF;
         } else if (containedValue instanceof Double) {
-            return ModelNodeType.LEAF;
+            return DataNodeType.LEAF;
         } else if (containedValue instanceof Float) {
-            return ModelNodeType.LEAF;
+            return DataNodeType.LEAF;
         } else if (containedValue instanceof String) {
-            return ModelNodeType.LEAF;
+            return DataNodeType.LEAF;
         } else {
-            return ModelNodeType.MAP;
+            return DataNodeType.MAP;
         }
     }
 
@@ -97,7 +97,7 @@ public class ReflectionDataNode extends AbstractDataNode<Object> implements Data
                 return resolved.get();
             }
         }
-        if (getType() != ModelNodeType.MAP) {
+        if (getType() != DataNodeType.MAP) {
             return null;
         } else if (getValue() instanceof Map<?, ?>) {
             return create(((Map<?, ?>) containedValue).get(name));
@@ -114,7 +114,7 @@ public class ReflectionDataNode extends AbstractDataNode<Object> implements Data
 
     @Override
     public DataNode getProperty(int index) {
-        if (getType() != ModelNodeType.LIST) {
+        if (getType() != DataNodeType.LIST) {
             return null;
         } else if (getValue() instanceof List<?>) {
             List<?> list = ((List<?>) containedValue);
@@ -144,7 +144,7 @@ public class ReflectionDataNode extends AbstractDataNode<Object> implements Data
     @Override
     public boolean hasProperty(String name) {
         if (resolver != null && resolver.resolve(containedValue, name).isPresent()) return true;
-        if (getType() != ModelNodeType.MAP) {
+        if (getType() != DataNodeType.MAP) {
             return false;
         } else if (getValue() instanceof Map<?, ?>) {
             return ((Map<?, ?>) containedValue).containsKey(name);
@@ -155,7 +155,7 @@ public class ReflectionDataNode extends AbstractDataNode<Object> implements Data
 
     @Override
     public boolean hasProperty(int index) {
-        if (getType() != ModelNodeType.LIST) {
+        if (getType() != DataNodeType.LIST) {
             return false;
         } else if (getValue() instanceof List<?>) {
             return ((List<?>) containedValue).size() > index;

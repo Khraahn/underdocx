@@ -38,6 +38,7 @@ import org.underdocx.enginelayers.modelengine.ModelEngine;
 import org.underdocx.enginelayers.modelengine.model.DataNode;
 import org.underdocx.enginelayers.modelengine.model.simple.AbstractPredefinedDataNode;
 import org.underdocx.enginelayers.modelengine.model.simple.LeafDataNode;
+import org.underdocx.enginelayers.modelengine.model.simple.MapDataNode;
 import org.underdocx.enginelayers.modelengine.model.simple.ReflectionDataNode;
 import org.underdocx.enginelayers.odtengine.commands.AliasCommandHandler;
 import org.underdocx.enginelayers.odtengine.commands.MultiCommandHandler;
@@ -49,6 +50,7 @@ import org.underdocx.environment.err.Problems;
 
 import java.net.URI;
 import java.util.Optional;
+import java.util.function.BiConsumer;
 import java.util.function.Function;
 import java.util.regex.Pattern;
 
@@ -78,6 +80,10 @@ public abstract class AbstractOdfEngine<C extends AbstractOdfContainer<D>, D ext
 
     public void registerAlias(String key, ParametersPlaceholderData placeholder) {
         aliasCommandHandler.registerAlias(key, placeholder);
+    }
+
+    public void registerAlias(AliasCommandHandler.AliasData aliasData) {
+        aliasCommandHandler.registerAlias(aliasData);
     }
 
 
@@ -163,5 +169,56 @@ public abstract class AbstractOdfEngine<C extends AbstractOdfContainer<D>, D ext
 
     public Optional<Problem> run() {
         return getEngine().run();
+    }
+
+    private void parseMapWithKeyValueProperties(DataNode mainNode, String propertyName, BiConsumer<String, DataNode> consumer) {
+        DataNode variablesNode = mainNode.getProperty(propertyName);
+        if (variablesNode != null) {
+            Problems.IMPORT_DATA_SCHEMA.checkNot(variablesNode.isNull() || variablesNode.getType() != DataNode.DataNodeType.MAP);
+            variablesNode.getPropertyNames().forEach(key -> {
+                consumer.accept(key, variablesNode.getProperty(key));
+            });
+        }
+    }
+
+    private String parseString(DataNode node, String propertyName) {
+        DataNode stringNode = node.getProperty(propertyName);
+        return parseString(stringNode);
+    }
+
+    private String parseString(DataNode node) {
+        Problems.IMPORT_DATA_SCHEMA.checkNot(node.isNull() || node.getType() != DataNode.DataNodeType.LEAF || !(node.getValue() instanceof String));
+        return node.getValue().toString();
+    }
+
+    public void importData(DataNode importData) {
+        parseMapWithKeyValueProperties(importData, "variables", this::pushVariable);
+        parseMapWithKeyValueProperties(importData, "stringReplacements", (key, value) -> {
+            registerStringReplacement(key, parseString(value));
+        });
+        DataNode model = importData.getProperty("model");
+        if (model != null) {
+            Problems.IMPORT_DATA_SCHEMA.checkNot(model.isNull() || model.getType() != DataNode.DataNodeType.MAP);
+            setModel(model);
+        }
+        DataNode aliasListNode = importData.getProperty("alias");
+        if (aliasListNode != null) {
+            Problems.IMPORT_DATA_SCHEMA.checkNot(aliasListNode.isNull() || aliasListNode.getType() != DataNode.DataNodeType.LIST);
+            for (int i = 0; i < aliasListNode.getSize(); i++) {
+                DataNode aliasListItem = aliasListNode.getProperty(i);
+                Problems.IMPORT_DATA_SCHEMA.checkNot(aliasListNode.isNull() || model.getType() != DataNode.DataNodeType.MAP);
+                String key = parseString(aliasListItem, "key");
+                String newKey = parseString(aliasListItem, "replaceKey");
+                AliasCommandHandler.AliasData aliasData = new AliasCommandHandler.AliasData(key, newKey);
+                parseMapWithKeyValueProperties(aliasListItem, "attributes", (propName, propVal) -> {
+                    aliasData.attributes.add(new AliasCommandHandler.AttrKeyValue(propName, propVal));
+                });
+                registerAlias(aliasData);
+            }
+        }
+    }
+
+    public void importData(String json) {
+        importData(new MapDataNode(json));
     }
 }

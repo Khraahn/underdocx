@@ -35,7 +35,7 @@ public class ListDataPicker extends AbstractConvertDataPicker<DataNode> {
 
     @Override
     protected Optional<DataNode> convert(DataNode node) {
-        if (node.getType() == DataNode.ModelNodeType.LIST) {
+        if (node.getType() == DataNode.DataNodeType.LIST) {
             return Optional.of(node);
         } else {
             return Optional.empty();

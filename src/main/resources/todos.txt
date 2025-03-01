@@ -1,6 +1,7 @@
 - Features
   - Import für ODG, ODP
-  - engine.importData
+  - CLI mit json + doc
+  - Numberformatter
   - später ggf. docx unterstützen
 - Bekannte Probleme:
   - Prüfen ob Vectorgrafiken als Bilder verwendet werden können

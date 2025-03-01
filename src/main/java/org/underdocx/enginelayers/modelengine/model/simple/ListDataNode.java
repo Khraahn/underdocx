@@ -40,8 +40,8 @@ public class ListDataNode extends AbstractPredefinedDataNode<List<AbstractDataNo
     }
 
     @Override
-    public ModelNodeType getType() {
-        return ModelNodeType.LIST;
+    public DataNodeType getType() {
+        return DataNodeType.LIST;
     }
 
     @Override
@@ -54,7 +54,7 @@ public class ListDataNode extends AbstractPredefinedDataNode<List<AbstractDataNo
         return index < containedValue.size();
     }
 
-    public <T extends AbstractPredefinedDataNode<?>> void add(T node) {
+    public <T extends AbstractDataNode<?>> void add(T node) {
         checkParentOfChild(node);
         node.setParent(this);
         containedValue.add(node);

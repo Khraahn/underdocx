@@ -80,7 +80,7 @@ public class StringConvertDataPicker implements ExtendedDataPicker<String> {
             if (node == null || node.isNull()) {
                 return Optional.of(new Wrapper<>(null));
             }
-            if (node.getType() == DataNode.ModelNodeType.LEAF) {
+            if (node.getType() == DataNode.DataNodeType.LEAF) {
                 return Optional.of(new Wrapper<>(String.valueOf(node.getValue())));
             }
             return Optional.empty();

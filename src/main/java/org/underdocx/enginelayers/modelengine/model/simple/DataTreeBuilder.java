@@ -60,14 +60,14 @@ public class DataTreeBuilder {
      * add methods to add data on the same level.
      */
     public static class DataNodeWrapper {
-        private DataNode currentNode;
+        private AbstractDataNode<?> currentNode;
         private DataNodeWrapper parent = null;
 
-        protected DataNodeWrapper(DataNode node) {
+        protected DataNodeWrapper(AbstractDataNode<?> node) {
             currentNode = node;
         }
 
-        protected DataNodeWrapper(DataNodeWrapper parent, DataNode node) {
+        protected DataNodeWrapper(DataNodeWrapper parent, AbstractDataNode<?> node) {
             currentNode = node;
             this.parent = parent;
         }
@@ -149,9 +149,24 @@ public class DataTreeBuilder {
             } else return unsupportedCall();
         }
 
+        public DataNodeWrapper addNode(String name, AbstractDataNode<?> node) {
+            if (currentNode instanceof MapDataNode mapModelNode) {
+                mapModelNode.add(name, node);
+                return this;
+            } else return unsupportedCall();
+        }
+
+
         public DataNodeWrapper addObj(Object value) {
             if (currentNode instanceof ListDataNode listModelNode) {
                 listModelNode.add(new LeafDataNode<>(value));
+                return this;
+            } else return unsupportedCall();
+        }
+
+        public DataNodeWrapper addNode(AbstractDataNode<?> node) {
+            if (currentNode instanceof ListDataNode listModelNode) {
+                listModelNode.add(node);
                 return this;
             } else return unsupportedCall();
         }

@@ -63,8 +63,8 @@ public class MapDataNode extends AbstractPredefinedDataNode<Map<String, Abstract
     }
 
     @Override
-    public ModelNodeType getType() {
-        return ModelNodeType.MAP;
+    public DataNodeType getType() {
+        return DataNodeType.MAP;
     }
 
     @Override

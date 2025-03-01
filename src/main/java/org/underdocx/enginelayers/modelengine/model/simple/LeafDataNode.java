@@ -35,8 +35,8 @@ public class LeafDataNode<T> extends AbstractPredefinedDataNode<T> {
     }
 
     @Override
-    public ModelNodeType getType() {
-        return ModelNodeType.LEAF;
+    public DataNodeType getType() {
+        return DataNodeType.LEAF;
     }
 
 

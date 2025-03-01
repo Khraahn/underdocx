@@ -44,7 +44,7 @@ public class CounterCommandHandler<C extends DocContainer<D>, D> extends Abstrac
     protected CommandHandlerResult tryExecuteTextualCommand() {
         DataNode indexNode = new VarNameDataPicker().pickData(
                 "index", dataAccess, placeholderData.getJson()).getOptionalValue().orElse(null);
-        if (indexNode != null && !indexNode.isNull() && indexNode.getType() == DataNode.ModelNodeType.LEAF && indexNode.getValue() instanceof Integer) {
+        if (indexNode != null && !indexNode.isNull() && indexNode.getType() == DataNode.DataNodeType.LEAF && indexNode.getValue() instanceof Integer) {
             int counter = ((Integer) indexNode.getValue()) + 1;
             new ReplaceWithTextModifier<C, ParametersPlaceholderData, D>().modify(selection, String.valueOf(counter));
         } else {

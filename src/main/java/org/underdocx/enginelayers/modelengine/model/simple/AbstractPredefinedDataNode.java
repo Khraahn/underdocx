@@ -110,11 +110,11 @@ public abstract class AbstractPredefinedDataNode<T> extends AbstractDataNode<T> 
     public static Object convert(DataNode node) {
         if (node.getValue() == null) {
             return null;
-        } else if (node.getType() == ModelNodeType.MAP) {
+        } else if (node.getType() == DataNodeType.MAP) {
             return Convenience.also(new HashMap<String, Object>(),
                     map -> ((Map<String, DataNode>) node.getValue()).forEach(
                             (key, value) -> map.put(key, convert(value))));
-        } else if (node.getType() == ModelNodeType.LIST) {
+        } else if (node.getType() == DataNodeType.LIST) {
             return Convenience.also(new ArrayList<>(),
                     list -> ((List<DataNode>) node.getValue()).forEach(
                             value -> list.add(convert(value))));

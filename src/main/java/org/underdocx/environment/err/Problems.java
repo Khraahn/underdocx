@@ -45,7 +45,8 @@ public enum Problems implements Problematic {
     INVALID_IF_CONDITION("If command contains an invalid structure or invalid values"),
     CANT_FIND_DOM_ELEMENT("a certain required DOM node can't be found"),
     PLACEHOLDER_TOOLKIT_MISSING("placeholder toolkit instance is missing"),
-    EXPECTED_PLACEHOLDER_MISSING("A mandatory placeholder can not be found");
+    EXPECTED_PLACEHOLDER_MISSING("A mandatory placeholder can not be found"),
+    IMPORT_DATA_SCHEMA("The structure/schema of the import data is invalid");
 
     private String description = null;
 
