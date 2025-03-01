@@ -1,5 +1,9 @@
 - Features
-  - Auf weitere LibreOffice-Formate erweitern
+  - Bilder on ODG
+  - Tests
+  - Import für ODG, ODP
+  - Löschen leerer Textboxen
+  - engine.importData
   - später ggf. docx unterstützen
 - Bekannte Probleme:
   - Prüfen ob Vectorgrafiken als Bilder verwendet werden können

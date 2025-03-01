@@ -41,6 +41,7 @@ import java.util.Optional;
 public class ForRowsCommandHandler<C extends DocContainer<D>, D> extends AbstractForCommandHandler<C, D> {
 
     public static String ROWGROUPSIZE_ATTR = "rowgroupsize";
+    public static final String INLIST_ATTR = "findParentTable";
 
     private static PredefinedAttributesInterpreter<Optional<List<Integer>>> rowsListInterpreter =
             AttributeInterpreterFactory.createIntListAttributeInterpreter(TABLEROW_ATTR);
@@ -48,6 +49,9 @@ public class ForRowsCommandHandler<C extends DocContainer<D>, D> extends Abstrac
             AttributeInterpreterFactory.createIntegerAttributeInterpreter(TABLEROW_ATTR);
     private static PredefinedAttributesInterpreter<Optional<Integer>> groupSizeInterpreter =
             AttributeInterpreterFactory.createIntegerAttributeInterpreter(ROWGROUPSIZE_ATTR);
+    protected static final PredefinedAttributesInterpreter<Optional<Boolean>> isInTableAttr =
+            AttributeInterpreterFactory.createBooleanAttributeInterpreter(INLIST_ATTR);
+
 
     @Override
     protected ModifierNodeResult callModifier(ForModifierData forModifierData) {
@@ -59,8 +63,9 @@ public class ForRowsCommandHandler<C extends DocContainer<D>, D> extends Abstrac
             range = new Range(Problems.INVALID_VALUE.get(rowsIntInterpreter.interpretAttributes(attributes), TABLEROW_ATTR, null));
         }
         int rowGroupSize = groupSizeInterpreter.interpretAttributes(attributes).orElse(1);
+        boolean isInTable = isInTableAttr.interpretAttributes(attributes).orElse(false);
         ForRowsModifierData.DefaultForRowsModifierData modifierData
-                = new ForRowsModifierData.DefaultForRowsModifierData(forModifierData, range, rowGroupSize);
+                = new ForRowsModifierData.DefaultForRowsModifierData(forModifierData, range, rowGroupSize, isInTable);
         return new ForRowsModifier<C, D>().modify(selection, modifierData);
     }
 

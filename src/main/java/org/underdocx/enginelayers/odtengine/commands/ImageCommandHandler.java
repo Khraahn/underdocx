@@ -24,10 +24,10 @@ SOFTWARE.
 
 package org.underdocx.enginelayers.odtengine.commands;
 
-import org.odftoolkit.odfdom.doc.OdfTextDocument;
+import org.odftoolkit.odfdom.doc.OdfDocument;
 import org.underdocx.common.tools.Convenience;
 import org.underdocx.common.types.Resource;
-import org.underdocx.doctypes.odf.odt.OdtContainer;
+import org.underdocx.doctypes.odf.AbstractOdfContainer;
 import org.underdocx.enginelayers.baseengine.CommandHandlerResult;
 import org.underdocx.enginelayers.baseengine.modifiers.existingimage.ExistingImageModifier;
 import org.underdocx.enginelayers.baseengine.modifiers.existingimage.ExistingImageModifierData;
@@ -43,7 +43,7 @@ import org.underdocx.enginelayers.odtengine.modifiers.ifmodifier.IfModifier;
  * It uses the {@link ConditionAttributeInterpreter} to evaluate the condition
  * It uses the {@link IfModifier} to manipulate the DOM
  */
-public class ImageCommandHandler extends AbstractCommandHandler<OdtContainer, ImagePlaceholderData, OdfTextDocument> {
+public class ImageCommandHandler<C extends AbstractOdfContainer<D>, D extends OdfDocument> extends AbstractCommandHandler<C, ImagePlaceholderData, D> {
     public static final String KEY = "Image";
     public static final String URI_ATTR = "uri";
     public static final String DATA_ATTR = "data";
@@ -66,9 +66,9 @@ public class ImageCommandHandler extends AbstractCommandHandler<OdtContainer, Im
             String name = namePicker.expect(dataAccess, placeholderData.getJson());
             String title = titlePicker.pickData(dataAccess, placeholderData.getJson()).getOptionalValue().orElse(null);
             Boolean keepWidth = keepWidthPicker.expect(dataAccess, placeholderData.getJson());
-            Resource resource = new ResourceCommandModule<OdtContainer, ImagePlaceholderData, OdfTextDocument>(placeholderData.getJson()).execute(selection);
+            Resource resource = new ResourceCommandModule<C, ImagePlaceholderData, D>(placeholderData.getJson()).execute(selection);
             ExistingImageModifierData modifierData = new ExistingImageModifierData.Simple(keepWidth, resource, name, title);
-            new ExistingImageModifier<OdtContainer, ImagePlaceholderData, OdfTextDocument>().modify(selection, modifierData);
+            new ExistingImageModifier<C, ImagePlaceholderData, D>().modify(selection, modifierData);
         });
     }
 

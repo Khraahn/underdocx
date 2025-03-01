@@ -35,9 +35,9 @@ import org.underdocx.common.tree.Nodes;
 import org.underdocx.common.types.Regex;
 import org.underdocx.common.types.Resource;
 import org.underdocx.common.types.Tripple;
+import org.underdocx.doctypes.odf.AbstractOdfContainer;
 import org.underdocx.doctypes.odf.constants.OdfElement;
 import org.underdocx.doctypes.odf.constants.OdfLengthUnit;
-import org.underdocx.doctypes.odf.odt.OdtContainer;
 import org.underdocx.enginelayers.baseengine.internal.placeholdersprovider.dollar.image.BasicImagePlaceholderData;
 import org.underdocx.enginelayers.parameterengine.ParametersPlaceholderData;
 import org.underdocx.enginelayers.parameterengine.internal.ParametersPlaceholderCodec;
@@ -90,7 +90,7 @@ public class ImagePlaceholderData implements BasicImagePlaceholderData {
     }
 
 
-    public static Optional<ImagePlaceholderData> createPlaceholder(Node node, OdtContainer doc) {
+    public static Optional<ImagePlaceholderData> createPlaceholder(Node node, AbstractOdfContainer doc) {
         if (!(node instanceof DrawFrameElement)) return Optional.empty(); // fast check
         return Convenience.buildOptional(w ->
                 getImageElements(node).ifPresent(elements -> parse(elements.right).ifPresent(phd ->

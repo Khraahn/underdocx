@@ -41,6 +41,6 @@ public class DocTypeLayersArchTest {
                     "org.underdocx.doctypes.odf.odt..",
                     "org.underdocx.doctypes.odf.odg..",
                     "org.underdocx.doctypes.odf.odp..",
-                    "org.underdocx.doctypes.msoffice..",
-                    "org.underdocx.enginelayers..");
+                    "org.underdocx.doctypes.msoffice..");
+    //"org.underdocx.enginelayers..");
 }

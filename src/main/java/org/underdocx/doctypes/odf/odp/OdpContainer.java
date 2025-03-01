@@ -22,10 +22,10 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-package org.underdocx.doctypes.odf.odt;
+package org.underdocx.doctypes.odf.odp;
 
-import org.odftoolkit.odfdom.doc.OdfTextDocument;
-import org.odftoolkit.odfdom.dom.element.office.OfficeTextElement;
+import org.odftoolkit.odfdom.doc.OdfPresentationDocument;
+import org.odftoolkit.odfdom.dom.element.office.OfficePresentationElement;
 import org.underdocx.common.types.Resource;
 import org.underdocx.doctypes.odf.AbstractOdfContainer;
 import org.underdocx.environment.UnderdocxEnv;
@@ -37,55 +37,47 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URI;
 
-import static org.underdocx.common.tools.Convenience.also;
+public class OdpContainer extends AbstractOdfContainer<OdfPresentationDocument> {
 
-public class OdtContainer extends AbstractOdfContainer<OdfTextDocument> {
-
-    public OdtContainer() {
+    public OdpContainer() {
         super();
     }
 
-    public OdtContainer(InputStream is) throws IOException {
+    public OdpContainer(InputStream is) throws IOException {
         super(is);
     }
 
-    public OdtContainer(Resource resource) throws IOException {
+    public OdpContainer(Resource resource) throws IOException {
         super(resource);
     }
 
-    public OdtContainer(byte[] data) throws IOException {
+    public OdpContainer(byte[] data) throws IOException {
         super(data);
     }
 
-    public OdtContainer(URI uri) throws IOException {
+    public OdpContainer(URI uri) throws IOException {
         super(uri);
     }
 
-    public OdtContainer(File file) throws IOException {
+    public OdpContainer(File file) throws IOException {
         super(file);
     }
 
-    public OdtContainer(OdfTextDocument doc) {
+    public OdpContainer(OdfPresentationDocument doc) {
         super(doc);
     }
 
-    public OdtContainer(String documentContent) {
-        super();
-        setDocument(createDocument(documentContent).getDocument());
-    }
-
     @Override
-    protected OdfTextDocument createEmptyDoc() {
+    protected OdfPresentationDocument createEmptyDoc() {
         try {
-            return OdfTextDocument.newTextDocument();
+            return OdfPresentationDocument.newPresentationDocument();
         } catch (Exception e) {
             UnderdocxEnv.getInstance().logger.error(e);
         }
         return null;
     }
 
-    @Override
-    public OfficeTextElement getContentRoot() {
+    public OfficePresentationElement getContentRoot() {
         try {
             return getDocument().getContentRoot();
         } catch (Exception e) {
@@ -95,13 +87,14 @@ public class OdtContainer extends AbstractOdfContainer<OdfTextDocument> {
 
     @Override
     public String getFileExtension() {
-        return "odt";
+        return "odp";
     }
+
 
     @Override
     public void load(InputStream is) throws IOException {
         try {
-            setDocument(OdfTextDocument.loadDocument(is));
+            setDocument(OdfPresentationDocument.loadDocument(is));
         } catch (Exception e) {
             throw new IOException(e);
         }
@@ -117,23 +110,7 @@ public class OdtContainer extends AbstractOdfContainer<OdfTextDocument> {
         }
     }
 
-    public void appendText(String content) {
-        try {
-            String[] lines = content.split("\\r?\\n|\\r");
-            for (int i = 0; i < lines.length; i++) {
-                if (i != 0) {
-                    this.getDocument().newParagraph();
-                }
-                this.getDocument().addText(lines[i]);
-            }
-        } catch (Exception e) {
-            Problems.ODF_FRAMEWORK_OPERARTION_EXCEPTION.fire(e);
-        }
+    public void appendText(String text) {
+        // not yet implemented
     }
-
-    public static OdtContainer createDocument(String content) {
-        return also(new OdtContainer(), result -> result.appendText(content));
-    }
-
-
 }

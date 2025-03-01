@@ -50,6 +50,11 @@ public class ForRowsModifier<C extends DocContainer<D>, D> extends AbstractAreaM
     Node resultNode = null;
 
     @Override
+    protected Node getCommonAncestorNode(ForRowsModifierData modifierData) {
+        return COMMON_ANCESTOR_P_OR_TABLE_PARENT.apply(modifierData.getAreaPlaceholderNodes().left, modifierData.getAreaPlaceholderNodes().right);
+    }
+
+    @Override
     protected ModifierNodeResult modify() {
         resultNode = null;
         Problems.INVALID_VALUE.check(modifierData.getRepeatRows().getLength() % modifierData.getRowGroupSize() == 0, "rowgroupsize", "" + modifierData.getRowGroupSize());
@@ -152,14 +157,18 @@ public class ForRowsModifier<C extends DocContainer<D>, D> extends AbstractAreaM
     }
 
     private Optional<Node> findTable() {
-        return Convenience.buildOptional(result -> {
-            for (Node node : getAreaNodesIterator()) {
-                if (OdfElement.TABLE.is(node)) {
-                    result.value = node;
-                    return;
+        if (modifierData.isInTable()) {
+            return Nodes.findAscendantNode(selection.getNode(), OdfElement.TABLE::is);
+        } else {
+            return Convenience.buildOptional(result -> {
+                for (Node node : getAreaNodesIterator()) {
+                    if (OdfElement.TABLE.is(node)) {
+                        result.value = node;
+                        return;
+                    }
                 }
-            }
-        });
+            });
+        }
     }
 
 }

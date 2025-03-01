@@ -25,6 +25,7 @@ SOFTWARE.
 package org.underdocx.doctypes.odf.odt.tools;
 
 import org.odftoolkit.odfdom.dom.element.text.TextParagraphElementBase;
+import org.odftoolkit.odfdom.pkg.OdfElement;
 import org.underdocx.common.enumerator.Enumerator;
 import org.underdocx.common.tree.Nodes;
 import org.underdocx.doctypes.odf.AbstractOdfContainer;
@@ -34,20 +35,21 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-public class ParagraphByParagraphNodesEnumerator implements Enumerator<Node> {
-    private final ParagraphWalker walker;
+public class ElementByElementEnumerator<T extends OdfElement> implements Enumerator<Node> {
+    private final OdfDomElementWalker<T> walker;
     private final List<Node> collectedNodes = new ArrayList<>();
     private Node next = null;
-    private NodesProvider nodesProvider = null;
+    private NodesProvider<T> nodesProvider = null;
 
-
-    public ParagraphByParagraphNodesEnumerator(
+    public ElementByElementEnumerator(
             AbstractOdfContainer<?> doc,
-            NodesProvider nodesProvider,
+            NodesProvider<T> nodesProvider,
             Node firstValidNode,
-            boolean skipParagraphChildNodes) {
+            boolean skipParagraphChildNodes,
+            Class<T> searchType
+    ) {
         this.nodesProvider = nodesProvider;
-        walker = new ParagraphWalker(doc, skipParagraphChildNodes);
+        walker = new OdfDomElementWalker<T>(doc, skipParagraphChildNodes, searchType);
         findFirstValidParagraph(firstValidNode);
         next = findNext();
     }
@@ -70,7 +72,7 @@ public class ParagraphByParagraphNodesEnumerator implements Enumerator<Node> {
                 }
             }
             if (firstParagraphToUse != null) {
-                TextParagraphElementBase p = null;
+                T p = null;
                 while (p != firstParagraphToUse && walker.hasNext()) {
                     p = walker.next();
                 }
@@ -87,7 +89,7 @@ public class ParagraphByParagraphNodesEnumerator implements Enumerator<Node> {
 
     private List<Node> collectNodes() {
         while (collectedNodes.isEmpty() && walker.hasNext()) {
-            TextParagraphElementBase paragraph = walker.next();
+            T paragraph = walker.next();
             if (paragraph != null) {
                 collectedNodes.addAll(nodesProvider.collectNodes(paragraph, null));
             }
@@ -107,7 +109,7 @@ public class ParagraphByParagraphNodesEnumerator implements Enumerator<Node> {
         return result;
     }
 
-    public interface NodesProvider {
-        Collection<Node> collectNodes(TextParagraphElementBase p, Node firstValidNode);
+    public interface NodesProvider<T> {
+        Collection<Node> collectNodes(T p, Node firstValidNode);
     }
 }

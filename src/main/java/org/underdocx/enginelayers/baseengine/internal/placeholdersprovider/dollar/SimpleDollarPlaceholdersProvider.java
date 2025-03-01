@@ -24,20 +24,18 @@ SOFTWARE.
 
 package org.underdocx.enginelayers.baseengine.internal.placeholdersprovider.dollar;
 
+import org.odftoolkit.odfdom.doc.OdfDocument;
 import org.underdocx.common.codec.Codec;
 import org.underdocx.common.placeholder.EncapsulatedNodesExtractor;
 import org.underdocx.common.placeholder.TextualPlaceholderToolkit;
 import org.underdocx.common.placeholder.basic.extraction.RegexExtractor;
 import org.underdocx.common.placeholder.basic.textnodeinterpreter.OdfTextNodeInterpreter;
-import org.underdocx.doctypes.TextNodeInterpreter;
 import org.underdocx.common.types.Regex;
+import org.underdocx.doctypes.TextNodeInterpreter;
 import org.underdocx.doctypes.odf.AbstractOdfContainer;
-import org.underdocx.doctypes.odf.odt.OdtContainer;
 import org.underdocx.enginelayers.baseengine.PlaceholdersProvider;
 import org.underdocx.enginelayers.baseengine.internal.placeholdersprovider.AbstractTextualPlaceholdersProvider;
 import org.underdocx.environment.err.Problems;
-import org.odftoolkit.odfdom.doc.OdfDocument;
-import org.odftoolkit.odfdom.doc.OdfTextDocument;
 
 public class SimpleDollarPlaceholdersProvider<C extends AbstractOdfContainer<D>, D extends OdfDocument> extends AbstractTextualPlaceholdersProvider<C, String, D> {
 
@@ -70,11 +68,13 @@ public class SimpleDollarPlaceholdersProvider<C extends AbstractOdfContainer<D>,
         return new RegexExtractor(regex, interpreter);
     }
 
-    public static class SimpleDollarPlaceholdersProviderFactory<C extends AbstractOdfContainer<D>, D extends OdfDocument> implements PlaceholdersProvider.Factory<OdtContainer, String, OdfTextDocument> {
+    public static class SimpleDollarPlaceholdersProviderFactory<C extends AbstractOdfContainer<D>, D extends OdfDocument> implements PlaceholdersProvider.Factory<C, String, D> {
 
         @Override
-        public PlaceholdersProvider<OdtContainer, String, OdfTextDocument> createProvider(OdtContainer doc) {
-            return new SimpleDollarPlaceholdersProvider<>(doc);
+        public PlaceholdersProvider<C, String, D> createProvider(C doc) {
+            return new SimpleDollarPlaceholdersProvider<C, D>(doc);
         }
+
+
     }
 }

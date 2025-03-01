@@ -24,7 +24,7 @@ SOFTWARE.
 
 package org.underdocx.enginelayers.baseengine.internal.placeholdersprovider.dollar.image;
 
-import org.odftoolkit.odfdom.doc.OdfTextDocument;
+import org.odftoolkit.odfdom.doc.OdfDocument;
 import org.odftoolkit.odfdom.dom.element.draw.DrawFrameElement;
 import org.odftoolkit.odfdom.dom.element.draw.DrawImageElement;
 import org.underdocx.common.enumerator.Enumerator;
@@ -38,8 +38,7 @@ import org.underdocx.common.types.Pair;
 import org.underdocx.doctypes.TextNodeInterpreter;
 import org.underdocx.doctypes.odf.AbstractOdfContainer;
 import org.underdocx.doctypes.odf.constants.OdfElement;
-import org.underdocx.doctypes.odf.odt.OdtContainer;
-import org.underdocx.doctypes.odf.odt.tools.ParagraphByParagraphNodesEnumerator;
+import org.underdocx.doctypes.odf.odt.tools.ElementByElementEnumerator;
 import org.underdocx.enginelayers.baseengine.PlaceholdersProvider;
 import org.underdocx.enginelayers.baseengine.internal.placeholdersprovider.dollar.SimpleDollarPlaceholdersProvider;
 import org.w3c.dom.Node;
@@ -48,7 +47,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-public class SimpleDollarImagePlaceholdersProvider implements EncapsulatedNodesExtractor, PlaceholdersProvider<OdtContainer, SimpleDollarImagePlaceholderData, OdfTextDocument> {
+public class SimpleDollarImagePlaceholdersProvider<C extends AbstractOdfContainer<D>, D extends OdfDocument> implements EncapsulatedNodesExtractor, PlaceholdersProvider<C, SimpleDollarImagePlaceholderData, D> {
     private final AbstractOdfContainer<?> doc;
     private Node firstValidNode = null;
     private boolean endOfDoc;
@@ -114,7 +113,7 @@ public class SimpleDollarImagePlaceholdersProvider implements EncapsulatedNodesE
     @Override
     public Enumerator<Node> getPlaceholders() {
         if (endOfDoc) return Enumerator.empty();
-        return new ParagraphByParagraphNodesEnumerator(doc, (p, first) -> this.extractNodes(p, first), firstValidNode, true);
+        return new ElementByElementEnumerator<>(doc, (p, first) -> this.extractNodes(p, first), firstValidNode, true, DrawFrameElement.class);
     }
 
     @Override
@@ -133,10 +132,10 @@ public class SimpleDollarImagePlaceholdersProvider implements EncapsulatedNodesE
         this.endOfDoc = endOfDoc;
     }
 
-    public static class SimpleDollarImagePlaceholdersProviderFactory implements PlaceholdersProvider.Factory<OdtContainer, SimpleDollarImagePlaceholderData, OdfTextDocument> {
+    public static class SimpleDollarImagePlaceholdersProviderFactory<C extends AbstractOdfContainer<D>, D extends OdfDocument> implements PlaceholdersProvider.Factory<C, SimpleDollarImagePlaceholderData, D> {
 
         @Override
-        public PlaceholdersProvider<OdtContainer, SimpleDollarImagePlaceholderData, OdfTextDocument> createProvider(OdtContainer doc) {
+        public PlaceholdersProvider<C, SimpleDollarImagePlaceholderData, D> createProvider(C doc) {
             return new SimpleDollarImagePlaceholdersProvider(doc);
         }
     }

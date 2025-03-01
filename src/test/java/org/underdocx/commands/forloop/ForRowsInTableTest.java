@@ -22,40 +22,28 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-package org.underdocx.demo;
+package org.underdocx.commands.forloop;
 
+import org.junit.jupiter.api.Test;
 import org.underdocx.AbstractOdtTest;
 import org.underdocx.doctypes.odf.odt.OdtContainer;
 import org.underdocx.doctypes.odf.odt.OdtEngine;
-import org.underdocx.environment.UnderdocxEnv;
-import org.junit.jupiter.api.Test;
 
-import java.io.FileOutputStream;
-import java.io.InputStream;
-import java.io.OutputStream;
+import java.io.IOException;
 
-public class Demo_0_3_0_Test extends AbstractOdtTest {
+public class ForRowsInTableTest extends AbstractOdtTest {
 
     @Test
-    public void testDemoDoc() throws Exception {
-        InputStream is = getInputStream("demo0.3.0.odt");
-        String imageURL = createTmpUri(getInputStream("smile.png"), "png");
-        OutputStream os = new FileOutputStream(createFileInTempDir("demo0.3.0out.odt"));
-
-
-        OdtContainer doc = new OdtContainer(is);
+    public void testTableRows() throws IOException {
+        OdtContainer doc = new OdtContainer(getInputStream("TableLoopInTable.odt"));
         OdtEngine engine = new OdtEngine(doc);
-        engine.registerSimpleDollarReplacement("name", System.getProperty("user.name"));
-        engine.registerSimpleDollarImageReplacement("image", imageURL, true);
         engine.run();
-        doc.save(os);
-
-        if (UnderdocxEnv.isLibreOfficeInstalled()) {
-            OutputStream pos = new FileOutputStream(createFileInTempDir("demo0.3.0out.pdf"));
-            doc.writePDF(pos);
-        }
-
+        //show(doc);
         assertNoPlaceholders(doc);
+        assertOrder(doc, "1", "Hans", "Müller");
+        assertOrder(doc, "2", "Johanna", "Sommer");
+        assertOrder(doc, "3", "Helene", "Fischer");
+        assertOrder(doc, "1", "2", "3");
     }
 
 }

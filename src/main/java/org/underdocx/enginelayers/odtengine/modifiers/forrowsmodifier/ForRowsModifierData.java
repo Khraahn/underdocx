@@ -37,16 +37,20 @@ public interface ForRowsModifierData extends ForModifierData {
 
     int getRowGroupSize();
 
+    boolean isInTable();
+
     class DefaultForRowsModifierData implements ForRowsModifierData {
 
         private final Range rows;
         private final ForModifierData wrapped;
         private final int rowGroupSize;
+        private final boolean isInTable;
 
-        public DefaultForRowsModifierData(ForModifierData wrapped, Range repeatRows, int rowGroupSize) {
+        public DefaultForRowsModifierData(ForModifierData wrapped, Range repeatRows, int rowGroupSize, boolean isInTable) {
             this.wrapped = wrapped;
             this.rows = repeatRows;
             this.rowGroupSize = rowGroupSize;
+            this.isInTable = isInTable;
         }
 
         @Override
@@ -72,6 +76,11 @@ public interface ForRowsModifierData extends ForModifierData {
         @Override
         public int getRowGroupSize() {
             return rowGroupSize;
+        }
+
+        @Override
+        public boolean isInTable() {
+            return isInTable;
         }
     }
 }

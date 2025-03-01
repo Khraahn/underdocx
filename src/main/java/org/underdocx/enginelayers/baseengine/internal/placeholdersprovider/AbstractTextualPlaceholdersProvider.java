@@ -25,10 +25,11 @@ SOFTWARE.
 package org.underdocx.enginelayers.baseengine.internal.placeholdersprovider;
 
 import org.odftoolkit.odfdom.doc.OdfDocument;
+import org.odftoolkit.odfdom.dom.element.text.TextParagraphElementBase;
 import org.underdocx.common.enumerator.Enumerator;
 import org.underdocx.common.placeholder.TextualPlaceholderToolkit;
 import org.underdocx.doctypes.odf.AbstractOdfContainer;
-import org.underdocx.doctypes.odf.odt.tools.ParagraphByParagraphNodesEnumerator;
+import org.underdocx.doctypes.odf.odt.tools.ElementByElementEnumerator;
 import org.underdocx.enginelayers.baseengine.PlaceholdersProvider;
 import org.w3c.dom.Node;
 
@@ -49,7 +50,7 @@ public abstract class AbstractTextualPlaceholdersProvider<C extends AbstractOdfC
     @Override
     public Enumerator<Node> getPlaceholders() {
         if (endOfDoc) return Enumerator.empty();
-        ParagraphByParagraphNodesEnumerator result = new ParagraphByParagraphNodesEnumerator(doc, (p, firstValidNode) -> toolkit.extractPlaceholders(p, firstValidNode), startNode, true);
+        ElementByElementEnumerator<TextParagraphElementBase> result = new ElementByElementEnumerator<>(doc, (p, firstValidNode) -> toolkit.extractPlaceholders(p, firstValidNode), startNode, true, TextParagraphElementBase.class);
         return result;
     }
 

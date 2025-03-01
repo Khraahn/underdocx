@@ -66,6 +66,7 @@ public abstract class AbstractForCommandHandler<C extends DocContainer<D>, D> ex
     public static final String TABLEROW_ATTR = "tablerow";
     public static final String LISTITEM_ATTR = "listitem";
 
+
     protected static final PredefinedAttributesInterpreter<Optional<String>> getValueStringAttr = AttributeInterpreterFactory.createStringAttributeInterpreter(VALUE_ATTR);
     protected static final PredefinedAttributesInterpreter<Optional<JsonNode>> getValueJsonAttr = AttributeInterpreterFactory.createJsonAttributeInterpreter(VALUE_ATTR);
     protected static final PredefinedAttributesInterpreter<Optional<String>> getAsStrAttr = AttributeInterpreterFactory.createStringAttributeInterpreter(AS_ATTR);

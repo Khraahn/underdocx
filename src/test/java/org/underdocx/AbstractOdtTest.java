@@ -1,21 +1,21 @@
 package org.underdocx;
 
+import org.odftoolkit.odfdom.doc.OdfTextDocument;
+import org.odftoolkit.odfdom.dom.element.text.TextParagraphElementBase;
+import org.odftoolkit.odfdom.incubator.search.TextNavigation;
+import org.odftoolkit.odfdom.incubator.search.TextSelection;
 import org.underdocx.common.doc.DocContainer;
 import org.underdocx.common.placeholder.basic.textnodeinterpreter.AbstractOdfTextNodeInterpreter;
+import org.underdocx.common.tools.Convenience;
 import org.underdocx.common.tree.Nodes;
 import org.underdocx.common.tree.TreeWalker;
 import org.underdocx.doctypes.TextNodeInterpreter;
 import org.underdocx.doctypes.odf.constants.OdfAttribute;
 import org.underdocx.doctypes.odf.constants.OdfElement;
 import org.underdocx.doctypes.odf.odt.OdtContainer;
-import org.underdocx.doctypes.odf.odt.tools.ParagraphWalker;
+import org.underdocx.doctypes.odf.odt.tools.OdfDomElementWalker;
 import org.underdocx.doctypes.odf.tools.OdfNodes;
 import org.underdocx.environment.UnderdocxEnv;
-import org.odftoolkit.odfdom.doc.OdfTextDocument;
-import org.odftoolkit.odfdom.dom.element.text.TextParagraphElementBase;
-import org.odftoolkit.odfdom.incubator.search.TextNavigation;
-import org.odftoolkit.odfdom.incubator.search.TextSelection;
-import org.underdocx.common.tools.Convenience;
 import org.w3c.dom.Node;
 
 import java.awt.*;
@@ -24,7 +24,6 @@ import java.io.IOException;
 import java.util.Optional;
 import java.util.regex.Pattern;
 
-import static org.underdocx.common.tools.Convenience.buildOptional;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class AbstractOdtTest extends AbstractTest {
@@ -124,7 +123,7 @@ public class AbstractOdtTest extends AbstractTest {
 
     protected int countParagraphs(OdtContainer doc) {
         int counter = 0;
-        ParagraphWalker walker = new ParagraphWalker(doc, true);
+        OdfDomElementWalker walker = new OdfDomElementWalker(doc, true, TextParagraphElementBase.class);
         while (walker.hasNext()) {
             counter++;
             walker.next();

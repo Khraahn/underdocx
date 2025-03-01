@@ -22,9 +22,9 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-package org.underdocx.doctypes.odf.odt;
+package org.underdocx.doctypes.odf.odg;
 
-import org.odftoolkit.odfdom.doc.OdfTextDocument;
+import org.odftoolkit.odfdom.doc.OdfGraphicsDocument;
 import org.underdocx.doctypes.odf.AbstractOdfEngine;
 import org.underdocx.enginelayers.modelengine.ModelEngine;
 import org.underdocx.enginelayers.odtengine.commands.*;
@@ -32,9 +32,9 @@ import org.underdocx.enginelayers.odtengine.commands.forcommand.ForCommandHandle
 import org.underdocx.enginelayers.odtengine.commands.forcommand.ForListCommandHandler;
 import org.underdocx.enginelayers.odtengine.commands.forcommand.ForRowsCommandHandler;
 
-public class OdtEngine extends AbstractOdfEngine<OdtContainer, OdfTextDocument> {
+public class OdgEngine extends AbstractOdfEngine<OdgContainer, OdfGraphicsDocument> {
 
-    private final ModelEngine<OdtContainer, OdfTextDocument> engine;
+    private final ModelEngine<OdgContainer, OdfGraphicsDocument> engine;
 
     protected void registerDefaultCommandHandlers() {
         engine.registerCommandHandler(parameters, new ModelCommandHandler<>());
@@ -47,25 +47,22 @@ public class OdtEngine extends AbstractOdfEngine<OdtContainer, OdfTextDocument> 
         engine.registerCommandHandler(parameters, new CounterCommandHandler<>());
         engine.registerCommandHandler(parameters, new IfCommandHandler<>());
         engine.registerCommandHandler(parameters, new ForRowsCommandHandler<>());
-        engine.registerCommandHandler(parameters, new ImportCommandHander());
         engine.registerCommandHandler(imagePlaceholdersProvider, new ImageCommandHandler<>());
         engine.registerCommandHandler(parameters, new ForListCommandHandler<>());
         engine.registerCommandHandler(parameters, new PageStyleCommandHandler<>());
-        engine.registerCommandHandler(parameters, new ExportCommandHandler());
         engine.registerCommandHandler(parameters, multiCommandHandler);
         engine.registerCommandHandler(parameters, new JoinCommandHandler<>());
         engine.registerCommandHandler(parameters, new DeleteNodesEodHandler<>());
-        engine.registerCommandHandler(parameters, new UnderdocxCommandHandler());
         engine.registerCommandHandler(parameters, aliasCommandHandler);
     }
 
-    public OdtEngine(OdtContainer doc) {
+    public OdgEngine(OdgContainer doc) {
         this.engine = new ModelEngine<>(doc);
         registerDefaultCommandHandlers();
     }
 
     @Override
-    protected ModelEngine<OdtContainer, OdfTextDocument> getEngine() {
+    protected ModelEngine<OdgContainer, OdfGraphicsDocument> getEngine() {
         return engine;
     }
 }

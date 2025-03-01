@@ -24,7 +24,8 @@ SOFTWARE.
 
 package org.underdocx.enginelayers.odtengine.commands.image;
 
-import org.odftoolkit.odfdom.doc.OdfTextDocument;
+import org.odftoolkit.odfdom.doc.OdfDocument;
+import org.odftoolkit.odfdom.dom.element.draw.DrawFrameElement;
 import org.underdocx.common.enumerator.Enumerator;
 import org.underdocx.common.placeholder.EncapsulatedNodesExtractor;
 import org.underdocx.common.placeholder.TextualPlaceholderToolkit;
@@ -32,9 +33,9 @@ import org.underdocx.common.placeholder.basic.textnodeinterpreter.OdfTextNodeInt
 import org.underdocx.common.tools.Convenience;
 import org.underdocx.common.tree.nodepath.TreeNodeCollector;
 import org.underdocx.doctypes.TextNodeInterpreter;
+import org.underdocx.doctypes.odf.AbstractOdfContainer;
 import org.underdocx.doctypes.odf.constants.OdfElement;
-import org.underdocx.doctypes.odf.odt.OdtContainer;
-import org.underdocx.doctypes.odf.odt.tools.ParagraphByParagraphNodesEnumerator;
+import org.underdocx.doctypes.odf.odt.tools.ElementByElementEnumerator;
 import org.underdocx.enginelayers.baseengine.PlaceholdersProvider;
 import org.w3c.dom.Node;
 
@@ -42,12 +43,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-public class ImagePlaceholdersProvider implements EncapsulatedNodesExtractor, PlaceholdersProvider<OdtContainer, ImagePlaceholderData, OdfTextDocument> {
-    private final OdtContainer doc;
+public class ImagePlaceholdersProvider<C extends AbstractOdfContainer<D>, D extends OdfDocument> implements EncapsulatedNodesExtractor, PlaceholdersProvider<C, ImagePlaceholderData, D> {
+    private final C doc;
     private Node firstValidNode = null;
     private boolean endOfDoc;
 
-    public ImagePlaceholdersProvider(OdtContainer doc) {
+    public ImagePlaceholdersProvider(C doc) {
         this.doc = doc;
     }
 
@@ -81,7 +82,7 @@ public class ImagePlaceholdersProvider implements EncapsulatedNodesExtractor, Pl
     @Override
     public Enumerator<Node> getPlaceholders() {
         if (endOfDoc) return Enumerator.empty();
-        return new ParagraphByParagraphNodesEnumerator(doc, (p, first) -> this.extractNodes(p, first), firstValidNode, true);
+        return new ElementByElementEnumerator<>(doc, (p, first) -> this.extractNodes(p, first), firstValidNode, true, DrawFrameElement.class);
     }
 
     @Override
@@ -100,11 +101,11 @@ public class ImagePlaceholdersProvider implements EncapsulatedNodesExtractor, Pl
         this.endOfDoc = endOfDoc;
     }
 
-    public static class ImagePlaceholdersProviderFactory implements PlaceholdersProvider.Factory<OdtContainer, ImagePlaceholderData, OdfTextDocument> {
+    public static class ImagePlaceholdersProviderFactory<C extends AbstractOdfContainer<D>, D extends OdfDocument> implements PlaceholdersProvider.Factory<C, ImagePlaceholderData, D> {
 
         @Override
-        public PlaceholdersProvider<OdtContainer, ImagePlaceholderData, OdfTextDocument> createProvider(OdtContainer doc) {
-            return new ImagePlaceholdersProvider(doc);
+        public PlaceholdersProvider<C, ImagePlaceholderData, D> createProvider(C doc) {
+            return new ImagePlaceholdersProvider<>(doc);
         }
     }
 

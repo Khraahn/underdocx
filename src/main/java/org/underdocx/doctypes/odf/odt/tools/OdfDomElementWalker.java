@@ -24,10 +24,10 @@ SOFTWARE.
 
 package org.underdocx.doctypes.odf.odt.tools;
 
+import org.odftoolkit.odfdom.pkg.OdfElement;
 import org.underdocx.common.enumerator.Enumerator;
-import org.underdocx.doctypes.odf.AbstractOdfContainer;
 import org.underdocx.common.tree.TreeWalker;
-import org.odftoolkit.odfdom.dom.element.text.TextParagraphElementBase;
+import org.underdocx.doctypes.odf.AbstractOdfContainer;
 import org.w3c.dom.Node;
 
 import java.util.Arrays;
@@ -37,17 +37,16 @@ import java.util.function.Predicate;
 import static org.underdocx.common.tools.Convenience.also;
 import static org.underdocx.common.tools.Convenience.getOrDefault;
 
-public class ParagraphWalker implements Enumerator<TextParagraphElementBase> {
-
-    private static final Predicate<TreeWalker.VisitState> paragraphFilter =
-            state -> state != null && state.isBeginVisit() && state.getNode() instanceof TextParagraphElementBase;
+public class OdfDomElementWalker<T extends OdfElement> implements Enumerator<T> {
 
     private final Iterator<TreeWalker> treeWalkers;
     private TreeWalker currentTreeWalker;
     private final boolean skipChildren;
-    private TextParagraphElementBase next;
+    private T next;
+    private Predicate<TreeWalker.VisitState> filter;
 
-    public ParagraphWalker(AbstractOdfContainer<?> doc, boolean skipParagraphChildNodes) {
+    public OdfDomElementWalker(AbstractOdfContainer<?> doc, boolean skipFoundNodesChildren, Class<T> searchType) {
+        this.filter = state -> state != null && state.isBeginVisit() && searchType.isAssignableFrom(state.getNode().getClass());
         Node contentDom = doc.getContentDom();
         Node styleDom = doc.getStylesDom();
         this.treeWalkers = Arrays.asList(
@@ -55,7 +54,7 @@ public class ParagraphWalker implements Enumerator<TextParagraphElementBase> {
                 new TreeWalker(contentDom, contentDom)
         ).iterator();
         this.currentTreeWalker = treeWalkers.next();
-        this.skipChildren = skipParagraphChildNodes;
+        this.skipChildren = skipFoundNodesChildren;
         findNext();
     }
 
@@ -64,7 +63,7 @@ public class ParagraphWalker implements Enumerator<TextParagraphElementBase> {
             currentTreeWalker.nextSkipChildren();
             next = null;
         }
-        next = (TextParagraphElementBase) getOrDefault(currentTreeWalker.next(paragraphFilter), TreeWalker.VisitState::getNode, null);
+        next = (T) getOrDefault(currentTreeWalker.next(filter), TreeWalker.VisitState::getNode, null);
         if (next == null && treeWalkers.hasNext()) {
             currentTreeWalker = treeWalkers.next();
             findNext();
@@ -77,7 +76,7 @@ public class ParagraphWalker implements Enumerator<TextParagraphElementBase> {
     }
 
     @Override
-    public TextParagraphElementBase next() {
+    public T next() {
         return also(next, n -> findNext());
     }
 }
