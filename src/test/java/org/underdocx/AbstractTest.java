@@ -1,8 +1,8 @@
 package org.underdocx;
 
-import org.underdocx.common.types.Resource;
-import org.underdocx.common.tree.TreeWalker;
 import org.apache.commons.io.FileUtils;
+import org.underdocx.common.tree.TreeWalker;
+import org.underdocx.common.types.Resource;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 
@@ -19,8 +19,8 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.util.*;
 
-import static org.underdocx.common.tools.Convenience.*;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.underdocx.common.tools.Convenience.buildList;
 
 public abstract class AbstractTest {
 
@@ -53,11 +53,7 @@ public abstract class AbstractTest {
         return createTmpFile("tmp_", extension);
     }
 
-    protected String createTmpUri(InputStream is, String extension) {
-        return createTmpUri(is, extension, 1000 * 60);
-    }
-
-    protected String createTmpUri(InputStream is, String extension, long lifetime) {
+    protected File createTmpFile(InputStream is, String extension, long lifetime) {
         try {
             File file = createTmpFile(extension);
             file.deleteOnExit();
@@ -68,7 +64,19 @@ public abstract class AbstractTest {
                     file.delete();
                 }
             }, lifetime);
-            return file.toURI().toString();
+            return file;
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    protected String createTmpUri(InputStream is, String extension) {
+        return createTmpUri(is, extension, 1000 * 60);
+    }
+
+    protected String createTmpUri(InputStream is, String extension, long lifetime) {
+        try {
+            return createTmpFile(is, extension, lifetime).toURI().toString();
         } catch (Exception e) {
             throw new RuntimeException(e);
         }

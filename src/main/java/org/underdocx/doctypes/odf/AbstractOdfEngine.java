@@ -27,6 +27,7 @@ package org.underdocx.doctypes.odf;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import org.odftoolkit.odfdom.doc.OdfDocument;
 import org.underdocx.common.types.Regex;
+import org.underdocx.doctypes.EngineAPI;
 import org.underdocx.enginelayers.baseengine.CommandHandler;
 import org.underdocx.enginelayers.baseengine.PlaceholdersProvider;
 import org.underdocx.enginelayers.baseengine.commands.SimpleDollarImageReplaceCommand;
@@ -54,7 +55,7 @@ import java.util.function.BiConsumer;
 import java.util.function.Function;
 import java.util.regex.Pattern;
 
-public abstract class AbstractOdfEngine<C extends AbstractOdfContainer<D>, D extends OdfDocument> {
+public abstract class AbstractOdfEngine<C extends AbstractOdfContainer<D>, D extends OdfDocument> implements EngineAPI {
 
     public final SimpleDollarImagePlaceholdersProvider.SimpleDollarImagePlaceholdersProviderFactory<C, D> simpleDollarImage
             = new SimpleDollarImagePlaceholdersProvider.SimpleDollarImagePlaceholdersProviderFactory<>();
@@ -221,4 +222,6 @@ public abstract class AbstractOdfEngine<C extends AbstractOdfContainer<D>, D ext
     public void importData(String json) {
         importData(new MapDataNode(json));
     }
+
+
 }
