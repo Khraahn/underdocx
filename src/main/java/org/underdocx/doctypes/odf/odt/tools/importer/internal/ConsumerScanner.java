@@ -26,7 +26,7 @@ package org.underdocx.doctypes.odf.odt.tools.importer.internal;
 
 import org.underdocx.common.tools.Convenience;
 import org.underdocx.common.tree.TreeWalkers;
-import org.underdocx.doctypes.odf.odt.OdtContainer;
+import org.underdocx.doctypes.odf.AbstractOdfContainer;
 import org.underdocx.doctypes.odf.odt.tools.importer.rules.ConsumerDescr;
 import org.underdocx.doctypes.odf.odt.tools.importer.rules.Renameable;
 
@@ -37,10 +37,10 @@ import java.util.List;
  */
 public class ConsumerScanner implements Renameable {
 
-    private final OdtContainer doc;
+    private final AbstractOdfContainer<?> doc;
     private final List<ConsumerDescr> consumerDescr;
 
-    public ConsumerScanner(OdtContainer doc, List<ConsumerDescr> consumerDescr) {
+    public ConsumerScanner(AbstractOdfContainer<?> doc, List<ConsumerDescr> consumerDescr) {
         this.doc = doc;
         this.consumerDescr = consumerDescr;
     }

@@ -24,12 +24,10 @@ SOFTWARE.
 
 package org.underdocx.doctypes.odf.odt.tools.importer.rules;
 
-import org.odftoolkit.odfdom.dom.element.text.TextPElement;
 import org.underdocx.common.debug.NodePrinter;
 import org.underdocx.common.tools.Convenience;
 import org.underdocx.common.tree.Nodes;
-import org.underdocx.doctypes.odf.odt.OdtContainer;
-import org.underdocx.doctypes.odf.tools.OdfNodes;
+import org.underdocx.doctypes.odf.AbstractOdfContainer;
 import org.underdocx.environment.UnderdocxEnv;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
@@ -58,7 +56,7 @@ public class TagPathDescr {
         this(isContent, Arrays.asList(path));
     }
 
-    public List<Node> findAll(OdtContainer container) {
+    public List<Node> findAll(AbstractOdfContainer container) {
         return Convenience.buildList(result -> {
             if (isContent) {
                 findAll(result, container.getContentDom(), new ArrayList<>(path));
@@ -85,7 +83,7 @@ public class TagPathDescr {
         return new TagPathDescr(this.isContent, Convenience.also(new ArrayList<>(this.path), list -> list.remove(list.size() - 1)));
     }
 
-    public Optional<Node> findFirst(OdtContainer container) {
+    public Optional<Node> findFirst(AbstractOdfContainer container) {
         return Convenience.buildOptional(result -> {
             if (isContent) {
                 result.value = findFirst(container.getContentDom(), new ArrayList<>(path));
@@ -109,7 +107,7 @@ public class TagPathDescr {
         return null;
     }
 
-    public void copy(OdtContainer source, OdtContainer target) {
+    public void copy(AbstractOdfContainer source, AbstractOdfContainer target) {
         List<Node> allToCopy = findAll(source);
         getParent().findFirst(target).ifPresent(targetParent -> {
             Document targetOwnerDocument = targetParent.getOwnerDocument();
@@ -122,22 +120,5 @@ public class TagPathDescr {
         });
     }
 
-    public void copy(OdtContainer source, Node targetRefInsertAfter) {
-        Node insertAfterParagraph = targetRefInsertAfter;
-        if (!(targetRefInsertAfter instanceof TextPElement)) {
-            insertAfterParagraph = OdfNodes.findAscendantParagraph(insertAfterParagraph, false).get();
-        }
-        Document targetOwnerDocument = targetRefInsertAfter.getOwnerDocument();
-        Node siblingRef = insertAfterParagraph.getNextSibling();
-        Node targetParent = insertAfterParagraph.getParentNode();
-        List<Node> allToCopy = findAll(source);
-        allToCopy.forEach(toCopy -> {
-            Node clone = targetOwnerDocument.importNode(toCopy, true);
-            if (siblingRef != null) {
-                targetParent.insertBefore(clone, siblingRef);
-            } else {
-                targetParent.appendChild(clone);
-            }
-        });
-    }
+
 }

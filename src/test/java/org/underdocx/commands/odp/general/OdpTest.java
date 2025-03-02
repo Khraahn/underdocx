@@ -22,7 +22,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-package org.underdocx.commands.odp;
+package org.underdocx.commands.odp.general;
 
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -38,7 +38,7 @@ import java.util.List;
 
 public class OdpTest extends AbstractOdtTest {
 
-    private List<Node> findTextNode(Node tree, String text) {
+    protected List<Node> findTextNode(Node tree, String text) {
         return Convenience.buildList(result -> {
             TreeWalker walker = new TreeWalker(tree, tree, null);
             while (walker.hasNext()) {

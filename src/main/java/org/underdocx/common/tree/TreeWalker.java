@@ -24,7 +24,7 @@ SOFTWARE.
 
 package org.underdocx.common.tree;
 
-import jakarta.validation.constraints.NotNull;
+
 import org.underdocx.common.enumerator.Enumerator;
 import org.w3c.dom.Node;
 
@@ -42,18 +42,18 @@ public class TreeWalker implements Enumerator<TreeWalker.VisitState> {
     private Node firstValidNode = null;
 
 
-    public TreeWalker(@NotNull Node initialNode, Node scope) {
+    public TreeWalker(Node initialNode, Node scope) {
         this.initialNode = initialNode;
         this.scope = scope;
     }
 
-    public TreeWalker(@NotNull Node initialNode, Node scope, Node firstValidNode) {
+    public TreeWalker(Node initialNode, Node scope, Node firstValidNode) {
         this.initialNode = initialNode;
         this.scope = scope;
         this.firstValidNode = firstValidNode;
     }
 
-    public TreeWalker(@NotNull TreeWalker treeWalker) {
+    public TreeWalker(TreeWalker treeWalker) {
         this.state = treeWalker.state != null ? new VisitState(treeWalker.state) : null;
         this.initialNode = treeWalker.initialNode;
         this.scope = treeWalker.scope;
@@ -142,13 +142,13 @@ public class TreeWalker implements Enumerator<TreeWalker.VisitState> {
         private final boolean beginVisit;
         private final boolean isValid;
 
-        public VisitState(@NotNull Node node, boolean beginVisit, boolean isValid) {
+        public VisitState(Node node, boolean beginVisit, boolean isValid) {
             this.node = node;
             this.beginVisit = beginVisit;
             this.isValid = isValid;
         }
 
-        public VisitState(@NotNull VisitState visitState) {
+        public VisitState(VisitState visitState) {
             this(visitState.node, visitState.beginVisit, visitState.isValid);
         }
 

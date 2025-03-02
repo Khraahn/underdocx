@@ -31,7 +31,7 @@ import org.odftoolkit.odfdom.dom.element.text.TextParagraphElementBase;
 import org.odftoolkit.odfdom.pkg.OdfFileDom;
 import org.underdocx.common.tools.Convenience;
 import org.underdocx.common.tree.Nodes;
-import org.underdocx.doctypes.odf.odt.OdtContainer;
+import org.underdocx.doctypes.odf.AbstractOdfContainer;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
@@ -81,7 +81,7 @@ public class OdfNodes {
     }
 
 
-    public static Optional<Node> findFirstParagraphOrTableChild(OdtContainer doc) {
+    public static Optional<Node> findFirstParagraphOrTableChild(AbstractOdfContainer doc) {
         return Convenience.buildOptional(result -> {
             Nodes.findFirstDescendantNode(doc.getContentRoot(), "office:text").ifPresent(node ->
                     findFirstParagraphOrTableChild((OfficeTextElement) node).ifPresent(found ->

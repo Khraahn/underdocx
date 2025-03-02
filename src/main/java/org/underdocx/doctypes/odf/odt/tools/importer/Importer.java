@@ -27,7 +27,7 @@ package org.underdocx.doctypes.odf.odt.tools.importer;
 import org.odftoolkit.odfdom.pkg.OdfPackage;
 import org.underdocx.common.tree.Nodes;
 import org.underdocx.common.types.Pair;
-import org.underdocx.doctypes.odf.odt.OdtContainer;
+import org.underdocx.doctypes.odf.AbstractOdfContainer;
 import org.underdocx.doctypes.odf.odt.tools.importer.internal.ConsumerScanner;
 import org.underdocx.doctypes.odf.odt.tools.importer.internal.FontImporter;
 import org.underdocx.doctypes.odf.odt.tools.importer.internal.ProviderScanner;
@@ -49,11 +49,7 @@ public class Importer {
         this.importRules = importRules;
     }
 
-    public Importer() {
-        this(ImportRules.DEFAULT);
-    }
-
-    public void importDoc(String sourceResourceName, OdtContainer source, OdtContainer target, Node targetRefNodeInsertAfter) {
+    public void importDoc(String sourceResourceName, AbstractOdfContainer<?> source, AbstractOdfContainer<?> target, Node targetRefNodeInsertAfter) {
 
         // insert proxy family nodes
         new ProxyFamilyStyleInserter(source).insertProxyStyleNodes();
@@ -80,14 +76,14 @@ public class Importer {
         importRules.getCopyRules().forEach(copyRule -> {
             copyRule.copy(source, target);
         });
-        importRules.getMainCopyRule().copy(source, targetRefNodeInsertAfter);
+        importRules.getMainCopyExecutor().copy(source, targetRefNodeInsertAfter);
 
         // import images
         importImages(source, target);
 
     }
 
-    private void importImages(OdtContainer source, OdtContainer target) {
+    private void importImages(AbstractOdfContainer<?> source, AbstractOdfContainer<?> target) {
         OdfPackage sourcePackage = source.getDocument().getPackage();
         OdfPackage targetPackage = target.getDocument().getPackage();
         sourcePackage.getFilePaths().forEach(path -> {

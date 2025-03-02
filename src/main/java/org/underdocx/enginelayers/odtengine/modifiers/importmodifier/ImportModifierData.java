@@ -24,35 +24,41 @@ SOFTWARE.
 
 package org.underdocx.enginelayers.odtengine.modifiers.importmodifier;
 
-import org.underdocx.doctypes.odf.odt.OdtContainer;
+import org.underdocx.doctypes.odf.AbstractOdfContainer;
 import org.w3c.dom.Node;
+
+import java.util.Optional;
 
 public interface ImportModifierData {
 
     Node getRefNode();
 
-    OdtContainer getSourceDoc();
+    AbstractOdfContainer getSourceDoc();
 
-    OdtContainer getTargetDoc();
+    AbstractOdfContainer getTargetDoc();
 
     boolean filterInitialPageStyle();
 
     String getSourceIdentifier();
 
+    Optional<String> getSourcePageName();
+
     class Simple implements ImportModifierData {
 
         private final boolean filterInitialPageStyle;
         private final Node targetRefNodeInsertAfter;
-        private final OdtContainer target;
-        private final OdtContainer source;
+        private final AbstractOdfContainer target;
+        private final AbstractOdfContainer source;
         private final String sourceResourceName;
+        private final String pageNameOrNull;
 
-        public Simple(String sourceResourceName, OdtContainer source, OdtContainer target, Node targetRefNodeInsertAfter, boolean filterInitialPageStyle) {
+        public Simple(String sourceResourceName, AbstractOdfContainer source, AbstractOdfContainer target, Node targetRefNodeInsertAfter, boolean filterInitialPageStyle, String pageNameOrNull) {
             this.sourceResourceName = sourceResourceName;
             this.source = source;
             this.target = target;
             this.targetRefNodeInsertAfter = targetRefNodeInsertAfter;
             this.filterInitialPageStyle = filterInitialPageStyle;
+            this.pageNameOrNull = pageNameOrNull;
         }
 
         @Override
@@ -61,12 +67,12 @@ public interface ImportModifierData {
         }
 
         @Override
-        public OdtContainer getSourceDoc() {
+        public AbstractOdfContainer getSourceDoc() {
             return source;
         }
 
         @Override
-        public OdtContainer getTargetDoc() {
+        public AbstractOdfContainer getTargetDoc() {
             return target;
         }
 
@@ -78,6 +84,11 @@ public interface ImportModifierData {
         @Override
         public String getSourceIdentifier() {
             return sourceResourceName;
+        }
+
+        @Override
+        public Optional<String> getSourcePageName() {
+            return Optional.ofNullable(pageNameOrNull);
         }
     }
 }

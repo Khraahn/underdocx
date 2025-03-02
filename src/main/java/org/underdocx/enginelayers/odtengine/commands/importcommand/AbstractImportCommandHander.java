@@ -22,17 +22,18 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-package org.underdocx.enginelayers.odtengine.commands;
+package org.underdocx.enginelayers.odtengine.commands.importcommand;
 
-import org.odftoolkit.odfdom.doc.OdfTextDocument;
+import org.odftoolkit.odfdom.doc.OdfDocument;
 import org.underdocx.common.types.Regex;
 import org.underdocx.common.types.Resource;
-import org.underdocx.doctypes.odf.odt.OdtContainer;
+import org.underdocx.doctypes.odf.AbstractOdfContainer;
 import org.underdocx.enginelayers.baseengine.CommandHandlerResult;
 import org.underdocx.enginelayers.baseengine.modifiers.deleteplaceholder.DeletePlaceholderModifier;
 import org.underdocx.enginelayers.odtengine.commands.internal.AbstractTextualCommandHandler;
 import org.underdocx.enginelayers.odtengine.commands.internal.datapicker.BooleanDataPicker;
 import org.underdocx.enginelayers.odtengine.commands.internal.datapicker.PredefinedDataPicker;
+import org.underdocx.enginelayers.odtengine.commands.internal.datapicker.StringConvertDataPicker;
 import org.underdocx.enginelayers.odtengine.commands.internal.modifiermodule.resource.ResourceCommandModule;
 import org.underdocx.enginelayers.odtengine.modifiers.importmodifier.ImportModifier;
 import org.underdocx.enginelayers.odtengine.modifiers.importmodifier.ImportModifierData;
@@ -44,15 +45,17 @@ import java.util.HashMap;
 /**
  * Implementation of the {{Import uri/data}} command.
  */
-public class ImportCommandHander extends AbstractTextualCommandHandler<OdtContainer, OdfTextDocument> {
+public abstract class AbstractImportCommandHander<C extends AbstractOdfContainer<D>, D extends OdfDocument> extends AbstractTextualCommandHandler<C, D> {
     public static final String BEGIN_KEY = "Import";
     public static final Regex KEYS = new Regex(BEGIN_KEY);
 
     public static final String CACHE_ATTR = "cache";
+    public static final String PAGE_ATTR = "page";
 
     private static final PredefinedDataPicker<Boolean> useCacheAttr = new BooleanDataPicker().asPredefined(CACHE_ATTR);
+    private static final PredefinedDataPicker<String> pageNameAttr = new StringConvertDataPicker().asPredefined(PAGE_ATTR);
 
-    public ImportCommandHander() {
+    public AbstractImportCommandHander() {
         super(KEYS);
     }
 
@@ -60,27 +63,35 @@ public class ImportCommandHander extends AbstractTextualCommandHandler<OdtContai
 
     @Override
     protected CommandHandlerResult tryExecuteTextualCommand() {
-        Resource resource = new ResourceCommandModule<OdtContainer, ParametersPlaceholderData, OdfTextDocument>(placeholderData.getJson()).execute(selection);
+        Resource resource = new ResourceCommandModule<C, ParametersPlaceholderData, D>(placeholderData.getJson()).execute(selection);
+        String pageName = pageNameAttr.pickData(dataAccess, placeholderData.getJson()).getOptionalValue().orElse(null);
+        checkPackageExistence(pageName);
         boolean useCache = useCacheAttr.getData(dataAccess, placeholderData.getJson()).orElse(true);
-        OdtContainer importDoc = getDoc(resource, useCache);
-        ImportModifierData modifiedData = new ImportModifierData.Simple(resource.getIdentifier(), importDoc, selection.getDocContainer(), selection.getNode(), true);
+        C importDoc = getDoc(resource, useCache);
+        ImportModifierData modifiedData = new ImportModifierData.Simple(resource.getIdentifier(), importDoc, selection.getDocContainer(), selection.getNode(), true, pageName);
         new ImportModifier().modify(modifiedData);
         return CommandHandlerResult.FACTORY.convert(DeletePlaceholderModifier.modify(selection.getNode()));
     }
 
-    private OdtContainer getDoc(final Resource resource, boolean useCache) {
+    private C getDoc(final Resource resource, boolean useCache) {
         String resourceId = resource.getIdentifier();
         byte[] data = cache.get(resourceId);
         if (data != null) {
-            return Problems.IO_EXCEPTION.exec(() -> new OdtContainer(data));
+            return Problems.IO_EXCEPTION.exec(() -> createContainer(data));
         } else {
             if (useCache) {
-                final byte[] cacheData = Problems.IO_EXCEPTION.exec(() -> resource.getData());
+                final byte[] cacheData = Problems.IO_EXCEPTION.exec(resource::getData);
                 cache.put(resourceId, cacheData);
-                return Problems.IO_EXCEPTION.exec(() -> new OdtContainer(cacheData));
+                return Problems.IO_EXCEPTION.exec(() -> createContainer(cacheData));
             } else {
-                return Problems.IO_EXCEPTION.exec(() -> new OdtContainer(resource));
+                return Problems.IO_EXCEPTION.exec(() -> createContainer(resource));
             }
         }
     }
+
+    protected abstract C createContainer(Resource resource) throws Exception;
+
+    protected abstract C createContainer(byte[] data) throws Exception;
+
+    protected abstract void checkPackageExistence(String page);
 }

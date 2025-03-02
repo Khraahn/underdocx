@@ -25,10 +25,13 @@ SOFTWARE.
 package org.underdocx.enginelayers.odtengine.modifiers.importmodifier;
 
 import org.underdocx.common.types.Wrapper;
-import org.underdocx.doctypes.odf.odt.OdtContainer;
+import org.underdocx.doctypes.odf.AbstractOdfContainer;
 import org.underdocx.doctypes.odf.odt.pagestyle.PageStyle;
 import org.underdocx.doctypes.odf.odt.pagestyle.PageStyleWriter;
 import org.underdocx.doctypes.odf.odt.tools.importer.Importer;
+import org.underdocx.doctypes.odf.odt.tools.importer.OdgOdpImportRules;
+import org.underdocx.doctypes.odf.odt.tools.importer.OdtImportRules;
+import org.underdocx.doctypes.odf.odt.tools.importer.rules.NodeFilter;
 import org.underdocx.doctypes.odf.tools.OdfNodes;
 import org.w3c.dom.Node;
 
@@ -40,10 +43,17 @@ public class ImportModifier {
         if (data.filterInitialPageStyle()) {
             filterInitialPageStyle(data.getSourceDoc());
         }
-        new Importer().importDoc(data.getSourceIdentifier(), data.getSourceDoc(), data.getTargetDoc(), data.getRefNode());
+        Optional<String> pageName = data.getSourcePageName();
+        if (pageName.isPresent()) {
+            new Importer(OdgOdpImportRules.createRules(pageName.get(), NodeFilter.ACCEPT_ALL))
+                    .importDoc(data.getSourceIdentifier(), data.getSourceDoc(), data.getTargetDoc(), data.getRefNode());
+        } else {
+            new Importer(OdtImportRules.DEFAULT)
+                    .importDoc(data.getSourceIdentifier(), data.getSourceDoc(), data.getTargetDoc(), data.getRefNode());
+        }
     }
 
-    private void filterInitialPageStyle(OdtContainer sourceDoc) {
+    private void filterInitialPageStyle(AbstractOdfContainer<?> sourceDoc) {
         Optional<Node> firstStyleableNode = OdfNodes.findFirstParagraphOrTableChild(sourceDoc);
         if (firstStyleableNode.isPresent())
             PageStyleWriter.writePageStyle(firstStyleableNode.get(), new PageStyle(

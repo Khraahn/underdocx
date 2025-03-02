@@ -39,6 +39,7 @@ public abstract class AbstractImportRules {
     protected List<ConsumerDescr> consumerDescrs;
     protected List<TagPathDescr> copyRules;
     protected TagPathDescr mainCopyRule;
+    protected MainCopyExecutor mainCopyExecutor;
     protected boolean initialized = false;
 
     protected AbstractImportRules() {
@@ -58,6 +59,10 @@ public abstract class AbstractImportRules {
 
     public TagPathDescr getMainCopyRule() {
         return mainCopyRule;
+    }
+
+    public MainCopyExecutor getMainCopyExecutor() {
+        return mainCopyExecutor;
     }
 
     protected void init() {
@@ -81,6 +86,10 @@ public abstract class AbstractImportRules {
 
     protected static TagDescr t(Node node) {
         return new TagDescr(node.getNodeName());
+    }
+
+    protected static AttrDescr a(String s) {
+        return new AttrDescr(s);
     }
 
 }

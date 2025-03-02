@@ -72,7 +72,7 @@ public class UnderdocxCommandHandler extends AbstractTextualCommandHandler<OdtCo
 
     private void modify(OdtContainer doc, Node node) {
         OdtContainer importDoc = Problems.IO_EXCEPTION.exec(() -> new OdtContainer(resource));
-        ImportModifierData modifiedData = new ImportModifierData.Simple(resource.getIdentifier(), importDoc, doc, node, true);
+        ImportModifierData modifiedData = new ImportModifierData.Simple(resource.getIdentifier(), importDoc, doc, node, true, null);
         new ImportModifier().modify(modifiedData);
         DeletePlaceholderModifier.modify(node);
     }

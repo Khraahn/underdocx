@@ -22,51 +22,27 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-package org.underdocx.commands.odg;
+package org.underdocx.commands.odg.importer;
 
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
-import org.underdocx.AbstractOdtTest;
-import org.underdocx.common.tools.Convenience;
-import org.underdocx.common.tree.TreeWalker;
+import org.underdocx.commands.odg.AbstractOdgTest;
 import org.underdocx.doctypes.odf.odg.OdgContainer;
 import org.underdocx.doctypes.odf.odg.OdgEngine;
-import org.w3c.dom.Node;
 
 import java.io.IOException;
-import java.util.List;
 
-public class OdgTest extends AbstractOdtTest {
-
-    private List<Node> findTextNode(Node tree, String text) {
-        return Convenience.buildList(result -> {
-            TreeWalker walker = new TreeWalker(tree, tree, null);
-            while (walker.hasNext()) {
-                TreeWalker.VisitState state = walker.next();
-                if (state.isBeginVisit() && state.getNode().getNodeType() == Node.TEXT_NODE && state.getNode().getTextContent().contains(text)) {
-                    result.add(state.getNode());
-                }
-            }
-        });
-    }
-
-    private boolean findTextNode(OdgContainer doc, String text) {
-        return !findTextNode(doc.getContentRoot(), text).isEmpty();
-    }
+public class OdgImporterTest extends AbstractOdgTest {
 
     @Test
-    public void testOdg() throws IOException {
-        OdgContainer graphics = new OdgContainer(readResource("TestGraphics.odg"));
+    public void testImport() throws IOException {
+        OdgContainer graphics = new OdgContainer(readResource("ImportTest.odg"));
         OdgEngine engine = new OdgEngine(graphics);
-        engine.pushVariable("image", readResource("smile.png"));
+        engine.pushLeafVariable("toImport", readResource("ToImport.odg"));
         engine.run();
         //show(graphics);
+        Assertions.assertThat(findTextNode(graphics, "should be imported")).isTrue();
         Assertions.assertThat(findTextNode(graphics, "$")).isFalse();
-        Assertions.assertThat(findTextNode(graphics, "A")).isTrue();
-        Assertions.assertThat(findTextNode(graphics, "B")).isTrue();
-        Assertions.assertThat(findTextNode(graphics, "Hans")).isTrue();
-        Assertions.assertThat(findTextNode(graphics, "Müller")).isTrue();
-
 
     }
 }

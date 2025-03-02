@@ -21,6 +21,7 @@ import org.w3c.dom.Node;
 import java.awt.*;
 import java.io.File;
 import java.io.IOException;
+import java.util.List;
 import java.util.Optional;
 import java.util.regex.Pattern;
 
@@ -202,4 +203,15 @@ public class AbstractOdtTest extends AbstractTest {
         }
     }
 
+    protected List<Node> findTextNode(Node tree, String text) {
+        return Convenience.buildList(result -> {
+            TreeWalker walker = new TreeWalker(tree, tree, null);
+            while (walker.hasNext()) {
+                TreeWalker.VisitState state = walker.next();
+                if (state.isBeginVisit() && state.getNode().getNodeType() == Node.TEXT_NODE && state.getNode().getTextContent().contains(text)) {
+                    result.add(state.getNode());
+                }
+            }
+        });
+    }
 }

@@ -65,7 +65,7 @@ public abstract class NodeDescr<T extends NodeDescr<T>> implements NodeFilter {
         if (this.nameSpace != null && !this.nameSpace.equals(other.nameSpace)) return false;
         return this.singleNodeName.equals(other.singleNodeName) && this.getClass().getName().equals(other.getClass().getName());
     }
-
+    
     public boolean test(Node node) {
         return matches(createInstance(node.getNodeName()));
     }

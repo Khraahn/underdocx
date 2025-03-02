@@ -24,14 +24,20 @@ SOFTWARE.
 
 package org.underdocx.doctypes.odf.odt.tools.importer;
 
+import org.odftoolkit.odfdom.dom.element.text.TextPElement;
+import org.underdocx.doctypes.odf.AbstractOdfContainer;
 import org.underdocx.doctypes.odf.odt.tools.importer.rules.*;
+import org.underdocx.doctypes.odf.tools.OdfNodes;
+import org.w3c.dom.Document;
+import org.w3c.dom.Node;
 
 import java.util.Arrays;
+import java.util.List;
 
 /**
  * Default Rules which nodes have to be copied and which attribute values have to be renamed
  */
-public class ImportRules extends AbstractImportRules {
+public class OdtImportRules extends AbstractImportRules {
     private static final TagDescr DOCUMENT_STYLES = t("office:document-styles");
     private static final TagDescr DOCUMENT_CONTENT = t("office:document-content");
     private static final TagDescr OFFICE_BODY = t("office:body");
@@ -40,11 +46,11 @@ public class ImportRules extends AbstractImportRules {
     private static final TagDescr OFFICE_AUTOMATIC_STYLES = t("office:automatic-styles");
     private static final TagDescr OFFICE_TEXT = t("office:text");
 
-    public static ImportRules DEFAULT = ImportRules.createRules(NodeFilter.ACCEPT_ALL);
+    public static OdtImportRules DEFAULT = OdtImportRules.createRules(NodeFilter.ACCEPT_ALL);
 
     private NodeFilter copyContentNodeFilter;
 
-    private ImportRules() {
+    private OdtImportRules() {
     }
 
     protected void createRules() {
@@ -68,14 +74,43 @@ public class ImportRules extends AbstractImportRules {
         copyRules.add(new TagPathDescr(true, DOCUMENT_CONTENT, OFFICE_AUTOMATIC_STYLES, NodeFilter.ACCEPT_ALL));
 
         mainCopyRule = new TagPathDescr(true, DOCUMENT_CONTENT, OFFICE_BODY, OFFICE_TEXT, copyContentNodeFilter);
+        mainCopyExecutor = new OdtCopyExecutor(mainCopyRule);
     }
 
-    public static ImportRules createRules(NodeFilter copyContentNodeFilter) {
-        ImportRules result = new ImportRules();
+    public static OdtImportRules createRules(NodeFilter copyContentNodeFilter) {
+        OdtImportRules result = new OdtImportRules();
         result.copyContentNodeFilter = copyContentNodeFilter;
         result.init();
         return result;
     }
 
+    public static class OdtCopyExecutor implements MainCopyExecutor {
+        private final TagPathDescr mainCopyRule;
+
+        public OdtCopyExecutor(TagPathDescr mainCopyRule) {
+            this.mainCopyRule = mainCopyRule;
+        }
+
+        public void copy(AbstractOdfContainer<?> source, Node targetRefInsertAfter) {
+            Node insertAfterParagraph = targetRefInsertAfter;
+            if (!(targetRefInsertAfter instanceof TextPElement)) {
+                insertAfterParagraph = OdfNodes.findAscendantParagraph(insertAfterParagraph, false).get();
+            }
+            Document targetOwnerDocument = targetRefInsertAfter.getOwnerDocument();
+            Node siblingRef = insertAfterParagraph.getNextSibling();
+            Node targetParent = insertAfterParagraph.getParentNode();
+            List<Node> allToCopy = mainCopyRule.findAll(source);
+            allToCopy.forEach(toCopy -> {
+                Node clone = targetOwnerDocument.importNode(toCopy, true);
+                if (siblingRef != null) {
+                    targetParent.insertBefore(clone, siblingRef);
+                } else {
+                    targetParent.appendChild(clone);
+                }
+            });
+        }
+
+
+    }
 
 }

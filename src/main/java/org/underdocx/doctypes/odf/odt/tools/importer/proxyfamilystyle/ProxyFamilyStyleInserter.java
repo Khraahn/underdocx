@@ -26,7 +26,7 @@ package org.underdocx.doctypes.odf.odt.tools.importer.proxyfamilystyle;
 
 import org.odftoolkit.odfdom.dom.element.style.StyleStyleElement;
 import org.underdocx.common.tree.Nodes;
-import org.underdocx.doctypes.odf.odt.OdtContainer;
+import org.underdocx.doctypes.odf.AbstractOdfContainer;
 import org.w3c.dom.Node;
 
 import java.util.Collection;
@@ -34,10 +34,10 @@ import java.util.HashSet;
 
 public class ProxyFamilyStyleInserter {
 
-    private OdtContainer doc;
+    private AbstractOdfContainer<?> doc;
     private HashSet<Node> proxyNodes;
 
-    public ProxyFamilyStyleInserter(OdtContainer doc) {
+    public ProxyFamilyStyleInserter(AbstractOdfContainer<?> doc) {
         this.doc = doc;
     }
 

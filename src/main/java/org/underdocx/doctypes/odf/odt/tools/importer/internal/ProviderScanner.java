@@ -24,10 +24,10 @@ SOFTWARE.
 
 package org.underdocx.doctypes.odf.odt.tools.importer.internal;
 
-import org.underdocx.doctypes.odf.odt.OdtContainer;
-import org.underdocx.doctypes.odf.odt.tools.importer.rules.ProviderDescr;
 import org.underdocx.common.types.Pair;
+import org.underdocx.doctypes.odf.AbstractOdfContainer;
 import org.underdocx.doctypes.odf.odt.tools.importer.rules.AttrDescr;
+import org.underdocx.doctypes.odf.odt.tools.importer.rules.ProviderDescr;
 import org.underdocx.doctypes.odf.odt.tools.importer.rules.Renameable;
 import org.w3c.dom.Node;
 
@@ -41,7 +41,7 @@ public class ProviderScanner implements Renameable {
     private final List<ProviderDescr> providerDescriptions;
     private Map<String, Pair<Node, AttrDescr>> cache = new HashMap<>();
 
-    public ProviderScanner(OdtContainer doc, List<ProviderDescr> providerDescr) {
+    public ProviderScanner(AbstractOdfContainer<?> doc, List<ProviderDescr> providerDescr) {
         this.providerDescriptions = providerDescr;
         providerDescr.forEach(pd ->
                 pd.getPathDescr().findAll(doc).forEach(node -> {

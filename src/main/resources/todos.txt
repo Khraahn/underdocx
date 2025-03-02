@@ -1,8 +1,7 @@
 - Features
-  - Import für ODG, ODP
-  - CLI mit json + doc
   - Numberformatter
   - später ggf. docx unterstützen
+  - jar mit dependency und main für CLI separat bauen(?)
 - Bekannte Probleme:
   - Prüfen ob Vectorgrafiken als Bilder verwendet werden können
 - Optimierungsmöglichkeiten:

@@ -24,12 +24,13 @@ SOFTWARE.
 
 package org.underdocx.doctypes.odf.odt.tools.importer.internal;
 
-import org.underdocx.common.tree.Nodes;
-import org.underdocx.common.tools.Convenience;
-import org.underdocx.doctypes.odf.odt.OdtContainer;
-import org.underdocx.environment.err.Problems;
 import org.odftoolkit.odfdom.dom.element.office.OfficeFontFaceDeclsElement;
 import org.odftoolkit.odfdom.dom.element.style.StyleFontFaceElement;
+import org.underdocx.common.tools.Convenience;
+import org.underdocx.common.tree.Nodes;
+import org.underdocx.doctypes.odf.AbstractOdfContainer;
+import org.underdocx.doctypes.odf.odt.OdtContainer;
+import org.underdocx.environment.err.Problems;
 import org.w3c.dom.Node;
 
 import java.util.HashSet;
@@ -39,7 +40,7 @@ import java.util.Set;
 
 public class FontImporter {
 
-    public static void importFonts(OdtContainer target, OdtContainer src) {
+    public static void importFonts(AbstractOdfContainer<?> target, AbstractOdfContainer<?> src) {
         OfficeFontFaceDeclsElement targetDecl = findDecl(target);
         OfficeFontFaceDeclsElement srcDecl = findDecl(src);
         if (srcDecl == null) {
@@ -77,11 +78,11 @@ public class FontImporter {
         });
     }
 
-    private static OfficeFontFaceDeclsElement createDecl(OdtContainer doc) {
+    private static OfficeFontFaceDeclsElement createDecl(AbstractOdfContainer<?> doc) {
         return Problems.ODF_FRAMEWORK_OPERARTION_EXCEPTION.exec(() -> doc.getDocument().getContentDom().getRootElement().newOfficeFontFaceDeclsElement());
     }
 
-    private static OfficeFontFaceDeclsElement findDecl(OdtContainer doc) {
+    private static OfficeFontFaceDeclsElement findDecl(AbstractOdfContainer<?> doc) {
         Optional<Node> ofd = Nodes.findFirstDescendantNode(doc.getContentDom(), "office:font-face-decls");
         if (ofd.isPresent())
             return (OfficeFontFaceDeclsElement) ofd.get();

@@ -125,9 +125,13 @@ public class Nodes {
     }
 
     public static Optional<Node> findAncestorChild(Node nodeToStart, Node ancestorNode) {
+        return findAncestorChild(nodeToStart, (node -> ancestorNode == node));
+    }
+
+    public static Optional<Node> findAncestorChild(Node nodeToStart, Predicate<Node> ancestorNode) {
         Node currentParent = nodeToStart.getParentNode();
         Node currentChild = nodeToStart;
-        while (currentParent != null && currentParent != ancestorNode) {
+        while (currentParent != null && !ancestorNode.test(currentParent)) {
             currentParent = currentParent.getParentNode();
             currentChild = currentChild.getParentNode();
         }

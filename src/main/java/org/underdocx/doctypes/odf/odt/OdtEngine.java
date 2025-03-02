@@ -47,7 +47,7 @@ public class OdtEngine extends AbstractOdfEngine<OdtContainer, OdfTextDocument> 
         engine.registerCommandHandler(parameters, new CounterCommandHandler<>());
         engine.registerCommandHandler(parameters, new IfCommandHandler<>());
         engine.registerCommandHandler(parameters, new ForRowsCommandHandler<>());
-        engine.registerCommandHandler(parameters, new ImportCommandHander());
+        engine.registerCommandHandler(parameters, new OdtImportCommandHandler());
         engine.registerCommandHandler(imagePlaceholdersProvider, new ImageCommandHandler<>());
         engine.registerCommandHandler(parameters, new ForListCommandHandler<>());
         engine.registerCommandHandler(parameters, new PageStyleCommandHandler<>());
