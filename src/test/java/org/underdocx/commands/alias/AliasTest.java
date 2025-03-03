@@ -26,6 +26,7 @@ package org.underdocx.commands.alias;
 
 import org.junit.jupiter.api.Test;
 import org.underdocx.AbstractOdtTest;
+import org.underdocx.common.types.Pair;
 import org.underdocx.doctypes.odf.odt.OdtContainer;
 import org.underdocx.doctypes.odf.odt.OdtEngine;
 
@@ -37,11 +38,11 @@ public class AliasTest extends AbstractOdtTest {
     @Test
     public void testAlias() {
         String content = """
-                ${Alias key:"myDate", replaceKey:"Date", attributes:{outputFormat:"dd.MM.yyyy"}}
+                ${Alias key:"myDate", replaceKey:"Date", attributes:{outputFormat:"dd.MM.yyyy"}, attrReplacements: {of:"outputFormat", if:"inputFormat", v:"value"} }
                 ${Push key:"varFormat", value:"yyyy/MM/dd"}
                 A: ${myDate}
-                B: ${myDate $outputFormat:"varFormat"}
-                C: ${myDate value:"2024-12-12"}
+                B: ${myDate $of:"varFormat"}
+                C: ${myDate v:"2024-12-12"}
                 D: ${Date}
                 """;
         OdtContainer doc = new OdtContainer(content);
@@ -61,13 +62,13 @@ public class AliasTest extends AbstractOdtTest {
     public void testAliasAPI() {
         String content = """
                 A: ${myDate}
-                B: ${myDate $outputFormat:"varFormat"}
-                C: ${myDate value:"2024-12-12"}
+                B: ${myDate $of:"varFormat"}
+                C: ${myDate v:"2024-12-12"}
                 D: ${Date}
                 """;
         OdtContainer doc = new OdtContainer(content);
         OdtEngine engine = new OdtEngine(doc);
-        engine.registerAlias("myDate", "${Date outputFormat:\"dd.MM.yyyy\"}");
+        engine.registerAlias("myDate", "${Date outputFormat:\"dd.MM.yyyy\"}", new Pair<>("v", "value"), new Pair<>("of", "outputFormat"));
         engine.pushLeafVariable("varFormat", "yyyy/MM/dd");
         engine.run();
         String ddmmyyyy = new SimpleDateFormat("dd.MM.yyyy").format(new Date());

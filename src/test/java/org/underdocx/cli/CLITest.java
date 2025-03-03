@@ -34,8 +34,6 @@ import org.underdocx.doctypes.odf.odt.OdtEngine;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 
 public class CLITest extends AbstractOdtTest {
 
@@ -56,6 +54,10 @@ public class CLITest extends AbstractOdtTest {
                         replaceKey: "Date", 
                         attributes: {
                             outputFormat: "dd.MM.yyyy"
+                        },
+                        attrReplacements: {
+                            of:"outputFormat",
+                            v:"value"
                         }
                     }
                 ]
@@ -65,7 +67,7 @@ public class CLITest extends AbstractOdtTest {
     private static String docContent = """
             ${*title}
             My Name is ${name}
-            Today is ${myDate}
+            Today is ${myDate v:"2022-05-14"}
             My age is ${$age}
             """;
 
@@ -90,11 +92,10 @@ public class CLITest extends AbstractOdtTest {
         Assertions.assertThat(code).isEqualTo(0);
         OdtContainer newDoc = new OdtContainer(targetFile);
         //show(newDoc);
-        String ddmmyyyy = new SimpleDateFormat("dd.MM.yyyy").format(new Date());
         assertNoPlaceholders(newDoc);
         assertContains(newDoc, "Hello World");
         assertContains(newDoc, "My Name is Hans Müller");
-        assertContains(newDoc, "Today is " + ddmmyyyy);
+        assertContains(newDoc, "Today is 14.05.2022");
         assertContains(newDoc, "My age is 49");
     }
 
@@ -105,11 +106,10 @@ public class CLITest extends AbstractOdtTest {
         engine.importData(importData);
         engine.run();
         //show(doc);
-        String ddmmyyyy = new SimpleDateFormat("dd.MM.yyyy").format(new Date());
         assertNoPlaceholders(doc);
         assertContains(doc, "Hello World");
         assertContains(doc, "My Name is Hans Müller");
-        assertContains(doc, "Today is " + ddmmyyyy);
+        assertContains(doc, "Today is 14.05.2022");
         assertContains(doc, "My age is 49");
     }
 

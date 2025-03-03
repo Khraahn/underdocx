@@ -29,6 +29,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.underdocx.common.codec.JsonCodec;
 import org.underdocx.common.doc.DocContainer;
 import org.underdocx.common.tools.Convenience;
+import org.underdocx.common.types.Pair;
 import org.underdocx.enginelayers.baseengine.CommandHandlerResult;
 import org.underdocx.enginelayers.baseengine.SelectedNode;
 import org.underdocx.enginelayers.baseengine.modifiers.deleteplaceholder.DeletePlaceholderModifier;
@@ -52,6 +53,7 @@ public class AliasCommandHandler<C extends DocContainer<D>, D> extends AbstractC
     private static final PredefinedDataPicker<String> aliasKeyPicker = new StringConvertDataPicker().asPredefined("key");
     private static final PredefinedDataPicker<String> replaceKeyPicker = new StringConvertDataPicker().asPredefined("replaceKey");
     private static final PredefinedDataPicker<Set<AttrKeyValue>> attributesPicker = new AliasAttributesPicker().asPredefined("attributes");
+    private static final PredefinedDataPicker<Map<String, String>> attrReplacementsPocker = new AliasAttrReplacePicker().asPredefined("attrReplacements");
 
     public static class AttrKeyValue {
         public String attrKey;
@@ -67,6 +69,7 @@ public class AliasCommandHandler<C extends DocContainer<D>, D> extends AbstractC
         public String aliasKey;
         public String replaceKey;
         public Set<AttrKeyValue> attributes = new HashSet<>();
+        public Map<String, String> attrReplacements = new HashMap<>();
 
         public AliasData(String aliasKey, String replaceKey) {
             this.aliasKey = aliasKey;
@@ -77,6 +80,13 @@ public class AliasCommandHandler<C extends DocContainer<D>, D> extends AbstractC
             this.aliasKey = aliasKey;
             this.attributes = attributes;
             this.replaceKey = replaceKey;
+        }
+
+        public AliasData(String aliasKey, String replaceKey, Set<AttrKeyValue> attributes, Map<String, String> attrReplacements) {
+            this.aliasKey = aliasKey;
+            this.attributes = attributes;
+            this.replaceKey = replaceKey;
+            this.attrReplacements = attrReplacements;
         }
     }
 
@@ -98,6 +108,26 @@ public class AliasCommandHandler<C extends DocContainer<D>, D> extends AbstractC
         }
     }
 
+    private static class AliasAttrReplacePicker extends AbstractConvertDataPicker<Map<String, String>> {
+
+        @Override
+        protected Optional<Map<String, String>> convert(DataNode attrReplacements) {
+            return Convenience.buildOptional(new HashMap<>(), result -> {
+                if (attrReplacements != null && attrReplacements.getType() != DataNode.DataNodeType.MAP) {
+                    result.value = null;
+                    return;
+                }
+                if (attrReplacements != null) {
+                    attrReplacements.getPropertyNames().forEach(propertyName -> {
+                        DataNode value = attrReplacements.getProperty(propertyName);
+                        if (value.getValue() != null && value.getValue() instanceof String) {
+                            result.value.put(propertyName, attrReplacements.getProperty(propertyName).getValue().toString());
+                        }
+                    });
+                }
+            });
+        }
+    }
 
     private final Map<String, AliasData> registry = new HashMap<>();
 
@@ -119,7 +149,16 @@ public class AliasCommandHandler<C extends DocContainer<D>, D> extends AbstractC
         if (!(attributesResult.isResolved() || attributesResult.type == DataPickerResult.ResultType.UNRESOLVED_MISSING_ATTR)) {
             Problems.INVALID_VALUE.fireProperty("attributes");
         }
-        registerAlias(new AliasData(aliasKey, replaceKey, attributesResult.getOptionalValue().orElse(new HashSet<>())));
+        DataPickerResult<Map<String, String>> attrReplacements = attrReplacementsPocker.pickData(dataAccess, placeholderData.getJson());
+        if (!(attrReplacements.isResolved() || attrReplacements.type == DataPickerResult.ResultType.UNRESOLVED_MISSING_ATTR)) {
+            Problems.INVALID_VALUE.fireProperty("attrReplacements");
+        }
+        registerAlias(new AliasData(
+                aliasKey,
+                replaceKey,
+                attributesResult.getOptionalValue().orElse(new HashSet<>()),
+                attrReplacements.getOptionalValue().orElse(new HashMap<>())
+        ));
         return CommandHandlerResult.FACTORY.convert(DeletePlaceholderModifier.modify(selection.getNode()));
     }
 
@@ -127,7 +166,7 @@ public class AliasCommandHandler<C extends DocContainer<D>, D> extends AbstractC
         registry.put(data.aliasKey, data);
     }
 
-    public void registerAlias(String key, ParametersPlaceholderData parametersPlaceholderData) {
+    public void registerAlias(String key, ParametersPlaceholderData parametersPlaceholderData, Pair<String, String>... attrReplacements) {
         AliasData data = new AliasData(key, parametersPlaceholderData.getKey());
         parametersPlaceholderData.getJson().properties().forEach(entry -> {
             String attrKey = entry.getKey();
@@ -137,12 +176,15 @@ public class AliasCommandHandler<C extends DocContainer<D>, D> extends AbstractC
             AttrKeyValue attr = new AttrKeyValue(attrKey, node);
             data.attributes.add(attr);
         });
+        Arrays.stream(attrReplacements).forEach(pair -> {
+            data.attrReplacements.put(pair.left, pair.right);
+        });
         registerAlias(data);
     }
 
-    public void registerAlias(String key, String placeholderToParse) {
+    public void registerAlias(String key, String placeholderToParse, Pair<String, String>... attrReplacements) {
         ParametersPlaceholderData parametersPlaceholderData = Problems.PLACEHOLDER_PARSE_ERROR.exec(() -> ParametersPlaceholderCodec.INSTANCE.parse(placeholderToParse.trim()));
-        registerAlias(key, parametersPlaceholderData);
+        registerAlias(key, parametersPlaceholderData, attrReplacements);
     }
 
     private CommandHandlerResult replaceAllAliasNodes() {
@@ -170,6 +212,16 @@ public class AliasCommandHandler<C extends DocContainer<D>, D> extends AbstractC
         }
         placeholderData.setKey(replaceData.replaceKey);
         JsonNode json = placeholderData.getOrCreateJson();
+        new HashSet<>(json.properties()).forEach(property -> {
+            String propertyName = property.getKey();
+            String purePropertyName = AccessType.getPureName(property.getKey());
+            AccessType accessType = AccessType.getTypeOf(propertyName);
+            String newPurePropertyName = replaceData.attrReplacements.get(purePropertyName);
+            if (newPurePropertyName != null) {
+                ((ObjectNode) json).put(accessType.rename(newPurePropertyName), property.getValue());
+                ((ObjectNode) json).remove(propertyName);
+            }
+        });
         replaceData.attributes.forEach(attribute -> {
             Optional<JsonNode> existingJsonNode = AttributeInterpreterFactory.createJsonAttributeInterpreter(true, AccessType.getPureName(attribute.attrKey)).interpretAttributes(json);
             if (existingJsonNode.isEmpty()) {
@@ -177,6 +229,7 @@ public class AliasCommandHandler<C extends DocContainer<D>, D> extends AbstractC
                 oNode.ifPresent(jsonNode -> ((ObjectNode) json).set(attribute.attrKey, jsonNode));
             }
         });
+
         return true;
     }
 

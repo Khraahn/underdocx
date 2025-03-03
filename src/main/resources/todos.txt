@@ -1,5 +1,11 @@
 - Features
-  - Numberformatter
+  - Calc-Dateien unterstützen
+    - ${For} erweitern mit tablename
+    - ${Number} erweitern: prefix, suffix, multiplier, currency, percentage, templatecell
+    - ${Date} erweitern: templatecell
+    - ${Time} inkl. templatecell
+    - ${Remove type:"table"|"paragraph"|"page" now:true|false}
+  - txt dateien unterstützen
   - später ggf. docx unterstützen
   - jar mit dependency und main für CLI separat bauen(?)
 - Bekannte Probleme:

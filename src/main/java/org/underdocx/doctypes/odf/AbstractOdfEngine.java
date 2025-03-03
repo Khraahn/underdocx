@@ -26,6 +26,7 @@ package org.underdocx.doctypes.odf;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import org.odftoolkit.odfdom.doc.OdfDocument;
+import org.underdocx.common.types.Pair;
 import org.underdocx.common.types.Regex;
 import org.underdocx.doctypes.EngineAPI;
 import org.underdocx.enginelayers.baseengine.CommandHandler;
@@ -75,12 +76,12 @@ public abstract class AbstractOdfEngine<C extends AbstractOdfContainer<D>, D ext
         multiCommandHandler.registerStringReplacement(key, replacement);
     }
 
-    public void registerAlias(String key, String placeholder) {
-        aliasCommandHandler.registerAlias(key, placeholder);
+    public void registerAlias(String key, String placeholder, Pair<String, String>... attrReplacements) {
+        aliasCommandHandler.registerAlias(key, placeholder, attrReplacements);
     }
 
-    public void registerAlias(String key, ParametersPlaceholderData placeholder) {
-        aliasCommandHandler.registerAlias(key, placeholder);
+    public void registerAlias(String key, ParametersPlaceholderData placeholder, Pair<String, String>... attrReplacements) {
+        aliasCommandHandler.registerAlias(key, placeholder, attrReplacements);
     }
 
     public void registerAlias(AliasCommandHandler.AliasData aliasData) {
@@ -213,6 +214,9 @@ public abstract class AbstractOdfEngine<C extends AbstractOdfContainer<D>, D ext
                 AliasCommandHandler.AliasData aliasData = new AliasCommandHandler.AliasData(key, newKey);
                 parseMapWithKeyValueProperties(aliasListItem, "attributes", (propName, propVal) -> {
                     aliasData.attributes.add(new AliasCommandHandler.AttrKeyValue(propName, propVal));
+                });
+                parseMapWithKeyValueProperties(aliasListItem, "attrReplacements", (propName, propVal) -> {
+                    aliasData.attrReplacements.put(propName, parseString(propVal));
                 });
                 registerAlias(aliasData);
             }
