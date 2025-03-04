@@ -22,15 +22,28 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-package org.underdocx.enginelayers.baseengine.modifiers;
+package org.underdocx.enginelayers.baseengine.modifiers.deletenode;
 
 import org.underdocx.common.doc.DocContainer;
-import org.underdocx.enginelayers.baseengine.EngineAccess;
+import org.underdocx.common.tree.Nodes;
+import org.underdocx.enginelayers.baseengine.Selection;
+import org.underdocx.enginelayers.baseengine.modifiers.Modifier;
+import org.underdocx.enginelayers.baseengine.modifiers.ModifierNodeResult;
+import org.w3c.dom.Node;
 
-public interface EngineListener<C extends DocContainer<D>, D> {
+import java.util.Optional;
 
-    void eodReached(C doc, EngineAccess<C, D> engineAccess);
+public class DeleteParentNodeModifier<C extends DocContainer<D>, P, D> implements Modifier<C, P, D, DeleteParentModifierData, ModifierNodeResult> {
+    @Override
+    public ModifierNodeResult modify(Selection<C, P, D> selection, DeleteParentModifierData modifierData) {
+        Node childNode = selection.getNode();
+        return modify(childNode, modifierData);
+    }
 
-    default void rescan(C doc, EngineAccess<C, D> engineAccess) {
+    public static ModifierNodeResult modify(Node childNode, DeleteParentModifierData modifierData) {
+        Optional<Node> node = Nodes.findAscendantNode(childNode, modifierData.getParentFilter());
+        if (node.isPresent()) {
+            return DeleteNodeModifier.modify(node.get());
+        } else return ModifierNodeResult.IGNORED;
     }
 }

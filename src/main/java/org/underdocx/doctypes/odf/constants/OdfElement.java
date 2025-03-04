@@ -28,7 +28,7 @@ import org.w3c.dom.Node;
 
 import java.util.function.Predicate;
 
-public enum OdfElement {
+public enum OdfElement implements Predicate<Node> {
     SPAN(OdfNameSpace.TEXT, "span"),
     PARAGRAPH(OdfNameSpace.TEXT, "p"),
     TAB(OdfNameSpace.TEXT, "tab"),
@@ -50,7 +50,9 @@ public enum OdfElement {
     TABLE_CELL(OdfNameSpace.TABLE, "table-cell"),
 
     LIST(OdfNameSpace.TEXT, "list"),
-    LIST_ITEM(OdfNameSpace.TEXT, "list-item");
+    LIST_ITEM(OdfNameSpace.TEXT, "list-item"),
+
+    PAGE(OdfNameSpace.DRAW, "page");
 
     private final String pureName;
     private final OdfNameSpace ns;
@@ -85,5 +87,10 @@ public enum OdfElement {
     @Override
     public String toString() {
         return qualifiedName;
+    }
+
+    @Override
+    public boolean test(Node node) {
+        return is(node);
     }
 }

@@ -22,15 +22,23 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-package org.underdocx.enginelayers.baseengine.modifiers;
+package org.underdocx.enginelayers.baseengine.modifiers.deletenode;
 
 import org.underdocx.common.doc.DocContainer;
-import org.underdocx.enginelayers.baseengine.EngineAccess;
+import org.underdocx.common.tools.Convenience;
+import org.underdocx.common.tree.Nodes;
+import org.underdocx.enginelayers.baseengine.Selection;
+import org.underdocx.enginelayers.baseengine.modifiers.Modifier;
+import org.underdocx.enginelayers.baseengine.modifiers.ModifierNodeResult;
+import org.w3c.dom.Node;
 
-public interface EngineListener<C extends DocContainer<D>, D> {
+public class DeleteNodeModifier<C extends DocContainer<D>, P, D> implements Modifier<C, P, D, Node, ModifierNodeResult> {
+    @Override
+    public ModifierNodeResult modify(Selection<C, P, D> selection, Node node) {
+        return modify(node);
+    }
 
-    void eodReached(C doc, EngineAccess<C, D> engineAccess);
-
-    default void rescan(C doc, EngineAccess<C, D> engineAccess) {
+    public static ModifierNodeResult modify(Node node) {
+        return Convenience.also(ModifierNodeResult.FACTORY.success(node, true), m -> Nodes.deleteNode(node));
     }
 }

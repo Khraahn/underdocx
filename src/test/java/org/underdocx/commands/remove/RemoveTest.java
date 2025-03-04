@@ -22,15 +22,25 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-package org.underdocx.enginelayers.baseengine.modifiers;
+package org.underdocx.commands.remove;
 
-import org.underdocx.common.doc.DocContainer;
-import org.underdocx.enginelayers.baseengine.EngineAccess;
+import org.junit.jupiter.api.Test;
+import org.underdocx.AbstractOdtTest;
+import org.underdocx.doctypes.odf.odt.OdtContainer;
+import org.underdocx.doctypes.odf.odt.OdtEngine;
 
-public interface EngineListener<C extends DocContainer<D>, D> {
+import java.io.IOException;
 
-    void eodReached(C doc, EngineAccess<C, D> engineAccess);
+public class RemoveTest extends AbstractOdtTest {
 
-    default void rescan(C doc, EngineAccess<C, D> engineAccess) {
+    @Test
+    public void testRemove() throws IOException {
+        OdtContainer doc = new OdtContainer(readResource("RemoveTest.odt"));
+        OdtEngine engine = new OdtEngine(doc);
+        engine.run();
+        //show(doc);
+        assertNoPlaceholders(doc);
+        assertNotContains(doc, "ERROR");
+        assertContains(doc, "Hello");
     }
 }

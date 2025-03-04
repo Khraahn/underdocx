@@ -22,15 +22,32 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-package org.underdocx.enginelayers.baseengine.modifiers;
+package org.underdocx.enginelayers.odtengine.commands.internal.datapicker;
 
-import org.underdocx.common.doc.DocContainer;
-import org.underdocx.enginelayers.baseengine.EngineAccess;
+import org.underdocx.enginelayers.modelengine.model.DataNode;
 
-public interface EngineListener<C extends DocContainer<D>, D> {
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Optional;
 
-    void eodReached(C doc, EngineAccess<C, D> engineAccess);
+/**
+ * A {@link ExtendedDataPicker} that tries to resolve a String from the model or variable registry
+ */
+public class OneOfDataPicker<T> extends AbstractConvertDataPicker<T> {
 
-    default void rescan(C doc, EngineAccess<C, D> engineAccess) {
+    private final HashSet<T> enumSet;
+
+    public OneOfDataPicker(T... allowedStrings) {
+        this.enumSet = new HashSet<>(Arrays.asList(allowedStrings));
+    }
+
+    @Override
+    protected Optional<T> convert(DataNode node) {
+        Object value = node.getValue();
+        if (enumSet.contains(value)) {
+            return Optional.of((T) value);
+        } else {
+            return Optional.empty();
+        }
     }
 }

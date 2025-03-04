@@ -41,7 +41,7 @@ import org.w3c.dom.Node;
 
 import java.util.Optional;
 
-public class UnderdocxCommandHandler extends AbstractTextualCommandHandler<OdtContainer, OdfTextDocument> implements EngineListener<OdtContainer, OdfTextDocument> {
+public class UnderdocxCommandHandler extends AbstractTextualCommandHandler<OdtContainer, OdfTextDocument> {
 
     private final static Regex KEYS = new Regex("underdocx|Underdocx");
     private final static Resource resource = new Resource.ClassResource(UnderdocxCommandHandler.class, "underdocx.odt");
@@ -52,7 +52,7 @@ public class UnderdocxCommandHandler extends AbstractTextualCommandHandler<OdtCo
 
     @Override
     public void init(OdtContainer container, EngineAccess engineAccess) {
-        engineAccess.addListener(this);
+        engineAccess.addListener(new Listener());
     }
 
     @Override
@@ -60,14 +60,17 @@ public class UnderdocxCommandHandler extends AbstractTextualCommandHandler<OdtCo
         return CommandHandlerResult.IGNORED;
     }
 
-    @Override
-    public void eodReached(OdtContainer doc, EngineAccess<OdtContainer, OdfTextDocument> engineAccess) {
-        engineAccess.lookBack(node -> {
-            Optional<ParametersPlaceholderData> placeholderData = AbstractTextualCommandHandler.examineNode(node);
-            return placeholderData.filter(parametersPlaceholderData -> KEYS.matches(parametersPlaceholderData.getKey())).isPresent();
-        }).forEach(node -> {
-            modify(doc, node);
-        });
+
+    private class Listener implements EngineListener<OdtContainer, OdfTextDocument> {
+        @Override
+        public void eodReached(OdtContainer doc, EngineAccess<OdtContainer, OdfTextDocument> engineAccess) {
+            engineAccess.lookBack(node -> {
+                Optional<ParametersPlaceholderData> placeholderData = AbstractTextualCommandHandler.examineNode(node);
+                return placeholderData.filter(parametersPlaceholderData -> KEYS.matches(parametersPlaceholderData.getKey())).isPresent();
+            }).forEach(node -> {
+                modify(doc, node);
+            });
+        }
     }
 
     private void modify(OdtContainer doc, Node node) {

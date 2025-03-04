@@ -179,6 +179,11 @@ public class BaseEngine<C extends DocContainer<D>, D> {
             List<Node> visited = new ArrayList<>();
             rescan = false;
             EngineAccess<C, D> engineAccess = new EngineAccessImpl<>(listeners, () -> rescan = true, () -> placeholderEnumerator, () -> visited);
+            if (initialized) {
+                listeners.forEach(listener -> {
+                    listener.rescan(doc, engineAccess);
+                });
+            }
             if (!initialized) {
                 registry.values().forEach(handler -> handler.init(doc, engineAccess));
                 initialized = true;

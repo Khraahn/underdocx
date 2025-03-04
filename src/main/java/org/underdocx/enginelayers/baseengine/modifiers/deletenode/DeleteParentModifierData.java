@@ -22,15 +22,33 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-package org.underdocx.enginelayers.baseengine.modifiers;
+package org.underdocx.enginelayers.baseengine.modifiers.deletenode;
 
-import org.underdocx.common.doc.DocContainer;
-import org.underdocx.enginelayers.baseengine.EngineAccess;
+import org.underdocx.doctypes.odf.constants.OdfElement;
+import org.w3c.dom.Node;
 
-public interface EngineListener<C extends DocContainer<D>, D> {
+import java.util.function.Predicate;
 
-    void eodReached(C doc, EngineAccess<C, D> engineAccess);
+public interface DeleteParentModifierData {
 
-    default void rescan(C doc, EngineAccess<C, D> engineAccess) {
+    Predicate<Node> ODF_TABLE = OdfElement.TABLE;
+    Predicate<Node> ODF_PARAGRAPH = OdfElement.PARAGRAPH;
+    Predicate<Node> ODF_PAGE = OdfElement.PAGE;
+
+
+    Predicate<Node> getParentFilter();
+
+    class Simple implements DeleteParentModifierData {
+
+        private final Predicate<Node> filter;
+
+        public Simple(Predicate<Node> filter) {
+            this.filter = filter;
+        }
+
+        @Override
+        public Predicate<Node> getParentFilter() {
+            return filter;
+        }
     }
 }
