@@ -1,10 +1,11 @@
 - Features
   - Calc-Dateien unterstützen
-    - ${For} erweitern mit tablename
-    - ${Number} erweitern: prefix, suffix, multiplier
-    - ${Number} erweitern: currency, percentage, templatecell
-    - ${Date} erweitern: templatecell
-    - ${Time} inkl. templatecell
+    1 ${For} erweitern mit tablename
+    2 ${Number} erweitern: prefix, suffix, multiplier
+    3 ${Time} analog zu Date entwickeln
+    4 ${Number} erweitern: currency, percentage, templatecell
+    5 ${Date} erweitern: templatecell
+    6 ${Time} inkl. templatecell
   - txt dateien unterstützen
   - später ggf. docx unterstützen
   - jar mit dependency und main für CLI separat bauen(?)
