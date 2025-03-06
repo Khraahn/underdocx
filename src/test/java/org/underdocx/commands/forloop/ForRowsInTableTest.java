@@ -34,8 +34,21 @@ import java.io.IOException;
 public class ForRowsInTableTest extends AbstractOdtTest {
 
     @Test
-    public void testTableRows() throws IOException {
+    public void testTableRowsParentTable() throws IOException {
         OdtContainer doc = new OdtContainer(getInputStream("TableLoopInTable.odt"));
+        OdtEngine engine = new OdtEngine(doc);
+        engine.run();
+        //show(doc);
+        assertNoPlaceholders(doc);
+        assertOrder(doc, "1", "Hans", "Müller");
+        assertOrder(doc, "2", "Johanna", "Sommer");
+        assertOrder(doc, "3", "Helene", "Fischer");
+        assertOrder(doc, "1", "2", "3");
+    }
+
+    @Test
+    public void testTableRowsTableName() throws IOException {
+        OdtContainer doc = new OdtContainer(getInputStream("TableLoopTableName.odt"));
         OdtEngine engine = new OdtEngine(doc);
         engine.run();
         //show(doc);

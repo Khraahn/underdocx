@@ -43,7 +43,9 @@ public enum OdfAttribute {
     PARAGRAPH_PROPERTIES_BREAK_AFTER(OdfNameSpace.FO, "break-after"),
     PARAGRAPH_PROPERTIES_PAGE_NUMBER(OdfNameSpace.STYLE, "page-number"),
 
-    TEXT_PROPERTIES_TEXT_DISPLAY(OdfNameSpace.TEXT, "display");
+    TEXT_PROPERTIES_TEXT_DISPLAY(OdfNameSpace.TEXT, "display"),
+
+    TANLE_NAME(OdfNameSpace.TABLE, "name");
 
     private final String pureName;
     private final OdfNameSpace ns;

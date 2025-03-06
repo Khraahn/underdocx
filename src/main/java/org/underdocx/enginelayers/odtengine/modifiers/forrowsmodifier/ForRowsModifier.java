@@ -34,6 +34,7 @@ import org.underdocx.common.tree.TreeWalker;
 import org.underdocx.common.types.Pair;
 import org.underdocx.common.types.Range;
 import org.underdocx.doctypes.odf.constants.OdfElement;
+import org.underdocx.doctypes.odf.tools.OdfNodes;
 import org.underdocx.enginelayers.baseengine.modifiers.ModifierNodeResult;
 import org.underdocx.enginelayers.baseengine.modifiers.deleteplaceholder.DeletePlaceholderModifier;
 import org.underdocx.enginelayers.baseengine.modifiers.deleteplaceholder.DeletePlaceholderModifierData;
@@ -159,6 +160,8 @@ public class ForRowsModifier<C extends DocContainer<D>, D> extends AbstractAreaM
     private Optional<Node> findTable() {
         if (modifierData.isInTable()) {
             return Nodes.findAscendantNode(selection.getNode(), OdfElement.TABLE::is);
+        } else if (modifierData.getTableName() != null) {
+            return OdfNodes.findTable(selection.getNode().getOwnerDocument(), modifierData.getTableName());
         } else {
             return Convenience.buildOptional(result -> {
                 for (Node node : getAreaNodesIterator()) {

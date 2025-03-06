@@ -41,16 +41,19 @@ import java.util.Optional;
 public class ForRowsCommandHandler<C extends DocContainer<D>, D> extends AbstractForCommandHandler<C, D> {
 
     public static String ROWGROUPSIZE_ATTR = "rowgroupsize";
-    public static final String INLIST_ATTR = "findParentTable";
+    public static final String INLIST_ATTR = "parenttable";
+    public static final String TABLE_NAME = "tablename";
 
-    private static PredefinedAttributesInterpreter<Optional<List<Integer>>> rowsListInterpreter =
+    private static final PredefinedAttributesInterpreter<Optional<List<Integer>>> rowsListInterpreter =
             AttributeInterpreterFactory.createIntListAttributeInterpreter(TABLEROW_ATTR);
-    private static PredefinedAttributesInterpreter<Optional<Integer>> rowsIntInterpreter =
+    private static final PredefinedAttributesInterpreter<Optional<Integer>> rowsIntInterpreter =
             AttributeInterpreterFactory.createIntegerAttributeInterpreter(TABLEROW_ATTR);
-    private static PredefinedAttributesInterpreter<Optional<Integer>> groupSizeInterpreter =
+    private static final PredefinedAttributesInterpreter<Optional<Integer>> groupSizeInterpreter =
             AttributeInterpreterFactory.createIntegerAttributeInterpreter(ROWGROUPSIZE_ATTR);
-    protected static final PredefinedAttributesInterpreter<Optional<Boolean>> isInTableAttr =
+    private static final PredefinedAttributesInterpreter<Optional<Boolean>> isInTableAttr =
             AttributeInterpreterFactory.createBooleanAttributeInterpreter(INLIST_ATTR);
+    private static final PredefinedAttributesInterpreter<Optional<String>> tableNameAttr =
+            AttributeInterpreterFactory.createStringAttributeInterpreter(TABLE_NAME);
 
 
     @Override
@@ -64,8 +67,9 @@ public class ForRowsCommandHandler<C extends DocContainer<D>, D> extends Abstrac
         }
         int rowGroupSize = groupSizeInterpreter.interpretAttributes(attributes).orElse(1);
         boolean isInTable = isInTableAttr.interpretAttributes(attributes).orElse(false);
+        String tableName = tableNameAttr.interpretAttributes(attributes).orElse(null);
         ForRowsModifierData.DefaultForRowsModifierData modifierData
-                = new ForRowsModifierData.DefaultForRowsModifierData(forModifierData, range, rowGroupSize, isInTable);
+                = new ForRowsModifierData.DefaultForRowsModifierData(forModifierData, range, rowGroupSize, isInTable, tableName);
         return new ForRowsModifier<C, D>().modify(selection, modifierData);
     }
 
