@@ -34,26 +34,58 @@ import org.underdocx.enginelayers.odtengine.commands.internal.datapicker.StringC
 import org.underdocx.enginelayers.parameterengine.ParametersPlaceholderData;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Locale;
 
 public class DateCommandHandler<C extends DocContainer<D>, D> extends AbstractTextualCommandHandler<C, D> {
+
+    private static String DEFAULT_FORMAT_DATE = "yyyy-MM-dd";
+    private static String DEFAULT_IN_FORMAT_TIME = "yyyy-MM-dd HH:mm:ss";
+    private static String DEFAULT_OUT_FORMAT_TIME = "HH:mm:ss";
 
     private static PredefinedDataPicker<String> valueDataPicker = new StringConvertDataPicker().asPredefined("value");
     private static PredefinedDataPicker<String> outputFormatDataPicker = new StringConvertDataPicker().asPredefined("outputFormat");
     private static PredefinedDataPicker<String> inputFormatDataPicker = new StringConvertDataPicker().asPredefined("inputFormat");
+    private static final PredefinedDataPicker<String> langPicker = new StringConvertDataPicker().asPredefined("lang");
 
     public DateCommandHandler() {
-        super(new Regex("Date"));
+        super(new Regex("Date|Time"));
+    }
+
+    private String getFormat(boolean isTime, boolean isIn, PredefinedDataPicker<String> picker) {
+        if (isTime) {
+            if (isIn) {
+                return picker.pickData(dataAccess, placeholderData.getJson()).getOptionalValue().orElse(DEFAULT_IN_FORMAT_TIME);
+            } else {
+                return picker.pickData(dataAccess, placeholderData.getJson()).getOptionalValue().orElse(DEFAULT_OUT_FORMAT_TIME);
+            }
+        }
+        return picker.pickData(dataAccess, placeholderData.getJson()).getOptionalValue().orElse(DEFAULT_FORMAT_DATE);
     }
 
     @Override
     protected CommandHandlerResult tryExecuteTextualCommand() {
-        String inFormat = inputFormatDataPicker.pickData(dataAccess, placeholderData.getJson()).getOptionalValue().orElse("yyyy-MM-dd");
-        String outFormat = outputFormatDataPicker.pickData(dataAccess, placeholderData.getJson()).getOptionalValue().orElse("yyyy-MM-dd");
+        boolean isTime = placeholderData.getKey().equals("Time");
+        String inFormat = getFormat(isTime, true, inputFormatDataPicker);
+        String outFormat = getFormat(isTime, false, outputFormatDataPicker);
         String dateStr = valueDataPicker.pickData(dataAccess, placeholderData.getJson()).getOptionalValue().orElse(null);
-        LocalDate date = dateStr == null ? LocalDate.now() : LocalDate.parse(dateStr, DateTimeFormatter.ofPattern(inFormat));
-        String result = date.format(DateTimeFormatter.ofPattern(outFormat));
-        new ReplaceWithTextModifier<C, ParametersPlaceholderData, D>().modify(selection, result);
+        String langCode = langPicker.pickData(dataAccess, placeholderData.getJson()).getOptionalValue().orElse(null);
+        DateTimeFormatter outFormatter = DateTimeFormatter.ofPattern(outFormat);
+        DateTimeFormatter inFormatter = DateTimeFormatter.ofPattern(inFormat);
+        if (langCode != null) {
+            outFormatter = outFormatter.withLocale(Locale.forLanguageTag(langCode));
+            inFormatter = inFormatter.withLocale(Locale.forLanguageTag(langCode));
+        }
+        String replaceString;
+        if (!isTime) {
+            LocalDate date = dateStr == null ? LocalDate.now() : LocalDate.parse(dateStr, inFormatter);
+            replaceString = date.format(outFormatter);
+        } else {
+            LocalDateTime time = dateStr == null ? LocalDateTime.now() : LocalDateTime.parse(dateStr, inFormatter);
+            replaceString = time.format(outFormatter);
+        }
+        new ReplaceWithTextModifier<C, ParametersPlaceholderData, D>().modify(selection, replaceString);
         return CommandHandlerResult.EXECUTED_PROCEED;
     }
 }
