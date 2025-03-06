@@ -30,6 +30,7 @@ import org.underdocx.common.types.Resource;
 import org.underdocx.doctypes.EngineAPI;
 import org.underdocx.doctypes.odf.odg.OdgEngineProvider;
 import org.underdocx.doctypes.odf.odp.OdpEngineProvider;
+import org.underdocx.doctypes.odf.ods.OdsEngineProvider;
 import org.underdocx.doctypes.odf.odt.OdtEngineProvider;
 import org.underdocx.environment.err.Problem;
 
@@ -50,7 +51,7 @@ public class UnderdocxEngineRunner {
         predefinedProviders.put("odt", new OdtEngineProvider());
         predefinedProviders.put("odg", new OdgEngineProvider());
         predefinedProviders.put("odp", new OdpEngineProvider());
-
+        predefinedProviders.put("ods", new OdsEngineProvider());
     }
 
     public static void main(String[] args) {

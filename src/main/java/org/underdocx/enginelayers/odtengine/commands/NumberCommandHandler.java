@@ -30,6 +30,7 @@ import org.underdocx.enginelayers.baseengine.CommandHandlerResult;
 import org.underdocx.enginelayers.modelengine.model.DataNode;
 import org.underdocx.enginelayers.odtengine.commands.internal.AbstractTextualCommandHandler;
 import org.underdocx.enginelayers.odtengine.commands.internal.datapicker.AbstractConvertDataPicker;
+import org.underdocx.enginelayers.odtengine.commands.internal.datapicker.NumberDataPicker;
 import org.underdocx.enginelayers.odtengine.commands.internal.datapicker.PredefinedDataPicker;
 import org.underdocx.enginelayers.odtengine.commands.internal.datapicker.StringConvertDataPicker;
 import org.underdocx.enginelayers.odtengine.commands.internal.modifiermodule.stringoutput.StringOutputCommandModule;
@@ -46,6 +47,10 @@ public class NumberCommandHandler<C extends DocContainer<D>, D> extends Abstract
 
     private static final PredefinedDataPicker<String> formatPicker = new StringConvertDataPicker().asPredefined("format");
     private static final PredefinedDataPicker<String> langPicker = new StringConvertDataPicker().asPredefined("lang");
+
+    private static final PredefinedDataPicker<String> prefixPicker = new StringConvertDataPicker().asPredefined("prefix");
+    private static final PredefinedDataPicker<String> suffixPicker = new StringConvertDataPicker().asPredefined("suffix");
+    private static final PredefinedDataPicker<Number> multiplierPicker = new NumberDataPicker().asPredefined("multiplier");
 
     public NumberCommandHandler() {
         super(KEY);
@@ -69,6 +74,9 @@ public class NumberCommandHandler<C extends DocContainer<D>, D> extends Abstract
             return Convenience.buildOptional(result -> {
                 String format = formatPicker.pickData(dataAccess, placeholderData.getJson()).getOptionalValue().orElse(null);
                 String langCode = langPicker.pickData(dataAccess, placeholderData.getJson()).getOptionalValue().orElse(null);
+                Number multiplier = multiplierPicker.pickData(dataAccess, placeholderData.getJson()).getOptionalValue().orElse(null);
+                String prefix = prefixPicker.pickData(dataAccess, placeholderData.getJson()).getOptionalValue().orElse("");
+                String suffix = suffixPicker.pickData(dataAccess, placeholderData.getJson()).getOptionalValue().orElse("");
                 Double doubleValue = null;
                 Long longValue = null;
                 Object foundValue = node.getValue();
@@ -82,13 +90,26 @@ public class NumberCommandHandler<C extends DocContainer<D>, D> extends Abstract
                     return;
                 }
 
+                if (multiplier != null) {
+                    if (doubleValue != null) {
+                        doubleValue = doubleValue.doubleValue() * multiplier.doubleValue();
+                    } else {
+                        if (multiplier instanceof Double) {
+                            doubleValue = longValue.doubleValue() * multiplier.doubleValue();
+                            longValue = null;
+                        } else {
+                            longValue = longValue.longValue() * multiplier.longValue();
+                        }
+                    }
+                }
+
                 String formatToUse = format == null ? "#,###.##" : format;
                 Locale local = langCode == null ? Locale.getDefault() : Locale.forLanguageTag(langCode);
                 DecimalFormat df = new DecimalFormat(formatToUse, new DecimalFormatSymbols(local));
                 if (longValue != null) {
-                    result.value = df.format(longValue);
+                    result.value = prefix + df.format(longValue) + suffix;
                 } else {
-                    result.value = df.format(doubleValue);
+                    result.value = prefix + df.format(doubleValue) + suffix;
                 }
             });
         }

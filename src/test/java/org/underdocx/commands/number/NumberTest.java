@@ -46,4 +46,19 @@ public class NumberTest extends AbstractOdtTest {
         assertNoPlaceholders(doc);
         assertOrder(doc, "A: 1.234.567,89", "B: 1,234,567.89", "C: 1.234.567,9", "D: 001234567.890");
     }
+
+    @Test
+    public void testNumberPrefixSuffixMultiplier() {
+        String content = """
+                A: ${Number value:1234567.89, format:"#.00", lang:"de-DE", prefix:"!!", suffix:"€", multiplier:-10}
+                B: ${Number value:1234567, format:"#", lang:"de-DE", prefix:"!!", suffix:"€", multiplier:-10}
+                C: ${Number value:1234567, format:"#.00", lang:"de-DE", prefix:"!!", suffix:"€", multiplier:10.0}
+                """;
+        OdtContainer doc = new OdtContainer(content);
+        OdtEngine engine = new OdtEngine(doc);
+        engine.run();
+        show(doc);
+        assertNoPlaceholders(doc);
+        assertOrder(doc, "A: !!-12345678,90€", "B: !!-12345670€", "C: !!12345670.00€");
+    }
 }

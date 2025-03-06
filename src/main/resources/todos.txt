@@ -1,14 +1,15 @@
 - Features
   - Calc-Dateien unterstützen
-    1 ${For} erweitern mit tablename
-    2 ${Number} erweitern: prefix, suffix, multiplier
-    4 ${Number} erweitern: currency, percentage, templatecell
-    5 ${Date} erweitern: templatecell
-    6 ${Time} inkl. templatecell
+    2. Table erweitern bzgl. table:table-row table:number-rows-repeated="2"
+    4. TableCellSelector schreiben
+    5. ${Number} erweitern: currency, percentage, templatecell
+    6. ${Date} erweitern: templatecell
+    7. ${Time} inkl. templatecell
   - txt dateien unterstützen
   - später ggf. docx unterstützen
   - jar mit dependency und main für CLI separat bauen(?)
 - Bekannte Probleme:
   - Prüfen ob Vectorgrafiken als Bilder verwendet werden können
 - Optimierungsmöglichkeiten:
+  - Für ODS Dateien anderen ElementByElement (basierend auf table)
   - Cache für Paar-Knoten (For-EndFor, If-EndIf) // reduziert das Scannen zukünftiger Knoten)
