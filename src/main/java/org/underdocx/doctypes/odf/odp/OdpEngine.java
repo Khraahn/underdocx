@@ -44,6 +44,7 @@ public class OdpEngine extends AbstractOdfEngine<OdpContainer, OdfPresentationDo
         engine.registerCommandHandler(parameters, new VariableCommandHandler<>());
         engine.registerCommandHandler(parameters, new ForCommandHandler<>());
         engine.registerCommandHandler(parameters, new DateCommandHandler<>());
+        engine.registerCommandHandler(parameters, new TimeCommandHandler<>());
         engine.registerCommandHandler(parameters, new CounterCommandHandler<>());
         engine.registerCommandHandler(parameters, new IfCommandHandler<>());
         engine.registerCommandHandler(parameters, new ForRowsCommandHandler<>());

@@ -2,7 +2,6 @@
   - Calc-Dateien unterstützen
     1 ${For} erweitern mit tablename
     2 ${Number} erweitern: prefix, suffix, multiplier
-    3 ${Time} analog zu Date entwickeln
     4 ${Number} erweitern: currency, percentage, templatecell
     5 ${Date} erweitern: templatecell
     6 ${Time} inkl. templatecell

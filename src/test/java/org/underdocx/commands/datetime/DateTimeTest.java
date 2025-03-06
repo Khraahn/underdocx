@@ -68,7 +68,7 @@ public class DateTimeTest extends AbstractOdtTest {
         OdtContainer doc = new OdtContainer(content);
         OdtEngine engine = new OdtEngine(doc);
         engine.run();
-        show(doc);
+        //show(doc);
         String defTime = DateTimeFormatter.ofPattern("HH:mm:ss").format(LocalDateTime.now());
         String oTime = DateTimeFormatter.ofPattern("HH.mm.ss").format(LocalDateTime.now());
         assertNoPlaceholders(doc);
