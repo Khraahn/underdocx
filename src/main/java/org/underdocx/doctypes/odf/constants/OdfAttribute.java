@@ -45,7 +45,9 @@ public enum OdfAttribute {
 
     TEXT_PROPERTIES_TEXT_DISPLAY(OdfNameSpace.TEXT, "display"),
 
-    TANLE_NAME(OdfNameSpace.TABLE, "name");
+    TANLE_NAME(OdfNameSpace.TABLE, "name"),
+
+    TABLE_ROW_REPEAT(OdfNameSpace.TABLE, "number-rows-repeated");
 
     private final String pureName;
     private final OdfNameSpace ns;
@@ -84,7 +86,8 @@ public enum OdfAttribute {
     }
 
     public void removeAttributeNS(Element element) {
-        element.removeAttributeNS(getNs().getNs(), getPureName());
+        // element.removeAttributeNS(getNs().getNs(), getPureName());
+        element.removeAttribute(qualifiedName);
     }
 
     @Override

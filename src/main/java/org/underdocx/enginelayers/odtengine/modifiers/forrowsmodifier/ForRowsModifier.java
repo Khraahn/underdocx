@@ -26,6 +26,7 @@ package org.underdocx.enginelayers.odtengine.modifiers.forrowsmodifier;
 
 import org.odftoolkit.odfdom.dom.element.table.TableTableCellElement;
 import org.odftoolkit.odfdom.dom.element.text.TextPElement;
+import org.underdocx.common.codec.IntCodec;
 import org.underdocx.common.doc.DocContainer;
 import org.underdocx.common.placeholder.TextualPlaceholderToolkit;
 import org.underdocx.common.tools.Convenience;
@@ -33,6 +34,7 @@ import org.underdocx.common.tree.Nodes;
 import org.underdocx.common.tree.TreeWalker;
 import org.underdocx.common.types.Pair;
 import org.underdocx.common.types.Range;
+import org.underdocx.doctypes.odf.constants.OdfAttribute;
 import org.underdocx.doctypes.odf.constants.OdfElement;
 import org.underdocx.doctypes.odf.tools.OdfNodes;
 import org.underdocx.enginelayers.baseengine.modifiers.ModifierNodeResult;
@@ -41,11 +43,10 @@ import org.underdocx.enginelayers.baseengine.modifiers.deleteplaceholder.DeleteP
 import org.underdocx.enginelayers.odtengine.modifiers.internal.AbstractAreaModifier;
 import org.underdocx.enginelayers.parameterengine.ParametersPlaceholderData;
 import org.underdocx.environment.err.Problems;
+import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 public class ForRowsModifier<C extends DocContainer<D>, D> extends AbstractAreaModifier<C, ParametersPlaceholderData, D, ForRowsModifierData, ModifierNodeResult> {
     Node resultNode = null;
@@ -136,8 +137,42 @@ public class ForRowsModifier<C extends DocContainer<D>, D> extends AbstractAreaM
         return Problems.CANT_FIND_DOM_ELEMENT.notNullOrEmpty(getCloneableRows(table), "row");
     }
 
+
+    private void unRepeatRows(Node table, Range range) {
+        Map<Node, Integer> rowsToUnrepeat = new HashMap<>();
+        IntCodec intParser = new IntCodec();
+
+        int maxRows = range.getMax();
+        int count = 0;
+        TreeWalker treeWalker = new TreeWalker(table, table);
+        TreeWalker.VisitState currentState = treeWalker.next();
+        while (currentState != null && count <= maxRows) {
+            if (currentState.isBeginVisit() && OdfElement.TABLE_ROW.is(currentState.getNode())) {
+                String repeatStr = OdfAttribute.TABLE_ROW_REPEAT.getAttributeNS(((Element) currentState.getNode()));
+                int repeat = intParser.tryParse(repeatStr).orElse(1);
+                if (repeat > 1 && range.contains(count) || range.contains(count + repeat)) {
+                    rowsToUnrepeat.put(currentState.getNode(), repeat);
+                }
+                count = count + repeat;
+                currentState = treeWalker.nextSkipChildren();
+            } else {
+                currentState = treeWalker.next();
+            }
+        }
+
+        rowsToUnrepeat.forEach((node, repeats) -> {
+            OdfAttribute.TABLE_ROW_REPEAT.removeAttributeNS((Element) node);
+            for (int i = 0; i < repeats - 1; i++) {
+                Node clone = node.cloneNode(true);
+                node.getParentNode().insertBefore(clone, node);
+            }
+        });
+
+    }
+
     private List<Node> getCloneableRows(Node table) {
         Range repeatRows = modifierData.getRepeatRows();
+        unRepeatRows(table, repeatRows);
         return Convenience.buildList(result -> {
             int maxRows = repeatRows.getMax();
             int count = 0;

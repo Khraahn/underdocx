@@ -57,7 +57,7 @@ public class NumberTest extends AbstractOdtTest {
         OdtContainer doc = new OdtContainer(content);
         OdtEngine engine = new OdtEngine(doc);
         engine.run();
-        show(doc);
+        //show(doc);
         assertNoPlaceholders(doc);
         assertOrder(doc, "A: !!-12345678,90€", "B: !!-12345670€", "C: !!12345670.00€");
     }
