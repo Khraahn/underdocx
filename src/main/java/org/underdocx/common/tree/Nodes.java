@@ -44,6 +44,7 @@ public class Nodes {
 
      */
 
+    @Deprecated
     public static List<Node> toList(NodeList nodeList) {
         return Convenience.buildList(result -> {
             for (int i = 0; i < nodeList.getLength(); i++) {
@@ -52,10 +53,59 @@ public class Nodes {
         });
     }
 
+    public static Enumerator<Node> getChildren(Node node) {
+        return new Enumerator<>() {
+            private NodeList nodeList = node.getChildNodes();
+            private int counter = 0;
+
+            @Override
+            public boolean hasNext() {
+                return nodeList.getLength() > counter;
+            }
+
+            @Override
+            public Node next() {
+                return nodeList.item(counter++);
+            }
+        };
+    }
+
+    public static Enumerator<Node> getChildren(Node node, Predicate<Node> filter) {
+
+        return new Enumerator<>() {
+            private Enumerator<Node> inner = getChildren(node);
+            private Node next = findNext();
+
+            private Node findNext() {
+                while (inner.hasNext()) {
+                    Node toTest = inner.next();
+                    if (filter.test(toTest)) {
+                        return toTest;
+                    }
+                }
+                return null;
+            }
+
+            @Override
+            public boolean hasNext() {
+                return next != null;
+            }
+
+            @Override
+            public Node next() {
+                Node result = next;
+                next = findNext();
+                return result;
+            }
+        };
+    }
+
+    @Deprecated
     public static List<Node> children(Node node) {
         return toList(node.getChildNodes());
     }
 
+    @Deprecated
     public static Map<String, String> attributes(Node node) {
         NamedNodeMap mapToConvert = node.getAttributes();
         if (mapToConvert == null) return new HashMap<>();
@@ -65,6 +115,7 @@ public class Nodes {
         }
         return result;
     }
+
 
     /*
 
@@ -89,7 +140,7 @@ public class Nodes {
                 found = true;
             }
             if (!found || (found && !skipChildrenOfFoundNodes)) {
-                children(start).forEach(element -> result.addAll(findDescendantNodes(element, filter, skipChildrenOfFoundNodes)));
+                getChildren(start).forEach(element -> result.addAll(findDescendantNodes(element, filter, skipChildrenOfFoundNodes)));
             }
         });
     }

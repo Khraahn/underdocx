@@ -25,6 +25,7 @@ SOFTWARE.
 package org.underdocx.enginelayers.odtengine.commands.internal.modifiermodule.stringoutput;
 
 import org.underdocx.common.doc.DocContainer;
+import org.underdocx.common.types.Pair;
 import org.underdocx.enginelayers.baseengine.CommandHandlerResult;
 import org.underdocx.enginelayers.baseengine.modifiers.stringmodifier.MarkupTextModifier;
 import org.underdocx.enginelayers.baseengine.modifiers.stringmodifier.ReplaceWithTextModifier;
@@ -36,7 +37,7 @@ import org.underdocx.enginelayers.odtengine.commands.internal.modifiermodule.mis
 import org.underdocx.enginelayers.odtengine.commands.internal.modifiermodule.missingdata.MissingDataCommandModuleResult;
 import org.underdocx.enginelayers.parameterengine.ParametersPlaceholderData;
 
-public class StringOutputCommandModule<C extends DocContainer<D>, D> extends AbstractCommandModule<C, ParametersPlaceholderData, D, CommandHandlerResult, MissingDataCommandModuleConfig<String>> {
+public class StringOutputCommandModule<C extends DocContainer<D>, D> extends AbstractCommandModule<C, ParametersPlaceholderData, D, Pair<CommandHandlerResult, MissingDataCommandModuleResult.MissingDataCommandModuleResultType>, MissingDataCommandModuleConfig<String>> {
     public static final String RESCAN = "rescan";
     public static final String MARKUP = "markup";
     private static PredefinedDataPicker<Boolean> rescanDataPicker = new BooleanDataPicker().asPredefined(RESCAN);
@@ -47,7 +48,7 @@ public class StringOutputCommandModule<C extends DocContainer<D>, D> extends Abs
     }
 
     @Override
-    protected CommandHandlerResult execute() {
+    protected Pair<CommandHandlerResult, MissingDataCommandModuleResult.MissingDataCommandModuleResultType> execute() {
         boolean shouldRescan = rescanDataPicker.pickData(selection.getDataAccess().get(), selection.getPlaceholderData().getJson()).getOptionalValue().orElse(false);
         boolean useMarkup = markupDataPicker.pickData(selection.getDataAccess().get(), selection.getPlaceholderData().getJson()).getOptionalValue().orElse(false);
         MissingDataCommandModule<C, D, String> module = new MissingDataCommandModule<>(configuration);
@@ -59,10 +60,12 @@ public class StringOutputCommandModule<C extends DocContainer<D>, D> extends Abs
                 } else {
                     new ReplaceWithTextModifier<C, ParametersPlaceholderData, D>().modify(selection, moduleResult.value);
                 }
-                yield shouldRescan ? CommandHandlerResult.FACTORY.startAtNode(selection.getNode()) : CommandHandlerResult.EXECUTED_PROCEED;
+                yield shouldRescan
+                        ? new Pair<>(CommandHandlerResult.FACTORY.startAtNode(selection.getNode()), moduleResult.resultType)
+                        : new Pair<>(CommandHandlerResult.EXECUTED_PROCEED, moduleResult.resultType);
             }
-            case STRATEGY_EXECUTED -> CommandHandlerResult.EXECUTED_PROCEED;
-            case SKIP -> CommandHandlerResult.IGNORED;
+            case STRATEGY_EXECUTED -> new Pair<>(CommandHandlerResult.EXECUTED_PROCEED, moduleResult.resultType);
+            case SKIP -> new Pair<>(CommandHandlerResult.IGNORED, moduleResult.resultType);
         };
     }
 

@@ -31,6 +31,8 @@ import org.underdocx.enginelayers.baseengine.modifiers.stringmodifier.ReplaceWit
 import org.underdocx.enginelayers.odtengine.commands.internal.AbstractTextualCommandHandler;
 import org.underdocx.enginelayers.odtengine.commands.internal.datapicker.PredefinedDataPicker;
 import org.underdocx.enginelayers.odtengine.commands.internal.datapicker.StringConvertDataPicker;
+import org.underdocx.enginelayers.odtengine.modifiers.tablecell.TableCellModifier;
+import org.underdocx.enginelayers.odtengine.modifiers.tablecell.TableCellModifierData;
 import org.underdocx.enginelayers.parameterengine.ParametersPlaceholderData;
 
 import java.time.LocalDate;
@@ -45,6 +47,7 @@ public class DateCommandHandler<C extends DocContainer<D>, D> extends AbstractTe
     private static PredefinedDataPicker<String> outputFormatDataPicker = new StringConvertDataPicker().asPredefined("outputFormat");
     private static PredefinedDataPicker<String> inputFormatDataPicker = new StringConvertDataPicker().asPredefined("inputFormat");
     private static final PredefinedDataPicker<String> langPicker = new StringConvertDataPicker().asPredefined("lang");
+    private static final PredefinedDataPicker<String> templatecellPicker = new StringConvertDataPicker().asPredefined("templatecell");
 
     public DateCommandHandler() {
         super(new Regex("Date"));
@@ -60,6 +63,7 @@ public class DateCommandHandler<C extends DocContainer<D>, D> extends AbstractTe
         String outFormat = getFormat(outputFormatDataPicker);
         String dateStr = valueDataPicker.pickData(dataAccess, placeholderData.getJson()).getOptionalValue().orElse(null);
         String langCode = langPicker.pickData(dataAccess, placeholderData.getJson()).getOptionalValue().orElse(null);
+
         DateTimeFormatter outFormatter = DateTimeFormatter.ofPattern(outFormat);
         DateTimeFormatter inFormatter = DateTimeFormatter.ofPattern(inFormat);
         if (langCode != null) {
@@ -69,6 +73,9 @@ public class DateCommandHandler<C extends DocContainer<D>, D> extends AbstractTe
         LocalDate date = dateStr == null ? LocalDate.now() : LocalDate.parse(dateStr, inFormatter);
         String replaceString = date.format(outFormatter);
         new ReplaceWithTextModifier<C, ParametersPlaceholderData, D>().modify(selection, replaceString);
+        templatecellPicker.pickData(dataAccess, placeholderData.getJson()).getOptionalValue().ifPresent(templateCell -> {
+            new TableCellModifier<C, D>().modify(selection, new TableCellModifierData.Simple(date, templateCell));
+        });
         return CommandHandlerResult.EXECUTED_PROCEED;
     }
 }

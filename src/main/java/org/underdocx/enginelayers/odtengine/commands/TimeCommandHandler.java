@@ -31,6 +31,8 @@ import org.underdocx.enginelayers.baseengine.modifiers.stringmodifier.ReplaceWit
 import org.underdocx.enginelayers.odtengine.commands.internal.AbstractTextualCommandHandler;
 import org.underdocx.enginelayers.odtengine.commands.internal.datapicker.PredefinedDataPicker;
 import org.underdocx.enginelayers.odtengine.commands.internal.datapicker.StringConvertDataPicker;
+import org.underdocx.enginelayers.odtengine.modifiers.tablecell.TableCellModifier;
+import org.underdocx.enginelayers.odtengine.modifiers.tablecell.TableCellModifierData;
 import org.underdocx.enginelayers.parameterengine.ParametersPlaceholderData;
 
 import java.time.LocalDateTime;
@@ -47,6 +49,7 @@ public class TimeCommandHandler<C extends DocContainer<D>, D> extends AbstractTe
     private static PredefinedDataPicker<String> outputFormatDataPicker = new StringConvertDataPicker().asPredefined("outputFormat");
     private static PredefinedDataPicker<String> inputFormatDataPicker = new StringConvertDataPicker().asPredefined("inputFormat");
     private static final PredefinedDataPicker<String> langPicker = new StringConvertDataPicker().asPredefined("lang");
+    private static final PredefinedDataPicker<String> templatecellPicker = new StringConvertDataPicker().asPredefined("templatecell");
 
     public TimeCommandHandler() {
         super(new Regex("Time"));
@@ -76,6 +79,9 @@ public class TimeCommandHandler<C extends DocContainer<D>, D> extends AbstractTe
         LocalDateTime time = dateStr == null ? LocalDateTime.now() : LocalDateTime.parse(dateStr, inFormatter);
         String replaceString = time.format(outFormatter);
         new ReplaceWithTextModifier<C, ParametersPlaceholderData, D>().modify(selection, replaceString);
+        templatecellPicker.pickData(dataAccess, placeholderData.getJson()).getOptionalValue().ifPresent(templateCell -> {
+            new TableCellModifier<C, D>().modify(selection, new TableCellModifierData.Simple(time, templateCell));
+        });
         return CommandHandlerResult.EXECUTED_PROCEED;
     }
 }

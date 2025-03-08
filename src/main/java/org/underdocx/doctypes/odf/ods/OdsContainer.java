@@ -87,7 +87,7 @@ public class OdsContainer extends AbstractOdfContainer<OdfSpreadsheetDocument> {
 
     @Override
     public String getFileExtension() {
-        return "odp";
+        return "ods";
     }
 
 

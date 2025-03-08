@@ -32,7 +32,8 @@ public enum OdfNameSpace {
     SVG("svg", "urn:oasis:names:tc:opendocument:xmlns:svg-compatible:1.0"),
     OFFICE("office", "urn:oasis:names:tc:opendocument:xmlns:office:1.0"),
     XLINK("xlink", "http://www.w3.org/1999/xlink"),
-    TABLE("table", "urn:oasis:names:tc:opendocument:xmlns:table:1.0");
+    TABLE("table", "urn:oasis:names:tc:opendocument:xmlns:table:1.0"),
+    CALCEXT("calcext", "urn:org:documentfoundation:names:experimental:calc:xmlns:calcext:1.0");
 
     private final String ns;
     private final String uri;

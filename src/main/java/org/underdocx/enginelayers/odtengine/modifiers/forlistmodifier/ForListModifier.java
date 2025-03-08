@@ -116,7 +116,7 @@ public class ForListModifier<C extends DocContainer<D>, D> extends AbstractAreaM
     private Optional<Node> getClonableItem(Node list) {
         int searchedIndex = modifierData.getListItemIndex();
         return Convenience.buildOptional(result -> {
-            int count = 0;
+            int count = 1;
             TreeWalker treeWalker = new TreeWalker(list, list);
             TreeWalker.VisitState currentState = treeWalker.next();
             while (currentState != null && count <= searchedIndex) {

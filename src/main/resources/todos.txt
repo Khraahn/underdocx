@@ -1,8 +1,6 @@
 - Features
   - Calc-Dateien unterstützen
-    2. Table erweitern bzgl. table:table-row table:number-rows-repeated="2"
-    4. TableCellSelector schreiben
-    5. ${Number} erweitern: currency, percentage, templatecell
+    5. ${Number} erweitern: templatecell
     6. ${Date} erweitern: templatecell
     7. ${Time} inkl. templatecell
   - txt dateien unterstützen

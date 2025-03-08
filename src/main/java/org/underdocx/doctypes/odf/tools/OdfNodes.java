@@ -32,15 +32,10 @@ import org.odftoolkit.odfdom.pkg.OdfFileDom;
 import org.underdocx.common.tools.Convenience;
 import org.underdocx.common.tree.Nodes;
 import org.underdocx.doctypes.odf.AbstractOdfContainer;
-import org.underdocx.doctypes.odf.constants.OdfAttribute;
-import org.underdocx.doctypes.odf.constants.OdfElement;
-import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
-import java.util.List;
 import java.util.Optional;
-import java.util.function.Predicate;
 
 public class OdfNodes {
 
@@ -107,16 +102,4 @@ public class OdfNodes {
         return Optional.empty();
     }
 
-    public static Optional<Node> findTable(Node tree, String name) {
-        return Convenience.buildOptional(result -> {
-            Predicate<Node> predicate = (node) -> (OdfElement.TABLE.is(node));
-            List<Node> tables = Nodes.findDescendantNodes(tree, predicate, true);
-            for (Node table : tables) {
-                if (name.equals(OdfAttribute.TANLE_NAME.getAttributeNS((Element) table))) {
-                    result.value = table;
-                    break;
-                }
-            }
-        });
-    }
 }

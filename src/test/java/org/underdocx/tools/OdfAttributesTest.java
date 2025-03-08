@@ -69,7 +69,7 @@ public class OdfAttributesTest extends AbstractOdtTest {
 
         Document xmlDocument = readXML(xmlContent);
         Node table = Nodes.findDescendantNodes(xmlDocument, "table:table", true).get(0);
-        OdfAttribute.TABLE_ROW_REPEAT.removeAttributeNS((Element) table);
+        OdfAttribute.TABLE_NUMBER_ROWS_REPEATED.removeAttributeNS((Element) table);
 
         String newXML = getTextContent(xmlDocument);
         Assertions.assertThat(newXML.indexOf("repeat")).isLessThan(0);

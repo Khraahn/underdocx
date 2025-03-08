@@ -47,6 +47,7 @@ public enum OdfElement implements Predicate<Node> {
 
     TABLE(OdfNameSpace.TABLE, "table"),
     TABLE_ROW(OdfNameSpace.TABLE, "table-row"),
+    TABLE_COLUMN(OdfNameSpace.TABLE, "table-column"),
     TABLE_CELL(OdfNameSpace.TABLE, "table-cell"),
 
     LIST(OdfNameSpace.TEXT, "list"),

@@ -36,7 +36,7 @@ import org.underdocx.common.types.Pair;
 import org.underdocx.common.types.Range;
 import org.underdocx.doctypes.odf.constants.OdfAttribute;
 import org.underdocx.doctypes.odf.constants.OdfElement;
-import org.underdocx.doctypes.odf.tools.OdfNodes;
+import org.underdocx.doctypes.odf.tools.OdfTables;
 import org.underdocx.enginelayers.baseengine.modifiers.ModifierNodeResult;
 import org.underdocx.enginelayers.baseengine.modifiers.deleteplaceholder.DeletePlaceholderModifier;
 import org.underdocx.enginelayers.baseengine.modifiers.deleteplaceholder.DeletePlaceholderModifierData;
@@ -140,16 +140,15 @@ public class ForRowsModifier<C extends DocContainer<D>, D> extends AbstractAreaM
 
     private void unRepeatRows(Node table, Range range) {
         Map<Node, Integer> rowsToUnrepeat = new HashMap<>();
-        IntCodec intParser = new IntCodec();
 
         int maxRows = range.getMax();
-        int count = 0;
+        int count = 1;
         TreeWalker treeWalker = new TreeWalker(table, table);
         TreeWalker.VisitState currentState = treeWalker.next();
         while (currentState != null && count <= maxRows) {
             if (currentState.isBeginVisit() && OdfElement.TABLE_ROW.is(currentState.getNode())) {
-                String repeatStr = OdfAttribute.TABLE_ROW_REPEAT.getAttributeNS(((Element) currentState.getNode()));
-                int repeat = intParser.tryParse(repeatStr).orElse(1);
+                String repeatStr = OdfAttribute.TABLE_NUMBER_ROWS_REPEATED.getAttributeNS(((Element) currentState.getNode()));
+                int repeat = IntCodec.DEFAULT.tryParse(repeatStr).orElse(1);
                 if (repeat > 1 && range.contains(count) || range.contains(count + repeat)) {
                     rowsToUnrepeat.put(currentState.getNode(), repeat);
                 }
@@ -161,7 +160,7 @@ public class ForRowsModifier<C extends DocContainer<D>, D> extends AbstractAreaM
         }
 
         rowsToUnrepeat.forEach((node, repeats) -> {
-            OdfAttribute.TABLE_ROW_REPEAT.removeAttributeNS((Element) node);
+            OdfAttribute.TABLE_NUMBER_ROWS_REPEATED.removeAttributeNS((Element) node);
             for (int i = 0; i < repeats - 1; i++) {
                 Node clone = node.cloneNode(true);
                 node.getParentNode().insertBefore(clone, node);
@@ -175,7 +174,7 @@ public class ForRowsModifier<C extends DocContainer<D>, D> extends AbstractAreaM
         unRepeatRows(table, repeatRows);
         return Convenience.buildList(result -> {
             int maxRows = repeatRows.getMax();
-            int count = 0;
+            int count = 1;
             TreeWalker treeWalker = new TreeWalker(table, table);
             TreeWalker.VisitState currentState = treeWalker.next();
             while (currentState != null && count <= maxRows) {
@@ -196,7 +195,7 @@ public class ForRowsModifier<C extends DocContainer<D>, D> extends AbstractAreaM
         if (modifierData.isInTable()) {
             return Nodes.findAscendantNode(selection.getNode(), OdfElement.TABLE::is);
         } else if (modifierData.getTableName() != null) {
-            return OdfNodes.findTable(selection.getNode().getOwnerDocument(), modifierData.getTableName());
+            return OdfTables.findTable(selection.getNode().getOwnerDocument(), modifierData.getTableName());
         } else {
             return Convenience.buildOptional(result -> {
                 for (Node node : getAreaNodesIterator()) {

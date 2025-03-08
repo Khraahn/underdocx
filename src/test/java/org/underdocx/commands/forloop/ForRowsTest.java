@@ -24,10 +24,10 @@ SOFTWARE.
 
 package org.underdocx.commands.forloop;
 
+import org.junit.jupiter.api.Test;
 import org.underdocx.AbstractOdtTest;
 import org.underdocx.doctypes.odf.odt.OdtContainer;
 import org.underdocx.doctypes.odf.odt.OdtEngine;
-import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 

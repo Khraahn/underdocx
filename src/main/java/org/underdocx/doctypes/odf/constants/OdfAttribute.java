@@ -25,6 +25,7 @@ SOFTWARE.
 package org.underdocx.doctypes.odf.constants;
 
 import org.w3c.dom.Element;
+import org.w3c.dom.Node;
 
 public enum OdfAttribute {
     SPACE_COUNT(OdfNameSpace.TEXT, "c"),
@@ -47,7 +48,18 @@ public enum OdfAttribute {
 
     TANLE_NAME(OdfNameSpace.TABLE, "name"),
 
-    TABLE_ROW_REPEAT(OdfNameSpace.TABLE, "number-rows-repeated");
+    TABLE_NUMBER_ROWS_REPEATED(OdfNameSpace.TABLE, "number-rows-repeated"),
+    TABLE_NUMBER_COLUMNS_REPEATED(OdfNameSpace.TABLE, "number-columns-repeated"),
+    TABLE_DEFAULT_CELL_STYLE_NAME(OdfNameSpace.TABLE, "default-cell-style-name"),
+    TABLE_STYLE_NAME(OdfNameSpace.TABLE, "style-name"),
+
+    OFFICE_VALUE(OdfNameSpace.OFFICE, "value"),
+    OFFICE_DATE_VALUE(OdfNameSpace.OFFICE, "date-value"),
+    OFFICE_TIME_VALUE(OdfNameSpace.OFFICE, "time-value"),
+    OFFICE_VALUE_TYPE(OdfNameSpace.OFFICE, "value-type"),
+    OFFICE_CURRENCY(OdfNameSpace.OFFICE, "currency"),
+    CALCEXT_VALUE_TYPE(OdfNameSpace.CALCEXT, "value-type"),
+    ;
 
     private final String pureName;
     private final OdfNameSpace ns;
@@ -71,21 +83,38 @@ public enum OdfAttribute {
         return qualifiedName;
     }
 
-    public String getAttributeNS(Element element) {
+    public String getAttributeNS(Node node) {
+        Element element = (Element) node;
         if (!element.hasAttributeNS(getNs().getUri(), getPureName())) {
             return null;
         }
         return element.getAttributeNS(getNs().getUri(), getPureName());
     }
 
-    public void setAttributeNS(Element element, String value) {
+    public void setAttributeNS(Node node, String value) {
+        Element element = (Element) node;
         if (value != null)
             element.setAttributeNS(getNs().getUri(), qualifiedName, value);
         else
             removeAttributeNS(element);
     }
 
-    public void removeAttributeNS(Element element) {
+    public void copy(Node srcNode, Node targetNode) {
+        Element src = (Element) srcNode;
+        Element target = (Element) targetNode;
+        removeAttributeNS(target);
+        String value = getAttributeNS(src);
+        if (value != null) {
+            setAttributeNS(target, value);
+        }
+    }
+
+    public boolean isIn(Node src) {
+        return getAttributeNS(src) != null;
+    }
+
+    public void removeAttributeNS(Node node) {
+        Element element = (Element) node;
         // element.removeAttributeNS(getNs().getNs(), getPureName());
         element.removeAttribute(qualifiedName);
     }

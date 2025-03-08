@@ -22,19 +22,31 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-package org.underdocx.common.codec;
+package org.underdocx.enginelayers.odtengine.modifiers.tablecell;
 
-public class IntCodec implements Codec<Integer> {
+public interface TableCellModifierData {
 
-    public static final IntCodec DEFAULT = new IntCodec();
+    Object getValue();
 
-    @Override
-    public Integer parse(String string) throws Exception {
-        return Integer.parseInt(string);
-    }
+    String getStyleCellAddress();
 
-    @Override
-    public String getTextContent(Integer data) {
-        return data.toString();
+    class Simple implements TableCellModifierData {
+        Object value;
+        String styleCellAddress;
+
+        public Simple(Object value, String styleCellAddress) {
+            this.value = value;
+            this.styleCellAddress = styleCellAddress;
+        }
+
+        @Override
+        public Object getValue() {
+            return value;
+        }
+
+        @Override
+        public String getStyleCellAddress() {
+            return styleCellAddress;
+        }
     }
 }

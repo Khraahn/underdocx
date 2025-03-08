@@ -26,15 +26,16 @@ package org.underdocx.enginelayers.odtengine.commands;
 
 import org.underdocx.common.doc.DocContainer;
 import org.underdocx.common.tools.Convenience;
+import org.underdocx.common.types.Pair;
 import org.underdocx.enginelayers.baseengine.CommandHandlerResult;
 import org.underdocx.enginelayers.modelengine.model.DataNode;
 import org.underdocx.enginelayers.odtengine.commands.internal.AbstractTextualCommandHandler;
-import org.underdocx.enginelayers.odtengine.commands.internal.datapicker.AbstractConvertDataPicker;
-import org.underdocx.enginelayers.odtengine.commands.internal.datapicker.NumberDataPicker;
-import org.underdocx.enginelayers.odtengine.commands.internal.datapicker.PredefinedDataPicker;
-import org.underdocx.enginelayers.odtengine.commands.internal.datapicker.StringConvertDataPicker;
+import org.underdocx.enginelayers.odtengine.commands.internal.datapicker.*;
+import org.underdocx.enginelayers.odtengine.commands.internal.modifiermodule.missingdata.MissingDataCommandModuleResult;
 import org.underdocx.enginelayers.odtengine.commands.internal.modifiermodule.stringoutput.StringOutputCommandModule;
 import org.underdocx.enginelayers.odtengine.commands.internal.modifiermodule.stringoutput.StringOutputModuleConfig;
+import org.underdocx.enginelayers.odtengine.modifiers.tablecell.TableCellModifier;
+import org.underdocx.enginelayers.odtengine.modifiers.tablecell.TableCellModifierData;
 
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
@@ -51,6 +52,10 @@ public class NumberCommandHandler<C extends DocContainer<D>, D> extends Abstract
     private static final PredefinedDataPicker<String> prefixPicker = new StringConvertDataPicker().asPredefined("prefix");
     private static final PredefinedDataPicker<String> suffixPicker = new StringConvertDataPicker().asPredefined("suffix");
     private static final PredefinedDataPicker<Number> multiplierPicker = new NumberDataPicker().asPredefined("multiplier");
+    private static final PredefinedDataPicker<Number> summandPicker = new NumberDataPicker().asPredefined("summand");
+    private static final PredefinedDataPicker<Boolean> useModifiedForCellPicker = new BooleanDataPicker().asPredefined("usemodified");
+
+    private static final PredefinedDataPicker<String> templatecellPicker = new StringConvertDataPicker().asPredefined("templatecell");
 
     public NumberCommandHandler() {
         super(KEY);
@@ -60,45 +65,73 @@ public class NumberCommandHandler<C extends DocContainer<D>, D> extends Abstract
     @Override
     protected CommandHandlerResult tryExecuteTextualCommand() {
         StringOutputCommandModule<C, D> module = new StringOutputCommandModule<>(getConfig());
-        return module.execute(selection);
+        Pair<CommandHandlerResult, MissingDataCommandModuleResult.MissingDataCommandModuleResultType> result = module.execute(selection);
+        if (result.right == MissingDataCommandModuleResult.MissingDataCommandModuleResultType.VALUE_RECEIVED) {
+            templatecellPicker.pickData(dataAccess, placeholderData.getJson()).getOptionalValue().ifPresent(templacecell -> {
+                Number number = new NumberPicker().asPredefined("value").pickData(dataAccess, placeholderData.getJson()).getOptionalValue().get().right;
+                new TableCellModifier<C, D>().modify(selection, new TableCellModifierData.Simple(number, templacecell));
+            });
+        }
+        return result.left;
     }
 
     protected StringOutputModuleConfig getConfig() {
-        return () -> new NumberPicker().asPredefined("value");
+        return () -> new NumberStringPicker().asPredefined("value");
     }
 
-    private class NumberPicker extends AbstractConvertDataPicker<String> {
+    private class NumberStringPicker extends AbstractConvertDataPicker<String> {
 
         @Override
         protected Optional<String> convert(DataNode node) {
+            return Convenience.buildOptional(result -> new NumberPicker().convert(node).ifPresent(pair -> result.value = pair.left));
+        }
+    }
+
+    private class NumberPicker extends AbstractConvertDataPicker<Pair<String, Number>> {
+
+        @Override
+        protected Optional<Pair<String, Number>> convert(DataNode node) {
             return Convenience.buildOptional(result -> {
                 String format = formatPicker.pickData(dataAccess, placeholderData.getJson()).getOptionalValue().orElse(null);
                 String langCode = langPicker.pickData(dataAccess, placeholderData.getJson()).getOptionalValue().orElse(null);
                 Number multiplier = multiplierPicker.pickData(dataAccess, placeholderData.getJson()).getOptionalValue().orElse(null);
+                Number summand = summandPicker.pickData(dataAccess, placeholderData.getJson()).getOptionalValue().orElse(null);
                 String prefix = prefixPicker.pickData(dataAccess, placeholderData.getJson()).getOptionalValue().orElse("");
                 String suffix = suffixPicker.pickData(dataAccess, placeholderData.getJson()).getOptionalValue().orElse("");
-                Double doubleValue = null;
-                Long longValue = null;
+                boolean useModified = useModifiedForCellPicker.pickData(dataAccess, placeholderData.getJson()).getOptionalValue().orElse(false);
+
+                Number numberValue = null;
                 Object foundValue = node.getValue();
                 if (foundValue instanceof Long) {
-                    longValue = (Long) foundValue;
+                    numberValue = (Long) foundValue;
                 } else if (foundValue instanceof Integer i) {
-                    longValue = Long.valueOf(i);
+                    numberValue = Long.valueOf(i);
                 } else if (foundValue instanceof Double d) {
-                    doubleValue = d;
+                    numberValue = d;
                 } else {
                     return;
                 }
 
                 if (multiplier != null) {
-                    if (doubleValue != null) {
-                        doubleValue = doubleValue.doubleValue() * multiplier.doubleValue();
+                    if (numberValue instanceof Double) {
+                        numberValue = numberValue.doubleValue() * multiplier.doubleValue();
                     } else {
                         if (multiplier instanceof Double) {
-                            doubleValue = longValue.doubleValue() * multiplier.doubleValue();
-                            longValue = null;
+                            numberValue = numberValue.doubleValue() * multiplier.doubleValue();
                         } else {
-                            longValue = longValue.longValue() * multiplier.longValue();
+                            numberValue = numberValue.longValue() * multiplier.longValue();
+                        }
+                    }
+                }
+
+                if (summand != null) {
+                    if (numberValue instanceof Double) {
+                        numberValue = numberValue.doubleValue() + summand.doubleValue();
+                    } else {
+                        if (summand instanceof Double) {
+                            numberValue = numberValue.doubleValue() + summand.doubleValue();
+                        } else {
+                            numberValue = numberValue.longValue() + summand.longValue();
                         }
                     }
                 }
@@ -106,10 +139,10 @@ public class NumberCommandHandler<C extends DocContainer<D>, D> extends Abstract
                 String formatToUse = format == null ? "#,###.##" : format;
                 Locale local = langCode == null ? Locale.getDefault() : Locale.forLanguageTag(langCode);
                 DecimalFormat df = new DecimalFormat(formatToUse, new DecimalFormatSymbols(local));
-                if (longValue != null) {
-                    result.value = prefix + df.format(longValue) + suffix;
+                if (useModified) {
+                    result.value = new Pair<>(prefix + df.format(numberValue) + suffix, numberValue);
                 } else {
-                    result.value = prefix + df.format(doubleValue) + suffix;
+                    result.value = new Pair<>(prefix + df.format(numberValue) + suffix, (Number) foundValue);
                 }
             });
         }
