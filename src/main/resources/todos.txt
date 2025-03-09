@@ -1,11 +1,12 @@
 - Features
-  - pom.xml für fatjar
   - Doku anpassen
     - Alias Syntax vereinfacht und für Attribute
     - Dateiunterstützung (allgemein)
     - Image Platzhalter benutzt Description (neue Screenshots)
     - base64 Resouces
-    (- CLI / Import Json Format)
+    - CLI / Import Json Format:
+      - mvn clean install -P buildCli
+      - java -jar underdocx-0.8.0-jar-with-dependencies.jar odt SimpleTemplate.odt New.odt underdocxData.json
     - ${Number}
     - ${Time}
     - ${Date} mit templacell
