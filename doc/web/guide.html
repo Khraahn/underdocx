@@ -169,7 +169,7 @@ ${Key attr1:value1, "attr2":value2}</code></pre>
         Actually the syntax is derived from the JSON-syntax, which allows definition of complex attribute values.
         Here are some example of placeholders that are supported by default:
         <pre class="padding"><code>${Date}
-${Date value:"2022-01-05", outputFormat:"dd.MM.yyyy"}
+${Date value:"2022-01-05", outputformat:"dd.MM.yyyy"}
 ${For value:[{firstName: "Hans", lastName:"Müller"}, {firstName: "Jon", lastName:"Doe"}], $as:"person"}</code></pre>
 
         Underdocx also supports placeholders of different kinds. For example images can be defined to be
@@ -195,7 +195,7 @@ ${For value:[{firstName: "Hans", lastName:"Müller"}, {firstName: "Jon", lastNam
 
         Values are placeholder attribute values that are directly defined and used by the placeholder itself, for
         example this document content:
-        <pre class="padding"><code>Example: ${Date value:"2022-01-05" outputFormat:"dd.MM.yyyy"}</code></pre>
+        <pre class="padding"><code>Example: ${Date value:"2022-01-05" outputformat:"dd.MM.yyyy"}</code></pre>
         will always be replaced by this text:
         <pre class="padding"><code>Example: 05.01.2022</code></pre>
         because the value of the date and the output format to use are defined directly in the placeholder as values.
@@ -205,7 +205,7 @@ ${For value:[{firstName: "Hans", lastName:"Müller"}, {firstName: "Jon", lastNam
         A simple way to import data to the template engine are the definition of variables that can be
         accessed by the placeholders. Usually the attribute prefix '$' indicates access to a variable. For example,
         the given text:
-        <pre class="padding"><code>Example: ${Date $value:"dateToShow" outputFormat:"dd.MM.yyyy"}</code></pre>
+        <pre class="padding"><code>Example: ${Date $value:"dateToShow" outputformat:"dd.MM.yyyy"}</code></pre>
         and the code snipped:
         <pre class="highlightjs highlight nowrap"><code class="language-java hljs" data-lang="java">String lastYear = LocalDate.now().minusYear(1)
           .format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
@@ -224,7 +224,7 @@ engine.pushVariable("dateToShow", lastYear);</code></pre>
         model nodes are always relatively to the engines current model tree position.
         The usage of models is optional, you might also use variables.
         This example shows how to register a model and how to address a node:
-        <pre class="padding"><code>Example: ${Date *value:"persons[1].birthday" outputFormat:"dd.MM.yyyy"}</code></pre>
+        <pre class="padding"><code>Example: ${Date *value:"persons[1].birthday" outputformat:"dd.MM.yyyy"}</code></pre>
         and this code snipped:
         <pre class="highlightjs highlight nowrap"><code class="language-java hljs" data-lang="java">DataNode model = new MapDataNode("""
           {
@@ -1174,11 +1174,11 @@ ${EndIf}</code></pre>
             <td>date string. If not set, the current date will be used </td>
           </tr>
           <tr>
-            <td>inputFormat</td>
+            <td>inputformat</td>
             <td>expected date-format of the string addressed by attribute "value". Default format is "yyyy-MM-dd"</td>
           </tr>
           <tr>
-            <td>outputFormat</td>
+            <td>outputformat</td>
             <td>preferred date format to display after replacement. Default format is "yyyy-MM-dd" </td>
           </tr>
         </table>
@@ -1189,16 +1189,16 @@ ${EndIf}</code></pre>
 ${Date}
 
 // prints the current date, e.g. 25.01.2025
-${Date outputFormat:"dd.MM.yyyy"}
+${Date outputformat:"dd.MM.yyyy"}
 
 // prints 2024-12-24             
 ${Date value:"2024-12-24"}
 
 // prints 24.12.2024  
-${Date value:"2024-12-24" outputFormat:"dd.MM.yyyy"}
+${Date value:"2024-12-24" outputformat:"dd.MM.yyyy"}
 
 // prints 2024-12-24
-${Date value:"24.12.2024" inputFormat:"dd.MM.yyyy"} 
+${Date value:"24.12.2024" inputformat:"dd.MM.yyyy"} 
 
 // prints the date stored in variable "date" 
 ${Date $value:"date"}</code></pre>
@@ -1287,7 +1287,7 @@ ${Join value:["Bibi", "Tina", "Amadeus", "Sabrina"], limit: 2, truncated:" usw."
           the same parameters as default values. In this case the parameters of the alias definition are overwritten.
 
           <pre class="padding"><code>// alias definition
-${Alias key: "myDate", replaceKey: "Date", attributes: {outputFormat: "dd.MM.yyyy"} }
+${Alias key: "myDate", replaceKey: "Date", attributes: {outputformat: "dd.MM.yyyy"} }
 
 // prints current date similar to 2025-02-25
 ${Date}
@@ -1296,7 +1296,7 @@ ${Date}
 ${myDate}
 
 // prints current date similar to 2025/02/25
-${myDate outputFormat:"yyyy/MM/dd"}
+${myDate outputformat:"yyyy/MM/dd"}
           
 // prints: 12.12.2024
 ${myDate value:"2024-12-12"}</code></pre>

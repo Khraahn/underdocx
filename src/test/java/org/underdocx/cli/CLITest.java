@@ -53,10 +53,10 @@ public class CLITest extends AbstractOdtTest {
                         key: "myDate", 
                         replaceKey: "Date", 
                         attributes: {
-                            outputFormat: "dd.MM.yyyy"
+                            outputformat: "dd.MM.yyyy"
                         },
                         attrReplacements: {
-                            of:"outputFormat",
+                            of:"outputformat",
                             v:"value"
                         }
                     }

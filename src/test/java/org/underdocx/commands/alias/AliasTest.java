@@ -38,7 +38,7 @@ public class AliasTest extends AbstractOdtTest {
     @Test
     public void testAlias() {
         String content = """
-                ${Alias key:"myDate", replaceKey:"Date", attributes:{outputFormat:"dd.MM.yyyy"}, attrReplacements: {of:"outputFormat", if:"inputFormat", v:"value"} }
+                ${Alias key:"myDate", replaceKey:"Date", attributes:{outputformat:"dd.MM.yyyy"}, attrReplacements: {of:"outputformat", if:"inputformat", v:"value"} }
                 ${Push key:"varFormat", value:"yyyy/MM/dd"}
                 A: ${myDate}
                 B: ${myDate $of:"varFormat"}
@@ -68,7 +68,7 @@ public class AliasTest extends AbstractOdtTest {
                 """;
         OdtContainer doc = new OdtContainer(content);
         OdtEngine engine = new OdtEngine(doc);
-        engine.registerAlias("myDate", "${Date outputFormat:\"dd.MM.yyyy\"}", new Pair<>("v", "value"), new Pair<>("of", "outputFormat"));
+        engine.registerAlias("myDate", "${Date outputformat:\"dd.MM.yyyy\"}", new Pair<>("v", "value"), new Pair<>("of", "outputformat"));
         engine.pushLeafVariable("varFormat", "yyyy/MM/dd");
         engine.run();
         String ddmmyyyy = new SimpleDateFormat("dd.MM.yyyy").format(new Date());

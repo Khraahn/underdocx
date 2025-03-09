@@ -88,12 +88,12 @@ public class OdsTest extends AbstractOdtTest {
         TableTableCellElement dateCell = findCellWithText(tables, "2023-05-06");
         Assertions.assertThat(dateCell.getOfficeDateValueAttribute()).isEqualTo("2023-05-06");
         Assertions.assertThat(dateCell.getOfficeValueTypeAttribute()).isEqualTo("date");
-        Assertions.assertThat(dateCell.getStyleName()).isEqualTo("ce5");
+        Assertions.assertThat(dateCell.getStyleName()).isEqualTo("ce10");
 
         dateCell = findCellWithText(tables, "80 %");
         Assertions.assertThat(dateCell.getOfficeValueAttribute()).isEqualTo(0.8);
         Assertions.assertThat(dateCell.getOfficeValueTypeAttribute()).isEqualTo("percentage");
-        Assertions.assertThat(dateCell.getStyleName()).isEqualTo("ce6");
+        Assertions.assertThat(dateCell.getStyleName()).isEqualTo("ce13");
 
 
     }

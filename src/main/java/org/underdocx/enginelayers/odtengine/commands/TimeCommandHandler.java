@@ -46,8 +46,8 @@ public class TimeCommandHandler<C extends DocContainer<D>, D> extends AbstractTe
     private static String DEFAULT_OUT_FORMAT_TIME = "HH:mm:ss";
 
     private static PredefinedDataPicker<String> valueDataPicker = new StringConvertDataPicker().asPredefined("value");
-    private static PredefinedDataPicker<String> outputFormatDataPicker = new StringConvertDataPicker().asPredefined("outputFormat");
-    private static PredefinedDataPicker<String> inputFormatDataPicker = new StringConvertDataPicker().asPredefined("inputFormat");
+    private static PredefinedDataPicker<String> outputformatDataPicker = new StringConvertDataPicker().asPredefined("outputformat");
+    private static PredefinedDataPicker<String> inputformatDataPicker = new StringConvertDataPicker().asPredefined("inputformat");
     private static final PredefinedDataPicker<String> langPicker = new StringConvertDataPicker().asPredefined("lang");
     private static final PredefinedDataPicker<String> templatecellPicker = new StringConvertDataPicker().asPredefined("templatecell");
 
@@ -66,8 +66,8 @@ public class TimeCommandHandler<C extends DocContainer<D>, D> extends AbstractTe
 
     @Override
     protected CommandHandlerResult tryExecuteTextualCommand() {
-        String inFormat = getFormat(true, inputFormatDataPicker);
-        String outFormat = getFormat(false, outputFormatDataPicker);
+        String inFormat = getFormat(true, inputformatDataPicker);
+        String outFormat = getFormat(false, outputformatDataPicker);
         String dateStr = valueDataPicker.pickData(dataAccess, placeholderData.getJson()).getOptionalValue().orElse(null);
         String langCode = langPicker.pickData(dataAccess, placeholderData.getJson()).getOptionalValue().orElse(null);
         DateTimeFormatter outFormatter = DateTimeFormatter.ofPattern(outFormat);
