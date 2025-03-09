@@ -1,8 +1,4 @@
 - Features
-  - Doku anpassen
-    - CLI / Import Json Format:
-      - mvn clean install -P buildCli
-      - java -jar underdocx-0.8.0-jar-with-dependencies.jar odt SimpleTemplate.odt New.odt underdocxData.json
   - txt dateien unterstützen
   - später ggf. docx unterstützen
 - Bekannte Probleme:

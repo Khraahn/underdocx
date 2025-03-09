@@ -1703,11 +1703,33 @@ ${myDate v:"2024-12-12"}</code></pre>
         <pre class="padding"><code>git clone https://github.com/winterrifier/underdocx.git
 cd underdocx
 mvn clean install -P buildCli</code></pre>
-         After execution there will be a target folder that contains ""
+         After execution there will be a target folder that contains "underdocx-0.8.0-jar-with-dependencies.jar".
+         You can use this jar file as CLI tool.
 
         <h3>Usage of CLI</h3>
+        To call Underdocx by CLI use this syntax:
+        <pre class="padding"><code>java -jar underdocx-0.8.0-jar-with-dependencies.jar &lt;engineType&gt; &lt;templateFile&gt; &lt;outFile&gt; &lt;dataJsonFile&gt;</code></pre>
+        For example:
+        <pre class="padding"><code>java -jar underdocx-0.8.0-jar-with-dependencies.jar ODT template.odt out.odt data.json</code></pre>
+        Note: It is also possible to add custom Placeholder/Command implementations (see section Custom Extensions). Implement interface <code-word>EngineProvider</code-word>,
+        include your classes to the classpath, execute <code-word>UnderdocxEngineRunder</code-word> as main class and use the qualified 
+        class name of your provider as first argument (instead of ODT)
         <h3>Underdocx Json format</h3>
-
+        The Json file (last argument) contains all data the Template Engine requires to fill the template document. It may contain
+        the data model, variables, alias definitions and String replacements. The schema is as follows:
+        <pre class="padding"><code>{
+  variables: { key1:value1, key2:value2, ... }, // values may be complex JSON values
+  model: {...}, // model data tree
+  stringReplacements:{ key1:repl1, key2:repl2, ... }, // simple placeholder replacements
+  alias: [
+    { 
+      key:key1, 
+      replaceKey:replaceKey1, 
+      attributes: {att1:value1, att2:value2, ...},
+      attrReplacements: {attr1:replaceAttr1, att2:replaceAttr2, ...}
+    }, ...
+  ]
+}</code></pre>        
 
 
 
