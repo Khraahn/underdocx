@@ -26,9 +26,12 @@ package org.underdocx.commands.ods;
 
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.odftoolkit.odfdom.dom.element.table.TableTableCellElement;
 import org.underdocx.AbstractOdtTest;
 import org.underdocx.common.tools.Convenience;
+import org.underdocx.common.tree.Nodes;
 import org.underdocx.common.tree.TreeWalker;
+import org.underdocx.doctypes.odf.constants.OdfElement;
 import org.underdocx.doctypes.odf.ods.OdsContainer;
 import org.underdocx.doctypes.odf.ods.OdsEngine;
 import org.w3c.dom.Node;
@@ -50,9 +53,15 @@ public class OdsTest extends AbstractOdtTest {
         });
     }
 
+    protected TableTableCellElement findCellWithText(OdsContainer doc, String text) {
+        List<Node> nodesWithText = findTextNode(doc.getContentRoot(), text);
+        return (TableTableCellElement) Nodes.findAscendantNode(nodesWithText.get(0), OdfElement.TABLE_CELL::is).get();
+    }
+
     private boolean findTextNode(OdsContainer doc, String text) {
         return !findTextNode(doc.getContentRoot(), text).isEmpty();
     }
+
 
     @Test
     public void testOds() throws IOException {
@@ -62,6 +71,8 @@ public class OdsTest extends AbstractOdtTest {
         //show(tables);
         Assertions.assertThat(findTextNode(tables, "$")).isFalse();
         Assertions.assertThat(findTextNode(tables, "Gerda")).isTrue();
+
+
     }
 
 
@@ -73,5 +84,17 @@ public class OdsTest extends AbstractOdtTest {
         //show(tables);
         Assertions.assertThat(findTextNode(tables, "$")).isFalse();
         Assertions.assertThat(findTextNode(tables, "Hans")).isTrue();
+
+        TableTableCellElement dateCell = findCellWithText(tables, "2023-05-06");
+        Assertions.assertThat(dateCell.getOfficeDateValueAttribute()).isEqualTo("2023-05-06");
+        Assertions.assertThat(dateCell.getOfficeValueTypeAttribute()).isEqualTo("date");
+        Assertions.assertThat(dateCell.getStyleName()).isEqualTo("ce5");
+
+        dateCell = findCellWithText(tables, "80 %");
+        Assertions.assertThat(dateCell.getOfficeValueAttribute()).isEqualTo(0.8);
+        Assertions.assertThat(dateCell.getOfficeValueTypeAttribute()).isEqualTo("percentage");
+        Assertions.assertThat(dateCell.getStyleName()).isEqualTo("ce6");
+
+
     }
 }

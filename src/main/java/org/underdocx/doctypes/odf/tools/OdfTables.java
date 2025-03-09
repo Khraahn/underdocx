@@ -59,11 +59,26 @@ public class OdfTables {
         });
     }
 
-    public static Optional<Node> getStyleNode(Node table, int x, int y) {
+    public static Optional<String> getCellStyle(Pair<Node, Node> styleNodes) {
         return Convenience.buildOptional(result -> {
-            getDefaultColumnStyleNode(table, x).ifPresent(defaultStyleNode -> result.value = defaultStyleNode);
+            if (styleNodes.left != null) {
+                result.value = OdfAttribute.TABLE_DEFAULT_CELL_STYLE_NAME.getAttributeNS(styleNodes.left);
+            }
+            if (styleNodes.right != null) {
+                if (OdfAttribute.TABLE_STYLE_NAME.isIn(styleNodes.right)) {
+                    result.value = OdfAttribute.TABLE_STYLE_NAME.getAttributeNS(styleNodes.right);
+                }
+            }
+        });
+    }
+
+    public static Pair<Node, Node> getStyleNodes(Node table, int x, int y) {
+        return Convenience.build(new Pair<>(), result -> {
+            getDefaultColumnStyleNode(table, x).ifPresent(defaultStyleNode ->
+                    result.value.left = defaultStyleNode);
             getRow(table, y).ifPresent(row -> {
-                getCellStyleNode(row, x).ifPresent(styleNode -> result.value = styleNode);
+                getCellStyleNode(row, x).ifPresent(styleNode ->
+                        result.value.right = styleNode);
             });
         });
     }
