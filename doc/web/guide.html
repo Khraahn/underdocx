@@ -48,8 +48,10 @@
         how templates can be defined and how custom data can be provided for document generation.
 
         <h2>About</h2>
-        <h3>ODT Template Engine</h3>
-        Underdocx is an extendable open source Java framework to manipulate ODT Documents (LibreOffice / OpenOffice).
+        <h3>Document Template Engine</h3>
+        Underdocx is an extendable open source Java framework to manipulate ODT Documents (LibreOffice Writer),
+        ODG Graphics (LibreOffice Draw), ODP Presentations (LibreOffice Impress) and ODS Speadsheets (LibreOffice Calc)
+        and more formats in the near future.
         It uses different types of parameterizable placeholders that will be replaced by custom texts, images, tables
         and
         even
@@ -282,7 +284,8 @@ engine.setModel(model);</code></pre>
         </table>
 
         <h2>API Introduction</h2>
-        <h3>OdtContainer</h3>
+        <h3>Document Tyoes</h3>
+        <h4>OdtContainer</h4>
         <code-word>OdtContainer</code-word> instances represent an ODT document which can be modified by
         the engine or by user. This class provides multiple constructors to load
         or create documents.
@@ -296,10 +299,29 @@ engine.setModel(model);</code></pre>
     new OdtContainer(new File("file.odt"));
   }
 }</code></pre>
+        <h4>OdgContainer</h4>
+        <code-word>OdgContainer</code-word> instances represent an ODG Graphics document (LibreOffice Draw).
+        It consists of pages that contain multiple graphic elements.
+        The Engine will process the contained placeholders from first to last page and from background to foreground.
+        Tip: Create an initial page that defines some initial useful ${Alias} commands and ${For}-Loops referring tables
+        by their names and let this page remove with help of the ${Remove} command.
 
-        <h3>OdtEngine</h3>
+        <h4>OdpContainer</h4>
+        <code-word>OdpContainer</code-word> instances represent an ODP Presentation document (LibreOffice Impress).
+        Structure and usage of this document is quite similar to <code-word>OdgContainer</code-word>
 
-        This is the main class to process a document, exchange its placeholder and to
+        <h4>OdsContainer</h4>
+        <code-word>OdsContainer</code-word> instances represent an ODS Spreadsheet document (LibreOffice Calc).
+        It consists of names tables that may contain placeholders in their cells.
+        The Engine will process the contained placeholders from first to last table
+         from left to right and from top to bottom.
+        Tip: Create an initial spreadsheet that defines some initial useful ${Alias} commands and ${For}-Loops referring tables
+        by their names and let this spreadsheet remove with help of the ${Remove} command.
+
+        <h3>Engines</h3>
+
+        <h4>OdtEngine</h4>
+        This is the main class to process a ODT document, exchange its placeholder and to
         register custom extensions to provide more placeholders or functionalities. This
         example registers variable "name" at the engine and
         processes a text document containing a single placeholder. A file is created
@@ -314,6 +336,18 @@ engine.setModel(model);</code></pre>
     doc.save(tmpFile);
   }
 }</code></pre>
+
+        <h4>OdgEngine</h4>
+        This Engine is responsible for <code-word>OdgContainer</code-word> documents (LibreOffice Draw).
+        It supports all commands except <code-word>${Export}</code-word>
+
+        <h4>OdpEngine</h4>
+        This Engine is responsible for <code-word>OdpContainer</code-word> documents (LibreOffice Impress).
+        It supports all commands except <code-word>${Export}</code-word>
+
+        <h4>OdsEngine</h4>
+        This Engine is responsible for <code-word>OdsContainer</code-word> documents (LibreOffice Calc).
+        It supports all commands except <code-word>${Import}</code-word> and <code-word>${Export}</code-word> 
 
         <h3>Resource</h3>
 
@@ -966,7 +1000,8 @@ ${EndIf}</code></pre>
         are imported into the main document. Imported document are usual
         document that also may contain placeholders that will be interpreted after
         the document has been imported. Note that only the main content of a component
-        will be imported, footer or headers fill be ignored. <code-word>$Import</code-word> offers
+        will be imported, footer or headers fill be ignored. ${Import} is currently
+        not available for ODS documents. <code-word>$Import</code-word> offers
         three different attributes to address a document that shall be imported:
 
         <table>
@@ -1034,6 +1069,7 @@ ${EndIf}</code></pre>
         the footer and header of the master document will be visible in the final document.
         When Attribute <code-word>name</code-word> and placeholder <code-word>${ExportTarget}</code-word> are not used,
         the content of the current document will be appended to the master document.
+        ${Export} is currently only available for ODT documents.
 
         <table>
           <tr>
@@ -1281,13 +1317,26 @@ ${Join value:["Bibi", "Tina", "Amadeus", "Sabrina"], limit: 2, truncated:" usw."
               <td>attributes</td>
               <td>This attribute is optional and contains an object of the default property key-value-pairs </td>
             </tr>
+            <tr>
+              <td>attrReplacements</td>
+              <td>This attribute is optional and contains an object of key-value-pairs of attribute shotcuts</td>
+            </tr>            
           </table>
 
           An alias placeholder may still use parameters, even when the registered alias definition already defines
           the same parameters as default values. In this case the parameters of the alias definition are overwritten.
 
           <pre class="padding"><code>// alias definition
-${Alias key: "myDate", replaceKey: "Date", attributes: {outputformat: "dd.MM.yyyy"} }
+${Alias 
+   key: "myDate", 
+   replaceKey: "Date", 
+   attributes: {outputformat: "dd.MM.yyyy"}
+   attrReplacements: {
+     of:"outputformat", 
+     if:"inputformat",
+     v:"value"
+   }
+}
 
 // prints current date similar to 2025-02-25
 ${Date}
@@ -1296,10 +1345,10 @@ ${Date}
 ${myDate}
 
 // prints current date similar to 2025/02/25
-${myDate outputformat:"yyyy/MM/dd"}
+${myDate of:"yyyy/MM/dd"}
           
 // prints: 12.12.2024
-${myDate value:"2024-12-12"}</code></pre>
+${myDate v:"2024-12-12"}</code></pre>
             
 
         <h3>${PageStyle}-Command</h3>

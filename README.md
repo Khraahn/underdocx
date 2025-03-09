@@ -1,7 +1,8 @@
 # Welcome to ${underdocx}
 
-Underdocx is an extendable open source framework to manipulate ODT Documents
-(LibreOffice / OpenOffice). It is a template engine and 
+Underdocx is an extendable open source Java framework to manipulate ODT Documents (LibreOffice Writer),
+ODG Graphics (LibreOffice Draw), ODP Presentations (LibreOffice Impress) and ODS Speadsheets (LibreOffice Calc)
+and more formats in the near future. It is a template engine and 
 uses different types of placeholders that can be
 found and replaced by custom texts, images, tables and other documents.
 Also documents can be converted to PDF if LibreOffice has been installed.
