@@ -44,10 +44,10 @@ public class DateCommandHandler<C extends DocContainer<D>, D> extends AbstractTe
     private static String DEFAULT_FORMAT_DATE = "yyyy-MM-dd";
 
     private static PredefinedDataPicker<String> valueDataPicker = new StringConvertDataPicker().asPredefined("value");
-    private static PredefinedDataPicker<String> outputformatDataPicker = new StringConvertDataPicker().asPredefined("outputformat");
-    private static PredefinedDataPicker<String> inputformatDataPicker = new StringConvertDataPicker().asPredefined("inputformat");
+    private static PredefinedDataPicker<String> outputFormatDataPicker = new StringConvertDataPicker().asPredefined("outputFormat");
+    private static PredefinedDataPicker<String> inputFormatDataPicker = new StringConvertDataPicker().asPredefined("inputFormat");
     private static final PredefinedDataPicker<String> langPicker = new StringConvertDataPicker().asPredefined("lang");
-    private static final PredefinedDataPicker<String> templatecellPicker = new StringConvertDataPicker().asPredefined("templatecell");
+    private static final PredefinedDataPicker<String> templateCellPicker = new StringConvertDataPicker().asPredefined("templateCell");
 
     public DateCommandHandler() {
         super(new Regex("Date"));
@@ -59,8 +59,8 @@ public class DateCommandHandler<C extends DocContainer<D>, D> extends AbstractTe
 
     @Override
     protected CommandHandlerResult tryExecuteTextualCommand() {
-        String inFormat = getFormat(inputformatDataPicker);
-        String outFormat = getFormat(outputformatDataPicker);
+        String inFormat = getFormat(inputFormatDataPicker);
+        String outFormat = getFormat(outputFormatDataPicker);
         String dateStr = valueDataPicker.pickData(dataAccess, placeholderData.getJson()).getOptionalValue().orElse(null);
         String langCode = langPicker.pickData(dataAccess, placeholderData.getJson()).getOptionalValue().orElse(null);
 
@@ -73,7 +73,7 @@ public class DateCommandHandler<C extends DocContainer<D>, D> extends AbstractTe
         LocalDate date = dateStr == null ? LocalDate.now() : LocalDate.parse(dateStr, inFormatter);
         String replaceString = date.format(outFormatter);
         new ReplaceWithTextModifier<C, ParametersPlaceholderData, D>().modify(selection, replaceString);
-        templatecellPicker.pickData(dataAccess, placeholderData.getJson()).getOptionalValue().ifPresent(templateCell -> {
+        templateCellPicker.pickData(dataAccess, placeholderData.getJson()).getOptionalValue().ifPresent(templateCell -> {
             new TableCellModifier<C, D>().modify(selection, new TableCellModifierData.Simple(date, templateCell));
         });
         return CommandHandlerResult.EXECUTED_PROCEED;

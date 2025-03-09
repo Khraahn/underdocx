@@ -40,9 +40,9 @@ import java.util.Optional;
 
 public class ForRowsCommandHandler<C extends DocContainer<D>, D> extends AbstractForCommandHandler<C, D> {
 
-    public static String ROWGROUPSIZE_ATTR = "rowgroupsize";
-    public static final String INLIST_ATTR = "parenttable";
-    public static final String TABLE_NAME = "tablename";
+    public static String ROWGROUPSIZE_ATTR = "rowGroupSize";
+    public static final String INLIST_ATTR = "parentTable";
+    public static final String TABLE_NAME = "tableName";
 
     private static final PredefinedAttributesInterpreter<Optional<List<Integer>>> rowsListInterpreter =
             AttributeInterpreterFactory.createIntListAttributeInterpreter(TABLEROW_ATTR);

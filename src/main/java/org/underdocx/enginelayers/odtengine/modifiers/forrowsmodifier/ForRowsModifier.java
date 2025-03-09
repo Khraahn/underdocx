@@ -59,7 +59,7 @@ public class ForRowsModifier<C extends DocContainer<D>, D> extends AbstractAreaM
     @Override
     protected ModifierNodeResult modify() {
         resultNode = null;
-        Problems.INVALID_VALUE.check(modifierData.getRepeatRows().getLength() % modifierData.getRowGroupSize() == 0, "rowgroupsize", "" + modifierData.getRowGroupSize());
+        Problems.INVALID_VALUE.check(modifierData.getRepeatRows().getLength() % modifierData.getRowGroupSize() == 0, "rowGroupSize", "" + modifierData.getRowGroupSize());
         List<Node> clonedRows = cloneRows();
         insertPlaceholdersInClonedRows(clonedRows);
         DeletePlaceholderModifier.modify(selection.getNode(), DeletePlaceholderModifierData.DEFAULT);

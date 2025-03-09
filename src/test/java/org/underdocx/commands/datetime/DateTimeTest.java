@@ -40,9 +40,9 @@ public class DateTimeTest extends AbstractOdtTest {
     public void testDate() {
         String content = """
                 A ${Date}
-                B ${Date outputformat:"dd.MM.yyyy"}
-                C ${Date value:"2022-03-04",  outputformat:"dd.MM.yyyy"}
-                D ${Date value:"04.03.2022",  inputformat:"dd.MM.yyyy", outputformat:"dd.MM.yyyy"}                
+                B ${Date outputFormat:"dd.MM.yyyy"}
+                C ${Date value:"2022-03-04",  outputFormat:"dd.MM.yyyy"}
+                D ${Date value:"04.03.2022",  inputFormat:"dd.MM.yyyy", outputFormat:"dd.MM.yyyy"}                
                 """;
         OdtContainer doc = new OdtContainer(content);
         OdtEngine engine = new OdtEngine(doc);
@@ -61,9 +61,9 @@ public class DateTimeTest extends AbstractOdtTest {
     public void testTime() {
         String content = """
                 A ${Time}
-                B ${Time outputformat:"HH.mm.ss"}
-                C ${Time value:"2011-12-02 08:42:11", outputformat:"HH.mm.ss"}
-                D ${Time value:"2011-12-02 08.42.11", inputformat:"yyyy-MM-dd HH.mm.ss", outputformat:"HH.mm"}                
+                B ${Time outputFormat:"HH.mm.ss"}
+                C ${Time value:"2011-12-02 08:42:11", outputFormat:"HH.mm.ss"}
+                D ${Time value:"2011-12-02 08.42.11", inputFormat:"yyyy-MM-dd HH.mm.ss", outputFormat:"HH.mm"}                
                 """;
         OdtContainer doc = new OdtContainer(content);
         OdtEngine engine = new OdtEngine(doc);

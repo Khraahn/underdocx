@@ -63,8 +63,8 @@ public abstract class AbstractForCommandHandler<C extends DocContainer<D>, D> ex
 
     public static final String VALUE_ATTR = "value";
     public static final String AS_ATTR = "as";
-    public static final String TABLEROW_ATTR = "tablerow";
-    public static final String LISTITEM_ATTR = "listitem";
+    public static final String TABLEROW_ATTR = "tableRow";
+    public static final String LISTITEM_ATTR = "listItem";
 
 
     protected static final PredefinedAttributesInterpreter<Optional<String>> getValueStringAttr = AttributeInterpreterFactory.createStringAttributeInterpreter(VALUE_ATTR);

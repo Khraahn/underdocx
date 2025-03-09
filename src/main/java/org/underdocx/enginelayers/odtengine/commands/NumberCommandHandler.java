@@ -53,9 +53,9 @@ public class NumberCommandHandler<C extends DocContainer<D>, D> extends Abstract
     private static final PredefinedDataPicker<String> suffixPicker = new StringConvertDataPicker().asPredefined("suffix");
     private static final PredefinedDataPicker<Number> multiplierPicker = new NumberDataPicker().asPredefined("multiplier");
     private static final PredefinedDataPicker<Number> summandPicker = new NumberDataPicker().asPredefined("summand");
-    private static final PredefinedDataPicker<Boolean> useModifiedForCellPicker = new BooleanDataPicker().asPredefined("usemodified");
+    private static final PredefinedDataPicker<Boolean> useModifiedForCellPicker = new BooleanDataPicker().asPredefined("useModified");
 
-    private static final PredefinedDataPicker<String> templatecellPicker = new StringConvertDataPicker().asPredefined("templatecell");
+    private static final PredefinedDataPicker<String> templateCellPicker = new StringConvertDataPicker().asPredefined("templateCell");
 
     public NumberCommandHandler() {
         super(KEY);
@@ -67,7 +67,7 @@ public class NumberCommandHandler<C extends DocContainer<D>, D> extends Abstract
         StringOutputCommandModule<C, D> module = new StringOutputCommandModule<>(getConfig());
         Pair<CommandHandlerResult, MissingDataCommandModuleResult.MissingDataCommandModuleResultType> result = module.execute(selection);
         if (result.right == MissingDataCommandModuleResult.MissingDataCommandModuleResultType.VALUE_RECEIVED) {
-            templatecellPicker.pickData(dataAccess, placeholderData.getJson()).getOptionalValue().ifPresent(templacecell -> {
+            templateCellPicker.pickData(dataAccess, placeholderData.getJson()).getOptionalValue().ifPresent(templacecell -> {
                 Number number = new NumberPicker().asPredefined("value").pickData(dataAccess, placeholderData.getJson()).getOptionalValue().get().right;
                 new TableCellModifier<C, D>().modify(selection, new TableCellModifierData.Simple(number, templacecell));
             });

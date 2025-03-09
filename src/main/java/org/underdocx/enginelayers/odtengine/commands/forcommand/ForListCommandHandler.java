@@ -43,8 +43,8 @@ public class ForListCommandHandler<C extends DocContainer<D>, D> extends Abstrac
 
     @Override
     protected ModifierNodeResult callModifier(ForModifierData forModifierData) {
-        Integer listitem = indexInterpreter.interpretAttributes(attributes).orElse(0);
-        ForListModifierData listData = new ForListModifierData.DefaultForListModifierData(forModifierData, listitem);
+        Integer listItem = indexInterpreter.interpretAttributes(attributes).orElse(0);
+        ForListModifierData listData = new ForListModifierData.DefaultForListModifierData(forModifierData, listItem);
         return new ForListModifier<C, D>().modify(selection, listData);
     }
 

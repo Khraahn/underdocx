@@ -46,10 +46,10 @@ public class TimeCommandHandler<C extends DocContainer<D>, D> extends AbstractTe
     private static String DEFAULT_OUT_FORMAT_TIME = "HH:mm:ss";
 
     private static PredefinedDataPicker<String> valueDataPicker = new StringConvertDataPicker().asPredefined("value");
-    private static PredefinedDataPicker<String> outputformatDataPicker = new StringConvertDataPicker().asPredefined("outputformat");
-    private static PredefinedDataPicker<String> inputformatDataPicker = new StringConvertDataPicker().asPredefined("inputformat");
+    private static PredefinedDataPicker<String> outputFormatDataPicker = new StringConvertDataPicker().asPredefined("outputFormat");
+    private static PredefinedDataPicker<String> inputFormatDataPicker = new StringConvertDataPicker().asPredefined("inputFormat");
     private static final PredefinedDataPicker<String> langPicker = new StringConvertDataPicker().asPredefined("lang");
-    private static final PredefinedDataPicker<String> templatecellPicker = new StringConvertDataPicker().asPredefined("templatecell");
+    private static final PredefinedDataPicker<String> templateCellPicker = new StringConvertDataPicker().asPredefined("templateCell");
 
     public TimeCommandHandler() {
         super(new Regex("Time"));
@@ -66,8 +66,8 @@ public class TimeCommandHandler<C extends DocContainer<D>, D> extends AbstractTe
 
     @Override
     protected CommandHandlerResult tryExecuteTextualCommand() {
-        String inFormat = getFormat(true, inputformatDataPicker);
-        String outFormat = getFormat(false, outputformatDataPicker);
+        String inFormat = getFormat(true, inputFormatDataPicker);
+        String outFormat = getFormat(false, outputFormatDataPicker);
         String dateStr = valueDataPicker.pickData(dataAccess, placeholderData.getJson()).getOptionalValue().orElse(null);
         String langCode = langPicker.pickData(dataAccess, placeholderData.getJson()).getOptionalValue().orElse(null);
         DateTimeFormatter outFormatter = DateTimeFormatter.ofPattern(outFormat);
@@ -79,7 +79,7 @@ public class TimeCommandHandler<C extends DocContainer<D>, D> extends AbstractTe
         LocalDateTime time = dateStr == null ? LocalDateTime.now() : LocalDateTime.parse(dateStr, inFormatter);
         String replaceString = time.format(outFormatter);
         new ReplaceWithTextModifier<C, ParametersPlaceholderData, D>().modify(selection, replaceString);
-        templatecellPicker.pickData(dataAccess, placeholderData.getJson()).getOptionalValue().ifPresent(templateCell -> {
+        templateCellPicker.pickData(dataAccess, placeholderData.getJson()).getOptionalValue().ifPresent(templateCell -> {
             new TableCellModifier<C, D>().modify(selection, new TableCellModifierData.Simple(time, templateCell));
         });
         return CommandHandlerResult.EXECUTED_PROCEED;
