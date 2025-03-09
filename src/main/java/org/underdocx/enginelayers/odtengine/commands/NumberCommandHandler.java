@@ -56,6 +56,7 @@ public class NumberCommandHandler<C extends DocContainer<D>, D> extends Abstract
     private static final PredefinedDataPicker<Boolean> useModifiedForCellPicker = new BooleanDataPicker().asPredefined("useModified");
 
     private static final PredefinedDataPicker<String> templateCellPicker = new StringConvertDataPicker().asPredefined("templateCell");
+    public static final String DEFAULT_FORMAT = "#,###.##";
 
     public NumberCommandHandler() {
         super(KEY);
@@ -136,7 +137,7 @@ public class NumberCommandHandler<C extends DocContainer<D>, D> extends Abstract
                     }
                 }
 
-                String formatToUse = format == null ? "#,###.##" : format;
+                String formatToUse = format == null ? DEFAULT_FORMAT : format;
                 Locale local = langCode == null ? Locale.getDefault() : Locale.forLanguageTag(langCode);
                 DecimalFormat df = new DecimalFormat(formatToUse, new DecimalFormatSymbols(local));
                 if (useModified) {

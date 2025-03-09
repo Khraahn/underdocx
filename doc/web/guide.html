@@ -63,6 +63,9 @@
         to generate the concrete document. This is a simplified overview that Underdocx does:
         <div class="imageContainer"><img src="images/overview.png" /></div>
 
+        Templates and data can be combined by a simple programming interface (API), but Underdocx can 
+        also be used as standalone command line tool (CLI).
+
         <h3>Open Source</h3>
         Underdocx is free and uses the
         <a href="https://github.com/winterrifier/underdocx/blob/main/LICENSE" target="_blank">MIT
@@ -284,7 +287,7 @@ engine.setModel(model);</code></pre>
         </table>
 
         <h2>API Introduction</h2>
-        <h3>Document Tyoes</h3>
+        <h3>Document Types</h3>
         <h4>OdtContainer</h4>
         <code-word>OdtContainer</code-word> instances represent an ODT document which can be modified by
         the engine or by user. This class provides multiple constructors to load
@@ -366,7 +369,9 @@ Resource resource = new Resouce.DataResource(byte[] data);
 // Creates a Resource instance based on an URI/URL
 Resource resource = new Resouce.UriResource(String uri);
 // Creates a Resource instance based on an URI/URL
-Resource resource = new Resouce.UriResource(URI uri);      </code></pre>
+Resource resource = new Resouce.UriResource(URI uri);
+// Creates a Resource instance based on a Base64 encoded String
+Resource resource = new Resouce.Base64Resource(String b64Data);      </code></pre>
 
         <h3>DataNode</h3>
 
@@ -878,7 +883,7 @@ Item1
         The example below uses the <code-word>${Push}</code-word>-Command to define
         a variable "data" that contains a list of person objects.
         The <code-word>${For}</code-word>-command uses this "data"-list to generate a table.
-        <code-word>tableRowRow:[1,6]</code-word> indicates that indices 1 to 6 are
+        <code-word>tableRow:[2,7]</code-word> indicates that indices 2 to 7 are
         used for the loops. Attribute <code-word>rowGroupSize:3</code-word> ensures each item receives 3
         rows of the repeatable rows.
         As you can see in the example, cells of multiple rows can be merged as long
@@ -886,6 +891,14 @@ Item1
 
         <div class="imageContainer"><img src="images/guide/tableLoopGroup.png" /></div>
         <div class="imageContainer"><img src="images/guide/tableLoopGroupResult.png" /></div>
+
+        When the table can not be placed between <code-word>${For}</code-word> and <code-word>${EndFor}</code-word>
+        (for example in Spreadsheets), you can use the attribute <code-word>tableName</code-word> to address the 
+        target table, or you can use <code-word>tableParent:true</code-word> to address the table in which the
+        command is located in. In both cases ensure the <code-word>${EndFor}</code-word> command directly follows 
+        the <code-word>${For}</code-word> command.
+
+        <div class="imageContainer"><img src="images/guide/ForTableName.png" /></div>
 
         <h4>Loop of ListItems</h4>
 
@@ -1031,6 +1044,14 @@ ${EndIf}</code></pre>
           </tr>
           <tr>
             <td>
+              base64
+            </td>
+            <td>
+              Attribute refers to a Base64 encoded String that contains the binary data of the document 
+            </td>
+          </tr>          
+          <tr>
+            <td>
               resource
             </td>
             <td>
@@ -1089,6 +1110,12 @@ ${EndIf}</code></pre>
             </td>
           </tr>
           <tr>
+            <td>base64</td>
+            <td>
+              Attribute refers to a base64 encoded String that contains the binary data of the document
+            </td>
+          </tr>          
+          <tr>
             <td>resource</td>
             <td>
               Attribute refers to a Resource-object that represents the document
@@ -1116,7 +1143,7 @@ ${EndIf}</code></pre>
         This command is a special placeholder, because it is not a plain textual command. Images placeholder are real
         images that are placed during template creation. An image becomes a placeholder image by adding
         the <code-word>${Image}</code-word> as image name. This textual part of the placeholder is located
-        in the "Name" field of the "Options"-tab of the "Properties..."-window of the image, which is selectable
+        in the "Description" field of the "Options"-tab of the "Properties..."-window of the image, which is selectable
         when you right-click the image.
 
         <div class="imageContainer"><img src="images/guide/ImageContextMenu.png" /></div>
@@ -1138,7 +1165,7 @@ ${EndIf}</code></pre>
           </tr>
           <tr>
             <td>uri</td>
-            <td>required if not data or resource has been used</td>
+            <td>required if not data, base64 or resource has been used</td>
             <td>
               Attribute refers to a String that contains an URI to the image to use
             </td>
@@ -1146,15 +1173,23 @@ ${EndIf}</code></pre>
 
           <tr>
             <td>data</td>
-            <td>required if not resource or uri has been used</td>
+            <td>required if not resource, base64 or uri has been used</td>
             <td>
               Attribute refers to a byte-Array that contains the binary data of the image
             </td>
           </tr>
 
           <tr>
+            <td>base64</td>
+            <td>required if not resource, data or uri has been used</td>
+            <td>
+              Attribute refers to a base64 encoded String that contains the binary data of the image
+            </td>
+          </tr>          
+
+          <tr>
             <td>resource</td>
-            <td>required if not data or uri has been used</td>
+            <td>required if not data, base64 or uri has been used</td>
             <td>
               Attribute refers to a Resource-object that represents the image
             </td>
@@ -1211,12 +1246,29 @@ ${EndIf}</code></pre>
           </tr>
           <tr>
             <td>inputFormat</td>
-            <td>expected date-format of the string addressed by attribute "value". Default format is "yyyy-MM-dd"</td>
+            <td>expected date-format of the string addressed by attribute "value". Default format is "yyyy-MM-dd"
+              See Javas DateTimeFormatter about details of the format syntax.
+            </td>
           </tr>
           <tr>
             <td>outputFormat</td>
-            <td>preferred date format to display after replacement. Default format is "yyyy-MM-dd" </td>
+            <td>preferred date format to display after replacement. Default format is "yyyy-MM-dd"
+              See Javas DateTimeFormatter about details of the format syntax.
+            </td>
           </tr>
+          <tr>
+            <td>lang</td>
+            <td>the language code that might influence the date formatting, e.g. "en-US" or "de-DE"</td>
+          </tr>          
+          <tr>
+            <td>templateCell</td>
+            <td>Use this attribute when the command is used within spreadsheet table cell (ODS).
+              This attribute contains the address (table name and coordinates)
+              to a cell that is formatted as expected. The template cell might be located in a different (temporary)
+              table. For example templateCell:"TmpTable.D1"
+            </td>
+          </tr>
+
         </table>
 
         Examples:
@@ -1238,6 +1290,134 @@ ${Date value:"24.12.2024" inputFormat:"dd.MM.yyyy"}
 
 // prints the date stored in variable "date" 
 ${Date $value:"date"}</code></pre>
+
+        <h3>${Time}-Command</h3>
+        This command similar to the <code-word>${Date}</code-word> command.
+        It uses the <code-word>value</code-word>-attribute to read
+        a time string from a variable, model property or from attribute directly. This
+        command can also be used to print the current time, in this case don't use the
+        <code-word>value</code-word>-attribute
+
+        <table>
+          <tr>
+            <th>
+              Attribute
+            </th>
+            <th>
+              Description
+            </th>
+          </tr>
+          <tr>
+            <td>value</td>
+            <td>time string. If not set, the current date will be used. Ensure the string also the parsable
+              data for date and time, even when you only want to print out the time </td>
+          </tr>
+          <tr>
+            <td>inputFormat</td>
+            <td>expected time-format of the string addressed by attribute "value". Default format is "yyyy-MM-dd HH:mm:ss"
+              See Javas DateTimeFormatter about details of the format syntax.
+              Ensure the string contains data for date and time, even when you only want to print out the time
+            </td>
+          </tr>
+          <tr>
+            <td>outputFormat</td>
+            <td>preferred time format to display after replacement. Default format is "yyyy-MM-dd HH:mm:ss"
+              See Javas DateTimeFormatter about details of the format syntax.
+            </td>
+          </tr>
+          <tr>
+            <td>lang</td>
+            <td>the language code that might influence the date formatting, e.g. "en-US" or "de-DE"</td>
+          </tr>               
+          <tr>
+            <td>templateCell</td>
+            <td>Use this attribute when the command is used within spreadsheet table cell (ODS).
+              This attribute contains the address (table name and coordinates)
+              to a cell that is formatted as expected. The template cell might be located in a different (temporary)
+              table. For example templateCell:"TmpTable.D1"
+            </td>
+          </tr>
+
+        </table>
+
+        Examples:
+
+        <pre class="padding"><code>// prints the current time, e.g. 2025-01-25 11:02:45
+${Time}
+
+// prints the current time, e.g. 11:02
+${Time outputFormat:"HH:mm"}
+
+// prints 2024-12-24 02:03:45            
+${Time value:"2024-12-24 02:03:45"}</code></pre>        
+
+        <h3>${Number}-Command</h3>
+        This command allows you to format number outputs with basic calculations. 
+
+        <table>
+          <tr>
+            <th>
+              Attribute
+            </th>
+            <th>
+              Description
+            </th>
+          </tr>
+          <tr>
+            <td>value</td>
+            <td>the number to display (model node, variable or attribute)</td>
+          </tr>
+          <tr>
+            <td>format</td>
+            <td>how to format the number. Default format is "#,###.##". Please read Java documentation of 
+              DecimalFormat for formatting syntax.
+            </td>
+          </tr>
+          <tr>
+            <td>lang</td>
+            <td>the language code that might influence the date formatting, e.g. "en-US" or "de-DE"</td>
+          </tr>                 
+          <tr>
+            <td>multiplier</td>
+            <td>multiplies the value by this factor, e.g. to calcualted percentage (0.2 => 20 %)</td>
+          </tr>
+          <tr>
+            <td>summand</td>
+            <td>adds this value to the base value, e.g. to calculate row number from index (0 => 1)</td>
+          </tr>
+          <tr>
+            <td>prefix</td>
+            <td>adds a string prefix</td>
+          </tr>
+          <tr>
+            <td>suffix</td>
+            <td>adds a string suffix, can be used for units, percentage or currency, e.g. 2.30 => 2.30 €</td>
+          </tr>
+          <tr>
+            <td>templateCell</td>
+            <td>Use this attribute when the command is used within spreadsheet table cell (ODS).
+              This attribute contains the address (table name and coordinates)
+              to a cell that is formatted as expected. The template cell might be located in a different (temporary)
+              table. For example templateCell:"TmpTable.D1"
+            </td>
+          </tr>
+          <tr>
+            <td>useModified</td>
+            <td>Use this attribute when the command is used within spreadsheet table cell (ODS).
+              If set to true, the modified value (by multiplier and summand) will be stored as new cell value,
+              Otherwise the origin value will be stored as cell value. For example use useModified:false and multiplier:100
+              for percentage calculation, use summand:1 and useModified:true to increase current index by 1
+            </td>
+
+          </tr>
+        </table>      
+        Examples:
+        <pre class="padding"><code>// prints: 2.00€
+${Number value:2, format:"#.00", suffix: "€"}
+
+// prints: 20%
+${Number value:0.2, multiplier: 100, suffix: "%"}</code></pre>             
+
 
         <h3>${Join}-Command</h3>
         Use this command to combine a list of strings and separate them with a separator. You can also limit the output
@@ -1350,6 +1530,34 @@ ${myDate of:"yyyy/MM/dd"}
 // prints: 12.12.2024
 ${myDate v:"2024-12-12"}</code></pre>
             
+        <h3>${Remove}</h3>
+        Removes the paragraph, page or table which contains this placeholder. In ODS, ODG and ODS documents
+        you could use this command to create a temporary area with commands that will be removed in the
+        final document. In this temporary area you can define ${Alias} commands or ${For} statements
+        addressing remote tables.
+
+        <table>
+          <tr>
+            <th>
+              Attribute
+            </th>
+            <th>
+              Description
+            </th>
+          </tr>
+          <tr>
+            <td>type</td>
+            <td>type of element that shall be removed, allowed values are page, table and paragraph </td>
+          </tr>
+          <tr>
+            <td>now</td>
+            <td>if true, removal will be executed immediately. All following placeholders within the
+              removed element will not be executed. Use now:false to let the template engine remove the element
+              later
+            </td>
+          </tr>         
+        </table>        
+
 
         <h3>${PageStyle}-Command</h3>
 
@@ -1481,6 +1689,27 @@ ${myDate v:"2024-12-12"}</code></pre>
         Ensure environment variable <code-word>LIBREOFFICE</code-word> contains the path of the libre office
         installation,
         for example "C:/Program Files/LibreOffice/program/soffice.exe" on windows.
+
+        <h2>Command Line Interface (CLI)</h2>
+
+        When Underdocx is feeded with the template document and all required data, it can
+        build the final document without use of the API. Unfortunately there is currenty no download
+        available for the CLI tool, therefore you need to build the CLI version manually
+
+        <h3>Build Underdocx as CLI Tool</h3>
+        You need a "git", "JDK" and "Maven" to build your CLI variant of underdocx. When these tools are installed
+        type these commands:
+
+        <pre class="padding"><code>git clone https://github.com/winterrifier/underdocx.git
+cd underdocx
+mvn clean install -P buildCli</code></pre>
+         After execution there will be a target folder that contains ""
+
+        <h3>Usage of CLI</h3>
+        <h3>Underdocx Json format</h3>
+
+
+
 
         <h2>Custom Extensions</h2>
 

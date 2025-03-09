@@ -126,6 +126,9 @@
     <profiles>
         <profile>
             <id>deployOnMaven</id>
+            <activation>
+                <activeByDefault>false</activeByDefault>
+            </activation>
             <build>
                 <plugins>
                     <plugin>
@@ -186,6 +189,9 @@
 
         <profile>
             <id>buildCli</id>
+            <activation>
+                <activeByDefault>false</activeByDefault>
+            </activation>
             <build>
                 <plugins>
                     <plugin>
