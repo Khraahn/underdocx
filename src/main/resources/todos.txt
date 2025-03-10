@@ -1,4 +1,6 @@
 - Features
+  . Schrift
+  . Rechtschr
   - txt dateien unterstützen
   - später ggf. docx unterstützen
 - Bekannte Probleme:
