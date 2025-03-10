@@ -1,7 +1,7 @@
 body, html, .bodyclass {
 	font-weight:normal;
 	font-family:Helvetica,Helv;
-	font-size:14px;
+	font-size:16px;
     padding: 0px;
     margin: 0px;
     background-color: #eee;
@@ -10,10 +10,11 @@ body, html, .bodyclass {
 
 #mainContent {
     padding: 5px;
-    max-width: 600px;
+    max-width: 900px;
     min-width: 100px;
     align-self: center;
     flex-shrink: 100;
+
 }
 #mainContentContainer {
     display: flex;
@@ -21,6 +22,8 @@ body, html, .bodyclass {
     align-content: center;
     flex-grow: 2;
     justify-content: center;
+    flex-shrink: 100;
+    min-width: 100
 }
 
 .title {
