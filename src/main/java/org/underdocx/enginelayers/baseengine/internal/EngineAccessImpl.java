@@ -24,14 +24,14 @@ SOFTWARE.
 
 package org.underdocx.enginelayers.baseengine.internal;
 
-import org.underdocx.common.doc.DocContainer;
 import org.underdocx.common.enumerator.LookAheadEnumerator;
 import org.underdocx.common.tools.Convenience;
 import org.underdocx.common.types.Pair;
+import org.underdocx.doctypes.DocContainer;
 import org.underdocx.enginelayers.baseengine.EngineAccess;
 import org.underdocx.enginelayers.baseengine.PlaceholdersProvider;
 import org.underdocx.enginelayers.baseengine.SelectedNode;
-import org.underdocx.enginelayers.baseengine.modifiers.EngineListener;
+import org.underdocx.enginelayers.baseengine.EngineListener;
 import org.w3c.dom.Node;
 
 import java.util.List;

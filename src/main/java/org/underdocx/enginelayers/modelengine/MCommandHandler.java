@@ -24,7 +24,7 @@ SOFTWARE.
 
 package org.underdocx.enginelayers.modelengine;
 
-import org.underdocx.common.doc.DocContainer;
+import org.underdocx.doctypes.DocContainer;
 import org.underdocx.enginelayers.baseengine.CommandHandler;
 import org.underdocx.enginelayers.baseengine.CommandHandlerResult;
 import org.underdocx.enginelayers.baseengine.Selection;

@@ -24,8 +24,8 @@ SOFTWARE.
 
 package org.underdocx.enginelayers.baseengine.internal;
 
-import org.underdocx.common.doc.DocContainer;
 import org.underdocx.common.placeholder.TextualPlaceholderToolkit;
+import org.underdocx.doctypes.DocContainer;
 import org.underdocx.enginelayers.baseengine.PlaceholdersProvider;
 import org.underdocx.enginelayers.baseengine.SelectedNode;
 import org.w3c.dom.Node;

@@ -7,7 +7,7 @@ uses different types of placeholders that can be
 found and replaced by custom texts, images, tables and other documents.
 Also documents can be converted to PDF if LibreOffice has been installed.
 
-![Overview](src/main/resources/overview.png)
+![Overview](doc/images/overview.png)
 
 ## underdocx.org
 Please visit [underdocx.org](https://underdocx.org) to get additional information and
@@ -47,7 +47,7 @@ Here is an example to load and manipulate a LibreOffice document with multiple p
 Some of these placeholders stand for simple texts, other represent an other
 document that shall be imported. Images can also represent placeholders that shall be exchanged:
 
-![Unchanged Doc](src/main/resources/demo/demoUnchanged.png)
+![Unchanged Doc](doc/images/demo/demoUnchanged.png)
 
 This code snipped reads the template document above and replaces the placeholders with data
 
@@ -75,7 +75,7 @@ doc.save(os);
 ```
 And you get a filled document like this one:
 
-![Changed Doc](src/main/resources/demo/demoChanged.png)
+![Changed Doc](doc/images/demo/demoChanged.png)
 
 When LibreOffice is installed and LIBREOFFICE environment variable is set correctly you 
 can also generate a PDF:
@@ -83,4 +83,4 @@ can also generate a PDF:
 ```java
 doc.writePDF(pos);
 ```
-![generated PDF](src/main/resources/demo/demoPdf.png)
+![generated PDF](doc/images/demo/demoPdf.png)

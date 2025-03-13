@@ -24,8 +24,7 @@ SOFTWARE.
 
 package org.underdocx.enginelayers.baseengine;
 
-import org.underdocx.common.doc.DocContainer;
-import org.underdocx.enginelayers.baseengine.modifiers.EngineListener;
+import org.underdocx.doctypes.DocContainer;
 import org.w3c.dom.Node;
 
 import java.util.List;

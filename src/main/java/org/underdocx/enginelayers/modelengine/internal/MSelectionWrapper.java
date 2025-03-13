@@ -24,8 +24,8 @@ SOFTWARE.
 
 package org.underdocx.enginelayers.modelengine.internal;
 
-import org.underdocx.common.doc.DocContainer;
 import org.underdocx.common.placeholder.TextualPlaceholderToolkit;
+import org.underdocx.doctypes.DocContainer;
 import org.underdocx.enginelayers.baseengine.EngineAccess;
 import org.underdocx.enginelayers.baseengine.Selection;
 import org.underdocx.enginelayers.modelengine.MSelection;

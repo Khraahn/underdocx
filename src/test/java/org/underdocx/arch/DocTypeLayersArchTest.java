@@ -37,10 +37,25 @@ public class DocTypeLayersArchTest {
     @ArchTest
     public static final ArchRule odfDoesNotAccessSubLayersOrEngine = ArchRuleDefinition.noClasses()
             .that().resideInAnyPackage("org.underdocx.doctypes.odf")
+            .or().resideInAnyPackage("org.underdocx.doctypes.odf.commands..")
+            .or().resideInAnyPackage("org.underdocx.doctypes.odf.modifiers..")
+            .or().resideInAnyPackage("org.underdocx.doctypes.odf.tools..")
+            .or().resideInAnyPackage("org.underdocx.doctypes.odf.placeholderprovider..")
+            .or().resideInAnyPackage("org.underdocx.doctypes.odf.commons..")
             .should().accessClassesThat().resideInAnyPackage(
                     "org.underdocx.doctypes.odf.odt..",
                     "org.underdocx.doctypes.odf.odg..",
                     "org.underdocx.doctypes.odf.odp..",
                     "org.underdocx.doctypes.msoffice..");
-    //"org.underdocx.enginelayers..");
+
+    @ArchTest
+    public static final ArchRule doctypeDoesNotAccessSubLayersOrEngine = ArchRuleDefinition.noClasses()
+            .that().resideInAnyPackage("org.underdocx.doctypes.")
+            .or().resideInAnyPackage("org.underdocx.doctypes.commands..")
+            .or().resideInAnyPackage("org.underdocx.doctypes.modifiers..")
+            .or().resideInAnyPackage("org.underdocx.doctypes.tools..")
+            .or().resideInAnyPackage("org.underdocx.doctypes.commons..")
+            .should().accessClassesThat().resideInAnyPackage(
+                    "org.underdocx.doctypes.odf..",
+                    "org.underdocx.doctypes.msoffice..");
 }

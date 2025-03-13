@@ -4,16 +4,15 @@ import org.odftoolkit.odfdom.doc.OdfTextDocument;
 import org.odftoolkit.odfdom.dom.element.text.TextParagraphElementBase;
 import org.odftoolkit.odfdom.incubator.search.TextNavigation;
 import org.odftoolkit.odfdom.incubator.search.TextSelection;
-import org.underdocx.common.doc.DocContainer;
 import org.underdocx.common.placeholder.basic.textnodeinterpreter.AbstractOdfTextNodeInterpreter;
 import org.underdocx.common.tools.Convenience;
 import org.underdocx.common.tree.Nodes;
-import org.underdocx.common.tree.TreeWalker;
+import org.underdocx.doctypes.DocContainer;
 import org.underdocx.doctypes.TextNodeInterpreter;
 import org.underdocx.doctypes.odf.constants.OdfAttribute;
 import org.underdocx.doctypes.odf.constants.OdfElement;
 import org.underdocx.doctypes.odf.odt.OdtContainer;
-import org.underdocx.doctypes.odf.odt.tools.OdfDomElementWalker;
+import org.underdocx.doctypes.odf.tools.OdfDomElementWalker;
 import org.underdocx.doctypes.odf.tools.OdfNodes;
 import org.underdocx.environment.UnderdocxEnv;
 import org.w3c.dom.Node;
@@ -21,7 +20,6 @@ import org.w3c.dom.Node;
 import java.awt.*;
 import java.io.File;
 import java.io.IOException;
-import java.util.List;
 import java.util.Optional;
 import java.util.regex.Pattern;
 
@@ -136,17 +134,7 @@ public class AbstractOdtTest extends AbstractTest {
         assertThat(countParagraphs(doc)).isEqualTo(expectation);
     }
 
-    protected int countElements(Node node, String elementName) {
-        TreeWalker walker = new TreeWalker(node, node);
-        int count = 0;
-        while (walker.hasNext()) {
-            TreeWalker.VisitState state = walker.next();
-            if (state.isBeginVisit() && state.getNode().getNodeName().equals(elementName)) {
-                count++;
-            }
-        }
-        return count;
-    }
+
 
     /*
 
@@ -203,15 +191,5 @@ public class AbstractOdtTest extends AbstractTest {
         }
     }
 
-    protected List<Node> findTextNode(Node tree, String text) {
-        return Convenience.buildList(result -> {
-            TreeWalker walker = new TreeWalker(tree, tree, null);
-            while (walker.hasNext()) {
-                TreeWalker.VisitState state = walker.next();
-                if (state.isBeginVisit() && state.getNode().getNodeType() == Node.TEXT_NODE && state.getNode().getTextContent().contains(text)) {
-                    result.add(state.getNode());
-                }
-            }
-        });
-    }
+
 }

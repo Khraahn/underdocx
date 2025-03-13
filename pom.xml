@@ -201,7 +201,7 @@
                         <configuration>
                             <archive>
                                 <manifest>
-                                    <mainClass>org.underdocx.doctypes.cli.UnderdocxEngineRunner</mainClass>
+                                    <mainClass>org.underdocx.common.cli.UnderdocxEngineRunner</mainClass>
                                 </manifest>
                             </archive>
                             <descriptorRefs>

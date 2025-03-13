@@ -26,7 +26,7 @@ package org.underdocx.enginelayers.parameterengine;
 
 import org.underdocx.doctypes.odf.AbstractOdfContainer;
 import org.underdocx.enginelayers.baseengine.PlaceholdersProvider;
-import org.underdocx.enginelayers.baseengine.internal.placeholdersprovider.AbstractTextualPlaceholdersProvider;
+import org.underdocx.doctypes.odf.placeholdersprovider.AbstractTextualPlaceholdersProvider;
 import org.underdocx.enginelayers.parameterengine.internal.ParametersPlaceholderToolkit;
 import org.odftoolkit.odfdom.doc.OdfDocument;
 

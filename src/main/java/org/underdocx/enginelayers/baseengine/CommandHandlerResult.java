@@ -26,8 +26,6 @@ package org.underdocx.enginelayers.baseengine;
 
 import org.underdocx.common.tools.Convenience;
 import org.underdocx.common.tree.Nodes;
-import org.underdocx.enginelayers.baseengine.modifiers.ModifierNodeResult;
-import org.underdocx.enginelayers.baseengine.modifiers.ModifierResult;
 import org.w3c.dom.Node;
 
 public interface CommandHandlerResult {

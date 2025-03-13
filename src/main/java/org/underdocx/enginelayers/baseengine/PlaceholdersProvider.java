@@ -24,9 +24,9 @@ SOFTWARE.
 
 package org.underdocx.enginelayers.baseengine;
 
-import org.underdocx.common.doc.DocContainer;
 import org.underdocx.common.enumerator.Enumerator;
 import org.underdocx.common.placeholder.TextualPlaceholderToolkit;
+import org.underdocx.doctypes.DocContainer;
 import org.w3c.dom.Node;
 
 import java.util.Optional;

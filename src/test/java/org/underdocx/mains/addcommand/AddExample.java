@@ -2,15 +2,16 @@ package org.underdocx.mains.addcommand;
 
 import org.odftoolkit.odfdom.doc.OdfTextDocument;
 import org.underdocx.common.types.Regex;
+import org.underdocx.doctypes.odf.commands.internal.AbstractTextualCommandHandler;
+import org.underdocx.doctypes.odf.modifiers.deleteplaceholder.DeletePlaceholderModifierData;
+import org.underdocx.doctypes.odf.modifiers.deleteplaceholder.OdfDeletePlaceholderModifier;
 import org.underdocx.doctypes.odf.odt.OdtContainer;
 import org.underdocx.doctypes.odf.odt.OdtEngine;
+import org.underdocx.doctypes.tools.datapicker.DataPickerResult;
+import org.underdocx.doctypes.tools.datapicker.IntegerDataPicker;
+import org.underdocx.doctypes.tools.datapicker.StringConvertDataPicker;
 import org.underdocx.enginelayers.baseengine.CommandHandlerResult;
-import org.underdocx.enginelayers.baseengine.modifiers.deleteplaceholder.DeletePlaceholderModifier;
-import org.underdocx.enginelayers.modelengine.model.simple.LeafDataNode;
-import org.underdocx.enginelayers.odtengine.commands.internal.AbstractTextualCommandHandler;
-import org.underdocx.enginelayers.odtengine.commands.internal.datapicker.DataPickerResult;
-import org.underdocx.enginelayers.odtengine.commands.internal.datapicker.IntegerDataPicker;
-import org.underdocx.enginelayers.odtengine.commands.internal.datapicker.StringConvertDataPicker;
+import org.underdocx.enginelayers.modelengine.data.simple.LeafDataNode;
 
 import java.io.File;
 import java.io.IOException;
@@ -31,7 +32,7 @@ public class AddExample {
                 return CommandHandlerResult.IGNORED;
             int result = aValue.value + bValue.value;
             dataAccess.pushVariable(target.value, new LeafDataNode<>(result));
-            DeletePlaceholderModifier.modify(selection.getNode());
+            new OdfDeletePlaceholderModifier().modify(selection.getNode(), DeletePlaceholderModifierData.DEFAULT);
             return CommandHandlerResult.EXECUTED_PROCEED;
         }
     }

@@ -24,7 +24,7 @@ SOFTWARE.
 
 package org.underdocx.enginelayers.baseengine;
 
-import org.underdocx.common.doc.DocContainer;
+import org.underdocx.doctypes.DocContainer;
 
 public interface CommandHandler<C extends DocContainer<D>, P, D> {
 

@@ -1,6 +1,7 @@
 package org.underdocx;
 
 import org.apache.commons.io.FileUtils;
+import org.underdocx.common.tools.Convenience;
 import org.underdocx.common.tree.TreeWalker;
 import org.underdocx.common.types.Resource;
 import org.w3c.dom.Document;
@@ -164,6 +165,30 @@ public abstract class AbstractTest {
             assertThat(state1.isBeginVisit()).isEqualTo(state2.isBeginVisit());
         }
         assertThat(walker2.hasNext()).isFalse();
+    }
+
+    protected int countElements(Node node, String elementName) {
+        TreeWalker walker = new TreeWalker(node, node);
+        int count = 0;
+        while (walker.hasNext()) {
+            TreeWalker.VisitState state = walker.next();
+            if (state.isBeginVisit() && state.getNode().getNodeName().equals(elementName)) {
+                count++;
+            }
+        }
+        return count;
+    }
+
+    protected List<Node> findTextNode(Node tree, String text) {
+        return Convenience.buildList(result -> {
+            TreeWalker walker = new TreeWalker(tree, tree, null);
+            while (walker.hasNext()) {
+                TreeWalker.VisitState state = walker.next();
+                if (state.isBeginVisit() && state.getNode().getNodeType() == Node.TEXT_NODE && state.getNode().getTextContent().contains(text)) {
+                    result.add(state.getNode());
+                }
+            }
+        });
     }
 
 

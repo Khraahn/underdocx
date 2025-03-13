@@ -73,7 +73,7 @@ pre {
     color: #333;
     border: solid thin black;
     overflow: auto;
-    font-size: 12px !important;
+    font-size: 14px !important;
     background-color: white;
 }
 .padding {
@@ -83,7 +83,7 @@ code {
     background-color: white;
 }
 code-word {
-    font-size: 14px;
+    font-size: 16px;
     font-family: monospace;
     background-color: #ddd;
     padding-left: 5px;
@@ -102,7 +102,7 @@ table, th, td {
     text-align: left;
     vertical-align: top;
     padding: 5px;
-    font-size: 12px;
+    font-size: 14px;
 }
 th {
     background-color: #bbb;

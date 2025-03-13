@@ -26,11 +26,11 @@ package org.underdocx.doctypes.odf.ods;
 
 import org.odftoolkit.odfdom.doc.OdfSpreadsheetDocument;
 import org.underdocx.doctypes.odf.AbstractOdfEngine;
+import org.underdocx.doctypes.odf.commands.*;
+import org.underdocx.doctypes.odf.commands.forcommand.ForCommandHandler;
+import org.underdocx.doctypes.odf.commands.forcommand.ForListCommandHandler;
+import org.underdocx.doctypes.odf.commands.forcommand.ForRowsCommandHandler;
 import org.underdocx.enginelayers.modelengine.ModelEngine;
-import org.underdocx.enginelayers.odtengine.commands.*;
-import org.underdocx.enginelayers.odtengine.commands.forcommand.ForCommandHandler;
-import org.underdocx.enginelayers.odtengine.commands.forcommand.ForListCommandHandler;
-import org.underdocx.enginelayers.odtengine.commands.forcommand.ForRowsCommandHandler;
 
 public class OdsEngine extends AbstractOdfEngine<OdsContainer, OdfSpreadsheetDocument> {
 
@@ -42,14 +42,14 @@ public class OdsEngine extends AbstractOdfEngine<OdsContainer, OdfSpreadsheetDoc
         engine.registerCommandHandler(parameters, new ShortModelStringCommandHandler<>());
         engine.registerCommandHandler(parameters, new ShortVarStringCommandHandler<>());
         engine.registerCommandHandler(parameters, new VariableCommandHandler<>());
-        engine.registerCommandHandler(parameters, new ForCommandHandler<>());
+        engine.registerCommandHandler(parameters, new ForCommandHandler());
         engine.registerCommandHandler(parameters, new DateCommandHandler<>());
         engine.registerCommandHandler(parameters, new TimeCommandHandler<>());
         engine.registerCommandHandler(parameters, new CounterCommandHandler<>());
         engine.registerCommandHandler(parameters, new IfCommandHandler<>());
-        engine.registerCommandHandler(parameters, new ForRowsCommandHandler<>());
+        engine.registerCommandHandler(parameters, new ForRowsCommandHandler());
         engine.registerCommandHandler(imagePlaceholdersProvider, new ImageCommandHandler<>());
-        engine.registerCommandHandler(parameters, new ForListCommandHandler<>());
+        engine.registerCommandHandler(parameters, new ForListCommandHandler());
         engine.registerCommandHandler(parameters, new PageStyleCommandHandler<>());
         engine.registerCommandHandler(parameters, multiCommandHandler);
         engine.registerCommandHandler(parameters, new JoinCommandHandler<>());

@@ -24,19 +24,19 @@ SOFTWARE.
 
 package org.underdocx.enginelayers.modelengine;
 
-import org.underdocx.common.doc.DocContainer;
 import org.underdocx.common.types.Pair;
+import org.underdocx.doctypes.DocContainer;
 import org.underdocx.enginelayers.baseengine.BaseEngine;
 import org.underdocx.enginelayers.baseengine.EngineAccess;
 import org.underdocx.enginelayers.baseengine.PlaceholdersProvider;
 import org.underdocx.enginelayers.baseengine.Selection;
 import org.underdocx.enginelayers.modelengine.dataaccess.DataAccess;
 import org.underdocx.enginelayers.modelengine.internal.MSelectionWrapper;
-import org.underdocx.enginelayers.modelengine.model.DataNode;
-import org.underdocx.enginelayers.modelengine.model.simple.MapDataNode;
-import org.underdocx.enginelayers.modelengine.modelpath.DataPath;
-import org.underdocx.enginelayers.modelengine.modelpath.elements.DataPathElement;
-import org.underdocx.enginelayers.modelengine.modelpath.elements.PropertyDataPathElement;
+import org.underdocx.enginelayers.modelengine.data.DataNode;
+import org.underdocx.enginelayers.modelengine.data.simple.MapDataNode;
+import org.underdocx.enginelayers.modelengine.datapath.DataPath;
+import org.underdocx.enginelayers.modelengine.datapath.elements.DataPathElement;
+import org.underdocx.enginelayers.modelengine.datapath.elements.PropertyDataPathElement;
 import org.underdocx.environment.err.Problems;
 import org.w3c.dom.Node;
 

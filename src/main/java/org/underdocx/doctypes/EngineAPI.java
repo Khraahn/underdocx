@@ -24,8 +24,8 @@ SOFTWARE.
 
 package org.underdocx.doctypes;
 
-import org.underdocx.enginelayers.modelengine.model.DataNode;
-import org.underdocx.enginelayers.modelengine.model.simple.MapDataNode;
+import org.underdocx.enginelayers.modelengine.data.DataNode;
+import org.underdocx.enginelayers.modelengine.data.simple.MapDataNode;
 import org.underdocx.environment.err.Problem;
 
 import java.io.InputStream;

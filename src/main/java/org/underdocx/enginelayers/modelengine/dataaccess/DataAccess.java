@@ -25,8 +25,8 @@ SOFTWARE.
 package org.underdocx.enginelayers.modelengine.dataaccess;
 
 import org.underdocx.common.types.Pair;
-import org.underdocx.enginelayers.modelengine.model.DataNode;
-import org.underdocx.enginelayers.modelengine.modelpath.DataPath;
+import org.underdocx.enginelayers.modelengine.data.DataNode;
+import org.underdocx.enginelayers.modelengine.datapath.DataPath;
 
 import java.util.Optional;
 

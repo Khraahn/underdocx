@@ -25,9 +25,9 @@ SOFTWARE.
 package org.underdocx.doctypes.odf.odg;
 
 import org.odftoolkit.odfdom.doc.OdfGraphicsDocument;
+import org.underdocx.common.cli.EngineProvider;
 import org.underdocx.common.types.Resource;
 import org.underdocx.doctypes.EngineAPI;
-import org.underdocx.doctypes.cli.EngineProvider;
 
 public class OdgEngineProvider implements EngineProvider<OdgContainer, OdfGraphicsDocument> {
     @Override

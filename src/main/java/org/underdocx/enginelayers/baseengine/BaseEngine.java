@@ -25,14 +25,13 @@ SOFTWARE.
 package org.underdocx.enginelayers.baseengine;
 
 import org.apache.commons.collections4.multimap.ArrayListValuedHashMap;
-import org.underdocx.common.doc.DocContainer;
 import org.underdocx.common.enumerator.LookAheadEnumerator;
 import org.underdocx.common.enumerator.SimpleLookAheadEnumerator;
 import org.underdocx.common.types.Pair;
+import org.underdocx.doctypes.DocContainer;
 import org.underdocx.enginelayers.baseengine.internal.EngineAccessImpl;
 import org.underdocx.enginelayers.baseengine.internal.PlaceholdersEnumerator;
 import org.underdocx.enginelayers.baseengine.internal.SelectionImpl;
-import org.underdocx.enginelayers.baseengine.modifiers.EngineListener;
 import org.underdocx.environment.UnderdocxEnv;
 import org.underdocx.environment.err.Problem;
 import org.underdocx.environment.err.Problems;

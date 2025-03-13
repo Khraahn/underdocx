@@ -13,7 +13,7 @@ import org.underdocx.enginelayers.baseengine.CommandHandler;
 import org.underdocx.enginelayers.baseengine.CommandHandlerResult;
 import org.underdocx.enginelayers.baseengine.PlaceholdersProvider;
 import org.underdocx.enginelayers.baseengine.Selection;
-import org.underdocx.enginelayers.baseengine.internal.placeholdersprovider.AbstractTextualPlaceholdersProvider;
+import org.underdocx.doctypes.odf.placeholdersprovider.AbstractTextualPlaceholdersProvider;
 import org.w3c.dom.Node;
 
 import java.io.File;

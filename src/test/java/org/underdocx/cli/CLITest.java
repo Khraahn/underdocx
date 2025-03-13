@@ -27,7 +27,7 @@ package org.underdocx.cli;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.underdocx.AbstractOdtTest;
-import org.underdocx.doctypes.cli.UnderdocxEngineRunner;
+import org.underdocx.common.cli.UnderdocxEngineRunner;
 import org.underdocx.doctypes.odf.odt.OdtContainer;
 import org.underdocx.doctypes.odf.odt.OdtEngine;
 

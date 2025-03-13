@@ -24,10 +24,10 @@ SOFTWARE.
 
 package org.underdocx.enginelayers.baseengine.internal;
 
-import org.underdocx.common.doc.DocContainer;
 import org.underdocx.common.enumerator.Enumerator;
 import org.underdocx.common.tree.Nodes;
 import org.underdocx.common.types.Pair;
+import org.underdocx.doctypes.DocContainer;
 import org.underdocx.enginelayers.baseengine.PlaceholdersProvider;
 import org.w3c.dom.Node;
 

@@ -25,9 +25,9 @@ SOFTWARE.
 package org.underdocx.doctypes.odf.ods;
 
 import org.odftoolkit.odfdom.doc.OdfSpreadsheetDocument;
+import org.underdocx.common.cli.EngineProvider;
 import org.underdocx.common.types.Resource;
 import org.underdocx.doctypes.EngineAPI;
-import org.underdocx.doctypes.cli.EngineProvider;
 
 public class OdsEngineProvider implements EngineProvider<OdsContainer, OdfSpreadsheetDocument> {
     @Override
