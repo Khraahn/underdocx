@@ -25,22 +25,24 @@ SOFTWARE.
 package org.underdocx.doctypes.odf.placeholdersprovider.dollar;
 
 import org.odftoolkit.odfdom.doc.OdfDocument;
+import org.odftoolkit.odfdom.dom.element.text.TextParagraphElementBase;
 import org.underdocx.common.codec.Codec;
+import org.underdocx.common.enumerator.Enumerator;
 import org.underdocx.common.placeholder.EncapsulatedNodesExtractor;
-import org.underdocx.common.placeholder.TextualPlaceholderToolkit;
 import org.underdocx.common.placeholder.basic.extraction.RegexExtractor;
 import org.underdocx.common.placeholder.basic.textnodeinterpreter.OdfTextNodeInterpreter;
 import org.underdocx.common.types.Regex;
 import org.underdocx.doctypes.TextNodeInterpreter;
 import org.underdocx.doctypes.odf.AbstractOdfContainer;
-import org.underdocx.doctypes.odf.placeholdersprovider.AbstractTextualPlaceholdersProvider;
-import org.underdocx.enginelayers.baseengine.PlaceholdersProvider;
+import org.underdocx.doctypes.odf.tools.OdfDomElementWalker;
+import org.underdocx.doctypes.tools.placeholder.GenericTextualPlaceholderFactory;
 import org.underdocx.environment.err.Problems;
+import org.w3c.dom.Node;
 
-public class SimpleDollarPlaceholdersProvider<C extends AbstractOdfContainer<D>, D extends OdfDocument> extends AbstractTextualPlaceholdersProvider<C, String, D> {
+public class OdfSimpleDollarPlaceholderFactory<C extends AbstractOdfContainer<D>, D extends OdfDocument> implements GenericTextualPlaceholderFactory<C, String, D> {
 
     public static final Regex regex = new Regex("\\$\\w+");
-    public static final EncapsulatedNodesExtractor defaultExtractor = createExtractor(new OdfTextNodeInterpreter());
+
     public static final Codec<String> codec = new Codec<>() {
         @Override
         public String parse(String string) {
@@ -56,25 +58,23 @@ public class SimpleDollarPlaceholdersProvider<C extends AbstractOdfContainer<D>,
         }
     };
 
-    public SimpleDollarPlaceholdersProvider(C doc) {
-        super(doc, new TextualPlaceholderToolkit<>(defaultExtractor, codec));
+    @Override
+    public TextNodeInterpreter getTextNodeInterpreter() {
+        return OdfTextNodeInterpreter.INSTANCE;
     }
 
-    public SimpleDollarPlaceholdersProvider(C doc, TextNodeInterpreter interpreter) {
-        super(doc, new TextualPlaceholderToolkit<>(createExtractor(interpreter), codec));
+    @Override
+    public EncapsulatedNodesExtractor getExtractor() {
+        return new RegexExtractor(regex, getTextNodeInterpreter());
     }
 
-    public static EncapsulatedNodesExtractor createExtractor(TextNodeInterpreter interpreter) {
-        return new RegexExtractor(regex, interpreter);
+    @Override
+    public Codec<String> getCodec() {
+        return codec;
     }
 
-    public static class SimpleDollarPlaceholdersProviderFactory<C extends AbstractOdfContainer<D>, D extends OdfDocument> implements PlaceholdersProvider.Factory<C, String, D> {
-
-        @Override
-        public PlaceholdersProvider<C, String, D> createProvider(C doc) {
-            return new SimpleDollarPlaceholdersProvider<C, D>(doc);
-        }
-
-
+    @Override
+    public Enumerator<? extends Node> createSectionEnumerator(C doc) {
+        return new OdfDomElementWalker<>(doc, true, TextParagraphElementBase.class);
     }
 }

@@ -34,12 +34,12 @@ import org.underdocx.doctypes.odf.commands.MultiCommandHandler;
 import org.underdocx.doctypes.odf.commands.SimpleDollarImageReplaceCommand;
 import org.underdocx.doctypes.odf.commands.SimpleReplaceFunctionCommand;
 import org.underdocx.doctypes.odf.commands.image.ImagePlaceholdersProvider;
-import org.underdocx.doctypes.odf.placeholdersprovider.dollar.SimpleDollarPlaceholdersProvider;
+import org.underdocx.doctypes.odf.placeholdersprovider.dollar.OdfSimpleDollarPlaceholderFactory;
 import org.underdocx.doctypes.odf.placeholdersprovider.dollar.image.SimpleDollarImagePlaceholdersProvider;
+import org.underdocx.doctypes.odf.tools.placeholder.OdfParameterizedPlaceholderFactory;
 import org.underdocx.enginelayers.modelengine.MCommandHandler;
 import org.underdocx.enginelayers.modelengine.ModelEngine;
 import org.underdocx.enginelayers.parameterengine.ParametersPlaceholderData;
-import org.underdocx.enginelayers.parameterengine.ParametersPlaceholderProvider;
 import org.underdocx.environment.err.Problems;
 
 import java.net.URI;
@@ -51,10 +51,10 @@ public abstract class AbstractOdfEngine<C extends AbstractOdfContainer<D>, D ext
 
     public final SimpleDollarImagePlaceholdersProvider.SimpleDollarImagePlaceholdersProviderFactory<C, D> simpleDollarImage
             = new SimpleDollarImagePlaceholdersProvider.SimpleDollarImagePlaceholdersProviderFactory<>();
-    public final SimpleDollarPlaceholdersProvider.SimpleDollarPlaceholdersProviderFactory<C, D> simpleDollar
-            = new SimpleDollarPlaceholdersProvider.SimpleDollarPlaceholdersProviderFactory<>();
-    public final ParametersPlaceholderProvider.ParametersPlaceholderProviderFactory<C, D> parameters
-            = new ParametersPlaceholderProvider.ParametersPlaceholderProviderFactory<>();
+    public final OdfSimpleDollarPlaceholderFactory<C, D> simpleDollar
+            = new OdfSimpleDollarPlaceholderFactory<>();
+    public final OdfParameterizedPlaceholderFactory<C, D> parameters
+            = new OdfParameterizedPlaceholderFactory<>();
     public final ImagePlaceholdersProvider.ImagePlaceholdersProviderFactory<C, D> imagePlaceholdersProvider
             = new ImagePlaceholdersProvider.ImagePlaceholdersProviderFactory();
 

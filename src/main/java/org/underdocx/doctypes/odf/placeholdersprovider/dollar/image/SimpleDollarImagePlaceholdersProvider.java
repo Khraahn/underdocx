@@ -39,7 +39,7 @@ import org.underdocx.common.types.Tripple;
 import org.underdocx.doctypes.TextNodeInterpreter;
 import org.underdocx.doctypes.odf.AbstractOdfContainer;
 import org.underdocx.doctypes.odf.constants.OdfElement;
-import org.underdocx.doctypes.odf.placeholdersprovider.dollar.SimpleDollarPlaceholdersProvider;
+import org.underdocx.doctypes.odf.placeholdersprovider.dollar.OdfSimpleDollarPlaceholderFactory;
 import org.underdocx.doctypes.odf.tools.ElementByElementEnumerator;
 import org.underdocx.enginelayers.baseengine.PlaceholdersProvider;
 import org.w3c.dom.Node;
@@ -109,7 +109,7 @@ public class SimpleDollarImagePlaceholdersProvider<C extends AbstractOdfContaine
     @Override
     public boolean isEncapsulatedNode(Node node) {
         return Convenience.build(false, w -> {
-            getImageDate(node).ifPresent(imageData -> w.value = SimpleDollarPlaceholdersProvider.regex.matches(imageData.getDesc()));
+            getImageDate(node).ifPresent(imageData -> w.value = OdfSimpleDollarPlaceholderFactory.regex.matches(imageData.getDesc()));
         });
     }
 

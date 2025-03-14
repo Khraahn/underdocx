@@ -22,7 +22,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-package org.underdocx.doctypes.tools.parmaplaceholder;
+package org.underdocx.doctypes.tools.placeholder;
 
 import org.odftoolkit.odfdom.dom.element.text.TextParagraphElementBase;
 import org.underdocx.common.enumerator.Enumerator;

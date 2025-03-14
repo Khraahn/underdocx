@@ -22,44 +22,42 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-package org.underdocx.doctypes.odf.tools;
+package org.underdocx.doctypes.txt;
 
-import org.odftoolkit.odfdom.doc.OdfDocument;
-import org.odftoolkit.odfdom.dom.element.text.TextParagraphElementBase;
 import org.underdocx.common.codec.Codec;
 import org.underdocx.common.enumerator.Enumerator;
 import org.underdocx.common.placeholder.EncapsulatedNodesExtractor;
 import org.underdocx.common.placeholder.basic.extraction.AbstractPartialExtractor;
-import org.underdocx.common.placeholder.basic.textnodeinterpreter.OdfTextNodeInterpreter;
+import org.underdocx.common.tools.Convenience;
+import org.underdocx.common.tree.Nodes;
 import org.underdocx.doctypes.TextNodeInterpreter;
-import org.underdocx.doctypes.odf.AbstractOdfContainer;
-import org.underdocx.doctypes.tools.parmaplaceholder.GenericTextualPlaceholderFactory;
+import org.underdocx.doctypes.tools.placeholder.GenericTextualPlaceholderFactory;
 import org.underdocx.enginelayers.parameterengine.ParametersPlaceholderData;
 import org.underdocx.enginelayers.parameterengine.internal.ParametersDetector;
 import org.underdocx.enginelayers.parameterengine.internal.ParametersPlaceholderCodec;
 import org.w3c.dom.Node;
 
-public class OdfParameterizedPlaceholderFactory<C extends AbstractOdfContainer<D>, D extends OdfDocument> implements GenericTextualPlaceholderFactory<C, ParametersPlaceholderData, D> {
-
-    public static final AbstractPartialExtractor EXTRACTOR = new AbstractPartialExtractor(ParametersDetector.INSTANCE, OdfTextNodeInterpreter.INSTANCE);
+public class TxtParameterizedPlaceholderFactory implements GenericTextualPlaceholderFactory<TextContainer, ParametersPlaceholderData, TextXML> {
 
     @Override
     public TextNodeInterpreter getTextNodeInterpreter() {
-        return OdfTextNodeInterpreter.INSTANCE;
+        return PlainTextNodeInterpreter.INSTANCE;
+    }
+
+    @Override
+    public Enumerator<? extends Node> createSectionEnumerator(TextContainer doc) {
+        return Convenience.build(Enumerator.empty(), result ->
+                Nodes.findFirstDescendantNode(doc.getDocument().getDoc(), "root").ifPresent(root ->
+                        result.value = Nodes.getChildren(root)));
     }
 
     @Override
     public EncapsulatedNodesExtractor getExtractor() {
-        return EXTRACTOR;
+        return new AbstractPartialExtractor(ParametersDetector.INSTANCE, getTextNodeInterpreter());
     }
 
     @Override
     public Codec<ParametersPlaceholderData> getCodec() {
         return ParametersPlaceholderCodec.INSTANCE;
-    }
-
-    @Override
-    public Enumerator<? extends Node> createSectionEnumerator(C doc) {
-        return new OdfDomElementWalker<>(doc, true, TextParagraphElementBase.class);
     }
 }

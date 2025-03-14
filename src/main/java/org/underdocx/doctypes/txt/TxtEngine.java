@@ -37,6 +37,8 @@ public class TxtEngine extends AbstractEngine<TextContainer, TextXML> {
 
     private final ModelEngine<TextContainer, TextXML> engine;
 
+    public final TxtParameterizedPlaceholderFactory parameters = new TxtParameterizedPlaceholderFactory();
+
     protected void registerDefaultCommandHandlers() {
 
     }

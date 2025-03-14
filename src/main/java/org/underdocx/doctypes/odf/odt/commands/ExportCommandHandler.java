@@ -35,14 +35,15 @@ import org.underdocx.doctypes.odf.modifiers.deleteplaceholder.OdfDeletePlacehold
 import org.underdocx.doctypes.odf.modifiers.importmodifier.ImportModifier;
 import org.underdocx.doctypes.odf.modifiers.importmodifier.ImportModifierData;
 import org.underdocx.doctypes.odf.odt.OdtContainer;
+import org.underdocx.doctypes.odf.tools.placeholder.OdfParameterizedPlaceholderFactory;
 import org.underdocx.doctypes.tools.attrinterpreter.PredefinedAttributesInterpreter;
 import org.underdocx.doctypes.tools.attrinterpreter.single.AttributeInterpreterFactory;
 import org.underdocx.doctypes.tools.datapicker.BinaryDataPicker;
 import org.underdocx.doctypes.tools.datapicker.PredefinedDataPicker;
 import org.underdocx.doctypes.tools.datapicker.StringConvertDataPicker;
 import org.underdocx.enginelayers.baseengine.CommandHandlerResult;
+import org.underdocx.enginelayers.baseengine.PlaceholdersProvider;
 import org.underdocx.enginelayers.parameterengine.ParametersPlaceholderData;
-import org.underdocx.enginelayers.parameterengine.ParametersPlaceholderProvider;
 import org.underdocx.environment.err.Problems;
 import org.w3c.dom.Node;
 
@@ -96,8 +97,8 @@ public class ExportCommandHandler extends AbstractTextualCommandHandler<OdtConta
         if (nameOrNull == null) {
             return Problems.ODF_FRAMEWORK_OPERARTION_EXCEPTION.exec(() -> targetDoc.getDocument().newParagraph("remove me"));
         } else {
-            ParametersPlaceholderProvider<OdtContainer, OdfTextDocument> placeholderProvider =
-                    new ParametersPlaceholderProvider<>(targetDoc);
+            PlaceholdersProvider<OdtContainer, ParametersPlaceholderData, OdfTextDocument> placeholderProvider = new OdfParameterizedPlaceholderFactory<OdtContainer, OdfTextDocument>().createProvider(targetDoc);
+
             Enumerator<Node> allPlaceholders = placeholderProvider.getPlaceholders();
             for (Node node : allPlaceholders) {
                 ParametersPlaceholderData currentPlaceholderData = placeholderProvider.getPlaceholderData(node);

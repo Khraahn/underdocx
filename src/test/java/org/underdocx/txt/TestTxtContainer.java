@@ -27,10 +27,16 @@ package org.underdocx.txt;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.underdocx.common.codec.XMLCodec;
+import org.underdocx.common.tools.Convenience;
 import org.underdocx.doctypes.txt.TextContainer;
+import org.underdocx.doctypes.txt.TextXML;
+import org.underdocx.doctypes.txt.TxtParameterizedPlaceholderFactory;
+import org.underdocx.enginelayers.baseengine.PlaceholdersProvider;
+import org.underdocx.enginelayers.parameterengine.ParametersPlaceholderData;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.util.List;
 
 public class TestTxtContainer {
 
@@ -51,5 +57,21 @@ public class TestTxtContainer {
         Assertions.assertThat(split[1]).isEqualTo("G   HIJ!  ");
         Assertions.assertThat(split[2]).isEqualTo(" ---");
         Assertions.assertThat(split.length).isEqualTo(3);
+    }
+
+    @Test
+    public void testPlaceholderProvider() {
+        TextContainer doc = new TextContainer("" +
+                "A${placeholder1}B\n" +
+                "C${placeholder2 key:\"value\"}!\n" +
+                " ---");
+        PlaceholdersProvider<TextContainer, ParametersPlaceholderData, TextXML> placeholderProvider
+                = new TxtParameterizedPlaceholderFactory().createProvider(doc);
+        List<ParametersPlaceholderData> allPlaceholders = Convenience.buildList(result ->
+                placeholderProvider.getPlaceholders().forEach(node ->
+                        result.add(placeholderProvider.getPlaceholderData(node))));
+
+        Assertions.assertThat(allPlaceholders.size()).isEqualTo(2);
+        Assertions.assertThat(allPlaceholders.get(1).getKey()).isEqualTo("placeholder2");
     }
 }

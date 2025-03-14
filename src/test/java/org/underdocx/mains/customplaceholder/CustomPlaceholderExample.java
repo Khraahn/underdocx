@@ -3,17 +3,14 @@ package org.underdocx.mains.customplaceholder;
 import org.odftoolkit.odfdom.doc.OdfTextDocument;
 import org.underdocx.common.codec.Codec;
 import org.underdocx.common.placeholder.EncapsulatedNodesExtractor;
-import org.underdocx.common.placeholder.TextualPlaceholderToolkit;
 import org.underdocx.common.placeholder.basic.extraction.RegexExtractor;
-import org.underdocx.common.placeholder.basic.textnodeinterpreter.OdfTextNodeInterpreter;
 import org.underdocx.common.types.Regex;
 import org.underdocx.doctypes.odf.odt.OdtContainer;
 import org.underdocx.doctypes.odf.odt.OdtEngine;
+import org.underdocx.doctypes.odf.tools.placeholder.AbstractOdfPlaceholderFactory;
 import org.underdocx.enginelayers.baseengine.CommandHandler;
 import org.underdocx.enginelayers.baseengine.CommandHandlerResult;
-import org.underdocx.enginelayers.baseengine.PlaceholdersProvider;
 import org.underdocx.enginelayers.baseengine.Selection;
-import org.underdocx.doctypes.odf.placeholdersprovider.AbstractTextualPlaceholdersProvider;
 import org.w3c.dom.Node;
 
 import java.io.File;
@@ -21,34 +18,30 @@ import java.io.IOException;
 
 public class CustomPlaceholderExample {
 
-    private static class MyPlaceholdersProvider extends AbstractTextualPlaceholdersProvider<OdtContainer, String, OdfTextDocument> {
+    private static class MyPlaceholdersProvider extends AbstractOdfPlaceholderFactory<OdtContainer, String, OdfTextDocument> {
 
         private static final Regex regex = new Regex("\\<\\w+\\>");
-        private static final EncapsulatedNodesExtractor defaultExtractor = new RegexExtractor(regex, OdfTextNodeInterpreter.INSTANCE);
-        private static final Codec<String> codec = new Codec<>() {
-            @Override
-            public String parse(String string) {
-                if (string.startsWith("<") && string.endsWith(">"))
-                    return string.substring(1, string.length() - 1);
-                throw new RuntimeException("parse error");
-            }
-
-            @Override
-            public String getTextContent(String data) {
-                return "<" + data + ">";
-            }
-        };
-
-        public MyPlaceholdersProvider(OdtContainer doc) {
-            super(doc, new TextualPlaceholderToolkit<>(defaultExtractor, codec));
+        
+        @Override
+        public EncapsulatedNodesExtractor getExtractor() {
+            return new RegexExtractor(regex, getTextNodeInterpreter());
         }
 
-        public static class MyPlaceholderProviderFactory implements PlaceholdersProvider.Factory<OdtContainer, String, OdfTextDocument> {
+        @Override
+        public Codec<String> getCodec() {
+            return new Codec<>() {
+                @Override
+                public String parse(String string) {
+                    if (string.startsWith("<") && string.endsWith(">"))
+                        return string.substring(1, string.length() - 1);
+                    throw new RuntimeException("parse error");
+                }
 
-            @Override
-            public MyPlaceholdersProvider createProvider(OdtContainer doc) {
-                return new MyPlaceholdersProvider(doc);
-            }
+                @Override
+                public String getTextContent(String data) {
+                    return "<" + data + ">";
+                }
+            };
         }
     }
 
@@ -69,7 +62,7 @@ public class CustomPlaceholderExample {
         String content = "Hello <name>";
         OdtContainer doc = new OdtContainer(content);
         OdtEngine engine = new OdtEngine(doc);
-        engine.registerCommandHandler(new MyPlaceholdersProvider.MyPlaceholderProviderFactory(), new UpperCaseCommandHandler());
+        engine.registerCommandHandler(new MyPlaceholdersProvider(), new UpperCaseCommandHandler());
         engine.run();
         File tmpFile = File.createTempFile("Test_", ".odt");
         doc.save(tmpFile); // Expectation: Document containing "Hello NAME"

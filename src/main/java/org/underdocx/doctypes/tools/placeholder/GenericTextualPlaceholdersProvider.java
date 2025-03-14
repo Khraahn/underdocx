@@ -22,35 +22,34 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-package org.underdocx.doctypes.odf.placeholdersprovider;
+package org.underdocx.doctypes.tools.placeholder;
 
-import org.odftoolkit.odfdom.doc.OdfDocument;
-import org.odftoolkit.odfdom.dom.element.text.TextParagraphElementBase;
 import org.underdocx.common.enumerator.Enumerator;
 import org.underdocx.common.placeholder.TextualPlaceholderToolkit;
-import org.underdocx.doctypes.odf.AbstractOdfContainer;
-import org.underdocx.doctypes.odf.tools.ElementByElementEnumerator;
+import org.underdocx.doctypes.DocContainer;
 import org.underdocx.enginelayers.baseengine.PlaceholdersProvider;
 import org.w3c.dom.Node;
 
 import java.util.Optional;
 
-public abstract class AbstractTextualPlaceholdersProvider<C extends AbstractOdfContainer<D>, P, D extends OdfDocument> implements PlaceholdersProvider<C, P, D> {
+public class GenericTextualPlaceholdersProvider<C extends DocContainer<D>, P, D> implements PlaceholdersProvider<C, P, D> {
 
     private final TextualPlaceholderToolkit<P> toolkit;
-    private final AbstractOdfContainer<?> doc;
+    private final C doc;
+    private final GenericTextualPlaceholderFactory<C, P, D> info;
     private Node startNode = null;
     private boolean endOfDoc = false;
 
-    protected AbstractTextualPlaceholdersProvider(AbstractOdfContainer<?> doc, TextualPlaceholderToolkit<P> toolkit) {
-        this.toolkit = toolkit;
+    protected GenericTextualPlaceholdersProvider(C doc, GenericTextualPlaceholderFactory<C, P, D> info) {
+        this.info = info;
+        this.toolkit = info.createToolkit();
         this.doc = doc;
     }
 
     @Override
     public Enumerator<Node> getPlaceholders() {
         if (endOfDoc) return Enumerator.empty();
-        ElementByElementEnumerator<? extends Node> result = new ElementByElementEnumerator<>(doc, (p, firstValidNode) -> toolkit.extractPlaceholders(p, firstValidNode), startNode, true, TextParagraphElementBase.class);
+        GenericElementByElementEnumerator<C, P, D> result = new GenericElementByElementEnumerator<>((p, firstValidNode) -> toolkit.extractPlaceholders(p, firstValidNode), startNode, info.createSectionEnumerator(doc));
         return result;
     }
 

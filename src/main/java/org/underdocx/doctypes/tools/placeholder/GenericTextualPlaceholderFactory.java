@@ -22,7 +22,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-package org.underdocx.doctypes.tools.parmaplaceholder;
+package org.underdocx.doctypes.tools.placeholder;
 
 import org.underdocx.common.codec.Codec;
 import org.underdocx.common.enumerator.Enumerator;
@@ -48,7 +48,7 @@ public interface GenericTextualPlaceholderFactory<C extends DocContainer<D>, P, 
     }
 
     default PlaceholdersProvider<C, P, D> createProvider(C doc) {
-        return new GenericTextualPlaceholdersProvider<>(doc, this);
+        return new GenericTextualPlaceholdersProvider<C, P, D>(doc, this);
     }
 
 }

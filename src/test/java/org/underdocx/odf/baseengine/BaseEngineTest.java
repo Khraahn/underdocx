@@ -30,11 +30,13 @@ import org.underdocx.AbstractOdtTest;
 import org.underdocx.common.debug.TreePrinter;
 import org.underdocx.common.placeholder.EncapsulatedNodesExtractor;
 import org.underdocx.common.tree.Nodes;
+import org.underdocx.doctypes.TextNodeInterpreter;
 import org.underdocx.doctypes.odf.commands.SimpleReplaceFunctionCommand;
 import org.underdocx.doctypes.odf.odt.OdtContainer;
 import org.underdocx.doctypes.odf.odt.OdtEngine;
-import org.underdocx.doctypes.odf.placeholdersprovider.dollar.SimpleDollarPlaceholdersProvider;
+import org.underdocx.doctypes.odf.placeholdersprovider.dollar.OdfSimpleDollarPlaceholderFactory;
 import org.underdocx.enginelayers.baseengine.BaseEngine;
+import org.underdocx.enginelayers.baseengine.PlaceholdersProvider;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 
@@ -46,6 +48,14 @@ import java.util.Optional;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class BaseEngineTest extends AbstractOdtTest {
+
+    private static class TestSimpleDollarProviderFactory extends OdfSimpleDollarPlaceholderFactory<OdtContainer, OdfTextDocument> {
+
+        @Override
+        public TextNodeInterpreter getTextNodeInterpreter() {
+            return testTextNodeInterpreter;
+        }
+    }
 
     @Test
     public void testHelloWorldDefaultOdtEngine() {
@@ -62,7 +72,7 @@ public class BaseEngineTest extends AbstractOdtTest {
         OdtContainer doc = new OdtContainer("Hello $name");
         BaseEngine<OdtContainer, OdfTextDocument> baseEngine = new BaseEngine<>(doc);
         baseEngine.registerCommandHandler(
-                new SimpleDollarPlaceholdersProvider(doc),
+                new OdfSimpleDollarPlaceholderFactory<OdtContainer, OdfTextDocument>().createProvider(doc),
                 new SimpleReplaceFunctionCommand<>(foundString -> Optional.ofNullable(foundString.equals("name") ? "World" : null))
         );
         baseEngine.run();
@@ -73,7 +83,7 @@ public class BaseEngineTest extends AbstractOdtTest {
     @Test
     public void testSimpleDollarPlaceholderProviderEncapsulated() {
         OdtContainer doc = new OdtContainer("Hello $name");
-        SimpleDollarPlaceholdersProvider<OdtContainer, OdfTextDocument> provider = new SimpleDollarPlaceholdersProvider<>(doc);
+        PlaceholdersProvider<OdtContainer, String, OdfTextDocument> provider = new OdfSimpleDollarPlaceholderFactory<OdtContainer, OdfTextDocument>().createProvider(doc);
         Node node = provider.getPlaceholders().next();
         assertThat(node.getFirstChild().getNodeValue()).isEqualTo("$name");
     }
@@ -82,7 +92,7 @@ public class BaseEngineTest extends AbstractOdtTest {
     public void testSimpleDollarExtractor() {
         Document xml = readXML("<root><p>Hallo $name :-)</p></root>");
         Node paragraph = Nodes.findFirstDescendantNode(xml, "p").get();
-        EncapsulatedNodesExtractor extractor = SimpleDollarPlaceholdersProvider.createExtractor(testTextNodeInterpreter);
+        EncapsulatedNodesExtractor extractor = new TestSimpleDollarProviderFactory().getExtractor();
         List<Node> nodes = extractor.extractNodes(paragraph, null);
         assertThat(nodes.get(0).getFirstChild().getNodeValue()).isEqualTo("$name");
         String xmlTree = new TreePrinter(Nodes.findFirstDescendantNode(xml, "root").get(), true).toString();
@@ -132,12 +142,13 @@ public class BaseEngineTest extends AbstractOdtTest {
     public void testSimpleDollarExtractorNoTextNodeContained() {
         Document xml = readXML("<root><p><x></x>Hallo $name :-)</p></root>");
         Node paragraph = Nodes.findFirstDescendantNode(xml, "p").get();
-        EncapsulatedNodesExtractor extractor = SimpleDollarPlaceholdersProvider.createExtractor(testTextNodeInterpreter);
+        EncapsulatedNodesExtractor extractor = new TestSimpleDollarProviderFactory().getExtractor();
         List<Node> nodes = extractor.extractNodes(paragraph, null);
         assertThat(nodes.get(0).getFirstChild().getNodeValue()).isEqualTo("$name");
         String xmlTree = new TreePrinter(Nodes.findFirstDescendantNode(xml, "root").get(), true).toString();
         assertThat(xmlTree).isEqualTo("<root><p><x></x>Hallo <span>$name</span> :-)</p></root>");
     }
+
 
     @Test
     public void testHeaderFooter() throws IOException {
