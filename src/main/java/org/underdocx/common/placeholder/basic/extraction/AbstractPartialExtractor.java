@@ -35,7 +35,7 @@ import org.w3c.dom.Node;
 
 import java.util.List;
 
-public abstract class AbstractPartialExtractor extends AbstractExtractor {
+public class AbstractPartialExtractor extends AbstractExtractor {
 
     public AbstractPartialExtractor(TextDetector detector, TextNodeInterpreter interpreter) {
         super(detector, interpreter);

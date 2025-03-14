@@ -22,54 +22,52 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-package org.underdocx.enginelayers.parameterengine;
+package org.underdocx.doctypes.tools.parmaplaceholder;
 
-import org.odftoolkit.odfdom.doc.OdfDocument;
 import org.underdocx.common.enumerator.Enumerator;
 import org.underdocx.common.placeholder.TextualPlaceholderToolkit;
-import org.underdocx.doctypes.odf.AbstractOdfContainer;
-import org.underdocx.doctypes.odf.tools.OdfParameterizedPlaceholderFactory;
+import org.underdocx.doctypes.DocContainer;
 import org.underdocx.enginelayers.baseengine.PlaceholdersProvider;
 import org.w3c.dom.Node;
 
 import java.util.Optional;
 
-public class ParametersPlaceholderProvider<C extends AbstractOdfContainer<D>, D extends OdfDocument> implements PlaceholdersProvider<C, ParametersPlaceholderData, D> {
+public class GenericTextualPlaceholdersProvider<C extends DocContainer<D>, P, D> implements PlaceholdersProvider<C, P, D> {
 
-    private final PlaceholdersProvider<C, ParametersPlaceholderData, D> instance;
+    private final TextualPlaceholderToolkit<P> toolkit;
+    private final C doc;
+    private final GenericTextualPlaceholderFactory<C, P, D> info;
+    private Node startNode = null;
+    private boolean endOfDoc = false;
 
-    public ParametersPlaceholderProvider(C doc) {
-        instance = new ParametersPlaceholderProviderFactory<C, D>().createProvider(doc);
+    protected GenericTextualPlaceholdersProvider(C doc, GenericTextualPlaceholderFactory<C, P, D> info) {
+        this.info = info;
+        this.toolkit = info.createToolkit();
+        this.doc = doc;
     }
 
     @Override
     public Enumerator<Node> getPlaceholders() {
-        return instance.getPlaceholders();
+        if (endOfDoc) return Enumerator.empty();
+        GenericElementByElementEnumerator<C, P, D> result = new GenericElementByElementEnumerator<>((p, firstValidNode) -> toolkit.extractPlaceholders(p, firstValidNode), startNode, info.createSectionEnumerator(doc));
+        return result;
+    }
+
+
+    @Override
+    public P getPlaceholderData(Node node) {
+        return toolkit.parsePlaceholder(node);
     }
 
     @Override
-    public ParametersPlaceholderData getPlaceholderData(Node node) {
-        return instance.getPlaceholderData(node);
-    }
-
-    @Override
-    public Optional<TextualPlaceholderToolkit<ParametersPlaceholderData>> getPlaceholderToolkit() {
-        return instance.getPlaceholderToolkit();
+    public Optional<TextualPlaceholderToolkit<P>> getPlaceholderToolkit() {
+        return Optional.of(toolkit);
     }
 
     @Override
     public void restartAt(Node node, boolean endOfDoc) {
-        instance.restartAt(node, endOfDoc);
+        this.startNode = node;
+        this.endOfDoc = endOfDoc;
     }
 
-
-    public static class ParametersPlaceholderProviderFactory<C extends AbstractOdfContainer<D>, D extends OdfDocument> implements PlaceholdersProvider.Factory<C, ParametersPlaceholderData, D> {
-
-        private final OdfParameterizedPlaceholderFactory<C, D> INSTANCE = new OdfParameterizedPlaceholderFactory<C, D>();
-
-        @Override
-        public PlaceholdersProvider<C, ParametersPlaceholderData, D> createProvider(C doc) {
-            return INSTANCE.createProvider(doc);
-        }
-    }
 }
