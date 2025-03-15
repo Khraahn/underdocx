@@ -28,6 +28,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import org.underdocx.common.types.Pair;
 import org.underdocx.common.types.Regex;
 import org.underdocx.doctypes.DocContainer;
+import org.underdocx.doctypes.modifiers.ModifiersProvider;
 import org.underdocx.doctypes.odf.commands.ifcondition.ConditionAttributeInterpreter;
 import org.underdocx.doctypes.odf.commands.internal.AbstractTextualCommandHandler;
 import org.underdocx.doctypes.odf.modifiers.ifmodifier.IfModifier;
@@ -57,8 +58,8 @@ public class IfCommandHandler<C extends DocContainer<D>, D> extends AbstractText
     private static final ExtendedDataPicker<DataNode> dataPicker = new NameDataPicker();
     private static final ConditionAttributeInterpreter conditionInterpreter = new ConditionAttributeInterpreter();
 
-    public IfCommandHandler() {
-        super(KEYS);
+    public IfCommandHandler(ModifiersProvider modifiers) {
+        super(KEYS, modifiers);
     }
 
     @Override
@@ -74,7 +75,7 @@ public class IfCommandHandler<C extends DocContainer<D>, D> extends AbstractText
             Object toCompareWith = valueResolver.right;
             return compare(foundNode, toCompareWith);
         });
-        ModifierNodeResult modiferResult = new IfModifier<C, D>().modify(selection,
+        ModifierNodeResult modiferResult = new IfModifier<>(modifiers).modify(selection,
                 new IfModifierData.DefaultIfModifierData(
                         new Pair<>(area.left.getNode(), area.right.getNode()), match));
 

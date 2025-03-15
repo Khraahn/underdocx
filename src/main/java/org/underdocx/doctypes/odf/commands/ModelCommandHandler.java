@@ -27,6 +27,7 @@ package org.underdocx.doctypes.odf.commands;
 import org.underdocx.common.tools.Convenience;
 import org.underdocx.common.types.Regex;
 import org.underdocx.doctypes.DocContainer;
+import org.underdocx.doctypes.modifiers.ModifiersProvider;
 import org.underdocx.doctypes.odf.commands.internal.AbstractTextualCommandHandler;
 import org.underdocx.enginelayers.baseengine.CommandHandlerResult;
 import org.underdocx.enginelayers.modelengine.datapath.ActivePrefixDataPath;
@@ -43,8 +44,8 @@ public class ModelCommandHandler<C extends DocContainer<D>, D> extends AbstractT
     public static final String ATTR_PREFIX = "activeModelPathPrefix";
     public static final String ATTR_VALUE = "value";
 
-    public ModelCommandHandler() {
-        super(KEYS);
+    public ModelCommandHandler(ModifiersProvider modifiers) {
+        super(KEYS, modifiers);
     }
 
     @Override

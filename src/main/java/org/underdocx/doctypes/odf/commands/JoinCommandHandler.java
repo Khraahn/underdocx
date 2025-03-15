@@ -26,6 +26,7 @@ package org.underdocx.doctypes.odf.commands;
 
 import org.underdocx.common.types.Regex;
 import org.underdocx.doctypes.DocContainer;
+import org.underdocx.doctypes.modifiers.ModifiersProvider;
 import org.underdocx.doctypes.odf.commands.internal.AbstractTextualCommandHandler;
 import org.underdocx.doctypes.odf.commands.internal.modifiermodule.missingdata.MissingDataCommandModule;
 import org.underdocx.doctypes.odf.commands.internal.modifiermodule.missingdata.MissingDataCommandModuleConfig;
@@ -56,8 +57,8 @@ public class JoinCommandHandler<C extends DocContainer<D>, D> extends AbstractTe
 
     private final MissingDataCommandModule<C, D, DataNode> module = new MissingDataCommandModule<>(new Config());
 
-    public JoinCommandHandler() {
-        super(KEYS);
+    public JoinCommandHandler(ModifiersProvider modifiers) {
+        super(KEYS, modifiers);
     }
 
     @Override
@@ -104,7 +105,7 @@ public class JoinCommandHandler<C extends DocContainer<D>, D> extends AbstractTe
     }
 
 
-    private static class Config implements MissingDataCommandModuleConfig<DataNode> {
+    private class Config implements MissingDataCommandModuleConfig<C, D, DataNode> {
         @Override
         public PredefinedDataPicker<DataNode> getDataPicker() {
             return new ListDataPicker().asPredefined("value");
@@ -113,6 +114,11 @@ public class JoinCommandHandler<C extends DocContainer<D>, D> extends AbstractTe
         @Override
         public Predicate<DataNode> getIsEmptyPredicate() {
             return (DataNode node) -> node.getSize() == 0;
+        }
+
+        @Override
+        public ModifiersProvider<C, D> getModifiers() {
+            return modifiers;
         }
     }
 }

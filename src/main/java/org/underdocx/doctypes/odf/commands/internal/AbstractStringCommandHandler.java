@@ -26,17 +26,19 @@ package org.underdocx.doctypes.odf.commands.internal;
 
 import org.underdocx.common.types.Regex;
 import org.underdocx.doctypes.DocContainer;
+import org.underdocx.doctypes.modifiers.ModifiersProvider;
 import org.underdocx.doctypes.odf.commands.internal.modifiermodule.stringoutput.StringOutputCommandModule;
 import org.underdocx.doctypes.odf.commands.internal.modifiermodule.stringoutput.StringOutputModuleConfig;
 import org.underdocx.doctypes.tools.datapicker.ExtendedDataPicker;
+import org.underdocx.doctypes.tools.datapicker.PredefinedDataPicker;
 import org.underdocx.doctypes.tools.datapicker.StringConvertDataPicker;
 import org.underdocx.enginelayers.baseengine.CommandHandlerResult;
 import org.underdocx.enginelayers.modelengine.data.DataNode;
 
 public abstract class AbstractStringCommandHandler<C extends DocContainer<D>, D> extends AbstractTextualCommandHandler<C, D> {
 
-    public AbstractStringCommandHandler(Regex KEYS) {
-        super(KEYS);
+    public AbstractStringCommandHandler(Regex KEYS, ModifiersProvider<C, D> modifiers) {
+        super(KEYS, modifiers);
     }
 
     protected CommandHandlerResult tryExecuteTextualCommand() {
@@ -44,11 +46,20 @@ public abstract class AbstractStringCommandHandler<C extends DocContainer<D>, D>
         return module.execute(selection).left;
     }
 
-    protected abstract StringOutputModuleConfig getConfig();
+    protected abstract StringOutputModuleConfig<C, D> getConfig();
 
-    protected static StringOutputModuleConfig buildConfig(String path, ExtendedDataPicker<DataNode> picker) {
-        return () -> new StringConvertDataPicker(picker,
-                new StringConvertDataPicker.DefaultModel2StringConverter()).asPredefined(path);
+    protected StringOutputModuleConfig<C, D> buildConfig(String path, ExtendedDataPicker<DataNode> picker) {
+        return new StringOutputModuleConfig<>() {
+            @Override
+            public PredefinedDataPicker<String> getDataPicker() {
+                return new StringConvertDataPicker(picker, new StringConvertDataPicker.DefaultModel2StringConverter()).asPredefined(path);
+            }
+
+            @Override
+            public ModifiersProvider<C, D> getModifiers() {
+                return modifiers;
+            }
+        };
     }
 
 }

@@ -33,20 +33,21 @@ import org.underdocx.doctypes.odf.modifiers.stringmodifier.markup.TextStyle;
 import org.underdocx.enginelayers.baseengine.ModifierResult;
 import org.underdocx.enginelayers.baseengine.Selection;
 import org.underdocx.enginelayers.baseengine.SelectionModifier;
+import org.underdocx.enginelayers.parameterengine.ParametersPlaceholderData;
 import org.underdocx.environment.err.Problems;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 
 import java.util.Map;
 
-public class MarkupTextModifier<C extends DocContainer<D>, P, D> implements SelectionModifier<Selection<C, P, D>, String, ModifierResult> {
+public class OdfMarkupTextModifier<C extends DocContainer<D>, D> implements SelectionModifier<Selection<C, ParametersPlaceholderData, D>, String, ModifierResult> {
 
     private static MarkupXMLDOMParser parser = new MarkupXMLDOMParser();
 
     @Override
-    public ModifierResult modify(Selection<C, P, D> selection, String modifierData) {
-        Document xml = Problems.CODEC_ERROR.get(parser.tryParse(modifierData), null, modifierData);
+    public ModifierResult modify(Selection<C, ParametersPlaceholderData, D> selection, String modifierData) {
         Node placeholder = selection.getNode();
+        Document xml = Problems.CODEC_ERROR.get(parser.tryParse(modifierData), null, modifierData);
         Map<Node, TextStyle> mapping = new MarkupNodeBuilder(OdfTextNodeInterpreter.INSTANCE).createTree(placeholder, xml);
         new NodeStyler().styleNodes(placeholder, mapping);
         return ModifierResult.SUCCESS;

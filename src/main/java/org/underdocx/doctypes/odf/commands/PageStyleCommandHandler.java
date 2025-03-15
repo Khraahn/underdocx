@@ -28,6 +28,7 @@ import org.underdocx.common.tools.Convenience;
 import org.underdocx.common.types.Regex;
 import org.underdocx.common.types.Wrapper;
 import org.underdocx.doctypes.DocContainer;
+import org.underdocx.doctypes.modifiers.ModifiersProvider;
 import org.underdocx.doctypes.odf.commands.internal.AbstractTextualCommandHandler;
 import org.underdocx.doctypes.odf.modifiers.deleteplaceholder.DeletePlaceholderModifierData;
 import org.underdocx.doctypes.odf.modifiers.deleteplaceholder.OdfDeletePlaceholderModifier;
@@ -55,8 +56,8 @@ public class PageStyleCommandHandler<C extends DocContainer<D>, D> extends Abstr
     private static PredefinedDataPicker<Boolean> pageBreakAfterPicker = new BooleanDataPicker().asPredefined(ATTR_PB_AFTER);
     private static PredefinedDataPicker<Boolean> pageBreakBeforePicker = new BooleanDataPicker().asPredefined(ATTR_PB_BEFORE);
 
-    public PageStyleCommandHandler() {
-        super(KEYS);
+    public PageStyleCommandHandler(ModifiersProvider modifiers) {
+        super(KEYS, modifiers);
     }
 
     @Override

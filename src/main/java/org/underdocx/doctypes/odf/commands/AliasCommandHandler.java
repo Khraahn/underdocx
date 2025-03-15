@@ -30,6 +30,7 @@ import org.underdocx.common.codec.JsonCodec;
 import org.underdocx.common.tools.Convenience;
 import org.underdocx.common.types.Pair;
 import org.underdocx.doctypes.DocContainer;
+import org.underdocx.doctypes.modifiers.ModifiersProvider;
 import org.underdocx.doctypes.odf.commands.internal.AbstractCommandHandler;
 import org.underdocx.doctypes.odf.modifiers.deleteplaceholder.DeletePlaceholderModifierData;
 import org.underdocx.doctypes.odf.modifiers.deleteplaceholder.OdfDeletePlaceholderModifier;
@@ -131,6 +132,10 @@ public class AliasCommandHandler<C extends DocContainer<D>, D> extends AbstractC
     }
 
     private final Map<String, AliasData> registry = new HashMap<>();
+
+    public AliasCommandHandler(ModifiersProvider modifiers) {
+        super(modifiers);
+    }
 
     @Override
     protected CommandHandlerResult tryExecuteCommand() {

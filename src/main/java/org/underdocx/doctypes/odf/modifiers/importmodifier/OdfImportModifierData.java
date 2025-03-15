@@ -29,7 +29,7 @@ import org.w3c.dom.Node;
 
 import java.util.Optional;
 
-public interface ImportModifierData {
+public interface OdfImportModifierData {
 
     Node getRefNode();
 
@@ -43,7 +43,7 @@ public interface ImportModifierData {
 
     Optional<String> getSourcePageName();
 
-    class Simple implements ImportModifierData {
+    class Simple implements OdfImportModifierData {
 
         private final boolean filterInitialPageStyle;
         private final Node targetRefNodeInsertAfter;

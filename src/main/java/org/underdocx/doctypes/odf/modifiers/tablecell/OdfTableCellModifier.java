@@ -44,11 +44,11 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Optional;
 
-public class TableCellModifier<C extends DocContainer<D>, D> implements SelectionModifier<MSelection<C, ParametersPlaceholderData, D>, TableCellModifierData, ModifierResult> {
+public class OdfTableCellModifier<C extends DocContainer<D>, D> implements SelectionModifier<MSelection<C, ParametersPlaceholderData, D>, OdfTableCellModifierData, ModifierResult> {
 
 
     @Override
-    public ModifierResult modify(MSelection<C, ParametersPlaceholderData, D> selection, TableCellModifierData modifierData) {
+    public ModifierResult modify(MSelection<C, ParametersPlaceholderData, D> selection, OdfTableCellModifierData modifierData) {
         return Convenience.build((ModifierResult) ModifierResult.IGNORED, result ->
                 OdfTables.parseCellReference(modifierData.getStyleCellAddress()).ifPresent(address ->
                         findTable(selection, address).ifPresent(table -> {

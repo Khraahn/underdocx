@@ -26,12 +26,12 @@ package org.underdocx.doctypes.odf.commands;
 
 import org.underdocx.common.types.Resource;
 import org.underdocx.doctypes.DocContainer;
-import org.underdocx.doctypes.odf.modifiers.existingimage.ExistingImageModifier;
-import org.underdocx.doctypes.odf.modifiers.existingimage.ExistingImageModifierData;
+import org.underdocx.doctypes.odf.modifiers.existingimage.OdfExistingImageModifier;
+import org.underdocx.doctypes.odf.modifiers.existingimage.OdfExistingImageModifierData;
+import org.underdocx.doctypes.odf.placeholdersprovider.dollar.image.SimpleDollarImagePlaceholderData;
 import org.underdocx.enginelayers.baseengine.CommandHandler;
 import org.underdocx.enginelayers.baseengine.CommandHandlerResult;
 import org.underdocx.enginelayers.baseengine.Selection;
-import org.underdocx.doctypes.odf.placeholdersprovider.dollar.image.SimpleDollarImagePlaceholderData;
 
 import java.net.URI;
 import java.util.Optional;
@@ -54,7 +54,7 @@ public class SimpleDollarImageReplaceCommand<C extends DocContainer<D>, D> imple
         return build(CommandHandlerResult.IGNORED, result ->
                 function.apply(selection.getPlaceholderData().getVariableName()).ifPresent(uri -> {
                     result.value = CommandHandlerResult.EXECUTED_PROCEED;
-                    new ExistingImageModifier<C, SimpleDollarImagePlaceholderData, D>().modify(selection, new ExistingImageModifierData.Simple(keepWidth, new Resource.UriResource(uri), selection.getPlaceholderData().getVariableName(), null));
+                    new OdfExistingImageModifier<C, SimpleDollarImagePlaceholderData, D>().modify(selection, new OdfExistingImageModifierData.Simple(keepWidth, new Resource.UriResource(uri), selection.getPlaceholderData().getVariableName(), null));
                 }));
     }
 }

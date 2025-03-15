@@ -26,8 +26,7 @@ package org.underdocx.doctypes.txt;
 
 import org.underdocx.common.types.Pair;
 import org.underdocx.doctypes.AbstractEngine;
-import org.underdocx.doctypes.odf.commands.AliasCommandHandler;
-import org.underdocx.doctypes.odf.odt.OdtContainer;
+import org.underdocx.doctypes.odf.commands.*;
 import org.underdocx.enginelayers.modelengine.MCommandHandler;
 import org.underdocx.enginelayers.modelengine.ModelEngine;
 import org.underdocx.enginelayers.parameterengine.ParametersPlaceholderData;
@@ -37,13 +36,19 @@ public class TxtEngine extends AbstractEngine<TextContainer, TextXML> {
 
     private final ModelEngine<TextContainer, TextXML> engine;
 
+    protected final TxtModifiersProvider modifiers = new TxtModifiersProvider();
     public final TxtParameterizedPlaceholderFactory parameters = new TxtParameterizedPlaceholderFactory();
 
     protected void registerDefaultCommandHandlers() {
-
+        engine.registerCommandHandler(parameters, new ModelCommandHandler<>(modifiers));
+        engine.registerCommandHandler(parameters, new StringCommandHandler<>(modifiers));
+        engine.registerCommandHandler(parameters, new ShortModelStringCommandHandler<>(modifiers));
+        engine.registerCommandHandler(parameters, new ShortVarStringCommandHandler<>(modifiers));
+        engine.registerCommandHandler(parameters, new VariableCommandHandler<>(modifiers));
+        engine.registerCommandHandler(parameters, new DeleteNodesEodHandler<>(modifiers));
     }
 
-    public TxtEngine(OdtContainer doc) {
+    public TxtEngine(TextContainer doc) {
         this.engine = new ModelEngine<>(doc);
         registerDefaultCommandHandlers();
     }

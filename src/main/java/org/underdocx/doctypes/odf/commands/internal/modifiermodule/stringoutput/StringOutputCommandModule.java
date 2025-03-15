@@ -30,13 +30,11 @@ import org.underdocx.doctypes.odf.commands.internal.modifiermodule.AbstractComma
 import org.underdocx.doctypes.odf.commands.internal.modifiermodule.missingdata.MissingDataCommandModule;
 import org.underdocx.doctypes.odf.commands.internal.modifiermodule.missingdata.MissingDataCommandModuleConfig;
 import org.underdocx.doctypes.odf.commands.internal.modifiermodule.missingdata.MissingDataCommandModuleResult;
-import org.underdocx.doctypes.odf.modifiers.stringmodifier.MarkupTextModifier;
-import org.underdocx.doctypes.odf.modifiers.stringmodifier.ReplaceWithTextModifier;
 import org.underdocx.doctypes.tools.datapicker.*;
 import org.underdocx.enginelayers.baseengine.CommandHandlerResult;
 import org.underdocx.enginelayers.parameterengine.ParametersPlaceholderData;
 
-public class StringOutputCommandModule<C extends DocContainer<D>, D> extends AbstractCommandModule<C, ParametersPlaceholderData, D, Pair<CommandHandlerResult, MissingDataCommandModuleResult.MissingDataCommandModuleResultType>, MissingDataCommandModuleConfig<String>> {
+public class StringOutputCommandModule<C extends DocContainer<D>, D> extends AbstractCommandModule<C, ParametersPlaceholderData, D, Pair<CommandHandlerResult, MissingDataCommandModuleResult.MissingDataCommandModuleResultType>, MissingDataCommandModuleConfig<C, D, String>> {
     public static final String RESCAN = "rescan";
     public static final String MARKUP = "markup";
     private static final PredefinedDataPicker<Boolean> rescanDataPicker = new BooleanDataPicker().asPredefined(RESCAN);
@@ -46,7 +44,7 @@ public class StringOutputCommandModule<C extends DocContainer<D>, D> extends Abs
     private static final PredefinedDataPicker<String> truncatedPicker = new StringConvertDataPicker().asPredefined("truncated");
 
 
-    public StringOutputCommandModule(MissingDataCommandModuleConfig<String> configuration) {
+    public StringOutputCommandModule(MissingDataCommandModuleConfig<C, D, String> configuration) {
         super(configuration);
     }
 
@@ -59,10 +57,10 @@ public class StringOutputCommandModule<C extends DocContainer<D>, D> extends Abs
         return switch (moduleResult.resultType) {
             case VALUE_RECEIVED -> {
                 if (useMarkup) {
-                    new MarkupTextModifier().modify(selection, moduleResult.value);
+                    configuration.getModifiers().getMarkupTextModifier().modify(selection, moduleResult.value);
                 } else {
                     String output = handlePadding(moduleResult.value);
-                    new ReplaceWithTextModifier<C, ParametersPlaceholderData, D>().modify(selection, output);
+                    configuration.getModifiers().getReplaceWithTextModifier().modify(selection, output);
                 }
                 yield shouldRescan
                         ? new Pair<>(CommandHandlerResult.FACTORY.startAtNode(selection.getNode()), moduleResult.resultType)

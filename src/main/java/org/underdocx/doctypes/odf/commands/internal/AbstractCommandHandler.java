@@ -25,6 +25,7 @@ SOFTWARE.
 package org.underdocx.doctypes.odf.commands.internal;
 
 import org.underdocx.doctypes.DocContainer;
+import org.underdocx.doctypes.modifiers.ModifiersProvider;
 import org.underdocx.enginelayers.baseengine.CommandHandlerResult;
 import org.underdocx.enginelayers.baseengine.EngineAccess;
 import org.underdocx.enginelayers.modelengine.MCommandHandler;
@@ -35,10 +36,15 @@ import org.underdocx.environment.err.Problems;
 
 public abstract class AbstractCommandHandler<C extends DocContainer<D>, P, D> implements MCommandHandler<C, P, D> {
 
+    protected ModifiersProvider<C, D> modifiers;
     protected MSelection<C, P, D> selection = null;
     protected DataAccess dataAccess = null;
     protected EngineAccess<C, D> engineAccess = null;
     protected P placeholderData = null;
+
+    protected AbstractCommandHandler(ModifiersProvider<C, D> modifiers) {
+        this.modifiers = modifiers;
+    }
 
 
     @Override

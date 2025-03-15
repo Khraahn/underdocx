@@ -26,10 +26,11 @@ package org.underdocx.doctypes.odf.commands;
 
 import org.underdocx.common.types.Regex;
 import org.underdocx.doctypes.DocContainer;
+import org.underdocx.doctypes.modifiers.ModifiersProvider;
 import org.underdocx.doctypes.odf.commands.internal.AbstractTextualCommandHandler;
 import org.underdocx.doctypes.odf.modifiers.stringmodifier.ReplaceWithTextModifier;
-import org.underdocx.doctypes.odf.modifiers.tablecell.TableCellModifier;
-import org.underdocx.doctypes.odf.modifiers.tablecell.TableCellModifierData;
+import org.underdocx.doctypes.odf.modifiers.tablecell.OdfTableCellModifier;
+import org.underdocx.doctypes.odf.modifiers.tablecell.OdfTableCellModifierData;
 import org.underdocx.doctypes.tools.datapicker.PredefinedDataPicker;
 import org.underdocx.doctypes.tools.datapicker.StringConvertDataPicker;
 import org.underdocx.enginelayers.baseengine.CommandHandlerResult;
@@ -51,8 +52,8 @@ public class TimeCommandHandler<C extends DocContainer<D>, D> extends AbstractTe
     private static final PredefinedDataPicker<String> langPicker = new StringConvertDataPicker().asPredefined("lang");
     private static final PredefinedDataPicker<String> templateCellPicker = new StringConvertDataPicker().asPredefined("templateCell");
 
-    public TimeCommandHandler() {
-        super(new Regex("Time"));
+    public TimeCommandHandler(ModifiersProvider modifiers) {
+        super(new Regex("Time"), modifiers);
     }
 
     private String getFormat(boolean isIn, PredefinedDataPicker<String> picker) {
@@ -80,7 +81,7 @@ public class TimeCommandHandler<C extends DocContainer<D>, D> extends AbstractTe
         String replaceString = time.format(outFormatter);
         new ReplaceWithTextModifier<C, ParametersPlaceholderData, D>().modify(selection, replaceString);
         templateCellPicker.pickData(dataAccess, placeholderData.getJson()).getOptionalValue().ifPresent(templateCell -> {
-            new TableCellModifier<C, D>().modify(selection, new TableCellModifierData.Simple(time, templateCell));
+            new OdfTableCellModifier<C, D>().modify(selection, new OdfTableCellModifierData.Simple(time, templateCell));
         });
         return CommandHandlerResult.EXECUTED_PROCEED;
     }

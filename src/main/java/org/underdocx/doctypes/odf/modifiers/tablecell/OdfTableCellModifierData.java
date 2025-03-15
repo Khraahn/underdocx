@@ -22,15 +22,31 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-package org.underdocx.doctypes.modifiers;
+package org.underdocx.doctypes.odf.modifiers.tablecell;
 
-import org.underdocx.doctypes.odf.modifiers.deleteplaceholder.DeletePlaceholderModifierData;
-import org.underdocx.enginelayers.baseengine.ModifierNodeResult;
-import org.underdocx.enginelayers.baseengine.SelectionModifier;
-import org.w3c.dom.Node;
+public interface OdfTableCellModifierData {
 
+    Object getValue();
 
-public interface ModifierProvider {
+    String getStyleCellAddress();
 
-    SelectionModifier<Node, DeletePlaceholderModifierData, ModifierNodeResult> getDeletePlaceholderModifier();
+    class Simple implements OdfTableCellModifierData {
+        Object value;
+        String styleCellAddress;
+
+        public Simple(Object value, String styleCellAddress) {
+            this.value = value;
+            this.styleCellAddress = styleCellAddress;
+        }
+
+        @Override
+        public Object getValue() {
+            return value;
+        }
+
+        @Override
+        public String getStyleCellAddress() {
+            return styleCellAddress;
+        }
+    }
 }

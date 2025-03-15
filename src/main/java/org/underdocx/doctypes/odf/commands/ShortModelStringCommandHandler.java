@@ -26,6 +26,7 @@ package org.underdocx.doctypes.odf.commands;
 
 import org.underdocx.common.types.Regex;
 import org.underdocx.doctypes.DocContainer;
+import org.underdocx.doctypes.modifiers.ModifiersProvider;
 import org.underdocx.doctypes.odf.commands.internal.AbstractStringCommandHandler;
 import org.underdocx.doctypes.odf.commands.internal.modifiermodule.stringoutput.StringOutputModuleConfig;
 import org.underdocx.doctypes.tools.datapicker.ModelNameDataPicker;
@@ -35,8 +36,8 @@ public class ShortModelStringCommandHandler<C extends DocContainer<D>, D> extend
 
     public final static Regex KEYS = new Regex("\\*\\S*");
 
-    public ShortModelStringCommandHandler() {
-        super(KEYS);
+    public ShortModelStringCommandHandler(ModifiersProvider modifiers) {
+        super(KEYS, modifiers);
     }
 
     @Override

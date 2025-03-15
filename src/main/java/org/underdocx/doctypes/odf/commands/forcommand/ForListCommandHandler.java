@@ -26,11 +26,12 @@ package org.underdocx.doctypes.odf.commands.forcommand;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import org.underdocx.doctypes.DocContainer;
+import org.underdocx.doctypes.modifiers.ModifiersProvider;
+import org.underdocx.doctypes.odf.modifiers.forlistmodifier.OdfForListModifier;
+import org.underdocx.doctypes.odf.modifiers.forlistmodifier.OdfForListModifierData;
+import org.underdocx.doctypes.odf.modifiers.formodifier.ForModifierData;
 import org.underdocx.doctypes.tools.attrinterpreter.PredefinedAttributesInterpreter;
 import org.underdocx.doctypes.tools.attrinterpreter.single.AttributeInterpreterFactory;
-import org.underdocx.doctypes.odf.modifiers.forlistmodifier.ForListModifier;
-import org.underdocx.doctypes.odf.modifiers.forlistmodifier.ForListModifierData;
-import org.underdocx.doctypes.odf.modifiers.formodifier.ForModifierData;
 import org.underdocx.enginelayers.baseengine.ModifierNodeResult;
 
 import java.util.Optional;
@@ -38,14 +39,18 @@ import java.util.Optional;
 
 public class ForListCommandHandler<C extends DocContainer<D>, D> extends AbstractForCommandHandler<C, D> {
 
+    public ForListCommandHandler(ModifiersProvider modifiers) {
+        super(modifiers);
+    }
+
     private static PredefinedAttributesInterpreter<Optional<Integer>> indexInterpreter =
             AttributeInterpreterFactory.createIntegerAttributeInterpreter(LISTITEM_ATTR);
 
     @Override
     protected ModifierNodeResult callModifier(ForModifierData forModifierData) {
         Integer listItem = indexInterpreter.interpretAttributes(attributes).orElse(0);
-        ForListModifierData listData = new ForListModifierData.DefaultForListModifierData(forModifierData, listItem);
-        return new ForListModifier<C, D>().modify(selection, listData);
+        OdfForListModifierData listData = new OdfForListModifierData.DefaultOdfForListModifierData(forModifierData, listItem);
+        return new OdfForListModifier<>(modifiers).modify(selection, listData);
     }
 
     @Override

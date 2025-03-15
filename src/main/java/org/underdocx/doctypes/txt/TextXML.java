@@ -88,6 +88,20 @@ public class TextXML {
 
     public void save(OutputStream os) throws IOException {
         BufferedWriter w = new BufferedWriter(new OutputStreamWriter(os, StandardCharsets.UTF_8));
+        save(w::write);
+        w.flush();
+        w.close();
+    }
+
+    public void save(StringBuilder w) {
+        try {
+            save(w::append);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public void save(TextWriter w) throws IOException {
         TreeWalker walker = new TreeWalker(doc, doc, null);
         List<String> stack = new ArrayList<>();
         boolean lastWasEndOfP = false;
@@ -109,7 +123,15 @@ public class TextXML {
                 w.write(state.getNode().getTextContent());
             }
         }
-        w.flush();
-        w.close();
+    }
+
+    public String getPlainText() {
+        StringBuilder b = new StringBuilder();
+        save(b);
+        return b.toString();
+    }
+
+    public interface TextWriter {
+        void write(String s) throws IOException;
     }
 }

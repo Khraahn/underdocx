@@ -27,13 +27,14 @@ package org.underdocx.doctypes.odf.commands.importcommand;
 import org.odftoolkit.odfdom.doc.OdfDocument;
 import org.underdocx.common.types.Regex;
 import org.underdocx.common.types.Resource;
+import org.underdocx.doctypes.modifiers.ModifiersProvider;
 import org.underdocx.doctypes.odf.AbstractOdfContainer;
 import org.underdocx.doctypes.odf.commands.internal.AbstractTextualCommandHandler;
 import org.underdocx.doctypes.odf.commands.internal.modifiermodule.resource.ResourceCommandModule;
 import org.underdocx.doctypes.odf.modifiers.deleteplaceholder.DeletePlaceholderModifierData;
 import org.underdocx.doctypes.odf.modifiers.deleteplaceholder.OdfDeletePlaceholderModifier;
-import org.underdocx.doctypes.odf.modifiers.importmodifier.ImportModifier;
-import org.underdocx.doctypes.odf.modifiers.importmodifier.ImportModifierData;
+import org.underdocx.doctypes.odf.modifiers.importmodifier.OdfImportModifier;
+import org.underdocx.doctypes.odf.modifiers.importmodifier.OdfImportModifierData;
 import org.underdocx.doctypes.tools.datapicker.BooleanDataPicker;
 import org.underdocx.doctypes.tools.datapicker.PredefinedDataPicker;
 import org.underdocx.doctypes.tools.datapicker.StringConvertDataPicker;
@@ -56,8 +57,8 @@ public abstract class AbstractImportCommandHander<C extends AbstractOdfContainer
     private static final PredefinedDataPicker<Boolean> useCacheAttr = new BooleanDataPicker().asPredefined(CACHE_ATTR);
     private static final PredefinedDataPicker<String> pageNameAttr = new StringConvertDataPicker().asPredefined(PAGE_ATTR);
 
-    public AbstractImportCommandHander() {
-        super(KEYS);
+    public AbstractImportCommandHander(ModifiersProvider modifiers) {
+        super(KEYS, modifiers);
     }
 
     HashMap<String, byte[]> cache = new HashMap<>();
@@ -69,8 +70,8 @@ public abstract class AbstractImportCommandHander<C extends AbstractOdfContainer
         checkPackageExistence(pageName);
         boolean useCache = useCacheAttr.getData(dataAccess, placeholderData.getJson()).orElse(true);
         C importDoc = getDoc(resource, useCache);
-        ImportModifierData modifiedData = new ImportModifierData.Simple(resource.getIdentifier(), importDoc, selection.getDocContainer(), selection.getNode(), true, pageName);
-        new ImportModifier().modify(modifiedData);
+        OdfImportModifierData modifiedData = new OdfImportModifierData.Simple(resource.getIdentifier(), importDoc, selection.getDocContainer(), selection.getNode(), true, pageName);
+        new OdfImportModifier().modify(modifiedData);
         return CommandHandlerResult.FACTORY.convert(new OdfDeletePlaceholderModifier().modify(selection.getNode(), DeletePlaceholderModifierData.DEFAULT));
     }
 

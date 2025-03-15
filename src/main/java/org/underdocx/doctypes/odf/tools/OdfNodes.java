@@ -28,7 +28,6 @@ import org.odftoolkit.odfdom.dom.element.OdfStylableElement;
 import org.odftoolkit.odfdom.dom.element.office.OfficeTextElement;
 import org.odftoolkit.odfdom.dom.element.table.TableTableElement;
 import org.odftoolkit.odfdom.dom.element.text.TextParagraphElementBase;
-import org.odftoolkit.odfdom.pkg.OdfFileDom;
 import org.underdocx.common.tools.Convenience;
 import org.underdocx.common.tree.Nodes;
 import org.underdocx.doctypes.odf.AbstractOdfContainer;
@@ -39,9 +38,6 @@ import java.util.Optional;
 
 public class OdfNodes {
 
-    public static OdfFileDom getFileDom(Node odfNode) {
-        return ((OdfFileDom) odfNode.getOwnerDocument());
-    }
 
     public static Optional<Node> findAscendantParagraph(Node node, boolean ensureOfficeTextParent) {
         return (!ensureOfficeTextParent)
@@ -50,34 +46,9 @@ public class OdfNodes {
                 && currentNode.getParentNode() instanceof OfficeTextElement);
     }
 
-    public static Optional<TextParagraphElementBase> findOldestParagraph(Node node) {
-        return Nodes.findOldestAncestorNode(node, currentNode -> currentNode instanceof TextParagraphElementBase).map(x -> (TextParagraphElementBase) x);
-    }
 
     public static Optional<OdfStylableElement> findOldestParagraphOrTable(Node node) {
         return Nodes.findOldestAncestorNode(node, currentNode -> currentNode instanceof TextParagraphElementBase || currentNode instanceof TableTableElement).map(x -> (OdfStylableElement) x);
-    }
-
-    public static Optional<Node> findOldestParagraphOrTableParent(Node node) {
-        Optional<OdfStylableElement> p = findOldestParagraphOrTable(node);
-        if (p.isPresent()) {
-            return Optional.ofNullable(p.get().getParentNode());
-        } else {
-            return Optional.empty();
-        }
-    }
-
-    public static Optional<OdfStylableElement> findAncestorParagraphOrTable(Node node) {
-        return Nodes.findAscendantNode(node, currentNode -> currentNode instanceof TextParagraphElementBase || currentNode instanceof TableTableElement).map(x -> (OdfStylableElement) x);
-    }
-
-    public static Optional<Node> findAncestorParagraphOrTableParent(Node node) {
-        Optional<OdfStylableElement> p = findAncestorParagraphOrTable(node);
-        if (p.isPresent()) {
-            return Optional.ofNullable(p.get().getParentNode());
-        } else {
-            return Optional.empty();
-        }
     }
 
 
@@ -89,7 +60,7 @@ public class OdfNodes {
         });
     }
 
-    public static Optional<Node> findFirstParagraphOrTableChild(OfficeTextElement content) {
+    private static Optional<Node> findFirstParagraphOrTableChild(OfficeTextElement content) {
         NodeList list = content.getChildNodes();
         for (int i = 0; i < list.getLength(); i++) {
             Node node = list.item(i);
@@ -101,5 +72,21 @@ public class OdfNodes {
         }
         return Optional.empty();
     }
+
+
+    private static Optional<OdfStylableElement> findAncestorParagraphOrTable(Node node) {
+        return Nodes.findAscendantNode(node, currentNode -> currentNode instanceof TextParagraphElementBase || currentNode instanceof TableTableElement).map(x -> (OdfStylableElement) x);
+    }
+
+
+    public static Optional<Node> findAncestorParagraphOrTableParent(Node node) {
+        Optional<OdfStylableElement> p = OdfNodes.findAncestorParagraphOrTable(node);
+        if (p.isPresent()) {
+            return Optional.ofNullable(p.get().getParentNode());
+        } else {
+            return Optional.empty();
+        }
+    }
+
 
 }

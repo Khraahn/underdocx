@@ -25,11 +25,12 @@ SOFTWARE.
 package org.underdocx.doctypes.odf.commands.internal.modifiermodule.stringoutput;
 
 
+import org.underdocx.doctypes.DocContainer;
 import org.underdocx.doctypes.odf.commands.internal.modifiermodule.missingdata.MissingDataCommandModuleConfig;
 
 import java.util.function.Predicate;
 
-public interface StringOutputModuleConfig extends MissingDataCommandModuleConfig<String> {
+public interface StringOutputModuleConfig<C extends DocContainer<D>, D> extends MissingDataCommandModuleConfig<C, D, String> {
 
     @Override
     default Predicate<String> getIsEmptyPredicate() {

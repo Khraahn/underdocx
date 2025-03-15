@@ -26,6 +26,7 @@ package org.underdocx.doctypes.odf.commands;
 
 import org.underdocx.common.types.Regex;
 import org.underdocx.doctypes.DocContainer;
+import org.underdocx.doctypes.modifiers.ModifiersProvider;
 import org.underdocx.doctypes.odf.commands.internal.AbstractTextualCommandHandler;
 import org.underdocx.doctypes.odf.modifiers.deleteplaceholder.DeletePlaceholderModifierData;
 import org.underdocx.doctypes.odf.modifiers.deleteplaceholder.OdfDeletePlaceholderModifier;
@@ -36,8 +37,8 @@ import org.underdocx.enginelayers.modelengine.data.DataNode;
 import org.underdocx.enginelayers.parameterengine.ParametersPlaceholderData;
 
 public class CounterCommandHandler<C extends DocContainer<D>, D> extends AbstractTextualCommandHandler<C, D> {
-    public CounterCommandHandler() {
-        super(new Regex("Counter"));
+    public CounterCommandHandler(ModifiersProvider modifiers) {
+        super(new Regex("Counter"), modifiers);
     }
 
     @Override

@@ -26,9 +26,10 @@ package org.underdocx.doctypes.odf.commands;
 
 import org.underdocx.common.types.Pair;
 import org.underdocx.doctypes.DocContainer;
+import org.underdocx.doctypes.modifiers.ModifiersProvider;
 import org.underdocx.doctypes.odf.commands.internal.AbstractTextualCommandHandler;
-import org.underdocx.doctypes.odf.modifiers.deletenode.DeleteParentModifierData;
-import org.underdocx.doctypes.odf.modifiers.deletenode.DeleteParentNodeModifier;
+import org.underdocx.doctypes.odf.modifiers.deletenode.OdfDeleteParentModifierData;
+import org.underdocx.doctypes.odf.modifiers.deletenode.OdfDeleteParentNodeModifier;
 import org.underdocx.doctypes.tools.datapicker.BooleanDataPicker;
 import org.underdocx.doctypes.tools.datapicker.OneOfDataPicker;
 import org.underdocx.doctypes.tools.datapicker.PredefinedDataPicker;
@@ -52,12 +53,12 @@ public class RemoveCommandHandler<C extends DocContainer<D>, D> extends Abstract
     private Set<Pair<Node, String>> toRemoveLater = new HashSet<>();
 
     @Override
-    public void init(C container, EngineAccess engineAccess) {
+    public void init(C container, EngineAccess<C, D> engineAccess) {
         engineAccess.addListener(new Listener());
     }
 
-    public RemoveCommandHandler() {
-        super("Remove");
+    public RemoveCommandHandler(ModifiersProvider modifiers) {
+        super("Remove", modifiers);
     }
 
     @Override
@@ -75,12 +76,12 @@ public class RemoveCommandHandler<C extends DocContainer<D>, D> extends Abstract
 
     private CommandHandlerResult exec(String type, Node node) {
         Predicate<Node> filter = switch (type) {
-            case PAGE -> DeleteParentModifierData.ODF_PAGE;
-            case TABLE -> DeleteParentModifierData.ODF_TABLE;
-            case PARAGRAPH -> DeleteParentModifierData.ODF_PARAGRAPH;
+            case PAGE -> OdfDeleteParentModifierData.ODF_PAGE;
+            case TABLE -> OdfDeleteParentModifierData.ODF_TABLE;
+            case PARAGRAPH -> OdfDeleteParentModifierData.ODF_PARAGRAPH;
             default -> throw new IllegalStateException("Unexpected value: " + type);
         };
-        return CommandHandlerResult.FACTORY.convert(DeleteParentNodeModifier.modify(node, new DeleteParentModifierData.Simple(filter)));
+        return CommandHandlerResult.FACTORY.convert(OdfDeleteParentNodeModifier.modify(node, new OdfDeleteParentModifierData.Simple(filter)));
     }
 
     private class Listener implements EngineListener<C, D> {

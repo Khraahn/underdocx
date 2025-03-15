@@ -27,6 +27,7 @@ package org.underdocx.doctypes.odf.commands;
 import com.fasterxml.jackson.databind.JsonNode;
 import org.underdocx.common.types.Regex;
 import org.underdocx.doctypes.DocContainer;
+import org.underdocx.doctypes.modifiers.ModifiersProvider;
 import org.underdocx.doctypes.odf.commands.internal.AbstractStringCommandHandler;
 import org.underdocx.doctypes.odf.commands.internal.modifiermodule.stringoutput.StringOutputModuleConfig;
 import org.underdocx.doctypes.tools.attrinterpreter.accesstype.AccessType;
@@ -48,23 +49,33 @@ public class StringCommandHandler<C extends DocContainer<D>, D> extends Abstract
 
     public final static Regex KEYS = new Regex(Pattern.quote("String"));
 
-    public StringCommandHandler() {
-        super(KEYS);
+    public StringCommandHandler(ModifiersProvider<C, D> modifiers) {
+        super(KEYS, modifiers);
     }
 
     @Override
     protected StringOutputModuleConfig getConfig() {
-        return () -> new PredefinedDataPicker<>() {
+        return new StringOutputModuleConfig() {
             @Override
-            public DataPickerResult<String> pickData(DataAccess dataAccess, JsonNode jsonNode) {
-                return isDirectAccess.test(jsonNode)
-                        ? directDataPicker.pickData(dataAccess, jsonNode)
-                        : valueDataPicker.pickData(dataAccess, jsonNode);
+            public PredefinedDataPicker<String> getDataPicker() {
+                return new PredefinedDataPicker<>() {
+                    @Override
+                    public DataPickerResult<String> pickData(DataAccess dataAccess, JsonNode jsonNode) {
+                        return isDirectAccess.test(jsonNode)
+                                ? directDataPicker.pickData(dataAccess, jsonNode)
+                                : valueDataPicker.pickData(dataAccess, jsonNode);
+                    }
+
+                    @Override
+                    public String getName() {
+                        return "value";
+                    }
+                };
             }
 
             @Override
-            public String getName() {
-                return "value";
+            public ModifiersProvider getModifiers() {
+                return modifiers;
             }
         };
     }

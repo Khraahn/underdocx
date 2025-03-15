@@ -26,15 +26,21 @@ package org.underdocx.doctypes.odf.commands.forcommand;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import org.underdocx.doctypes.DocContainer;
+import org.underdocx.doctypes.modifiers.ModifiersProvider;
 import org.underdocx.doctypes.odf.modifiers.formodifier.ForModifierData;
 import org.underdocx.doctypes.odf.modifiers.formodifier.ForMofifier;
 import org.underdocx.enginelayers.baseengine.ModifierNodeResult;
 
 
 public class ForCommandHandler<C extends DocContainer<D>, D> extends AbstractForCommandHandler<C, D> {
+
+    public ForCommandHandler(ModifiersProvider<C, D> modifiers) {
+        super(modifiers);
+    }
+
     @Override
     protected ModifierNodeResult callModifier(ForModifierData forModifierData) {
-        return new ForMofifier<C, D>().modify(selection, forModifierData);
+        return new ForMofifier<>(modifiers).modify(selection, forModifierData);
     }
 
     @Override

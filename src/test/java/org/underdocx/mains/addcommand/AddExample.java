@@ -3,6 +3,7 @@ package org.underdocx.mains.addcommand;
 import org.odftoolkit.odfdom.doc.OdfTextDocument;
 import org.underdocx.common.types.Regex;
 import org.underdocx.doctypes.odf.commands.internal.AbstractTextualCommandHandler;
+import org.underdocx.doctypes.odf.modifiers.OdfModifiersProvider;
 import org.underdocx.doctypes.odf.modifiers.deleteplaceholder.DeletePlaceholderModifierData;
 import org.underdocx.doctypes.odf.modifiers.deleteplaceholder.OdfDeletePlaceholderModifier;
 import org.underdocx.doctypes.odf.odt.OdtContainer;
@@ -20,7 +21,7 @@ public class AddExample {
 
     private static class AddCommandHandler extends AbstractTextualCommandHandler<OdtContainer, OdfTextDocument> {
         protected AddCommandHandler() {
-            super(new Regex("Add"));
+            super(new Regex("Add"), new OdfModifiersProvider());
         }
 
         @Override

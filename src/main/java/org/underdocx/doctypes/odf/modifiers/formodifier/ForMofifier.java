@@ -29,6 +29,7 @@ import org.underdocx.common.tools.Convenience;
 import org.underdocx.common.tree.Nodes;
 import org.underdocx.common.types.Pair;
 import org.underdocx.doctypes.DocContainer;
+import org.underdocx.doctypes.modifiers.ModifiersProvider;
 import org.underdocx.doctypes.odf.modifiers.internal.AbstractAreaModifier;
 import org.underdocx.enginelayers.baseengine.ModifierNodeResult;
 import org.underdocx.enginelayers.parameterengine.ParametersPlaceholderData;
@@ -41,6 +42,10 @@ public class ForMofifier<C extends DocContainer<D>, D> extends AbstractAreaModif
 
     private List<Node> areaNodes;
     private ModifierNodeResult modifierResult = null;
+
+    public ForMofifier(ModifiersProvider<C, D> modifiers) {
+        super(modifiers);
+    }
 
 
     @Override

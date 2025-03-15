@@ -36,10 +36,10 @@ import org.underdocx.environment.UnderdocxEnv;
 import java.net.URI;
 import java.util.Optional;
 
-public class ExistingImageModifier<C extends DocContainer<D>, P extends BasicImagePlaceholderData, D> implements SelectionModifier<Selection<C, P, D>, ExistingImageModifierData, ModifierResult> {
+public class OdfExistingImageModifier<C extends DocContainer<D>, P extends BasicImagePlaceholderData, D> implements SelectionModifier<Selection<C, P, D>, OdfExistingImageModifierData, ModifierResult> {
 
     @Override
-    public ModifierResult modify(Selection<C, P, D> selection, ExistingImageModifierData modifierData) {
+    public ModifierResult modify(Selection<C, P, D> selection, OdfExistingImageModifierData modifierData) {
         BasicImagePlaceholderData placeholder = selection.getPlaceholderData();
         Pair<Double, Double> importImageWidthHeight;
         String newName = modifierData.getFileName();

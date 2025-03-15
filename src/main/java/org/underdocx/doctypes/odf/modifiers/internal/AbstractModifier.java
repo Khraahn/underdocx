@@ -22,31 +22,17 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-package org.underdocx.doctypes.odf.modifiers.tablecell;
+package org.underdocx.doctypes.odf.modifiers.internal;
 
-public interface TableCellModifierData {
+import org.underdocx.doctypes.DocContainer;
+import org.underdocx.doctypes.modifiers.ModifiersProvider;
 
-    Object getValue();
+public class AbstractModifier<C extends DocContainer<D>, D> {
 
-    String getStyleCellAddress();
+    protected final ModifiersProvider<C, D> modifiers;
 
-    class Simple implements TableCellModifierData {
-        Object value;
-        String styleCellAddress;
-
-        public Simple(Object value, String styleCellAddress) {
-            this.value = value;
-            this.styleCellAddress = styleCellAddress;
-        }
-
-        @Override
-        public Object getValue() {
-            return value;
-        }
-
-        @Override
-        public String getStyleCellAddress() {
-            return styleCellAddress;
-        }
+    public AbstractModifier(ModifiersProvider<C, D> modifiers) {
+        this.modifiers = modifiers;
     }
+
 }

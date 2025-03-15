@@ -28,12 +28,13 @@ import org.odftoolkit.odfdom.doc.OdfTextDocument;
 import org.underdocx.common.enumerator.Enumerator;
 import org.underdocx.common.types.Regex;
 import org.underdocx.common.types.Resource;
+import org.underdocx.doctypes.modifiers.ModifiersProvider;
 import org.underdocx.doctypes.odf.commands.internal.AbstractTextualCommandHandler;
 import org.underdocx.doctypes.odf.commands.internal.modifiermodule.resource.ResourceCommandModule;
 import org.underdocx.doctypes.odf.modifiers.deleteplaceholder.DeletePlaceholderModifierData;
 import org.underdocx.doctypes.odf.modifiers.deleteplaceholder.OdfDeletePlaceholderModifier;
-import org.underdocx.doctypes.odf.modifiers.importmodifier.ImportModifier;
-import org.underdocx.doctypes.odf.modifiers.importmodifier.ImportModifierData;
+import org.underdocx.doctypes.odf.modifiers.importmodifier.OdfImportModifier;
+import org.underdocx.doctypes.odf.modifiers.importmodifier.OdfImportModifierData;
 import org.underdocx.doctypes.odf.odt.OdtContainer;
 import org.underdocx.doctypes.odf.tools.placeholder.OdfParameterizedPlaceholderFactory;
 import org.underdocx.doctypes.tools.attrinterpreter.PredefinedAttributesInterpreter;
@@ -67,8 +68,8 @@ public class ExportCommandHandler extends AbstractTextualCommandHandler<OdtConta
     private static PredefinedAttributesInterpreter<Optional<String>> targetNameInterpreter =
             AttributeInterpreterFactory.createStringAttributeInterpreter(false).asPredefined(EXPORT_TARGET_NAME_ATTR);
 
-    public ExportCommandHandler() {
-        super(KEYS);
+    public ExportCommandHandler(ModifiersProvider modifiers) {
+        super(KEYS, modifiers);
     }
 
     @Override
@@ -77,8 +78,8 @@ public class ExportCommandHandler extends AbstractTextualCommandHandler<OdtConta
         String targetName = namePicker.pickData(dataAccess, placeholderData.getJson()).getOptionalValue().orElse(null);
         Node refNode = findRefNode(targetDoc, targetName);
         new OdfDeletePlaceholderModifier().modify(selection.getNode(), DeletePlaceholderModifierData.DEFAULT);
-        ImportModifierData modifiedData = new ImportModifierData.Simple(randomStr(), selection.getDocContainer(), targetDoc, refNode, true, null);
-        new ImportModifier().modify(modifiedData);
+        OdfImportModifierData modifiedData = new OdfImportModifierData.Simple(randomStr(), selection.getDocContainer(), targetDoc, refNode, true, null);
+        new OdfImportModifier().modify(modifiedData);
         selection.getDocContainer().setDocument(targetDoc.getDocument());
         new OdfDeletePlaceholderModifier().modify(refNode, DeletePlaceholderModifierData.DEFAULT);
         return CommandHandlerResult.EXECUTED_FULL_RESCAN;

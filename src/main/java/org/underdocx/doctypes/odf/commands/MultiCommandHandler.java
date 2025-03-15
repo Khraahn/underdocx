@@ -26,6 +26,7 @@ package org.underdocx.doctypes.odf.commands;
 
 import org.underdocx.common.types.Regex;
 import org.underdocx.doctypes.DocContainer;
+import org.underdocx.doctypes.modifiers.ModifiersProvider;
 import org.underdocx.doctypes.odf.commands.internal.AbstractCommandHandler;
 import org.underdocx.doctypes.odf.commands.internal.AbstractTextualCommandHandler;
 import org.underdocx.enginelayers.baseengine.CommandHandlerResult;
@@ -41,6 +42,10 @@ import java.util.regex.Pattern;
 
 public class MultiCommandHandler<C extends DocContainer<D>, D> extends AbstractCommandHandler<C, ParametersPlaceholderData, D> {
 
+    public MultiCommandHandler(ModifiersProvider modifiers) {
+        super(modifiers);
+    }
+
     private List<MCommandHandler<C, ParametersPlaceholderData, D>> subCommandHandlerRegistry = new ArrayList<>();
 
     private void registerSubCommandHandler(MCommandHandler<C, ParametersPlaceholderData, D> handler) {
@@ -48,7 +53,7 @@ public class MultiCommandHandler<C extends DocContainer<D>, D> extends AbstractC
     }
 
     public void registerStringReplacement(String key, String replacement) {
-        registerSubCommandHandler(new SimpleKey2StringCommandHandler<>(new Regex(Pattern.quote(key)), replacement));
+        registerSubCommandHandler(new SimpleKey2StringCommandHandler<>(new Regex(Pattern.quote(key)), replacement, modifiers));
     }
 
     @Override
@@ -81,8 +86,8 @@ public class MultiCommandHandler<C extends DocContainer<D>, D> extends AbstractC
 
         private final String replacement;
 
-        protected SimpleKey2StringCommandHandler(Regex keys, String replacement) {
-            super(keys);
+        protected SimpleKey2StringCommandHandler(Regex keys, String replacement, ModifiersProvider modifiers) {
+            super(keys, modifiers);
             this.replacement = replacement;
         }
 

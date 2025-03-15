@@ -29,6 +29,7 @@ import org.underdocx.common.placeholder.TextualPlaceholderToolkit;
 import org.underdocx.common.tools.Convenience;
 import org.underdocx.common.types.Regex;
 import org.underdocx.doctypes.DocContainer;
+import org.underdocx.doctypes.modifiers.ModifiersProvider;
 import org.underdocx.doctypes.tools.attrinterpreter.PredefinedAttributesInterpreter;
 import org.underdocx.doctypes.tools.attrinterpreter.single.AttributeInterpreterFactory;
 import org.underdocx.doctypes.tools.datapicker.AttributeNodeDataPicker;
@@ -49,12 +50,13 @@ public abstract class AbstractTextualCommandHandler<C extends DocContainer<D>, D
     protected Regex allowedKeys;
     protected TextualPlaceholderToolkit<ParametersPlaceholderData> placeholderToolkit = null;
 
-    protected AbstractTextualCommandHandler(Regex keys) {
+    protected AbstractTextualCommandHandler(Regex keys, ModifiersProvider<C, D> modifiersProvider) {
+        super(modifiersProvider);
         this.allowedKeys = keys;
     }
 
-    protected AbstractTextualCommandHandler(String key) {
-        this(new Regex(Pattern.compile(Pattern.quote(key))));
+    protected AbstractTextualCommandHandler(String key, ModifiersProvider<C, D> modifiersProvider) {
+        this(new Regex(Pattern.compile(Pattern.quote(key))), modifiersProvider);
     }
 
     protected Optional<String> resolveStringByAttr(String attrName) {
@@ -81,7 +83,7 @@ public abstract class AbstractTextualCommandHandler<C extends DocContainer<D>, D
     protected abstract CommandHandlerResult tryExecuteTextualCommand();
 
     private static final String DELETE_ON_EOD_ATTR = "deleteOnEod";
-    private static PredefinedAttributesInterpreter<Optional<Boolean>> attr = AttributeInterpreterFactory.createBooleanAttributeInterpreter(false).asPredefined(DELETE_ON_EOD_ATTR);
+    private static final PredefinedAttributesInterpreter<Optional<Boolean>> attr = AttributeInterpreterFactory.createBooleanAttributeInterpreter(false).asPredefined(DELETE_ON_EOD_ATTR);
 
     protected void markForEodDeletion() {
         if (!isMarkedForEodDeletion(placeholderData)) {

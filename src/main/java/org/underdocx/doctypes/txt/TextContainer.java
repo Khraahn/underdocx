@@ -32,7 +32,6 @@ import java.io.OutputStream;
 
 public class TextContainer extends AbstractDocContainer<TextXML> {
 
-  
     public TextContainer(String content) {
         doc = new TextXML(content);
     }
@@ -50,6 +49,10 @@ public class TextContainer extends AbstractDocContainer<TextXML> {
     @Override
     public void save(OutputStream os) throws IOException {
         doc.save(os);
+    }
+
+    public String getPlainText() {
+        return doc.getPlainText();
     }
 
     @Override

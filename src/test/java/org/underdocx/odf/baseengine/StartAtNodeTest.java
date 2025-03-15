@@ -31,6 +31,7 @@ import org.underdocx.AbstractOdtTest;
 import org.underdocx.common.tree.Nodes;
 import org.underdocx.common.tree.nodepath.TreeNodeCollector;
 import org.underdocx.doctypes.odf.commands.internal.AbstractTextualCommandHandler;
+import org.underdocx.doctypes.odf.modifiers.OdfModifiersProvider;
 import org.underdocx.doctypes.odf.odt.OdtContainer;
 import org.underdocx.doctypes.odf.odt.OdtEngine;
 import org.underdocx.enginelayers.baseengine.CommandHandlerResult;
@@ -44,7 +45,7 @@ public class StartAtNodeTest extends AbstractOdtTest {
 
     private class IncVarPlaceholder extends AbstractTextualCommandHandler<OdtContainer, OdfTextDocument> {
         protected IncVarPlaceholder() {
-            super("IncVar");
+            super("IncVar", new OdfModifiersProvider());
         }
 
         @Override
@@ -60,7 +61,7 @@ public class StartAtNodeTest extends AbstractOdtTest {
         private int replaceCounter = 0;
 
         protected ReplaceWithIncVarAndProceesAtNextNode() {
-            super("ReplaceWithIncVar");
+            super("ReplaceWithIncVar", new OdfModifiersProvider());
         }
 
         @Override

@@ -24,7 +24,21 @@ SOFTWARE.
 
 package org.underdocx.txt;
 
+import org.assertj.core.api.Assertions;
 import org.underdocx.AbstractTest;
+import org.underdocx.doctypes.txt.TextContainer;
 
 public abstract class AbstractTxtTest extends AbstractTest {
+
+    public void assertContains(TextContainer doc, String text) {
+        Assertions.assertThat(doc.getPlainText().contains(text)).isTrue();
+    }
+
+    public void assertNotContains(TextContainer doc, String text) {
+        Assertions.assertThat(doc.getPlainText().contains(text)).isFalse();
+    }
+
+    public void assertNoPlaceholders(TextContainer doc) {
+        assertNotContains(doc, "$");
+    }
 }

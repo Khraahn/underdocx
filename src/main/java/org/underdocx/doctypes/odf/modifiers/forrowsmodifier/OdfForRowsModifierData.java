@@ -22,26 +22,39 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-package org.underdocx.doctypes.odf.modifiers.forlistmodifier;
+package org.underdocx.doctypes.odf.modifiers.forrowsmodifier;
 
 import org.underdocx.common.types.Pair;
+import org.underdocx.common.types.Range;
 import org.underdocx.doctypes.odf.modifiers.formodifier.ForModifierData;
 import org.underdocx.enginelayers.parameterengine.ParametersPlaceholderData;
 import org.w3c.dom.Node;
 
 import java.util.List;
 
-public interface ForListModifierData extends ForModifierData {
-    int getListItemIndex();
+public interface OdfForRowsModifierData extends ForModifierData {
+    Range getRepeatRows();
 
-    class DefaultForListModifierData implements ForListModifierData {
+    int getRowGroupSize();
 
+    boolean isInTable();
+
+    String getTableName();
+
+    class DefaultOdfForRowsModifierData implements OdfForRowsModifierData {
+
+        private final Range rows;
         private final ForModifierData wrapped;
-        private final int listItemIndex;
+        private final int rowGroupSize;
+        private final boolean isInTable;
+        private final String tableName;
 
-        public DefaultForListModifierData(ForModifierData wrapped, int listItemIndex) {
+        public DefaultOdfForRowsModifierData(ForModifierData wrapped, Range repeatRows, int rowGroupSize, boolean isInTable, String tableName) {
             this.wrapped = wrapped;
-            this.listItemIndex = listItemIndex;
+            this.rows = repeatRows;
+            this.rowGroupSize = rowGroupSize;
+            this.isInTable = isInTable;
+            this.tableName = tableName;
         }
 
         @Override
@@ -60,8 +73,23 @@ public interface ForListModifierData extends ForModifierData {
         }
 
         @Override
-        public int getListItemIndex() {
-            return listItemIndex;
+        public Range getRepeatRows() {
+            return rows;
+        }
+
+        @Override
+        public int getRowGroupSize() {
+            return rowGroupSize;
+        }
+
+        @Override
+        public boolean isInTable() {
+            return isInTable;
+        }
+
+        @Override
+        public String getTableName() {
+            return tableName;
         }
     }
 }

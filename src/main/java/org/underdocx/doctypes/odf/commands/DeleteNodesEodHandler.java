@@ -25,10 +25,10 @@ SOFTWARE.
 package org.underdocx.doctypes.odf.commands;
 
 import org.underdocx.doctypes.DocContainer;
+import org.underdocx.doctypes.modifiers.ModifiersProvider;
 import org.underdocx.doctypes.odf.commands.internal.AbstractCommandHandler;
 import org.underdocx.doctypes.odf.commands.internal.AbstractTextualCommandHandler;
 import org.underdocx.doctypes.odf.modifiers.deleteplaceholder.DeletePlaceholderModifierData;
-import org.underdocx.doctypes.odf.modifiers.deleteplaceholder.OdfDeletePlaceholderModifier;
 import org.underdocx.enginelayers.baseengine.CommandHandlerResult;
 import org.underdocx.enginelayers.baseengine.EngineAccess;
 import org.underdocx.enginelayers.baseengine.EngineListener;
@@ -38,9 +38,12 @@ import java.util.Optional;
 
 public class DeleteNodesEodHandler<C extends DocContainer<D>, D> extends AbstractCommandHandler<C, ParametersPlaceholderData, D> implements EngineListener<C, D> {
 
+    public DeleteNodesEodHandler(ModifiersProvider<C, D> modifiers) {
+        super(modifiers);
+    }
 
     @Override
-    public void init(C container, EngineAccess engineAccess) {
+    public void init(C container, EngineAccess<C, D> engineAccess) {
         engineAccess.addListener(this);
     }
 
@@ -55,7 +58,7 @@ public class DeleteNodesEodHandler<C extends DocContainer<D>, D> extends Abstrac
             Optional<ParametersPlaceholderData> placeholderData = AbstractTextualCommandHandler.examineNode(node);
             if (placeholderData.isEmpty()) return false;
             return AbstractTextualCommandHandler.isMarkedForEodDeletion(placeholderData.get());
-        }).forEach(placeholderNode -> new OdfDeletePlaceholderModifier().modify(placeholderNode, DeletePlaceholderModifierData.DEFAULT));
+        }).forEach(placeholderNode -> modifiers.getDeletePlaceholderModifier().modify(placeholderNode, DeletePlaceholderModifierData.DEFAULT));
     }
 
 }

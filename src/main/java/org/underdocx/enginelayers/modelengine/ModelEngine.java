@@ -30,13 +30,13 @@ import org.underdocx.enginelayers.baseengine.BaseEngine;
 import org.underdocx.enginelayers.baseengine.EngineAccess;
 import org.underdocx.enginelayers.baseengine.PlaceholdersProvider;
 import org.underdocx.enginelayers.baseengine.Selection;
-import org.underdocx.enginelayers.modelengine.dataaccess.DataAccess;
-import org.underdocx.enginelayers.modelengine.internal.MSelectionWrapper;
 import org.underdocx.enginelayers.modelengine.data.DataNode;
 import org.underdocx.enginelayers.modelengine.data.simple.MapDataNode;
+import org.underdocx.enginelayers.modelengine.dataaccess.DataAccess;
 import org.underdocx.enginelayers.modelengine.datapath.DataPath;
 import org.underdocx.enginelayers.modelengine.datapath.elements.DataPathElement;
 import org.underdocx.enginelayers.modelengine.datapath.elements.PropertyDataPathElement;
+import org.underdocx.enginelayers.modelengine.internal.MSelectionWrapper;
 import org.underdocx.environment.err.Problems;
 import org.w3c.dom.Node;
 
@@ -49,7 +49,7 @@ public class ModelEngine<C extends DocContainer<D>, D> extends BaseEngine {
     protected Map<String, Deque<DataNode>> variableStacks = new HashMap<>();
 
 
-    public ModelEngine(DocContainer doc) {
+    public ModelEngine(C doc) {
         super(doc);
     }
 

@@ -29,6 +29,7 @@ import org.underdocx.common.tools.Convenience;
 import org.underdocx.common.tree.Nodes;
 import org.underdocx.common.types.Pair;
 import org.underdocx.doctypes.DocContainer;
+import org.underdocx.doctypes.modifiers.ModifiersProvider;
 import org.underdocx.doctypes.odf.modifiers.internal.AbstractAreaModifier;
 import org.underdocx.doctypes.odf.modifiers.internal.AreaModifierWithCommonAncestorData;
 import org.underdocx.enginelayers.baseengine.ModifierNodeResult;
@@ -37,6 +38,10 @@ import org.w3c.dom.Node;
 
 
 public class DeleteAreaModifier<C extends DocContainer<D>, D> extends AbstractAreaModifier<C, ParametersPlaceholderData, D, AreaModifierWithCommonAncestorData, ModifierNodeResult> {
+
+    public DeleteAreaModifier(ModifiersProvider<C, D> modifiers) {
+        super(modifiers);
+    }
 
     @Override
     protected Node getCommonAncestorNode(AreaModifierWithCommonAncestorData modifierData) {

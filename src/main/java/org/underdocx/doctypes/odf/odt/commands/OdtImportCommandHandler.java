@@ -26,6 +26,7 @@ package org.underdocx.doctypes.odf.odt.commands;
 
 import org.odftoolkit.odfdom.doc.OdfTextDocument;
 import org.underdocx.common.types.Resource;
+import org.underdocx.doctypes.modifiers.ModifiersProvider;
 import org.underdocx.doctypes.odf.commands.importcommand.AbstractImportCommandHander;
 import org.underdocx.doctypes.odf.odt.OdtContainer;
 import org.underdocx.environment.err.Problems;
@@ -33,6 +34,10 @@ import org.underdocx.environment.err.Problems;
 import java.io.IOException;
 
 public class OdtImportCommandHandler extends AbstractImportCommandHander<OdtContainer, OdfTextDocument> {
+
+    public OdtImportCommandHandler(ModifiersProvider modifiers) {
+        super(modifiers);
+    }
 
     @Override
     protected OdtContainer createContainer(Resource resource) throws IOException {

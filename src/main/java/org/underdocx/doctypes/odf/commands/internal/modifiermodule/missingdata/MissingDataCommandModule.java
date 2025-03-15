@@ -27,8 +27,6 @@ package org.underdocx.doctypes.odf.commands.internal.modifiermodule.missingdata;
 import org.underdocx.doctypes.DocContainer;
 import org.underdocx.doctypes.odf.commands.internal.modifiermodule.AbstractCommandModule;
 import org.underdocx.doctypes.odf.modifiers.deleteplaceholder.DeletePlaceholderModifierData;
-import org.underdocx.doctypes.odf.modifiers.deleteplaceholder.OdfDeletePlaceholderModifier;
-import org.underdocx.doctypes.odf.modifiers.stringmodifier.ReplaceWithTextModifier;
 import org.underdocx.doctypes.tools.attrinterpreter.missingdata.MissingDataAttributesInterpreter;
 import org.underdocx.doctypes.tools.attrinterpreter.missingdata.MissingDataConfig;
 import org.underdocx.doctypes.tools.attrinterpreter.missingdata.MissingDataStrategy;
@@ -37,11 +35,11 @@ import org.underdocx.doctypes.tools.datapicker.DataPickerResult;
 import org.underdocx.enginelayers.parameterengine.ParametersPlaceholderData;
 import org.underdocx.environment.err.Problems;
 
-public class MissingDataCommandModule<C extends DocContainer<D>, D, M> extends AbstractCommandModule<C, ParametersPlaceholderData, D, MissingDataCommandModuleResult<M>, MissingDataCommandModuleConfig<M>> {
+public class MissingDataCommandModule<C extends DocContainer<D>, D, M> extends AbstractCommandModule<C, ParametersPlaceholderData, D, MissingDataCommandModuleResult<M>, MissingDataCommandModuleConfig<C, D, M>> {
 
-    private MissingDataAttributesInterpreter interpreter = new MissingDataAttributesInterpreter();
+    private final MissingDataAttributesInterpreter interpreter = new MissingDataAttributesInterpreter();
 
-    public MissingDataCommandModule(MissingDataCommandModuleConfig configuration) {
+    public MissingDataCommandModule(MissingDataCommandModuleConfig<C, D, M> configuration) {
         super(configuration);
     }
 
@@ -67,7 +65,7 @@ public class MissingDataCommandModule<C extends DocContainer<D>, D, M> extends A
         if (configuration.getIsEmptyPredicate().test(value.value)) {
             return react(config, config.getStrategy(MissingDataSzenario.EMPTY));
         } else {
-            return new MissingDataCommandModuleResult(value.value, value.source);
+            return new MissingDataCommandModuleResult<>(value.value, value.source);
         }
     }
 
@@ -76,15 +74,16 @@ public class MissingDataCommandModule<C extends DocContainer<D>, D, M> extends A
             case SKIP ->
                     new MissingDataCommandModuleResult<>(MissingDataCommandModuleResult.MissingDataCommandModuleResultType.SKIP);
             case FAIL -> Problems.MISSING_VALUE.fireProperty("" + selection.getNode());
-            case EMPTY -> new ReplaceWithTextModifier<C, ParametersPlaceholderData, D>().modify(selection, "");
+            case EMPTY -> configuration.getModifiers().getReplaceWithTextModifier().modify(selection, "");
             case FALLBACK -> tryFallback(config);
-            case DELETE_PLACEHOLDER_KEEP_PARAGRAPH -> new OdfDeletePlaceholderModifier()
+            case DELETE_PLACEHOLDER_KEEP_PARAGRAPH -> configuration.getModifiers().getDeletePlaceholderModifier()
                     .modify(selection.getNode(), new DeletePlaceholderModifierData.Simple(
                             DeletePlaceholderModifierData.Strategy.KEEP_PARAGRAPH));
-            case DELETE_PLACEHOLDER_DELETE_EMPTY_PARAGRAPH -> new OdfDeletePlaceholderModifier()
-                    .modify(selection.getNode(), new DeletePlaceholderModifierData.Simple(
-                            DeletePlaceholderModifierData.Strategy.DELETE_BLANK_PARAGRAPH));
-            case DELETE_PLACEHOLDER_DELETE_PARAGRAPH -> new OdfDeletePlaceholderModifier()
+            case DELETE_PLACEHOLDER_DELETE_EMPTY_PARAGRAPH ->
+                    configuration.getModifiers().getDeletePlaceholderModifier()
+                            .modify(selection.getNode(), new DeletePlaceholderModifierData.Simple(
+                                    DeletePlaceholderModifierData.Strategy.DELETE_BLANK_PARAGRAPH));
+            case DELETE_PLACEHOLDER_DELETE_PARAGRAPH -> configuration.getModifiers().getDeletePlaceholderModifier()
                     .modify(selection.getNode(), new DeletePlaceholderModifierData.Simple(
                             DeletePlaceholderModifierData.Strategy.DELETE_PARAGRAPH, true));
             case KEEP_PLACEHOLDER -> {/* Nothing to do*/}
@@ -95,7 +94,7 @@ public class MissingDataCommandModule<C extends DocContainer<D>, D, M> extends A
 
     private void tryFallback(MissingDataConfig config) {
         String fallback = Problems.MISSING_VALUE.notNull(config.fallback, "fallback");
-        new ReplaceWithTextModifier<C, ParametersPlaceholderData, D>().modify(selection, fallback);
+        configuration.getModifiers().getReplaceWithTextModifier().modify(selection, fallback);
     }
 
 }

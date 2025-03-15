@@ -25,12 +25,14 @@ SOFTWARE.
 package org.underdocx.doctypes.odf.commands.internal.modifiermodule.missingdata;
 
 
+import org.underdocx.doctypes.DocContainer;
+import org.underdocx.doctypes.modifiers.ModifiersProvider;
 import org.underdocx.doctypes.tools.attrinterpreter.missingdata.MissingDataConfig;
 import org.underdocx.doctypes.tools.datapicker.PredefinedDataPicker;
 
 import java.util.function.Predicate;
 
-public interface MissingDataCommandModuleConfig<M> {
+public interface MissingDataCommandModuleConfig<C extends DocContainer<D>, D, M> {
 
     default MissingDataConfig getMissingDataConfig() {
         return new MissingDataConfig();
@@ -39,5 +41,7 @@ public interface MissingDataCommandModuleConfig<M> {
     PredefinedDataPicker<M> getDataPicker();
 
     Predicate<M> getIsEmptyPredicate();
+
+    ModifiersProvider<C, D> getModifiers();
 
 }

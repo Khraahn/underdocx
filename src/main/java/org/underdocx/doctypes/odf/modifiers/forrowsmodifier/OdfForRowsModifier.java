@@ -34,6 +34,7 @@ import org.underdocx.common.tree.TreeWalker;
 import org.underdocx.common.types.Pair;
 import org.underdocx.common.types.Range;
 import org.underdocx.doctypes.DocContainer;
+import org.underdocx.doctypes.modifiers.ModifiersProvider;
 import org.underdocx.doctypes.odf.constants.OdfAttribute;
 import org.underdocx.doctypes.odf.constants.OdfElement;
 import org.underdocx.doctypes.odf.modifiers.deleteplaceholder.DeletePlaceholderModifierData;
@@ -48,11 +49,15 @@ import org.w3c.dom.Node;
 
 import java.util.*;
 
-public class ForRowsModifier<C extends DocContainer<D>, D> extends AbstractAreaModifier<C, ParametersPlaceholderData, D, ForRowsModifierData, ModifierNodeResult> {
+public class OdfForRowsModifier<C extends DocContainer<D>, D> extends AbstractAreaModifier<C, ParametersPlaceholderData, D, OdfForRowsModifierData, ModifierNodeResult> {
     Node resultNode = null;
 
+    public OdfForRowsModifier(ModifiersProvider<C, D> modifiers) {
+        super(modifiers);
+    }
+
     @Override
-    protected Node getCommonAncestorNode(ForRowsModifierData modifierData) {
+    protected Node getCommonAncestorNode(OdfForRowsModifierData modifierData) {
         return COMMON_ANCESTOR_P_OR_TABLE_PARENT.apply(modifierData.getAreaPlaceholderNodes().left, modifierData.getAreaPlaceholderNodes().right);
     }
 

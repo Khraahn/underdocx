@@ -27,11 +27,12 @@ package org.underdocx.doctypes.odf.odt.commands;
 import org.odftoolkit.odfdom.doc.OdfTextDocument;
 import org.underdocx.common.types.Regex;
 import org.underdocx.common.types.Resource;
+import org.underdocx.doctypes.modifiers.ModifiersProvider;
 import org.underdocx.doctypes.odf.commands.internal.AbstractTextualCommandHandler;
 import org.underdocx.doctypes.odf.modifiers.deleteplaceholder.DeletePlaceholderModifierData;
 import org.underdocx.doctypes.odf.modifiers.deleteplaceholder.OdfDeletePlaceholderModifier;
-import org.underdocx.doctypes.odf.modifiers.importmodifier.ImportModifier;
-import org.underdocx.doctypes.odf.modifiers.importmodifier.ImportModifierData;
+import org.underdocx.doctypes.odf.modifiers.importmodifier.OdfImportModifier;
+import org.underdocx.doctypes.odf.modifiers.importmodifier.OdfImportModifierData;
 import org.underdocx.doctypes.odf.odt.OdtContainer;
 import org.underdocx.enginelayers.baseengine.CommandHandlerResult;
 import org.underdocx.enginelayers.baseengine.EngineAccess;
@@ -47,8 +48,8 @@ public class UnderdocxCommandHandler extends AbstractTextualCommandHandler<OdtCo
     private final static Regex KEYS = new Regex("underdocx|Underdocx");
     private final static Resource resource = new Resource.ClassResource(UnderdocxCommandHandler.class, "underdocx.odt");
 
-    public UnderdocxCommandHandler() {
-        super(KEYS);
+    public UnderdocxCommandHandler(ModifiersProvider modifiers) {
+        super(KEYS, modifiers);
     }
 
     @Override
@@ -76,8 +77,8 @@ public class UnderdocxCommandHandler extends AbstractTextualCommandHandler<OdtCo
 
     private void modify(OdtContainer doc, Node node) {
         OdtContainer importDoc = Problems.IO_EXCEPTION.exec(() -> new OdtContainer(resource));
-        ImportModifierData modifiedData = new ImportModifierData.Simple(resource.getIdentifier(), importDoc, doc, node, true, null);
-        new ImportModifier().modify(modifiedData);
+        OdfImportModifierData modifiedData = new OdfImportModifierData.Simple(resource.getIdentifier(), importDoc, doc, node, true, null);
+        new OdfImportModifier().modify(modifiedData);
         new OdfDeletePlaceholderModifier().modify(node, DeletePlaceholderModifierData.DEFAULT);
     }
 }

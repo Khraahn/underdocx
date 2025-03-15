@@ -22,28 +22,31 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-package org.underdocx.doctypes.odf.modifiers.deletenode;
+package org.underdocx.doctypes.modifiers;
 
-import org.underdocx.common.tree.Nodes;
 import org.underdocx.doctypes.DocContainer;
+import org.underdocx.doctypes.odf.modifiers.deleteplaceholder.DeletePlaceholderModifierData;
+import org.underdocx.doctypes.odf.modifiers.internal.AreaModifierWithCommonAncestorData;
 import org.underdocx.enginelayers.baseengine.ModifierNodeResult;
+import org.underdocx.enginelayers.baseengine.ModifierResult;
 import org.underdocx.enginelayers.baseengine.Selection;
 import org.underdocx.enginelayers.baseengine.SelectionModifier;
+import org.underdocx.enginelayers.modelengine.MSelection;
+import org.underdocx.enginelayers.parameterengine.ParametersPlaceholderData;
 import org.w3c.dom.Node;
 
 import java.util.Optional;
 
-public class DeleteParentNodeModifier<C extends DocContainer<D>, P, D> implements SelectionModifier<Selection<C, P, D>, DeleteParentModifierData, ModifierNodeResult> {
-    @Override
-    public ModifierNodeResult modify(Selection<C, P, D> selection, DeleteParentModifierData modifierData) {
-        Node childNode = selection.getNode();
-        return modify(childNode, modifierData);
-    }
 
-    public static ModifierNodeResult modify(Node childNode, DeleteParentModifierData modifierData) {
-        Optional<Node> node = Nodes.findAscendantNode(childNode, modifierData.getParentFilter());
-        if (node.isPresent()) {
-            return DeleteNodeModifier.modify(node.get());
-        } else return ModifierNodeResult.IGNORED;
-    }
+public interface ModifiersProvider<C extends DocContainer<D>, D> {
+
+    SelectionModifier<Node, DeletePlaceholderModifierData, ModifierNodeResult> getDeletePlaceholderModifier();
+
+    SelectionModifier<Selection<C, ParametersPlaceholderData, D>, String, ModifierResult> getReplaceWithTextModifier();
+
+    SelectionModifier<MSelection<C, ParametersPlaceholderData, D>, AreaModifierWithCommonAncestorData, ModifierNodeResult> getDeleteAreaModifier();
+
+    SelectionModifier<Selection<C, ParametersPlaceholderData, D>, String, ModifierResult> getMarkupTextModifier();
+
+    Optional<Node> findAncestorParagraphOrTableParent(Node node);
 }

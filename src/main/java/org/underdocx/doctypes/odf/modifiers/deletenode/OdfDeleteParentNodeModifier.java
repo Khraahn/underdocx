@@ -22,18 +22,28 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-package org.underdocx.doctypes.odf.modifiers;
+package org.underdocx.doctypes.odf.modifiers.deletenode;
 
-import org.underdocx.doctypes.modifiers.ModifierProvider;
-import org.underdocx.doctypes.odf.modifiers.deleteplaceholder.DeletePlaceholderModifierData;
-import org.underdocx.doctypes.odf.modifiers.deleteplaceholder.OdfDeletePlaceholderModifier;
+import org.underdocx.common.tree.Nodes;
+import org.underdocx.doctypes.DocContainer;
 import org.underdocx.enginelayers.baseengine.ModifierNodeResult;
+import org.underdocx.enginelayers.baseengine.Selection;
 import org.underdocx.enginelayers.baseengine.SelectionModifier;
 import org.w3c.dom.Node;
 
-public class OdfModifierProvider implements ModifierProvider {
+import java.util.Optional;
+
+public class OdfDeleteParentNodeModifier<C extends DocContainer<D>, P, D> implements SelectionModifier<Selection<C, P, D>, OdfDeleteParentModifierData, ModifierNodeResult> {
     @Override
-    public SelectionModifier<Node, DeletePlaceholderModifierData, ModifierNodeResult> getDeletePlaceholderModifier() {
-        return new OdfDeletePlaceholderModifier();
+    public ModifierNodeResult modify(Selection<C, P, D> selection, OdfDeleteParentModifierData modifierData) {
+        Node childNode = selection.getNode();
+        return modify(childNode, modifierData);
+    }
+
+    public static ModifierNodeResult modify(Node childNode, OdfDeleteParentModifierData modifierData) {
+        Optional<Node> node = Nodes.findAscendantNode(childNode, modifierData.getParentFilter());
+        if (node.isPresent()) {
+            return DeleteNodeModifier.modify(node.get());
+        } else return ModifierNodeResult.IGNORED;
     }
 }

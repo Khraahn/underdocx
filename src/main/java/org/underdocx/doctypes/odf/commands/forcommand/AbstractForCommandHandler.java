@@ -28,6 +28,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import org.underdocx.common.types.Pair;
 import org.underdocx.common.types.Regex;
 import org.underdocx.doctypes.DocContainer;
+import org.underdocx.doctypes.modifiers.ModifiersProvider;
 import org.underdocx.doctypes.odf.commands.ModelCommandHandler;
 import org.underdocx.doctypes.odf.commands.VariableCommandHandler;
 import org.underdocx.doctypes.odf.commands.internal.AbstractTextualCommandHandler;
@@ -91,8 +92,8 @@ public abstract class AbstractForCommandHandler<C extends DocContainer<D>, D> ex
 
     // ---------------------------------------
 
-    protected AbstractForCommandHandler() {
-        super(KEYS);
+    protected AbstractForCommandHandler(ModifiersProvider modifiers) {
+        super(KEYS, modifiers);
     }
 
 

@@ -4,6 +4,8 @@ import org.apache.commons.io.FileUtils;
 import org.underdocx.common.tools.Convenience;
 import org.underdocx.common.tree.TreeWalker;
 import org.underdocx.common.types.Resource;
+import org.underdocx.doctypes.DocContainer;
+import org.underdocx.environment.UnderdocxEnv;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 
@@ -15,9 +17,11 @@ import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
+import java.awt.*;
 import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
+import java.util.List;
 import java.util.*;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -189,6 +193,17 @@ public abstract class AbstractTest {
                 }
             }
         });
+    }
+
+    protected void show(DocContainer<?> doc) {
+        File tmp = createTmpFile(doc.getFileExtension());
+        try {
+            doc.save(tmp);
+            Desktop.getDesktop().open(tmp);
+            UnderdocxEnv.getInstance().logger.trace("tmp file saved: " + tmp);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
 

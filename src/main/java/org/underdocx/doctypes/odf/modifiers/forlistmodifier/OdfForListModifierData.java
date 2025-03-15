@@ -22,39 +22,26 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-package org.underdocx.doctypes.odf.modifiers.forrowsmodifier;
+package org.underdocx.doctypes.odf.modifiers.forlistmodifier;
 
 import org.underdocx.common.types.Pair;
-import org.underdocx.common.types.Range;
 import org.underdocx.doctypes.odf.modifiers.formodifier.ForModifierData;
 import org.underdocx.enginelayers.parameterengine.ParametersPlaceholderData;
 import org.w3c.dom.Node;
 
 import java.util.List;
 
-public interface ForRowsModifierData extends ForModifierData {
-    Range getRepeatRows();
+public interface OdfForListModifierData extends ForModifierData {
+    int getListItemIndex();
 
-    int getRowGroupSize();
+    class DefaultOdfForListModifierData implements OdfForListModifierData {
 
-    boolean isInTable();
-
-    String getTableName();
-
-    class DefaultForRowsModifierData implements ForRowsModifierData {
-
-        private final Range rows;
         private final ForModifierData wrapped;
-        private final int rowGroupSize;
-        private final boolean isInTable;
-        private final String tableName;
+        private final int listItemIndex;
 
-        public DefaultForRowsModifierData(ForModifierData wrapped, Range repeatRows, int rowGroupSize, boolean isInTable, String tableName) {
+        public DefaultOdfForListModifierData(ForModifierData wrapped, int listItemIndex) {
             this.wrapped = wrapped;
-            this.rows = repeatRows;
-            this.rowGroupSize = rowGroupSize;
-            this.isInTable = isInTable;
-            this.tableName = tableName;
+            this.listItemIndex = listItemIndex;
         }
 
         @Override
@@ -73,23 +60,8 @@ public interface ForRowsModifierData extends ForModifierData {
         }
 
         @Override
-        public Range getRepeatRows() {
-            return rows;
-        }
-
-        @Override
-        public int getRowGroupSize() {
-            return rowGroupSize;
-        }
-
-        @Override
-        public boolean isInTable() {
-            return isInTable;
-        }
-
-        @Override
-        public String getTableName() {
-            return tableName;
+        public int getListItemIndex() {
+            return listItemIndex;
         }
     }
 }

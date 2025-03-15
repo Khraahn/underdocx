@@ -22,39 +22,51 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-package org.underdocx.doctypes.odf.modifiers.ifmodifier;
+package org.underdocx.doctypes.odf.modifiers;
 
-import org.underdocx.doctypes.DocContainer;
+import org.odftoolkit.odfdom.doc.OdfDocument;
 import org.underdocx.doctypes.modifiers.ModifiersProvider;
+import org.underdocx.doctypes.odf.AbstractOdfContainer;
 import org.underdocx.doctypes.odf.modifiers.deletearea.DeleteAreaModifier;
 import org.underdocx.doctypes.odf.modifiers.deleteplaceholder.DeletePlaceholderModifierData;
 import org.underdocx.doctypes.odf.modifiers.deleteplaceholder.OdfDeletePlaceholderModifier;
-import org.underdocx.doctypes.odf.modifiers.internal.AbstractAreaModifier;
 import org.underdocx.doctypes.odf.modifiers.internal.AreaModifierWithCommonAncestorData;
+import org.underdocx.doctypes.odf.modifiers.stringmodifier.OdfMarkupTextModifier;
+import org.underdocx.doctypes.odf.modifiers.stringmodifier.ReplaceWithTextModifier;
+import org.underdocx.doctypes.odf.tools.OdfNodes;
 import org.underdocx.enginelayers.baseengine.ModifierNodeResult;
+import org.underdocx.enginelayers.baseengine.ModifierResult;
+import org.underdocx.enginelayers.baseengine.Selection;
+import org.underdocx.enginelayers.baseengine.SelectionModifier;
+import org.underdocx.enginelayers.modelengine.MSelection;
 import org.underdocx.enginelayers.parameterengine.ParametersPlaceholderData;
 import org.w3c.dom.Node;
 
-public class IfModifier<C extends DocContainer<D>, D> extends AbstractAreaModifier<C, ParametersPlaceholderData, D, IfModifierData, ModifierNodeResult> {
+import java.util.Optional;
 
-    public IfModifier(ModifiersProvider<C, D> modifiers) {
-        super(modifiers);
+public class OdfModifiersProvider<D extends AbstractOdfContainer<C>, C extends OdfDocument> implements ModifiersProvider<D, C> {
+    @Override
+    public SelectionModifier<Node, DeletePlaceholderModifierData, ModifierNodeResult> getDeletePlaceholderModifier() {
+        return new OdfDeletePlaceholderModifier();
     }
 
     @Override
-    protected Node getCommonAncestorNode(IfModifierData modifierData) {
-        return COMMON_ANCESTOR_NEAREST.apply(modifierData.getAreaPlaceholderNodes().left, modifierData.getAreaPlaceholderNodes().right);
+    public SelectionModifier<Selection<D, ParametersPlaceholderData, C>, String, ModifierResult> getReplaceWithTextModifier() {
+        return new ReplaceWithTextModifier<>();
     }
 
     @Override
-    protected ModifierNodeResult modify() {
-        if (modifierData.isMatch()) {
-            new OdfDeletePlaceholderModifier().modify(area.left, DeletePlaceholderModifierData.DEFAULT);
-            return new OdfDeletePlaceholderModifier().modify(area.right, DeletePlaceholderModifierData.DEFAULT);
-        } else {
-            return DeleteAreaModifier.deleteArea(new AreaModifierWithCommonAncestorData.DefaultAreaModifierWithCommonAncestorData(
-                    area, getCommonAncestorNode(modifierData)
-            ));
-        }
+    public SelectionModifier<MSelection<D, ParametersPlaceholderData, C>, AreaModifierWithCommonAncestorData, ModifierNodeResult> getDeleteAreaModifier() {
+        return new DeleteAreaModifier<>(this);
+    }
+
+    @Override
+    public SelectionModifier<Selection<D, ParametersPlaceholderData, C>, String, ModifierResult> getMarkupTextModifier() {
+        return new OdfMarkupTextModifier<>();
+    }
+
+    @Override
+    public Optional<Node> findAncestorParagraphOrTableParent(Node node) {
+        return OdfNodes.findAncestorParagraphOrTableParent(node);
     }
 }

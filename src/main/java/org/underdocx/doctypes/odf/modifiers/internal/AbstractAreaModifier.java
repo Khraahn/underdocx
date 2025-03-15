@@ -31,7 +31,7 @@ import org.underdocx.common.tree.TreeSplitter;
 import org.underdocx.common.types.Pair;
 import org.underdocx.doctypes.DocContainer;
 import org.underdocx.doctypes.TextNodeInterpreter;
-import org.underdocx.doctypes.odf.tools.OdfNodes;
+import org.underdocx.doctypes.modifiers.ModifiersProvider;
 import org.underdocx.enginelayers.baseengine.ModifierNodeResult;
 import org.underdocx.enginelayers.baseengine.SelectionModifier;
 import org.underdocx.enginelayers.modelengine.MSelection;
@@ -40,14 +40,12 @@ import org.w3c.dom.Node;
 import java.util.List;
 import java.util.function.BiFunction;
 
-public abstract class AbstractAreaModifier<C extends DocContainer<D>, P, D, M extends AreaModifierData, R extends ModifierNodeResult> implements SelectionModifier<MSelection<C, P, D>, M, R> {
+public abstract class AbstractAreaModifier<C extends DocContainer<D>, P, D, M extends AreaModifierData, R extends ModifierNodeResult> extends AbstractModifier<C, D> implements SelectionModifier<MSelection<C, P, D>, M, R> {
 
-    protected static final BiFunction<Node, Node, Node> COMMON_OLDEST_ANCESTOR_P_OR_TABLE_PARENT =
-            (first, second) -> OdfNodes.findOldestParagraphOrTableParent(first).get();
-    protected static final BiFunction<Node, Node, Node> COMMON_ANCESTOR_NEAREST =
+
+    protected final BiFunction<Node, Node, Node> COMMON_ANCESTOR_NEAREST =
             (first, second) -> Nodes.findCommonAncestor(first, second).get();
-    protected static final BiFunction<Node, Node, Node> COMMON_ANCESTOR_P_OR_TABLE_PARENT =
-            (first, second) -> OdfNodes.findAncestorParagraphOrTableParent(first).get();
+    protected final BiFunction<Node, Node, Node> COMMON_ANCESTOR_P_OR_TABLE_PARENT;
 
 
     protected MSelection<C, P, D> selection;
@@ -55,7 +53,9 @@ public abstract class AbstractAreaModifier<C extends DocContainer<D>, P, D, M ex
     protected Pair<Node, Node> area;
 
 
-    public AbstractAreaModifier() {
+    public AbstractAreaModifier(ModifiersProvider<C, D> modifiers) {
+        super(modifiers);
+        COMMON_ANCESTOR_P_OR_TABLE_PARENT = (first, second) -> modifiers.findAncestorParagraphOrTableParent(first).get();
     }
 
     protected abstract Node getCommonAncestorNode(M modifierData);

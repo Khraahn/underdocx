@@ -7,18 +7,14 @@ import org.odftoolkit.odfdom.incubator.search.TextSelection;
 import org.underdocx.common.placeholder.basic.textnodeinterpreter.AbstractOdfTextNodeInterpreter;
 import org.underdocx.common.tools.Convenience;
 import org.underdocx.common.tree.Nodes;
-import org.underdocx.doctypes.DocContainer;
 import org.underdocx.doctypes.TextNodeInterpreter;
 import org.underdocx.doctypes.odf.constants.OdfAttribute;
 import org.underdocx.doctypes.odf.constants.OdfElement;
 import org.underdocx.doctypes.odf.odt.OdtContainer;
 import org.underdocx.doctypes.odf.tools.OdfDomElementWalker;
-import org.underdocx.doctypes.odf.tools.OdfNodes;
 import org.underdocx.environment.UnderdocxEnv;
 import org.w3c.dom.Node;
 
-import java.awt.*;
-import java.io.File;
 import java.io.IOException;
 import java.util.Optional;
 import java.util.regex.Pattern;
@@ -70,8 +66,14 @@ public class AbstractOdtTest extends AbstractTest {
 
     protected TextParagraphElementBase getParagraph(OdtContainer doc, String content) {
         Optional<TextSelection> searchResult = search(doc.getDocument(), content);
-        return OdfNodes.findOldestParagraph(searchResult.get().getElement()).get();
+        return findOldestParagraph(searchResult.get().getElement()).get();
     }
+
+    public static Optional<TextParagraphElementBase> findOldestParagraph(Node node) {
+        return Nodes.findOldestAncestorNode(node, currentNode -> currentNode instanceof TextParagraphElementBase).map(x -> (TextParagraphElementBase) x);
+    }
+
+
 
 
     /*
@@ -175,17 +177,6 @@ public class AbstractOdtTest extends AbstractTest {
     protected OdtContainer readOdt(String name) {
         try {
             return new OdtContainer(getInputStream(name));
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    protected void show(DocContainer<?> doc) {
-        File tmp = createTmpFile(doc.getFileExtension());
-        try {
-            doc.save(tmp);
-            Desktop.getDesktop().open(tmp);
-            UnderdocxEnv.getInstance().logger.trace("tmp file saved: " + tmp);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

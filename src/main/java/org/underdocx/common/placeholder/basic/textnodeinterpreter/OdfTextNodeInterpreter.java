@@ -24,11 +24,11 @@ SOFTWARE.
 
 package org.underdocx.common.placeholder.basic.textnodeinterpreter;
 
-import org.underdocx.common.tree.Nodes;
-import org.underdocx.doctypes.odf.tools.OdfNodes;
-import org.underdocx.environment.err.Problems;
 import org.odftoolkit.odfdom.dom.element.text.TextSpanElement;
 import org.odftoolkit.odfdom.incubator.doc.text.OdfWhitespaceProcessor;
+import org.odftoolkit.odfdom.pkg.OdfFileDom;
+import org.underdocx.common.tree.Nodes;
+import org.underdocx.environment.err.Problems;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
@@ -53,11 +53,15 @@ public class OdfTextNodeInterpreter extends AbstractOdfTextNodeInterpreter {
     public Node createTextContainer(Node parent) {
         // return parent.getOwnerDocument().createElementNS("urn:oasis:names:tc:opendocument:xmlns:text:1.0", spanElementName);
         try {
-            return also(new TextSpanElement(OdfNodes.getFileDom(parent)), parent::appendChild);
+            return also(new TextSpanElement(getFileDom(parent)), parent::appendChild);
         } catch (Exception e) {
             return Problems.ODF_FRAMEWORK_OPERARTION_EXCEPTION.fire(e);
         }
-
     }
+
+    private static OdfFileDom getFileDom(Node odfNode) {
+        return ((OdfFileDom) odfNode.getOwnerDocument());
+    }
+
 
 }

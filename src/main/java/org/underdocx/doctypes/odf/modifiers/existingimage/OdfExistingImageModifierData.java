@@ -22,33 +22,50 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-package org.underdocx.doctypes.odf.modifiers.deletenode;
+package org.underdocx.doctypes.odf.modifiers.existingimage;
 
-import org.underdocx.doctypes.odf.constants.OdfElement;
-import org.w3c.dom.Node;
+import org.underdocx.common.types.Resource;
 
-import java.util.function.Predicate;
+public interface OdfExistingImageModifierData {
 
-public interface DeleteParentModifierData {
+    Resource getResource();
 
-    Predicate<Node> ODF_TABLE = OdfElement.TABLE;
-    Predicate<Node> ODF_PARAGRAPH = OdfElement.PARAGRAPH;
-    Predicate<Node> ODF_PAGE = OdfElement.PAGE;
+    String getFileName();
 
+    boolean isKeepWidth();
 
-    Predicate<Node> getParentFilter();
+    String getNewDesc();
 
-    class Simple implements DeleteParentModifierData {
+    class Simple implements OdfExistingImageModifierData {
+        boolean keepWidth;
+        Resource resource;
+        String newName;
+        String newDesc;
 
-        private final Predicate<Node> filter;
-
-        public Simple(Predicate<Node> filter) {
-            this.filter = filter;
+        public Simple(boolean keepWidth, Resource resource, String newName, String newDesc) {
+            this.keepWidth = keepWidth;
+            this.resource = resource;
+            this.newName = newName;
+            this.newDesc = newDesc;
         }
 
         @Override
-        public Predicate<Node> getParentFilter() {
-            return filter;
+        public Resource getResource() {
+            return resource;
+        }
+
+        public String getFileName() {
+            return newName;
+        }
+
+        @Override
+        public boolean isKeepWidth() {
+            return keepWidth;
+        }
+
+        @Override
+        public String getNewDesc() {
+            return newDesc;
         }
     }
 }

@@ -34,6 +34,7 @@ import org.underdocx.doctypes.odf.commands.MultiCommandHandler;
 import org.underdocx.doctypes.odf.commands.SimpleDollarImageReplaceCommand;
 import org.underdocx.doctypes.odf.commands.SimpleReplaceFunctionCommand;
 import org.underdocx.doctypes.odf.commands.image.ImagePlaceholdersProvider;
+import org.underdocx.doctypes.odf.modifiers.OdfModifiersProvider;
 import org.underdocx.doctypes.odf.placeholdersprovider.dollar.OdfSimpleDollarPlaceholderFactory;
 import org.underdocx.doctypes.odf.placeholdersprovider.dollar.image.SimpleDollarImagePlaceholdersProvider;
 import org.underdocx.doctypes.odf.tools.placeholder.OdfParameterizedPlaceholderFactory;
@@ -49,6 +50,8 @@ import java.util.regex.Pattern;
 
 public abstract class AbstractOdfEngine<C extends AbstractOdfContainer<D>, D extends OdfDocument> extends AbstractEngine<C, D> implements EngineAPI {
 
+    protected final OdfModifiersProvider modifiers = new OdfModifiersProvider();
+
     public final SimpleDollarImagePlaceholdersProvider.SimpleDollarImagePlaceholdersProviderFactory<C, D> simpleDollarImage
             = new SimpleDollarImagePlaceholdersProvider.SimpleDollarImagePlaceholdersProviderFactory<>();
     public final OdfSimpleDollarPlaceholderFactory<C, D> simpleDollar
@@ -58,8 +61,8 @@ public abstract class AbstractOdfEngine<C extends AbstractOdfContainer<D>, D ext
     public final ImagePlaceholdersProvider.ImagePlaceholdersProviderFactory<C, D> imagePlaceholdersProvider
             = new ImagePlaceholdersProvider.ImagePlaceholdersProviderFactory();
 
-    protected final MultiCommandHandler<C, D> multiCommandHandler = new MultiCommandHandler<>();
-    protected final AliasCommandHandler<C, D> aliasCommandHandler = new AliasCommandHandler<>();
+    protected final MultiCommandHandler<C, D> multiCommandHandler = new MultiCommandHandler<>(modifiers);
+    protected final AliasCommandHandler<C, D> aliasCommandHandler = new AliasCommandHandler<>(modifiers);
 
     abstract protected ModelEngine<C, D> getEngine();
 

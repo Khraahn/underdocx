@@ -27,11 +27,12 @@ package org.underdocx.doctypes.odf.commands.forcommand;
 import com.fasterxml.jackson.databind.JsonNode;
 import org.underdocx.common.types.Range;
 import org.underdocx.doctypes.DocContainer;
+import org.underdocx.doctypes.modifiers.ModifiersProvider;
+import org.underdocx.doctypes.odf.modifiers.formodifier.ForModifierData;
+import org.underdocx.doctypes.odf.modifiers.forrowsmodifier.OdfForRowsModifier;
+import org.underdocx.doctypes.odf.modifiers.forrowsmodifier.OdfForRowsModifierData;
 import org.underdocx.doctypes.tools.attrinterpreter.PredefinedAttributesInterpreter;
 import org.underdocx.doctypes.tools.attrinterpreter.single.AttributeInterpreterFactory;
-import org.underdocx.doctypes.odf.modifiers.formodifier.ForModifierData;
-import org.underdocx.doctypes.odf.modifiers.forrowsmodifier.ForRowsModifier;
-import org.underdocx.doctypes.odf.modifiers.forrowsmodifier.ForRowsModifierData;
 import org.underdocx.enginelayers.baseengine.ModifierNodeResult;
 import org.underdocx.environment.err.Problems;
 
@@ -39,6 +40,10 @@ import java.util.List;
 import java.util.Optional;
 
 public class ForRowsCommandHandler<C extends DocContainer<D>, D> extends AbstractForCommandHandler<C, D> {
+
+    public ForRowsCommandHandler(ModifiersProvider modifiers) {
+        super(modifiers);
+    }
 
     public static String ROWGROUPSIZE_ATTR = "rowGroupSize";
     public static final String INLIST_ATTR = "parentTable";
@@ -68,9 +73,9 @@ public class ForRowsCommandHandler<C extends DocContainer<D>, D> extends Abstrac
         int rowGroupSize = groupSizeInterpreter.interpretAttributes(attributes).orElse(1);
         boolean isInTable = isInTableAttr.interpretAttributes(attributes).orElse(false);
         String tableName = tableNameAttr.interpretAttributes(attributes).orElse(null);
-        ForRowsModifierData.DefaultForRowsModifierData modifierData
-                = new ForRowsModifierData.DefaultForRowsModifierData(forModifierData, range, rowGroupSize, isInTable, tableName);
-        return new ForRowsModifier<C, D>().modify(selection, modifierData);
+        OdfForRowsModifierData.DefaultOdfForRowsModifierData modifierData
+                = new OdfForRowsModifierData.DefaultOdfForRowsModifierData(forModifierData, range, rowGroupSize, isInTable, tableName);
+        return new OdfForRowsModifier<>(modifiers).modify(selection, modifierData);
     }
 
     @Override

@@ -27,12 +27,13 @@ package org.underdocx.doctypes.odf.commands;
 import org.underdocx.common.tools.Convenience;
 import org.underdocx.common.types.Pair;
 import org.underdocx.doctypes.DocContainer;
+import org.underdocx.doctypes.modifiers.ModifiersProvider;
 import org.underdocx.doctypes.odf.commands.internal.AbstractTextualCommandHandler;
 import org.underdocx.doctypes.odf.commands.internal.modifiermodule.missingdata.MissingDataCommandModuleResult;
 import org.underdocx.doctypes.odf.commands.internal.modifiermodule.stringoutput.StringOutputCommandModule;
 import org.underdocx.doctypes.odf.commands.internal.modifiermodule.stringoutput.StringOutputModuleConfig;
-import org.underdocx.doctypes.odf.modifiers.tablecell.TableCellModifier;
-import org.underdocx.doctypes.odf.modifiers.tablecell.TableCellModifierData;
+import org.underdocx.doctypes.odf.modifiers.tablecell.OdfTableCellModifier;
+import org.underdocx.doctypes.odf.modifiers.tablecell.OdfTableCellModifierData;
 import org.underdocx.doctypes.tools.datapicker.*;
 import org.underdocx.enginelayers.baseengine.CommandHandlerResult;
 import org.underdocx.enginelayers.modelengine.data.DataNode;
@@ -58,8 +59,8 @@ public class NumberCommandHandler<C extends DocContainer<D>, D> extends Abstract
     private static final PredefinedDataPicker<String> templateCellPicker = new StringConvertDataPicker().asPredefined("templateCell");
     public static final String DEFAULT_FORMAT = "#,###.##";
 
-    public NumberCommandHandler() {
-        super(KEY);
+    public NumberCommandHandler(ModifiersProvider modifiers) {
+        super(KEY, modifiers);
     }
 
 
@@ -70,14 +71,24 @@ public class NumberCommandHandler<C extends DocContainer<D>, D> extends Abstract
         if (result.right == MissingDataCommandModuleResult.MissingDataCommandModuleResultType.VALUE_RECEIVED) {
             templateCellPicker.pickData(dataAccess, placeholderData.getJson()).getOptionalValue().ifPresent(templacecell -> {
                 Number number = new NumberPicker().asPredefined("value").pickData(dataAccess, placeholderData.getJson()).getOptionalValue().get().right;
-                new TableCellModifier<C, D>().modify(selection, new TableCellModifierData.Simple(number, templacecell));
+                new OdfTableCellModifier<C, D>().modify(selection, new OdfTableCellModifierData.Simple(number, templacecell));
             });
         }
         return result.left;
     }
 
     protected StringOutputModuleConfig getConfig() {
-        return () -> new NumberStringPicker().asPredefined("value");
+        return new StringOutputModuleConfig() {
+            @Override
+            public PredefinedDataPicker<String> getDataPicker() {
+                return new NumberStringPicker().asPredefined("value");
+            }
+
+            @Override
+            public ModifiersProvider getModifiers() {
+                return modifiers;
+            }
+        };
     }
 
     private class NumberStringPicker extends AbstractConvertDataPicker<String> {

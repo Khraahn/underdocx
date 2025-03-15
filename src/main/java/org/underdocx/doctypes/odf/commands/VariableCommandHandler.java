@@ -27,6 +27,7 @@ package org.underdocx.doctypes.odf.commands;
 import org.underdocx.common.tools.Convenience;
 import org.underdocx.common.types.Regex;
 import org.underdocx.doctypes.DocContainer;
+import org.underdocx.doctypes.modifiers.ModifiersProvider;
 import org.underdocx.doctypes.odf.commands.internal.AbstractTextualCommandHandler;
 import org.underdocx.enginelayers.baseengine.CommandHandlerResult;
 
@@ -40,8 +41,8 @@ public class VariableCommandHandler<C extends DocContainer<D>, D> extends Abstra
     public static final String KEY_ATTR = "key";
     public static final String VALUE_ATTR = "value";
 
-    public VariableCommandHandler() {
-        super(KEYS);
+    public VariableCommandHandler(ModifiersProvider modifiers) {
+        super(KEYS, modifiers);
     }
 
     @Override
