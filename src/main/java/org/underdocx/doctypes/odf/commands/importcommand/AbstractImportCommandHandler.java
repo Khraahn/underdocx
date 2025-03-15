@@ -24,20 +24,14 @@ SOFTWARE.
 
 package org.underdocx.doctypes.odf.commands.importcommand;
 
-import org.odftoolkit.odfdom.doc.OdfDocument;
 import org.underdocx.common.types.Regex;
 import org.underdocx.common.types.Resource;
+import org.underdocx.doctypes.DocContainer;
 import org.underdocx.doctypes.modifiers.ModifiersProvider;
-import org.underdocx.doctypes.odf.AbstractOdfContainer;
 import org.underdocx.doctypes.odf.commands.internal.AbstractTextualCommandHandler;
 import org.underdocx.doctypes.odf.commands.internal.modifiermodule.resource.ResourceCommandModule;
-import org.underdocx.doctypes.odf.modifiers.deleteplaceholder.DeletePlaceholderModifierData;
-import org.underdocx.doctypes.odf.modifiers.deleteplaceholder.OdfDeletePlaceholderModifier;
-import org.underdocx.doctypes.odf.modifiers.importmodifier.OdfImportModifier;
-import org.underdocx.doctypes.odf.modifiers.importmodifier.OdfImportModifierData;
 import org.underdocx.doctypes.tools.datapicker.BooleanDataPicker;
 import org.underdocx.doctypes.tools.datapicker.PredefinedDataPicker;
-import org.underdocx.doctypes.tools.datapicker.StringConvertDataPicker;
 import org.underdocx.enginelayers.baseengine.CommandHandlerResult;
 import org.underdocx.enginelayers.parameterengine.ParametersPlaceholderData;
 import org.underdocx.environment.err.Problems;
@@ -47,17 +41,14 @@ import java.util.HashMap;
 /**
  * Implementation of the {{Import uri/data}} command.
  */
-public abstract class AbstractImportCommandHander<C extends AbstractOdfContainer<D>, D extends OdfDocument> extends AbstractTextualCommandHandler<C, D> {
-    public static final String BEGIN_KEY = "Import";
-    public static final Regex KEYS = new Regex(BEGIN_KEY);
+public abstract class AbstractImportCommandHandler<C extends DocContainer<D>, D> extends AbstractTextualCommandHandler<C, D> {
+    public static final Regex KEYS = new Regex("Import");
 
     public static final String CACHE_ATTR = "cache";
-    public static final String PAGE_ATTR = "page";
 
     private static final PredefinedDataPicker<Boolean> useCacheAttr = new BooleanDataPicker().asPredefined(CACHE_ATTR);
-    private static final PredefinedDataPicker<String> pageNameAttr = new StringConvertDataPicker().asPredefined(PAGE_ATTR);
 
-    public AbstractImportCommandHander(ModifiersProvider modifiers) {
+    public AbstractImportCommandHandler(ModifiersProvider modifiers) {
         super(KEYS, modifiers);
     }
 
@@ -66,14 +57,12 @@ public abstract class AbstractImportCommandHander<C extends AbstractOdfContainer
     @Override
     protected CommandHandlerResult tryExecuteTextualCommand() {
         Resource resource = new ResourceCommandModule<C, ParametersPlaceholderData, D>(placeholderData.getJson()).execute(selection);
-        String pageName = pageNameAttr.pickData(dataAccess, placeholderData.getJson()).getOptionalValue().orElse(null);
-        checkPackageExistence(pageName);
         boolean useCache = useCacheAttr.getData(dataAccess, placeholderData.getJson()).orElse(true);
         C importDoc = getDoc(resource, useCache);
-        OdfImportModifierData modifiedData = new OdfImportModifierData.Simple(resource.getIdentifier(), importDoc, selection.getDocContainer(), selection.getNode(), true, pageName);
-        new OdfImportModifier().modify(modifiedData);
-        return CommandHandlerResult.FACTORY.convert(new OdfDeletePlaceholderModifier().modify(selection.getNode(), DeletePlaceholderModifierData.DEFAULT));
+        return doImport(resource.getIdentifier(), importDoc);
     }
+
+    protected abstract CommandHandlerResult doImport(String identifier, C importDoc);
 
     private C getDoc(final Resource resource, boolean useCache) {
         String resourceId = resource.getIdentifier();
@@ -95,5 +84,5 @@ public abstract class AbstractImportCommandHander<C extends AbstractOdfContainer
 
     protected abstract C createContainer(byte[] data) throws Exception;
 
-    protected abstract void checkPackageExistence(String page);
+
 }

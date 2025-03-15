@@ -27,13 +27,13 @@ package org.underdocx.doctypes.odf.odp.commands;
 import org.odftoolkit.odfdom.doc.OdfPresentationDocument;
 import org.underdocx.common.types.Resource;
 import org.underdocx.doctypes.modifiers.ModifiersProvider;
-import org.underdocx.doctypes.odf.commands.importcommand.AbstractImportCommandHander;
+import org.underdocx.doctypes.odf.commands.importcommand.AbstractOdfImportCommandHandler;
 import org.underdocx.doctypes.odf.odp.OdpContainer;
 import org.underdocx.environment.err.Problems;
 
 import java.io.IOException;
 
-public class OdpImportCommandHandler extends AbstractImportCommandHander<OdpContainer, OdfPresentationDocument> {
+public class OdpImportCommandHandler extends AbstractOdfImportCommandHandler<OdpContainer, OdfPresentationDocument> {
 
     public OdpImportCommandHandler(ModifiersProvider modifiers) {
         super(modifiers);
@@ -50,7 +50,7 @@ public class OdpImportCommandHandler extends AbstractImportCommandHander<OdpCont
     }
 
     @Override
-    protected void checkPackageExistence(String page) {
+    protected void checkPageAttr(String page) {
         Problems.MISSING_VALUE.notNull(page, PAGE_ATTR);
     }
 }

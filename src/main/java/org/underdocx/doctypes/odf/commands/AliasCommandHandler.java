@@ -33,7 +33,6 @@ import org.underdocx.doctypes.DocContainer;
 import org.underdocx.doctypes.modifiers.ModifiersProvider;
 import org.underdocx.doctypes.odf.commands.internal.AbstractCommandHandler;
 import org.underdocx.doctypes.odf.modifiers.deleteplaceholder.DeletePlaceholderModifierData;
-import org.underdocx.doctypes.odf.modifiers.deleteplaceholder.OdfDeletePlaceholderModifier;
 import org.underdocx.doctypes.tools.attrinterpreter.accesstype.AccessType;
 import org.underdocx.doctypes.tools.attrinterpreter.single.AttributeInterpreterFactory;
 import org.underdocx.doctypes.tools.datapicker.AbstractConvertDataPicker;
@@ -165,7 +164,7 @@ public class AliasCommandHandler<C extends DocContainer<D>, D> extends AbstractC
                 attributesResult.getOptionalValue().orElse(new HashSet<>()),
                 attrReplacements.getOptionalValue().orElse(new HashMap<>())
         ));
-        return CommandHandlerResult.FACTORY.convert(new OdfDeletePlaceholderModifier().modify(selection.getNode(), DeletePlaceholderModifierData.DEFAULT));
+        return CommandHandlerResult.FACTORY.convert(modifiers.getDeletePlaceholderModifier().modify(selection.getNode(), DeletePlaceholderModifierData.DEFAULT));
     }
 
     public void registerAlias(AliasData data) {

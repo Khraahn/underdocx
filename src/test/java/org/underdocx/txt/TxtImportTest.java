@@ -22,35 +22,37 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-package org.underdocx.doctypes.odf.odt.commands;
+package org.underdocx.txt;
 
-import org.odftoolkit.odfdom.doc.OdfTextDocument;
-import org.underdocx.common.types.Resource;
-import org.underdocx.doctypes.modifiers.ModifiersProvider;
-import org.underdocx.doctypes.odf.commands.importcommand.AbstractOdfImportCommandHandler;
-import org.underdocx.doctypes.odf.odt.OdtContainer;
-import org.underdocx.environment.err.Problems;
+import org.junit.jupiter.api.Test;
+import org.underdocx.doctypes.txt.TxtContainer;
+import org.underdocx.doctypes.txt.TxtEngine;
 
-import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.util.Base64;
 
-public class OdtImportCommandHandler extends AbstractOdfImportCommandHandler<OdtContainer, OdfTextDocument> {
+public class TxtImportTest extends AbstractTxtTest {
 
-    public OdtImportCommandHandler(ModifiersProvider modifiers) {
-        super(modifiers);
-    }
+    @Test
+    public void importTest() {
 
-    @Override
-    protected OdtContainer createContainer(Resource resource) throws IOException {
-        return new OdtContainer(resource);
-    }
+        String toImport = """
+                BBBBBBB
+                CCCCCCC
+                """;
+        toImport = Base64.getEncoder().encodeToString(toImport.getBytes(StandardCharsets.UTF_8));
+        TxtContainer doc = new TxtContainer("""
+                A
+                ${Import $base64:"toImport"}
+                D
+                """
+        );
+        TxtEngine engine = new TxtEngine(doc);
+        engine.pushLeafVariable("toImport", toImport);
+        engine.run();
+        //show(doc);
+        assertOrder(doc, "A", "BBBBBBB", "CCCCCCC", "D");
+        assertNoPlaceholders(doc);
 
-    @Override
-    protected OdtContainer createContainer(byte[] data) throws IOException {
-        return new OdtContainer(data);
-    }
-
-    @Override
-    protected void checkPageAttr(String page) {
-        Problems.UNEXPECTED_VALUE.check(page == null, PAGE_ATTR, null);
     }
 }

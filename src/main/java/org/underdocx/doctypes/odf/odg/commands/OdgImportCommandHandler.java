@@ -27,13 +27,13 @@ package org.underdocx.doctypes.odf.odg.commands;
 import org.odftoolkit.odfdom.doc.OdfGraphicsDocument;
 import org.underdocx.common.types.Resource;
 import org.underdocx.doctypes.modifiers.ModifiersProvider;
-import org.underdocx.doctypes.odf.commands.importcommand.AbstractImportCommandHander;
+import org.underdocx.doctypes.odf.commands.importcommand.AbstractOdfImportCommandHandler;
 import org.underdocx.doctypes.odf.odg.OdgContainer;
 import org.underdocx.environment.err.Problems;
 
 import java.io.IOException;
 
-public class OdgImportCommandHandler extends AbstractImportCommandHander<OdgContainer, OdfGraphicsDocument> {
+public class OdgImportCommandHandler extends AbstractOdfImportCommandHandler<OdgContainer, OdfGraphicsDocument> {
 
     public OdgImportCommandHandler(ModifiersProvider modifiers) {
         super(modifiers);
@@ -50,7 +50,7 @@ public class OdgImportCommandHandler extends AbstractImportCommandHander<OdgCont
     }
 
     @Override
-    protected void checkPackageExistence(String page) {
+    protected void checkPageAttr(String page) {
         Problems.MISSING_VALUE.notNull(page, PAGE_ATTR);
     }
 }

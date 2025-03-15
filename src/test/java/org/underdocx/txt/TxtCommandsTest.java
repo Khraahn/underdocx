@@ -29,9 +29,11 @@ import org.underdocx.doctypes.txt.TxtContainer;
 import org.underdocx.doctypes.txt.TxtEngine;
 import org.underdocx.enginelayers.modelengine.data.simple.MapDataNode;
 
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Date;
 
 public class TxtCommandsTest extends AbstractTxtTest {
 
@@ -145,5 +147,53 @@ public class TxtCommandsTest extends AbstractTxtTest {
         //show(doc);
         assertNoPlaceholders(doc);
         assertOrder(doc, "A: !!-12345678,90€", "B: !!-12345670€", "C: !!12345670,00€");
+    }
+
+    @Test
+    public void testAlias() {
+        String content = """
+                ${Alias key:"myDate", replaceKey:"Date", attributes:{outputFormat:"dd.MM.yyyy"}, attrReplacements: {of:"outputFormat", if:"inputFormat", v:"value"} }
+                ${Push key:"varFormat", value:"yyyy/MM/dd"}
+                A: ${myDate}
+                B: ${myDate $of:"varFormat"}
+                C: ${myDate v:"2024-12-12"}
+                D: ${Date}
+                """;
+        TxtContainer doc = new TxtContainer(content);
+        TxtEngine engine = new TxtEngine(doc);
+        engine.run();
+        //show(doc);
+        String ddmmyyyy = new SimpleDateFormat("dd.MM.yyyy").format(new Date());
+        String yyyymmdd = new SimpleDateFormat("yyyy/MM/dd").format(new Date());
+        String defaultDate = new SimpleDateFormat("yyyy-MM-dd").format(new Date());
+        assertNoPlaceholders(doc);
+        assertContains(doc, "A: " + ddmmyyyy);
+        assertContains(doc, "B: " + yyyymmdd);
+        assertContains(doc, "C: 12.12.2024");
+        assertContains(doc, "D: " + defaultDate);
+    }
+
+    @Test
+    public void testReplaceForWithCustom() {
+        String jsonString = """
+                {
+                }
+                """;
+        String documentStr = "" +
+                "${Begin}                 \n" +
+                "${$index} ${$element}    \n" +
+                "${End}                   \n";
+        TxtContainer doc = new TxtContainer(documentStr);
+        TxtEngine engine = new TxtEngine(doc);
+        engine.registerStringReplacement("Begin", "${For value:[\"A\", \"B\", \"C\"], $as:\"element\"} ");
+        engine.registerStringReplacement("End", "${EndFor}");
+        engine.setModel(new MapDataNode(jsonString));
+        engine.run();
+        // show(doc);
+        assertContains(doc, "0 A");
+        assertContains(doc, "1 B");
+        assertContains(doc, "2 C");
+        assertOrder(doc, "A", "B", "C");
+        assertNoPlaceholders(doc);
     }
 }

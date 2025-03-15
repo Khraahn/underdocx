@@ -24,6 +24,7 @@ SOFTWARE.
 
 package org.underdocx.doctypes.txt;
 
+import org.underdocx.common.types.Resource;
 import org.underdocx.doctypes.AbstractDocContainer;
 
 import java.io.IOException;
@@ -32,9 +33,26 @@ import java.io.OutputStream;
 
 public class TxtContainer extends AbstractDocContainer<TxtXml> {
 
+    public TxtContainer() {
+        doc = createEmptyDoc();
+    }
+
     public TxtContainer(String content) {
         doc = new TxtXml(content);
     }
+
+    public TxtContainer(Resource content) throws IOException {
+        super(content);
+    }
+
+    public TxtContainer(InputStream is) throws IOException {
+        super(is);
+    }
+
+    public TxtContainer(byte[] data) throws IOException {
+        super(data);
+    }
+
 
     @Override
     protected TxtXml createEmptyDoc() {
@@ -63,5 +81,9 @@ public class TxtContainer extends AbstractDocContainer<TxtXml> {
     @Override
     public void appendText(String content) {
         doc.appendText(content);
+    }
+
+    public String toString() {
+        return getPlainText();
     }
 }

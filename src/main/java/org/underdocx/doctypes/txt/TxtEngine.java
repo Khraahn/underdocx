@@ -61,7 +61,7 @@ public class TxtEngine extends AbstractEngine<TxtContainer, TxtXml> {
 
         engine.registerCommandHandler(parameters, new CounterCommandHandler<>(modifiers));
         engine.registerCommandHandler(parameters, new IfCommandHandler<>(modifiers));
-        // Todo Import
+        engine.registerCommandHandler(parameters, new TxtImportCommandHandler(modifiers));
     }
 
     public TxtEngine(TxtContainer doc) {
