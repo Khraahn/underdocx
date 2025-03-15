@@ -28,13 +28,9 @@ import org.underdocx.common.types.Regex;
 import org.underdocx.doctypes.DocContainer;
 import org.underdocx.doctypes.modifiers.ModifiersProvider;
 import org.underdocx.doctypes.odf.commands.internal.AbstractTextualCommandHandler;
-import org.underdocx.doctypes.odf.modifiers.stringmodifier.ReplaceWithTextModifier;
-import org.underdocx.doctypes.odf.modifiers.tablecell.OdfTableCellModifier;
-import org.underdocx.doctypes.odf.modifiers.tablecell.OdfTableCellModifierData;
 import org.underdocx.doctypes.tools.datapicker.PredefinedDataPicker;
 import org.underdocx.doctypes.tools.datapicker.StringConvertDataPicker;
 import org.underdocx.enginelayers.baseengine.CommandHandlerResult;
-import org.underdocx.enginelayers.parameterengine.ParametersPlaceholderData;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -79,10 +75,11 @@ public class TimeCommandHandler<C extends DocContainer<D>, D> extends AbstractTe
         }
         LocalDateTime time = dateStr == null ? LocalDateTime.now() : LocalDateTime.parse(dateStr, inFormatter);
         String replaceString = time.format(outFormatter);
-        new ReplaceWithTextModifier<C, ParametersPlaceholderData, D>().modify(selection, replaceString);
-        templateCellPicker.pickData(dataAccess, placeholderData.getJson()).getOptionalValue().ifPresent(templateCell -> {
-            new OdfTableCellModifier<C, D>().modify(selection, new OdfTableCellModifierData.Simple(time, templateCell));
-        });
+        modifiers.getReplaceWithTextModifier().modify(selection, replaceString);
+        handleCell(time);
         return CommandHandlerResult.EXECUTED_PROCEED;
+    }
+
+    protected void handleCell(LocalDateTime time) {
     }
 }

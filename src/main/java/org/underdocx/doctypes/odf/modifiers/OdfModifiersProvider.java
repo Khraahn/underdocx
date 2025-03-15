@@ -25,6 +25,8 @@ SOFTWARE.
 package org.underdocx.doctypes.odf.modifiers;
 
 import org.odftoolkit.odfdom.doc.OdfDocument;
+import org.underdocx.common.placeholder.basic.textnodeinterpreter.OdfTextNodeInterpreter;
+import org.underdocx.doctypes.TextNodeInterpreter;
 import org.underdocx.doctypes.modifiers.ModifiersProvider;
 import org.underdocx.doctypes.odf.AbstractOdfContainer;
 import org.underdocx.doctypes.odf.modifiers.deletearea.DeleteAreaModifier;
@@ -68,5 +70,10 @@ public class OdfModifiersProvider<D extends AbstractOdfContainer<C>, C extends O
     @Override
     public Optional<Node> findAncestorParagraphOrTableParent(Node node) {
         return OdfNodes.findAncestorParagraphOrTableParent(node);
+    }
+
+    @Override
+    public TextNodeInterpreter getTextNodeInterpreter() {
+        return OdfTextNodeInterpreter.INSTANCE;
     }
 }

@@ -25,7 +25,7 @@ SOFTWARE.
 package org.underdocx.txt;
 
 import org.junit.jupiter.api.Test;
-import org.underdocx.doctypes.txt.TextContainer;
+import org.underdocx.doctypes.txt.TxtContainer;
 import org.underdocx.doctypes.txt.TxtEngine;
 import org.underdocx.enginelayers.modelengine.data.simple.MapDataNode;
 
@@ -50,7 +50,7 @@ public class TxtStringAndModelTest extends AbstractTxtTest {
                 "B ${String} B                         \n" +
                 "C ${String *value:\"^c.d[1]\"} C      \n" +
                 "D ${String *value:\"^no\"} D          \n";
-        TextContainer doc = new TextContainer(documentStr);
+        TxtContainer doc = new TxtContainer(documentStr);
         TxtEngine engine = new TxtEngine(doc);
         engine.setModel(new MapDataNode(jsonString));
         engine.run();
@@ -93,7 +93,7 @@ public class TxtStringAndModelTest extends AbstractTxtTest {
                 "E ${String $value:\"y\"} E             \n" + // E 42 E
 
                 "";
-        TextContainer doc = new TextContainer(documentStr);
+        TxtContainer doc = new TxtContainer(documentStr);
         TxtEngine engine = new TxtEngine(doc);
         engine.setModel(new MapDataNode(jsonString));
         engine.run();

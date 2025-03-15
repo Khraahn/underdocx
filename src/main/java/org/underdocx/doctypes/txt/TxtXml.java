@@ -25,6 +25,7 @@ SOFTWARE.
 package org.underdocx.doctypes.txt;
 
 import org.apache.commons.io.IOUtils;
+import org.underdocx.common.codec.XMLCodec;
 import org.underdocx.common.tree.TreeWalker;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -37,20 +38,20 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 
-public class TextXML {
+public class TxtXml {
 
     private final Document doc;
 
-    public TextXML(String content) {
+    public TxtXml(String content) {
         InputStream is = new ByteArrayInputStream(content.getBytes());
         this.doc = parse(is);
     }
 
-    public TextXML() {
+    public TxtXml() {
         this.doc = createEmptyDocument();
     }
 
-    public TextXML(InputStream is) {
+    public TxtXml(InputStream is) {
         this.doc = parse(is);
     }
 
@@ -129,6 +130,10 @@ public class TextXML {
         StringBuilder b = new StringBuilder();
         save(b);
         return b.toString();
+    }
+
+    public String getXmlText() {
+        return XMLCodec.DEFAULT.getTextContent(doc);
     }
 
     public interface TextWriter {

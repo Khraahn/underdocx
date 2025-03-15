@@ -25,6 +25,7 @@ SOFTWARE.
 package org.underdocx.doctypes.modifiers;
 
 import org.underdocx.doctypes.DocContainer;
+import org.underdocx.doctypes.TextNodeInterpreter;
 import org.underdocx.doctypes.odf.modifiers.deleteplaceholder.DeletePlaceholderModifierData;
 import org.underdocx.doctypes.odf.modifiers.internal.AreaModifierWithCommonAncestorData;
 import org.underdocx.enginelayers.baseengine.ModifierNodeResult;
@@ -49,4 +50,6 @@ public interface ModifiersProvider<C extends DocContainer<D>, D> {
     SelectionModifier<Selection<C, ParametersPlaceholderData, D>, String, ModifierResult> getMarkupTextModifier();
 
     Optional<Node> findAncestorParagraphOrTableParent(Node node);
+
+    TextNodeInterpreter getTextNodeInterpreter();
 }

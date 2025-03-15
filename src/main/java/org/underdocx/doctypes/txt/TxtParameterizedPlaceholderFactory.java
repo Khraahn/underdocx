@@ -37,15 +37,15 @@ import org.underdocx.enginelayers.parameterengine.internal.ParametersDetector;
 import org.underdocx.enginelayers.parameterengine.internal.ParametersPlaceholderCodec;
 import org.w3c.dom.Node;
 
-public class TxtParameterizedPlaceholderFactory implements GenericTextualPlaceholderFactory<TextContainer, ParametersPlaceholderData, TextXML> {
+public class TxtParameterizedPlaceholderFactory implements GenericTextualPlaceholderFactory<TxtContainer, ParametersPlaceholderData, TxtXml> {
 
     @Override
     public TextNodeInterpreter getTextNodeInterpreter() {
-        return PlainTextNodeInterpreter.INSTANCE;
+        return TxtNodeInterpreter.INSTANCE;
     }
 
     @Override
-    public Enumerator<? extends Node> createSectionEnumerator(TextContainer doc) {
+    public Enumerator<? extends Node> createSectionEnumerator(TxtContainer doc) {
         return Convenience.build(Enumerator.empty(), result ->
                 Nodes.findFirstDescendantNode(doc.getDocument().getDoc(), "root").ifPresent(root ->
                         result.value = Nodes.getChildren(root)));

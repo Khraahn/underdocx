@@ -29,15 +29,12 @@ import org.underdocx.doctypes.DocContainer;
 import org.underdocx.doctypes.modifiers.ModifiersProvider;
 import org.underdocx.doctypes.odf.commands.internal.AbstractTextualCommandHandler;
 import org.underdocx.doctypes.odf.modifiers.deleteplaceholder.DeletePlaceholderModifierData;
-import org.underdocx.doctypes.odf.modifiers.deleteplaceholder.OdfDeletePlaceholderModifier;
-import org.underdocx.doctypes.odf.modifiers.stringmodifier.ReplaceWithTextModifier;
 import org.underdocx.doctypes.tools.datapicker.VarNameDataPicker;
 import org.underdocx.enginelayers.baseengine.CommandHandlerResult;
 import org.underdocx.enginelayers.modelengine.data.DataNode;
-import org.underdocx.enginelayers.parameterengine.ParametersPlaceholderData;
 
 public class CounterCommandHandler<C extends DocContainer<D>, D> extends AbstractTextualCommandHandler<C, D> {
-    public CounterCommandHandler(ModifiersProvider modifiers) {
+    public CounterCommandHandler(ModifiersProvider<C, D> modifiers) {
         super(new Regex("Counter"), modifiers);
     }
 
@@ -47,9 +44,9 @@ public class CounterCommandHandler<C extends DocContainer<D>, D> extends Abstrac
                 "index", dataAccess, placeholderData.getJson()).getOptionalValue().orElse(null);
         if (indexNode != null && !indexNode.isNull() && indexNode.getType() == DataNode.DataNodeType.LEAF && indexNode.getValue() instanceof Integer) {
             int counter = ((Integer) indexNode.getValue()) + 1;
-            new ReplaceWithTextModifier<C, ParametersPlaceholderData, D>().modify(selection, String.valueOf(counter));
+            modifiers.getReplaceWithTextModifier().modify(selection, String.valueOf(counter));
         } else {
-            new OdfDeletePlaceholderModifier().modify(selection.getNode(), DeletePlaceholderModifierData.DEFAULT);
+            modifiers.getDeletePlaceholderModifier().modify(selection.getNode(), DeletePlaceholderModifierData.DEFAULT);
         }
         return CommandHandlerResult.EXECUTED_PROCEED;
     }

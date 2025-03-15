@@ -39,25 +39,25 @@ public class OdgEngine extends AbstractOdfEngine<OdgContainer, OdfGraphicsDocume
 
     protected void registerDefaultCommandHandlers() {
         engine.registerCommandHandler(parameters, new ModelCommandHandler<>(modifiers));
-        engine.registerCommandHandler(parameters, new StringCommandHandler<>(modifiers));
+        engine.registerCommandHandler(parameters, new StringCommandHandler<OdgContainer, OdfGraphicsDocument>(modifiers));
         engine.registerCommandHandler(parameters, new ShortModelStringCommandHandler<>(modifiers));
         engine.registerCommandHandler(parameters, new ShortVarStringCommandHandler<>(modifiers));
         engine.registerCommandHandler(parameters, new VariableCommandHandler<>(modifiers));
-        engine.registerCommandHandler(parameters, new ForCommandHandler(modifiers));
-        engine.registerCommandHandler(parameters, new DateCommandHandler<>(modifiers));
-        engine.registerCommandHandler(parameters, new TimeCommandHandler<>(modifiers));
+        engine.registerCommandHandler(parameters, new ForCommandHandler<OdgContainer, OdfGraphicsDocument>(modifiers));
+        engine.registerCommandHandler(parameters, new OdfDateCommandHandler<>(modifiers));
+        engine.registerCommandHandler(parameters, new OdfTimeCommandHandler<>(modifiers));
         engine.registerCommandHandler(parameters, new CounterCommandHandler<>(modifiers));
         engine.registerCommandHandler(parameters, new IfCommandHandler<>(modifiers));
-        engine.registerCommandHandler(parameters, new ForRowsCommandHandler(modifiers));
+        engine.registerCommandHandler(parameters, new ForRowsCommandHandler<OdgContainer, OdfGraphicsDocument>(modifiers));
         engine.registerCommandHandler(imagePlaceholdersProvider, new ImageCommandHandler<>(modifiers));
-        engine.registerCommandHandler(parameters, new ForListCommandHandler(modifiers));
+        engine.registerCommandHandler(parameters, new ForListCommandHandler<OdgContainer, OdfGraphicsDocument>(modifiers));
         engine.registerCommandHandler(parameters, new PageStyleCommandHandler<>(modifiers));
         engine.registerCommandHandler(parameters, multiCommandHandler);
         engine.registerCommandHandler(parameters, new JoinCommandHandler<>(modifiers));
-        engine.registerCommandHandler(parameters, new DeleteNodesEodHandler<>(modifiers));
+        engine.registerCommandHandler(parameters, new DeleteNodesEodHandler<OdgContainer, OdfGraphicsDocument>(modifiers));
         engine.registerCommandHandler(parameters, aliasCommandHandler);
         engine.registerCommandHandler(parameters, new OdgImportCommandHandler(modifiers));
-        engine.registerCommandHandler(parameters, new NumberCommandHandler<>(modifiers));
+        engine.registerCommandHandler(parameters, new OdfNumberCommandHandler<>(modifiers));
         engine.registerCommandHandler(parameters, new RemoveCommandHandler<>(modifiers));
     }
 

@@ -31,14 +31,12 @@ import org.underdocx.doctypes.odf.commands.internal.AbstractTextualCommandHandle
 import org.underdocx.doctypes.odf.commands.internal.modifiermodule.missingdata.MissingDataCommandModule;
 import org.underdocx.doctypes.odf.commands.internal.modifiermodule.missingdata.MissingDataCommandModuleConfig;
 import org.underdocx.doctypes.odf.commands.internal.modifiermodule.missingdata.MissingDataCommandModuleResult;
-import org.underdocx.doctypes.odf.modifiers.stringmodifier.ReplaceWithTextModifier;
 import org.underdocx.doctypes.tools.datapicker.IntegerDataPicker;
 import org.underdocx.doctypes.tools.datapicker.ListDataPicker;
 import org.underdocx.doctypes.tools.datapicker.PredefinedDataPicker;
 import org.underdocx.doctypes.tools.datapicker.StringConvertDataPicker;
 import org.underdocx.enginelayers.baseengine.CommandHandlerResult;
 import org.underdocx.enginelayers.modelengine.data.DataNode;
-import org.underdocx.enginelayers.parameterengine.ParametersPlaceholderData;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -57,7 +55,7 @@ public class JoinCommandHandler<C extends DocContainer<D>, D> extends AbstractTe
 
     private final MissingDataCommandModule<C, D, DataNode> module = new MissingDataCommandModule<>(new Config());
 
-    public JoinCommandHandler(ModifiersProvider modifiers) {
+    public JoinCommandHandler(ModifiersProvider<C, D> modifiers) {
         super(KEYS, modifiers);
     }
 
@@ -66,7 +64,7 @@ public class JoinCommandHandler<C extends DocContainer<D>, D> extends AbstractTe
         MissingDataCommandModuleResult<DataNode> moduleResult = module.execute(selection);
         return switch (moduleResult.resultType) {
             case VALUE_RECEIVED ->
-                    CommandHandlerResult.FACTORY.convert(new ReplaceWithTextModifier<C, ParametersPlaceholderData, D>().modify(selection, getText(moduleResult.value)));
+                    CommandHandlerResult.FACTORY.convert(modifiers.getReplaceWithTextModifier().modify(selection, getText(moduleResult.value)));
             case STRATEGY_EXECUTED -> CommandHandlerResult.EXECUTED_PROCEED;
             case SKIP -> CommandHandlerResult.IGNORED;
         };

@@ -27,17 +27,21 @@ package org.underdocx.doctypes.txt;
 import org.underdocx.common.types.Pair;
 import org.underdocx.doctypes.AbstractEngine;
 import org.underdocx.doctypes.odf.commands.*;
+import org.underdocx.doctypes.odf.commands.forcommand.ForCommandHandler;
 import org.underdocx.enginelayers.modelengine.MCommandHandler;
 import org.underdocx.enginelayers.modelengine.ModelEngine;
 import org.underdocx.enginelayers.parameterengine.ParametersPlaceholderData;
 
 
-public class TxtEngine extends AbstractEngine<TextContainer, TextXML> {
+public class TxtEngine extends AbstractEngine<TxtContainer, TxtXml> {
 
-    private final ModelEngine<TextContainer, TextXML> engine;
+    private final ModelEngine<TxtContainer, TxtXml> engine;
 
     protected final TxtModifiersProvider modifiers = new TxtModifiersProvider();
     public final TxtParameterizedPlaceholderFactory parameters = new TxtParameterizedPlaceholderFactory();
+    protected final MultiCommandHandler<TxtContainer, TxtXml> multiCommandHandler = new MultiCommandHandler<>(modifiers);
+    protected final AliasCommandHandler<TxtContainer, TxtXml> aliasCommandHandler = new AliasCommandHandler<>(modifiers);
+
 
     protected void registerDefaultCommandHandlers() {
         engine.registerCommandHandler(parameters, new ModelCommandHandler<>(modifiers));
@@ -46,40 +50,48 @@ public class TxtEngine extends AbstractEngine<TextContainer, TextXML> {
         engine.registerCommandHandler(parameters, new ShortVarStringCommandHandler<>(modifiers));
         engine.registerCommandHandler(parameters, new VariableCommandHandler<>(modifiers));
         engine.registerCommandHandler(parameters, new DeleteNodesEodHandler<>(modifiers));
+
+        engine.registerCommandHandler(parameters, new ForCommandHandler<>(modifiers));
+        engine.registerCommandHandler(parameters, new DateCommandHandler<>(modifiers));
+        engine.registerCommandHandler(parameters, new TimeCommandHandler<>(modifiers));
+        engine.registerCommandHandler(parameters, aliasCommandHandler);
+        engine.registerCommandHandler(parameters, multiCommandHandler);
+        engine.registerCommandHandler(parameters, new JoinCommandHandler<>(modifiers));
+        engine.registerCommandHandler(parameters, new NumberCommandHandler<>(modifiers));
+
+        engine.registerCommandHandler(parameters, new CounterCommandHandler<>(modifiers));
+        engine.registerCommandHandler(parameters, new IfCommandHandler<>(modifiers));
+        // Todo Import
     }
 
-    public TxtEngine(TextContainer doc) {
+    public TxtEngine(TxtContainer doc) {
         this.engine = new ModelEngine<>(doc);
         registerDefaultCommandHandlers();
     }
 
     @Override
-    protected ModelEngine<TextContainer, TextXML> getEngine() {
+    protected ModelEngine<TxtContainer, TxtXml> getEngine() {
         return engine;
     }
 
-    @Override
     public void registerStringReplacement(String key, String replacement) {
-
+        multiCommandHandler.registerStringReplacement(key, replacement);
     }
 
-    @Override
+
     public void registerAlias(String key, String placeholder, Pair<String, String>... attrReplacements) {
-
+        aliasCommandHandler.registerAlias(key, placeholder, attrReplacements);
     }
 
-    @Override
     public void registerAlias(String key, ParametersPlaceholderData placeholder, Pair<String, String>... attrReplacements) {
-
+        aliasCommandHandler.registerAlias(key, placeholder, attrReplacements);
     }
 
-    @Override
     public void registerAlias(AliasCommandHandler.AliasData aliasData) {
-
+        aliasCommandHandler.registerAlias(aliasData);
     }
 
-    @Override
-    public void registerParametersCommandHandler(MCommandHandler<TextContainer, ParametersPlaceholderData, TextXML> commandHandler) {
-
+    public void registerParametersCommandHandler(MCommandHandler<TxtContainer, ParametersPlaceholderData, TxtXml> commandHandler) {
+        this.getEngine().registerCommandHandler(parameters, commandHandler);
     }
 }

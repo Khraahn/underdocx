@@ -29,9 +29,9 @@ import org.underdocx.common.tree.Nodes;
 import org.underdocx.doctypes.TextNodeInterpreter;
 import org.w3c.dom.Node;
 
-public class PlainTextNodeInterpreter implements TextNodeInterpreter {
+public class TxtNodeInterpreter implements TextNodeInterpreter {
 
-    public static TextNodeInterpreter INSTANCE = new PlainTextNodeInterpreter();
+    public static TextNodeInterpreter INSTANCE = new TxtNodeInterpreter();
 
     protected boolean is(Node node, String name) {
         return name.equals(node.getNodeName());

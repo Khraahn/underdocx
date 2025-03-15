@@ -26,19 +26,33 @@ package org.underdocx.txt;
 
 import org.assertj.core.api.Assertions;
 import org.underdocx.AbstractTest;
-import org.underdocx.doctypes.txt.TextContainer;
+import org.underdocx.doctypes.txt.TxtContainer;
 
 public abstract class AbstractTxtTest extends AbstractTest {
 
-    public void assertContains(TextContainer doc, String text) {
+    public void assertContains(TxtContainer doc, String text) {
         Assertions.assertThat(doc.getPlainText().contains(text)).isTrue();
     }
 
-    public void assertNotContains(TextContainer doc, String text) {
+    public void assertNotContains(TxtContainer doc, String text) {
         Assertions.assertThat(doc.getPlainText().contains(text)).isFalse();
     }
 
-    public void assertNoPlaceholders(TextContainer doc) {
+    public void assertNoPlaceholders(TxtContainer doc) {
         assertNotContains(doc, "$");
+    }
+
+    public void assertParagraphsCount(TxtContainer doc, int i) {
+        Assertions.assertThat(doc.getPlainText().split("\n").length).isEqualTo(i);
+    }
+
+    public void assertOrder(TxtContainer doc, String... txts) {
+        String content = doc.getPlainText();
+        int last = -1;
+        for (String txt : txts) {
+            int index = content.indexOf(txt);
+            Assertions.assertThat(index).isGreaterThan(last);
+            last = index;
+        }
     }
 }

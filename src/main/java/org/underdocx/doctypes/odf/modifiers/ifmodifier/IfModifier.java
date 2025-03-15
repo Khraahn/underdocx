@@ -26,9 +26,7 @@ package org.underdocx.doctypes.odf.modifiers.ifmodifier;
 
 import org.underdocx.doctypes.DocContainer;
 import org.underdocx.doctypes.modifiers.ModifiersProvider;
-import org.underdocx.doctypes.odf.modifiers.deletearea.DeleteAreaModifier;
 import org.underdocx.doctypes.odf.modifiers.deleteplaceholder.DeletePlaceholderModifierData;
-import org.underdocx.doctypes.odf.modifiers.deleteplaceholder.OdfDeletePlaceholderModifier;
 import org.underdocx.doctypes.odf.modifiers.internal.AbstractAreaModifier;
 import org.underdocx.doctypes.odf.modifiers.internal.AreaModifierWithCommonAncestorData;
 import org.underdocx.enginelayers.baseengine.ModifierNodeResult;
@@ -49,10 +47,10 @@ public class IfModifier<C extends DocContainer<D>, D> extends AbstractAreaModifi
     @Override
     protected ModifierNodeResult modify() {
         if (modifierData.isMatch()) {
-            new OdfDeletePlaceholderModifier().modify(area.left, DeletePlaceholderModifierData.DEFAULT);
-            return new OdfDeletePlaceholderModifier().modify(area.right, DeletePlaceholderModifierData.DEFAULT);
+            modifiers.getDeletePlaceholderModifier().modify(area.left, DeletePlaceholderModifierData.DEFAULT);
+            return modifiers.getDeletePlaceholderModifier().modify(area.right, DeletePlaceholderModifierData.DEFAULT);
         } else {
-            return DeleteAreaModifier.deleteArea(new AreaModifierWithCommonAncestorData.DefaultAreaModifierWithCommonAncestorData(
+            return modifiers.getDeleteAreaModifier().modify(selection, new AreaModifierWithCommonAncestorData.DefaultAreaModifierWithCommonAncestorData(
                     area, getCommonAncestorNode(modifierData)
             ));
         }

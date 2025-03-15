@@ -32,8 +32,6 @@ import org.underdocx.doctypes.odf.commands.internal.AbstractTextualCommandHandle
 import org.underdocx.doctypes.odf.commands.internal.modifiermodule.missingdata.MissingDataCommandModuleResult;
 import org.underdocx.doctypes.odf.commands.internal.modifiermodule.stringoutput.StringOutputCommandModule;
 import org.underdocx.doctypes.odf.commands.internal.modifiermodule.stringoutput.StringOutputModuleConfig;
-import org.underdocx.doctypes.odf.modifiers.tablecell.OdfTableCellModifier;
-import org.underdocx.doctypes.odf.modifiers.tablecell.OdfTableCellModifierData;
 import org.underdocx.doctypes.tools.datapicker.*;
 import org.underdocx.enginelayers.baseengine.CommandHandlerResult;
 import org.underdocx.enginelayers.modelengine.data.DataNode;
@@ -68,24 +66,23 @@ public class NumberCommandHandler<C extends DocContainer<D>, D> extends Abstract
     protected CommandHandlerResult tryExecuteTextualCommand() {
         StringOutputCommandModule<C, D> module = new StringOutputCommandModule<>(getConfig());
         Pair<CommandHandlerResult, MissingDataCommandModuleResult.MissingDataCommandModuleResultType> result = module.execute(selection);
-        if (result.right == MissingDataCommandModuleResult.MissingDataCommandModuleResultType.VALUE_RECEIVED) {
-            templateCellPicker.pickData(dataAccess, placeholderData.getJson()).getOptionalValue().ifPresent(templacecell -> {
-                Number number = new NumberPicker().asPredefined("value").pickData(dataAccess, placeholderData.getJson()).getOptionalValue().get().right;
-                new OdfTableCellModifier<C, D>().modify(selection, new OdfTableCellModifierData.Simple(number, templacecell));
-            });
-        }
+        handleCell(result);
         return result.left;
     }
 
-    protected StringOutputModuleConfig getConfig() {
-        return new StringOutputModuleConfig() {
+    protected void handleCell(Pair<CommandHandlerResult, MissingDataCommandModuleResult.MissingDataCommandModuleResultType> result) {
+        // to handle by Odf subclass
+    }
+
+    protected StringOutputModuleConfig<C, D> getConfig() {
+        return new StringOutputModuleConfig<>() {
             @Override
             public PredefinedDataPicker<String> getDataPicker() {
                 return new NumberStringPicker().asPredefined("value");
             }
 
             @Override
-            public ModifiersProvider getModifiers() {
+            public ModifiersProvider<C, D> getModifiers() {
                 return modifiers;
             }
         };
@@ -99,7 +96,7 @@ public class NumberCommandHandler<C extends DocContainer<D>, D> extends Abstract
         }
     }
 
-    private class NumberPicker extends AbstractConvertDataPicker<Pair<String, Number>> {
+    protected class NumberPicker extends AbstractConvertDataPicker<Pair<String, Number>> {
 
         @Override
         protected Optional<Pair<String, Number>> convert(DataNode node) {

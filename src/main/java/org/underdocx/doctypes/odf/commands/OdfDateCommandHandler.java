@@ -22,32 +22,29 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-package org.underdocx.doctypes.odf.modifiers.deletearea;
+package org.underdocx.doctypes.odf.commands;
 
-import org.underdocx.common.tools.Convenience;
-import org.underdocx.common.tree.Nodes;
 import org.underdocx.doctypes.DocContainer;
 import org.underdocx.doctypes.modifiers.ModifiersProvider;
-import org.underdocx.doctypes.odf.modifiers.internal.AbstractAreaModifier;
-import org.underdocx.doctypes.odf.modifiers.internal.AreaModifierWithCommonAncestorData;
-import org.underdocx.enginelayers.baseengine.ModifierNodeResult;
-import org.underdocx.enginelayers.parameterengine.ParametersPlaceholderData;
-import org.w3c.dom.Node;
+import org.underdocx.doctypes.odf.modifiers.tablecell.OdfTableCellModifier;
+import org.underdocx.doctypes.odf.modifiers.tablecell.OdfTableCellModifierData;
+import org.underdocx.doctypes.tools.datapicker.PredefinedDataPicker;
+import org.underdocx.doctypes.tools.datapicker.StringConvertDataPicker;
 
+import java.time.LocalDate;
 
-public class DeleteAreaModifier<C extends DocContainer<D>, D> extends AbstractAreaModifier<C, ParametersPlaceholderData, D, AreaModifierWithCommonAncestorData, ModifierNodeResult> {
+public class OdfDateCommandHandler<C extends DocContainer<D>, D> extends DateCommandHandler<C, D> {
 
-    public DeleteAreaModifier(ModifiersProvider<C, D> modifiers) {
+    private static final PredefinedDataPicker<String> templateCellPicker = new StringConvertDataPicker().asPredefined("templateCell");
+
+    public OdfDateCommandHandler(ModifiersProvider modifiers) {
         super(modifiers);
     }
 
     @Override
-    protected Node getCommonAncestorNode(AreaModifierWithCommonAncestorData modifierData) {
-        return modifierData.getCommonAncestor();
-    }
-
-    @Override
-    protected ModifierNodeResult modify() {
-        return Convenience.also(ModifierNodeResult.FACTORY.success(area.right, true), result -> Nodes.deleteNodes(getAreaNodes()));
+    protected void handleCell(LocalDate date) {
+        templateCellPicker.pickData(dataAccess, placeholderData.getJson()).getOptionalValue().ifPresent(templateCell -> {
+            new OdfTableCellModifier<C, D>().modify(selection, new OdfTableCellModifierData.Simple(date, templateCell));
+        });
     }
 }

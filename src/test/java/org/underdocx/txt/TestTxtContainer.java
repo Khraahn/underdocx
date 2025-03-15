@@ -28,21 +28,24 @@ import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.underdocx.common.codec.XMLCodec;
 import org.underdocx.common.tools.Convenience;
-import org.underdocx.doctypes.txt.TextContainer;
-import org.underdocx.doctypes.txt.TextXML;
+import org.underdocx.doctypes.odf.modifiers.deleteplaceholder.DeletePlaceholderModifierData;
+import org.underdocx.doctypes.txt.TxtContainer;
+import org.underdocx.doctypes.txt.TxtDeletePlaceholderModifier;
 import org.underdocx.doctypes.txt.TxtParameterizedPlaceholderFactory;
+import org.underdocx.doctypes.txt.TxtXml;
 import org.underdocx.enginelayers.baseengine.PlaceholdersProvider;
 import org.underdocx.enginelayers.parameterengine.ParametersPlaceholderData;
+import org.w3c.dom.Node;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.List;
 
-public class TestTxtContainer {
+public class TestTxtContainer extends AbstractTxtTest {
 
     @Test
     public void readConvertAndWriteBack2() throws IOException {
-        TextContainer doc = new TextContainer("" +
+        TxtContainer doc = new TxtContainer("" +
                 "A B CDE<>   F\n" +
                 "G   HIJ!  \n" +
                 " ---");
@@ -61,11 +64,11 @@ public class TestTxtContainer {
 
     @Test
     public void testPlaceholderProvider() {
-        TextContainer doc = new TextContainer("" +
+        TxtContainer doc = new TxtContainer("" +
                 "A${placeholder1}B\n" +
                 "C${placeholder2 key:\"value\"}!\n" +
                 " ---");
-        PlaceholdersProvider<TextContainer, ParametersPlaceholderData, TextXML> placeholderProvider
+        PlaceholdersProvider<TxtContainer, ParametersPlaceholderData, TxtXml> placeholderProvider
                 = new TxtParameterizedPlaceholderFactory().createProvider(doc);
         List<ParametersPlaceholderData> allPlaceholders = Convenience.buildList(result ->
                 placeholderProvider.getPlaceholders().forEach(node ->
@@ -74,4 +77,47 @@ public class TestTxtContainer {
         Assertions.assertThat(allPlaceholders.size()).isEqualTo(2);
         Assertions.assertThat(allPlaceholders.get(1).getKey()).isEqualTo("placeholder2");
     }
+
+    @Test
+    public void testRemovePlaceholderModifier() {
+        TxtContainer doc = new TxtContainer("" +
+                "A${placeholder1}B\n" +
+                "C${placeholder2 key:\"value\"}!\n" +
+                " ---");
+        PlaceholdersProvider<TxtContainer, ParametersPlaceholderData, TxtXml> placeholderProvider
+                = new TxtParameterizedPlaceholderFactory().createProvider(doc);
+        List<Node> allPlaceholders = Convenience.buildList(result ->
+                placeholderProvider.getPlaceholders().forEach(node ->
+                        result.add(node)));
+
+        Assertions.assertThat(allPlaceholders.size()).isEqualTo(2);
+        assertParagraphsCount(doc, 3);
+
+        TxtDeletePlaceholderModifier modifier = new TxtDeletePlaceholderModifier();
+        modifier.modify(allPlaceholders.get(0), new DeletePlaceholderModifierData.Simple(DeletePlaceholderModifierData.Strategy.DELETE_PARAGRAPH));
+        assertParagraphsCount(doc, 2);
+        assertNotContains(doc, "A$");
+        assertContains(doc, "C$");
+    }
+
+    @Test
+    public void testRemovePlaceholderModifierBlank() {
+        TxtContainer doc = new TxtContainer("" +
+                " ${placeholder1} \n" +
+                " ---");
+        PlaceholdersProvider<TxtContainer, ParametersPlaceholderData, TxtXml> placeholderProvider
+                = new TxtParameterizedPlaceholderFactory().createProvider(doc);
+        List<Node> allPlaceholders = Convenience.buildList(result ->
+                placeholderProvider.getPlaceholders().forEach(node ->
+                        result.add(node)));
+
+        Assertions.assertThat(allPlaceholders.size()).isEqualTo(1);
+        assertParagraphsCount(doc, 2);
+
+        TxtDeletePlaceholderModifier modifier = new TxtDeletePlaceholderModifier();
+        modifier.modify(allPlaceholders.get(0), new DeletePlaceholderModifierData.Simple(DeletePlaceholderModifierData.Strategy.DELETE_BLANK_PARAGRAPH));
+        assertParagraphsCount(doc, 1);
+        assertNoPlaceholders(doc);
+    }
+
 }

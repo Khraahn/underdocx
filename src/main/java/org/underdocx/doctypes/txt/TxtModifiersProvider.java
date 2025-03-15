@@ -25,6 +25,7 @@ SOFTWARE.
 package org.underdocx.doctypes.txt;
 
 import org.underdocx.common.tree.Nodes;
+import org.underdocx.doctypes.TextNodeInterpreter;
 import org.underdocx.doctypes.modifiers.ModifiersProvider;
 import org.underdocx.doctypes.odf.modifiers.deletearea.DeleteAreaModifier;
 import org.underdocx.doctypes.odf.modifiers.deleteplaceholder.DeletePlaceholderModifierData;
@@ -40,7 +41,7 @@ import org.w3c.dom.Node;
 
 import java.util.Optional;
 
-public class TxtModifiersProvider implements ModifiersProvider<TextContainer, TextXML> {
+public class TxtModifiersProvider implements ModifiersProvider<TxtContainer, TxtXml> {
     @Override
     public SelectionModifier<Node, DeletePlaceholderModifierData, ModifierNodeResult> getDeletePlaceholderModifier() {
         return new TxtDeletePlaceholderModifier();
@@ -48,7 +49,7 @@ public class TxtModifiersProvider implements ModifiersProvider<TextContainer, Te
 
 
     @Override
-    public SelectionModifier<Selection<TextContainer, ParametersPlaceholderData, TextXML>, String, ModifierResult> getMarkupTextModifier() {
+    public SelectionModifier<Selection<TxtContainer, ParametersPlaceholderData, TxtXml>, String, ModifierResult> getMarkupTextModifier() {
         return (selection, modifierData) -> getReplaceWithTextModifier().modify(selection, modifierData);
     }
 
@@ -63,12 +64,17 @@ public class TxtModifiersProvider implements ModifiersProvider<TextContainer, Te
     }
 
     @Override
-    public SelectionModifier<Selection<TextContainer, ParametersPlaceholderData, TextXML>, String, ModifierResult> getReplaceWithTextModifier() {
+    public SelectionModifier<Selection<TxtContainer, ParametersPlaceholderData, TxtXml>, String, ModifierResult> getReplaceWithTextModifier() {
         return new ReplaceWithTextModifier<>();
     }
 
     @Override
-    public SelectionModifier<MSelection<TextContainer, ParametersPlaceholderData, TextXML>, AreaModifierWithCommonAncestorData, ModifierNodeResult> getDeleteAreaModifier() {
+    public SelectionModifier<MSelection<TxtContainer, ParametersPlaceholderData, TxtXml>, AreaModifierWithCommonAncestorData, ModifierNodeResult> getDeleteAreaModifier() {
         return new DeleteAreaModifier<>(this);
+    }
+
+    @Override
+    public TextNodeInterpreter getTextNodeInterpreter() {
+        return TxtNodeInterpreter.INSTANCE;
     }
 }

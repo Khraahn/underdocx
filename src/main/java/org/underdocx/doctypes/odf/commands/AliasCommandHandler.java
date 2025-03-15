@@ -133,7 +133,7 @@ public class AliasCommandHandler<C extends DocContainer<D>, D> extends AbstractC
 
     private final Map<String, AliasData> registry = new HashMap<>();
 
-    public AliasCommandHandler(ModifiersProvider modifiers) {
+    public AliasCommandHandler(ModifiersProvider<C, D> modifiers) {
         super(modifiers);
     }
 

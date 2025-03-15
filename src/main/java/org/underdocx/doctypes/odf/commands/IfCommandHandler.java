@@ -58,7 +58,7 @@ public class IfCommandHandler<C extends DocContainer<D>, D> extends AbstractText
     private static final ExtendedDataPicker<DataNode> dataPicker = new NameDataPicker();
     private static final ConditionAttributeInterpreter conditionInterpreter = new ConditionAttributeInterpreter();
 
-    public IfCommandHandler(ModifiersProvider modifiers) {
+    public IfCommandHandler(ModifiersProvider<C, D> modifiers) {
         super(KEYS, modifiers);
     }
 

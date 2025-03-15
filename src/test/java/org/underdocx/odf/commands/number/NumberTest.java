@@ -59,6 +59,6 @@ public class NumberTest extends AbstractOdtTest {
         engine.run();
         //show(doc);
         assertNoPlaceholders(doc);
-        assertOrder(doc, "A: !!-12345678,90€", "B: !!-12345670€", "C: !!12345670.00€");
+        assertOrder(doc, "A: !!-12345678,90€", "B: !!-12345670€", "C: !!12345670,00€");
     }
 }

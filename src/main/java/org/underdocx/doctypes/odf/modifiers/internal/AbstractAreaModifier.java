@@ -25,7 +25,6 @@ SOFTWARE.
 package org.underdocx.doctypes.odf.modifiers.internal;
 
 import org.underdocx.common.enumerator.Enumerator;
-import org.underdocx.common.placeholder.basic.textnodeinterpreter.OdfTextNodeInterpreter;
 import org.underdocx.common.tree.Nodes;
 import org.underdocx.common.tree.TreeSplitter;
 import org.underdocx.common.types.Pair;
@@ -65,11 +64,11 @@ public abstract class AbstractAreaModifier<C extends DocContainer<D>, P, D, M ex
         this.selection = selection;
         this.modifierData = modifierData;
         Node commonAncestor = getCommonAncestorNode(modifierData);
-        this.area = splitTreeAndGetArea(modifierData, commonAncestor, OdfTextNodeInterpreter.INSTANCE);
+        this.area = splitTreeAndGetArea(modifierData, commonAncestor, modifiers.getTextNodeInterpreter());
         return modify();
     }
 
-    public static <M extends AreaModifierData> Pair<Node, Node> splitTreeAndGetArea(M modifierData, Node commonAncestor, TextNodeInterpreter interpreter) {
+    private static <M extends AreaModifierData> Pair<Node, Node> splitTreeAndGetArea(M modifierData, Node commonAncestor, TextNodeInterpreter interpreter) {
         Pair<Node, Node> placeholderArea = modifierData.getAreaPlaceholderNodes();
         TreeSplitter.split(placeholderArea.left, commonAncestor, interpreter);
         TreeSplitter.split(placeholderArea.right, commonAncestor, interpreter);

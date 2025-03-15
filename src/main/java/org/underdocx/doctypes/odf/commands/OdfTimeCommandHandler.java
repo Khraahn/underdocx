@@ -22,46 +22,28 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-package org.underdocx.doctypes.txt;
+package org.underdocx.doctypes.odf.commands;
 
-import org.underdocx.doctypes.AbstractDocContainer;
+import org.underdocx.doctypes.DocContainer;
+import org.underdocx.doctypes.modifiers.ModifiersProvider;
+import org.underdocx.doctypes.odf.modifiers.tablecell.OdfTableCellModifier;
+import org.underdocx.doctypes.odf.modifiers.tablecell.OdfTableCellModifierData;
+import org.underdocx.doctypes.tools.datapicker.PredefinedDataPicker;
+import org.underdocx.doctypes.tools.datapicker.StringConvertDataPicker;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
+import java.time.LocalDateTime;
 
-public class TextContainer extends AbstractDocContainer<TextXML> {
+public class OdfTimeCommandHandler<C extends DocContainer<D>, D> extends TimeCommandHandler<C, D> {
+    private static final PredefinedDataPicker<String> templateCellPicker = new StringConvertDataPicker().asPredefined("templateCell");
 
-    public TextContainer(String content) {
-        doc = new TextXML(content);
+    public OdfTimeCommandHandler(ModifiersProvider modifiers) {
+        super(modifiers);
     }
 
     @Override
-    protected TextXML createEmptyDoc() {
-        return new TextXML();
-    }
-
-    @Override
-    public void load(InputStream is) throws IOException {
-        doc = new TextXML(is);
-    }
-
-    @Override
-    public void save(OutputStream os) throws IOException {
-        doc.save(os);
-    }
-
-    public String getPlainText() {
-        return doc.getPlainText();
-    }
-
-    @Override
-    public String getFileExtension() {
-        return "txt";
-    }
-
-    @Override
-    public void appendText(String content) {
-        doc.appendText(content);
+    protected void handleCell(LocalDateTime time) {
+        templateCellPicker.pickData(dataAccess, placeholderData.getJson()).getOptionalValue().ifPresent(templateCell -> {
+            new OdfTableCellModifier<C, D>().modify(selection, new OdfTableCellModifierData.Simple(time, templateCell));
+        });
     }
 }

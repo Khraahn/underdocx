@@ -22,20 +22,46 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-package org.underdocx.enginelayers.parameterengine.internal;
+package org.underdocx.doctypes.txt;
 
-import org.underdocx.common.placeholder.TextualPlaceholderToolkit;
-import org.underdocx.doctypes.TextNodeInterpreter;
-import org.underdocx.enginelayers.parameterengine.ParametersPlaceholderData;
+import org.underdocx.doctypes.AbstractDocContainer;
 
-public class ParametersPlaceholderToolkit extends TextualPlaceholderToolkit<ParametersPlaceholderData> {
-    public static final ParametersPlaceholderToolkit ODF_INSTANCE = new ParametersPlaceholderToolkit();
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 
-    public ParametersPlaceholderToolkit() {
-        super(ParametersExtractor.ODF_INSTANCE, ParametersPlaceholderCodec.INSTANCE);
+public class TxtContainer extends AbstractDocContainer<TxtXml> {
+
+    public TxtContainer(String content) {
+        doc = new TxtXml(content);
     }
 
-    public ParametersPlaceholderToolkit(TextNodeInterpreter interpreter) {
-        super(new ParametersExtractor(interpreter), ParametersPlaceholderCodec.INSTANCE);
+    @Override
+    protected TxtXml createEmptyDoc() {
+        return new TxtXml();
+    }
+
+    @Override
+    public void load(InputStream is) throws IOException {
+        doc = new TxtXml(is);
+    }
+
+    @Override
+    public void save(OutputStream os) throws IOException {
+        doc.save(os);
+    }
+
+    public String getPlainText() {
+        return doc.getPlainText();
+    }
+
+    @Override
+    public String getFileExtension() {
+        return "txt";
+    }
+
+    @Override
+    public void appendText(String content) {
+        doc.appendText(content);
     }
 }

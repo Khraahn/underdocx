@@ -46,9 +46,9 @@ public class OdtEngine extends AbstractOdfEngine<OdtContainer, OdfTextDocument> 
         engine.registerCommandHandler(parameters, new ShortModelStringCommandHandler<>(modifiers));
         engine.registerCommandHandler(parameters, new ShortVarStringCommandHandler<>(modifiers));
         engine.registerCommandHandler(parameters, new VariableCommandHandler<>(modifiers));
-        engine.registerCommandHandler(parameters, new ForCommandHandler<>(modifiers));
-        engine.registerCommandHandler(parameters, new DateCommandHandler<>(modifiers));
-        engine.registerCommandHandler(parameters, new TimeCommandHandler<>(modifiers));
+        engine.registerCommandHandler(parameters, new ForCommandHandler<OdtContainer, OdfTextDocument>(modifiers));
+        engine.registerCommandHandler(parameters, new OdfDateCommandHandler<>(modifiers));
+        engine.registerCommandHandler(parameters, new OdfTimeCommandHandler<>(modifiers));
         engine.registerCommandHandler(parameters, new CounterCommandHandler<>(modifiers));
         engine.registerCommandHandler(parameters, new IfCommandHandler<>(modifiers));
         engine.registerCommandHandler(parameters, new ForRowsCommandHandler<>(modifiers));
@@ -58,11 +58,11 @@ public class OdtEngine extends AbstractOdfEngine<OdtContainer, OdfTextDocument> 
         engine.registerCommandHandler(parameters, new PageStyleCommandHandler<>(modifiers));
         engine.registerCommandHandler(parameters, new ExportCommandHandler(modifiers));
         engine.registerCommandHandler(parameters, multiCommandHandler);
-        engine.registerCommandHandler(parameters, new JoinCommandHandler<>(modifiers));
+        engine.registerCommandHandler(parameters, new JoinCommandHandler<OdtContainer, OdfTextDocument>(modifiers));
         engine.registerCommandHandler(parameters, new DeleteNodesEodHandler<OdtContainer, OdfTextDocument>(modifiers));
         engine.registerCommandHandler(parameters, new UnderdocxCommandHandler(modifiers));
         engine.registerCommandHandler(parameters, aliasCommandHandler);
-        engine.registerCommandHandler(parameters, new NumberCommandHandler<>(modifiers));
+        engine.registerCommandHandler(parameters, new OdfNumberCommandHandler<>(modifiers));
         engine.registerCommandHandler(parameters, new RemoveCommandHandler<>(modifiers));
     }
 

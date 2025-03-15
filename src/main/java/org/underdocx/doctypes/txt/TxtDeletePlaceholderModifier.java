@@ -26,7 +26,6 @@ package org.underdocx.doctypes.txt;
 
 
 import org.underdocx.common.placeholder.TextualPlaceholderToolkit;
-import org.underdocx.common.placeholder.basic.textnodeinterpreter.OdfTextNodeInterpreter;
 import org.underdocx.common.tools.Convenience;
 import org.underdocx.common.tree.Nodes;
 import org.underdocx.common.tree.nodepath.TextNodePath;
@@ -64,7 +63,7 @@ public class TxtDeletePlaceholderModifier implements SelectionModifier<Node, Del
                         removeParagraph(result, p);
                     } else {
                         List<Node> paragraphNodes = new TreeNodeCollector(p, p, null, new ArrayList<>()).collect();
-                        TextNodePath path = new TextNodePath(paragraphNodes, OdfTextNodeInterpreter.INSTANCE);
+                        TextNodePath path = new TextNodePath(paragraphNodes, TxtNodeInterpreter.INSTANCE);
                         if (path.isTextRealtedOnly()) {
                             String textContent = path.fetchTextContent();
                             if (textContent.isEmpty() || (textContent.isBlank() && modifierData.getDeleteStrategy() == DeletePlaceholderModifierData.Strategy.DELETE_BLANK_PARAGRAPH)) {

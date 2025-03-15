@@ -25,16 +25,10 @@ SOFTWARE.
 package org.underdocx.enginelayers.parameterengine.internal;
 
 import org.underdocx.common.placeholder.basic.extraction.AbstractPartialExtractor;
-import org.underdocx.common.placeholder.basic.textnodeinterpreter.OdfTextNodeInterpreter;
 import org.underdocx.doctypes.TextNodeInterpreter;
 
 public class ParametersExtractor extends AbstractPartialExtractor {
 
-    public static final ParametersExtractor ODF_INSTANCE = new ParametersExtractor();
-
-    public ParametersExtractor() {
-        super(ParametersDetector.INSTANCE, OdfTextNodeInterpreter.INSTANCE);
-    }
 
     public ParametersExtractor(TextNodeInterpreter interpreter) {
         super(ParametersDetector.INSTANCE, interpreter);

@@ -28,13 +28,9 @@ import org.underdocx.common.types.Regex;
 import org.underdocx.doctypes.DocContainer;
 import org.underdocx.doctypes.modifiers.ModifiersProvider;
 import org.underdocx.doctypes.odf.commands.internal.AbstractTextualCommandHandler;
-import org.underdocx.doctypes.odf.modifiers.stringmodifier.ReplaceWithTextModifier;
-import org.underdocx.doctypes.odf.modifiers.tablecell.OdfTableCellModifier;
-import org.underdocx.doctypes.odf.modifiers.tablecell.OdfTableCellModifierData;
 import org.underdocx.doctypes.tools.datapicker.PredefinedDataPicker;
 import org.underdocx.doctypes.tools.datapicker.StringConvertDataPicker;
 import org.underdocx.enginelayers.baseengine.CommandHandlerResult;
-import org.underdocx.enginelayers.parameterengine.ParametersPlaceholderData;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -48,7 +44,6 @@ public class DateCommandHandler<C extends DocContainer<D>, D> extends AbstractTe
     private static PredefinedDataPicker<String> outputFormatDataPicker = new StringConvertDataPicker().asPredefined("outputFormat");
     private static PredefinedDataPicker<String> inputFormatDataPicker = new StringConvertDataPicker().asPredefined("inputFormat");
     private static final PredefinedDataPicker<String> langPicker = new StringConvertDataPicker().asPredefined("lang");
-    private static final PredefinedDataPicker<String> templateCellPicker = new StringConvertDataPicker().asPredefined("templateCell");
 
     public DateCommandHandler(ModifiersProvider modifiers) {
         super(new Regex("Date"), modifiers);
@@ -73,10 +68,12 @@ public class DateCommandHandler<C extends DocContainer<D>, D> extends AbstractTe
         }
         LocalDate date = dateStr == null ? LocalDate.now() : LocalDate.parse(dateStr, inFormatter);
         String replaceString = date.format(outFormatter);
-        new ReplaceWithTextModifier<C, ParametersPlaceholderData, D>().modify(selection, replaceString);
-        templateCellPicker.pickData(dataAccess, placeholderData.getJson()).getOptionalValue().ifPresent(templateCell -> {
-            new OdfTableCellModifier<C, D>().modify(selection, new OdfTableCellModifierData.Simple(date, templateCell));
-        });
+        modifiers.getReplaceWithTextModifier().modify(selection, replaceString);
+        handleCell(date);
         return CommandHandlerResult.EXECUTED_PROCEED;
+    }
+
+    protected void handleCell(LocalDate date) {
+        // subclass can add cell value handling
     }
 }
