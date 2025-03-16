@@ -1,6 +1,6 @@
 # Welcome to ${underdocx}
 
-Underdocx is an extendable open source Java framework to manipulate 
+Underdocx is an extremly extendable open source Java framework to manipulate 
 multiple types of Documents, for example ODT text documents (LibreOffice/OpenOffice Writer), 
 ODG Graphics (LibreOffice/OpenOffice Draw), ODP Presentations (LibreOffice/OpenOffice Impress), 
 ODS Speadsheets (LibreOffic/OpenOffice Calc) and all plain text files as TXT, HTML, Scripts etc.
