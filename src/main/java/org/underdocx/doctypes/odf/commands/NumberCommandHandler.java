@@ -101,13 +101,13 @@ public class NumberCommandHandler<C extends DocContainer<D>, D> extends Abstract
         @Override
         protected Optional<Pair<String, Number>> convert(DataNode node) {
             return Convenience.buildOptional(result -> {
-                String format = formatPicker.pickData(dataAccess, placeholderData.getJson()).getOptionalValue().orElse(null);
-                String langCode = langPicker.pickData(dataAccess, placeholderData.getJson()).getOptionalValue().orElse(null);
-                Number multiplier = multiplierPicker.pickData(dataAccess, placeholderData.getJson()).getOptionalValue().orElse(null);
-                Number summand = summandPicker.pickData(dataAccess, placeholderData.getJson()).getOptionalValue().orElse(null);
-                String prefix = prefixPicker.pickData(dataAccess, placeholderData.getJson()).getOptionalValue().orElse("");
-                String suffix = suffixPicker.pickData(dataAccess, placeholderData.getJson()).getOptionalValue().orElse("");
-                boolean useModified = useModifiedForCellPicker.pickData(dataAccess, placeholderData.getJson()).getOptionalValue().orElse(false);
+                String format = formatPicker.pickData(dataAccess, placeholderData.getJson()).optional().orElse(null);
+                String langCode = langPicker.pickData(dataAccess, placeholderData.getJson()).optional().orElse(null);
+                Number multiplier = multiplierPicker.pickData(dataAccess, placeholderData.getJson()).optional().orElse(null);
+                Number summand = summandPicker.pickData(dataAccess, placeholderData.getJson()).optional().orElse(null);
+                String prefix = prefixPicker.pickData(dataAccess, placeholderData.getJson()).optional().orElse("");
+                String suffix = suffixPicker.pickData(dataAccess, placeholderData.getJson()).optional().orElse("");
+                boolean useModified = useModifiedForCellPicker.pickData(dataAccess, placeholderData.getJson()).optional().orElse(false);
 
                 Number numberValue = null;
                 Object foundValue = node.getValue();

@@ -53,6 +53,32 @@ public class TxtImportTest extends AbstractTxtTest {
         //show(doc);
         assertOrder(doc, "A", "BBBBBBB", "CCCCCCC", "D");
         assertNoPlaceholders(doc);
+    }
 
+    @Test
+    public void importTestFragment() {
+
+        String toImport = """
+                XXX
+                  begin
+                BBBBBBB
+                CCCCCCC
+                  end
+                XXX
+                """;
+        toImport = Base64.getEncoder().encodeToString(toImport.getBytes(StandardCharsets.UTF_8));
+        TxtContainer doc = new TxtContainer("""
+                A
+                ${Import $base64:"toImport", beginFragmentRegex:"begin", endFragmentRegex:"end"}
+                D
+                """
+        );
+        TxtEngine engine = new TxtEngine(doc);
+        engine.pushLeafVariable("toImport", toImport);
+        engine.run();
+        //show(doc);
+        assertOrder(doc, "A", "BBBBBBB", "CCCCCCC", "D");
+        assertNoPlaceholders(doc);
+        assertNotContains(doc, "XXX");
     }
 }

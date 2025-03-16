@@ -71,7 +71,7 @@ public class IfCommandHandler<C extends DocContainer<D>, D> extends AbstractText
                         AreaTools.findArea(selection.getEngineAccess().lookAhead(null), selection, END_KEY), END_KEY);
         boolean match = conditionInterpreter.interpretAttributes(attributes, valueResolver -> {
             String property = valueResolver.left;
-            DataNode foundNode = dataPicker.pickData(property, dataAccess, attributes).getOptionalValue().orElse(null);
+            DataNode foundNode = dataPicker.pickData(property, dataAccess, attributes).optional().orElse(null);
             Object toCompareWith = valueResolver.right;
             return compare(foundNode, toCompareWith);
         });

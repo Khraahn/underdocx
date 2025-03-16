@@ -63,7 +63,7 @@ public class ImageCommandHandler<C extends AbstractOdfContainer<D>, D extends Od
     protected CommandHandlerResult tryExecuteCommand() {
         return Convenience.build(CommandHandlerResult.EXECUTED_PROCEED, result -> {
             String name = namePicker.expect(dataAccess, placeholderData.getJson());
-            String newDesc = descPicker.pickData(dataAccess, placeholderData.getJson()).getOptionalValue().orElse(null);
+            String newDesc = descPicker.pickData(dataAccess, placeholderData.getJson()).optional().orElse(null);
             Boolean keepWidth = keepWidthPicker.expect(dataAccess, placeholderData.getJson());
             Resource resource = new ResourceCommandModule<C, ImagePlaceholderData, D>(placeholderData.getJson()).execute(selection);
             OdfExistingImageModifierData modifierData = new OdfExistingImageModifierData.Simple(keepWidth, resource, name, newDesc);

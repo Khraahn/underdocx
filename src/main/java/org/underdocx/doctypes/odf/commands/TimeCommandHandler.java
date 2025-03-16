@@ -54,9 +54,9 @@ public class TimeCommandHandler<C extends DocContainer<D>, D> extends AbstractTe
 
     private String getFormat(boolean isIn, PredefinedDataPicker<String> picker) {
         if (isIn) {
-            return picker.pickData(dataAccess, placeholderData.getJson()).getOptionalValue().orElse(DEFAULT_IN_FORMAT_TIME);
+            return picker.pickData(dataAccess, placeholderData.getJson()).optional().orElse(DEFAULT_IN_FORMAT_TIME);
         } else {
-            return picker.pickData(dataAccess, placeholderData.getJson()).getOptionalValue().orElse(DEFAULT_OUT_FORMAT_TIME);
+            return picker.pickData(dataAccess, placeholderData.getJson()).optional().orElse(DEFAULT_OUT_FORMAT_TIME);
         }
     }
 
@@ -65,8 +65,8 @@ public class TimeCommandHandler<C extends DocContainer<D>, D> extends AbstractTe
     protected CommandHandlerResult tryExecuteTextualCommand() {
         String inFormat = getFormat(true, inputFormatDataPicker);
         String outFormat = getFormat(false, outputFormatDataPicker);
-        String dateStr = valueDataPicker.pickData(dataAccess, placeholderData.getJson()).getOptionalValue().orElse(null);
-        String langCode = langPicker.pickData(dataAccess, placeholderData.getJson()).getOptionalValue().orElse(null);
+        String dateStr = valueDataPicker.pickData(dataAccess, placeholderData.getJson()).optional().orElse(null);
+        String langCode = langPicker.pickData(dataAccess, placeholderData.getJson()).optional().orElse(null);
         DateTimeFormatter outFormatter = DateTimeFormatter.ofPattern(outFormat);
         DateTimeFormatter inFormatter = DateTimeFormatter.ofPattern(inFormat);
         if (langCode != null) {

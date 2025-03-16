@@ -49,7 +49,7 @@ public abstract class AbstractOdfImportCommandHandler<C extends AbstractOdfConta
 
     @Override
     protected CommandHandlerResult doImport(String identifier, C importDoc) {
-        String pageName = pageNameAttr.pickData(dataAccess, placeholderData.getJson()).getOptionalValue().orElse(null);
+        String pageName = pageNameAttr.pickData(dataAccess, placeholderData.getJson()).optional().orElse(null);
         checkPageAttr(pageName);
         OdfImportModifierData modifiedData = new OdfImportModifierData.Simple(identifier, importDoc, selection.getDocContainer(), selection.getNode(), true, pageName);
         new OdfImportModifier().modify(modifiedData);

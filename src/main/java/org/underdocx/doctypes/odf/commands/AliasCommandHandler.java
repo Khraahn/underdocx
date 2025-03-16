@@ -148,8 +148,8 @@ public class AliasCommandHandler<C extends DocContainer<D>, D> extends AbstractC
     }
 
     private CommandHandlerResult registerAlias() {
-        String aliasKey = Problems.MISSING_VALUE.get(aliasKeyPicker.pickData(dataAccess, placeholderData.getJson()).getOptionalValue(), "key");
-        String replaceKey = Problems.MISSING_VALUE.get(replaceKeyPicker.pickData(dataAccess, placeholderData.getJson()).getOptionalValue(), "replaceKey");
+        String aliasKey = Problems.MISSING_VALUE.get(aliasKeyPicker.pickData(dataAccess, placeholderData.getJson()).optional(), "key");
+        String replaceKey = Problems.MISSING_VALUE.get(replaceKeyPicker.pickData(dataAccess, placeholderData.getJson()).optional(), "replaceKey");
         DataPickerResult<Set<AttrKeyValue>> attributesResult = attributesPicker.pickData(dataAccess, placeholderData.getJson());
         if (!(attributesResult.isResolved() || attributesResult.type == DataPickerResult.ResultType.UNRESOLVED_MISSING_ATTR)) {
             Problems.INVALID_VALUE.fireProperty("attributes");
@@ -161,8 +161,8 @@ public class AliasCommandHandler<C extends DocContainer<D>, D> extends AbstractC
         registerAlias(new AliasData(
                 aliasKey,
                 replaceKey,
-                attributesResult.getOptionalValue().orElse(new HashSet<>()),
-                attrReplacements.getOptionalValue().orElse(new HashMap<>())
+                attributesResult.optional().orElse(new HashSet<>()),
+                attrReplacements.optional().orElse(new HashMap<>())
         ));
         return CommandHandlerResult.FACTORY.convert(modifiers.getDeletePlaceholderModifier().modify(selection.getNode(), DeletePlaceholderModifierData.DEFAULT));
     }

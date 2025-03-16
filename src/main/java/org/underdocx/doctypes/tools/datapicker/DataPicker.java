@@ -41,7 +41,7 @@ public interface DataPicker<T> {
     DataPickerResult<T> pickData(String name);
 
     default Optional<T> getData(String name) {
-        return pickData(name).getOptionalValue();
+        return pickData(name).optional();
     }
 
 }

@@ -22,25 +22,44 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-package org.underdocx.doctypes.tools.datapicker;
+package org.underdocx.doctypes.txt;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import org.underdocx.enginelayers.modelengine.dataaccess.DataAccess;
-import org.underdocx.environment.err.Problems;
+import org.underdocx.common.types.Regex;
 
-import java.util.Optional;
+public interface TxtImportModifierData {
 
-public interface PredefinedDataPicker<T> {
-    DataPickerResult<T> pickData(DataAccess dataAccess, JsonNode jsonNode);
+    TxtContainer getImportDoc();
 
-    default Optional<T> getData(DataAccess dataAccess, JsonNode jsonNode) {
-        return pickData(dataAccess, jsonNode).optional();
-    }
+    Regex getBeginFragmentRegex();
 
-    String getName();
+    Regex getEndFragmentRegex();
 
-    default T expect(DataAccess dataAccess, JsonNode jsonNode) {
-        return Problems.MISSING_VALUE.get(getData(dataAccess, jsonNode), getName());
+    class Simple implements TxtImportModifierData {
+
+        private TxtContainer importDoc;
+        private Regex beginFragmentRegex;
+        private Regex endFragmentRegex;
+
+        public Simple(TxtContainer importDoc, Regex beginFragmentRegex, Regex endFragmentRegex) {
+            this.importDoc = importDoc;
+            this.beginFragmentRegex = beginFragmentRegex;
+            this.endFragmentRegex = endFragmentRegex;
+        }
+
+        @Override
+        public TxtContainer getImportDoc() {
+            return importDoc;
+        }
+
+        @Override
+        public Regex getBeginFragmentRegex() {
+            return beginFragmentRegex;
+        }
+
+        @Override
+        public Regex getEndFragmentRegex() {
+            return endFragmentRegex;
+        }
     }
 
 }

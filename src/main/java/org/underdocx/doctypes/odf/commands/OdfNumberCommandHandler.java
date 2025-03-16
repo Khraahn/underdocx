@@ -44,8 +44,8 @@ public class OdfNumberCommandHandler<C extends DocContainer<D>, D> extends Numbe
     @Override
     protected void handleCell(Pair<CommandHandlerResult, MissingDataCommandModuleResult.MissingDataCommandModuleResultType> result) {
         if (result.right == MissingDataCommandModuleResult.MissingDataCommandModuleResultType.VALUE_RECEIVED) {
-            templateCellPicker.pickData(dataAccess, placeholderData.getJson()).getOptionalValue().ifPresent(templacecell -> {
-                Number number = new NumberPicker().asPredefined("value").pickData(dataAccess, placeholderData.getJson()).getOptionalValue().get().right;
+            templateCellPicker.pickData(dataAccess, placeholderData.getJson()).optional().ifPresent(templacecell -> {
+                Number number = new NumberPicker().asPredefined("value").pickData(dataAccess, placeholderData.getJson()).optional().get().right;
                 new OdfTableCellModifier<C, D>().modify(selection, new OdfTableCellModifierData.Simple(number, templacecell));
             });
         }

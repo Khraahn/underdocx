@@ -50,15 +50,15 @@ public class DateCommandHandler<C extends DocContainer<D>, D> extends AbstractTe
     }
 
     private String getFormat(PredefinedDataPicker<String> picker) {
-        return picker.pickData(dataAccess, placeholderData.getJson()).getOptionalValue().orElse(DEFAULT_FORMAT_DATE);
+        return picker.pickData(dataAccess, placeholderData.getJson()).optional().orElse(DEFAULT_FORMAT_DATE);
     }
 
     @Override
     protected CommandHandlerResult tryExecuteTextualCommand() {
         String inFormat = getFormat(inputFormatDataPicker);
         String outFormat = getFormat(outputFormatDataPicker);
-        String dateStr = valueDataPicker.pickData(dataAccess, placeholderData.getJson()).getOptionalValue().orElse(null);
-        String langCode = langPicker.pickData(dataAccess, placeholderData.getJson()).getOptionalValue().orElse(null);
+        String dateStr = valueDataPicker.pickData(dataAccess, placeholderData.getJson()).optional().orElse(null);
+        String langCode = langPicker.pickData(dataAccess, placeholderData.getJson()).optional().orElse(null);
 
         DateTimeFormatter outFormatter = DateTimeFormatter.ofPattern(outFormat);
         DateTimeFormatter inFormatter = DateTimeFormatter.ofPattern(inFormat);

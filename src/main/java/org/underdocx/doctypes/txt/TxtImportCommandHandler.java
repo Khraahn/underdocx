@@ -24,42 +24,32 @@ SOFTWARE.
 
 package org.underdocx.doctypes.txt;
 
-import org.underdocx.common.tree.Nodes;
+import org.underdocx.common.types.Regex;
 import org.underdocx.common.types.Resource;
-import org.underdocx.common.types.Wrapper;
 import org.underdocx.doctypes.modifiers.ModifiersProvider;
 import org.underdocx.doctypes.odf.commands.importcommand.AbstractImportCommandHandler;
-import org.underdocx.doctypes.odf.modifiers.deleteplaceholder.DeletePlaceholderModifierData;
+import org.underdocx.doctypes.tools.datapicker.PredefinedDataPicker;
+import org.underdocx.doctypes.tools.datapicker.StringConvertDataPicker;
 import org.underdocx.enginelayers.baseengine.CommandHandlerResult;
-import org.w3c.dom.Node;
 
 public class TxtImportCommandHandler extends AbstractImportCommandHandler<TxtContainer, TxtXml> {
-    public TxtImportCommandHandler(ModifiersProvider modifiers) {
+
+    private static final PredefinedDataPicker<String> beginFragment = new StringConvertDataPicker().asPredefined("beginFragmentRegex");
+    private static final PredefinedDataPicker<String> endFragment = new StringConvertDataPicker().asPredefined("endFragmentRegex");
+
+
+    public TxtImportCommandHandler(ModifiersProvider<TxtContainer, TxtXml> modifiers) {
         super(modifiers);
     }
 
     @Override
     protected CommandHandlerResult doImport(String identifier, TxtContainer importDoc) {
-        Wrapper<Node> first = new Wrapper<>();
-        Nodes.findAscendantNode(selection.getNode(), "p").ifPresent(p -> {
-            Nodes.findFirstDescendantNode(importDoc.getDocument().getDoc(), "root").ifPresent(root -> {
-                Nodes.getChildren(root).forEach(nodeToClone -> {
-                    Node clone = nodeToClone.cloneNode(true);
-                    clone = p.getOwnerDocument().adoptNode(clone);
-                    if (first.value == null) {
-                        first.value = clone;
-                    }
-                    p.getParentNode().insertBefore(clone, p);
-                });
-            });
-            modifiers.getDeletePlaceholderModifier().modify(selection.getNode(), DeletePlaceholderModifierData.DEFAULT);
-        });
-        if (first.value == null) {
-            return CommandHandlerResult.IGNORED;
-        } else {
-            return CommandHandlerResult.FACTORY.startAtNode(first.value);
-        }
+        Regex beginFragmentRegex = beginFragment.pickData(dataAccess, placeholderData.getJson()).optional().map(Regex::new).orElse(null);
+        Regex endFragmentRegex = endFragment.pickData(dataAccess, placeholderData.getJson()).optional().map(Regex::new).orElse(null);
+
+        return CommandHandlerResult.FACTORY.convert(new TxtImportModifier(modifiers).modify(selection.getNode(), new TxtImportModifierData.Simple(importDoc, beginFragmentRegex, endFragmentRegex)));
     }
+
 
     @Override
     protected TxtContainer createContainer(Resource resource) throws Exception {
@@ -70,5 +60,6 @@ public class TxtImportCommandHandler extends AbstractImportCommandHandler<TxtCon
     protected TxtContainer createContainer(byte[] data) throws Exception {
         return new TxtContainer(data);
     }
+
 
 }

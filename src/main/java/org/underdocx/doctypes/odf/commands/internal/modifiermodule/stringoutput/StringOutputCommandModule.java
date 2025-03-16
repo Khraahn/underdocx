@@ -50,8 +50,8 @@ public class StringOutputCommandModule<C extends DocContainer<D>, D> extends Abs
 
     @Override
     protected Pair<CommandHandlerResult, MissingDataCommandModuleResult.MissingDataCommandModuleResultType> execute() {
-        boolean shouldRescan = rescanDataPicker.pickData(dataAccess, placholderData.getJson()).getOptionalValue().orElse(false);
-        boolean useMarkup = markupDataPicker.pickData(dataAccess, placholderData.getJson()).getOptionalValue().orElse(false);
+        boolean shouldRescan = rescanDataPicker.pickData(dataAccess, placholderData.getJson()).optional().orElse(false);
+        boolean useMarkup = markupDataPicker.pickData(dataAccess, placholderData.getJson()).optional().orElse(false);
         MissingDataCommandModule<C, D, String> module = new MissingDataCommandModule<>(configuration);
         MissingDataCommandModuleResult<String> moduleResult = module.execute(selection);
         return switch (moduleResult.resultType) {
@@ -73,15 +73,15 @@ public class StringOutputCommandModule<C extends DocContainer<D>, D> extends Abs
 
     private String handlePadding(String input) {
         String output = input;
-        Integer padding = paddingPicker.pickData(dataAccess, placholderData.getJson()).getOptionalValue().orElse(null);
+        Integer padding = paddingPicker.pickData(dataAccess, placholderData.getJson()).optional().orElse(null);
         if (padding != null) {
-            String align = alignPicker.pickData(dataAccess, placholderData.getJson()).getOptionalValue().orElse("left");
+            String align = alignPicker.pickData(dataAccess, placholderData.getJson()).optional().orElse("left");
             if (align.equals("left")) {
                 output = String.format("%-" + padding + "s", output);
             } else {
                 output = String.format("%-" + padding + "s", output);
             }
-            String truncated = truncatedPicker.pickData(dataAccess, placholderData.getJson()).getOptionalValue().orElse(null);
+            String truncated = truncatedPicker.pickData(dataAccess, placholderData.getJson()).optional().orElse(null);
             if (truncated != null && output.length() > padding) {
                 int maxLength = padding - truncated.length();
                 output = output.substring(0, maxLength) + truncated;

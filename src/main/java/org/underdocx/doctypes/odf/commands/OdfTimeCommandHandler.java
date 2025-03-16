@@ -42,7 +42,7 @@ public class OdfTimeCommandHandler<C extends DocContainer<D>, D> extends TimeCom
 
     @Override
     protected void handleCell(LocalDateTime time) {
-        templateCellPicker.pickData(dataAccess, placeholderData.getJson()).getOptionalValue().ifPresent(templateCell -> {
+        templateCellPicker.pickData(dataAccess, placeholderData.getJson()).optional().ifPresent(templateCell -> {
             new OdfTableCellModifier<C, D>().modify(selection, new OdfTableCellModifierData.Simple(time, templateCell));
         });
     }

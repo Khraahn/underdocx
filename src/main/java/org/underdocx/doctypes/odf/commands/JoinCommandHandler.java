@@ -71,10 +71,10 @@ public class JoinCommandHandler<C extends DocContainer<D>, D> extends AbstractTe
     }
 
     private String getText(DataNode value) {
-        String separator = separatorPicker.pickData(dataAccess, placeholderData.getJson()).getOptionalValue().orElse(", ");
-        String lastSeparator = lastSeparatorPicker.pickData(dataAccess, placeholderData.getJson()).getOptionalValue().orElse(separator);
-        int limit = limitPicker.pickData(dataAccess, placeholderData.getJson()).getOptionalValue().orElse(-1);
-        String truncated = truncatedPicker.pickData(dataAccess, placeholderData.getJson()).getOptionalValue().orElse("...");
+        String separator = separatorPicker.pickData(dataAccess, placeholderData.getJson()).optional().orElse(", ");
+        String lastSeparator = lastSeparatorPicker.pickData(dataAccess, placeholderData.getJson()).optional().orElse(separator);
+        int limit = limitPicker.pickData(dataAccess, placeholderData.getJson()).optional().orElse(-1);
+        String truncated = truncatedPicker.pickData(dataAccess, placeholderData.getJson()).optional().orElse("...");
         List<String> stringList = new ArrayList<>();
         for (int i = 0; i < value.getSize(); i++) {
             DataNode item = value.getProperty(i);

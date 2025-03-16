@@ -42,7 +42,7 @@ public interface ExtendedDataPicker<T> {
     DataPickerResult<T> pickData(String name, DataAccess dataAccess, JsonNode jsonNode);
 
     default Optional<T> getData(String name, DataAccess dataAccess, JsonNode jsonNode) {
-        return pickData(name, dataAccess, jsonNode).getOptionalValue();
+        return pickData(name, dataAccess, jsonNode).optional();
     }
 
     default PredefinedDataPicker<T> asPredefined(String name) {

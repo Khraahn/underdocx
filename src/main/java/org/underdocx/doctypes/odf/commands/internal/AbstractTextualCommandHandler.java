@@ -60,11 +60,11 @@ public abstract class AbstractTextualCommandHandler<C extends DocContainer<D>, D
     }
 
     protected Optional<String> resolveStringByAttr(String attrName) {
-        return new StringConvertDataPicker().pickData(attrName, dataAccess, placeholderData.getJson()).getOptionalValue();
+        return new StringConvertDataPicker().pickData(attrName, dataAccess, placeholderData.getJson()).optional();
     }
 
     protected Optional<DataNode> resolveNodeByAttr(String attrName) {
-        return new AttributeNodeDataPicker().pickData(attrName, dataAccess, placeholderData.getJson()).getOptionalValue();
+        return new AttributeNodeDataPicker().pickData(attrName, dataAccess, placeholderData.getJson()).optional();
     }
 
 

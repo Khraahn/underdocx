@@ -43,7 +43,7 @@ public class OdfDateCommandHandler<C extends DocContainer<D>, D> extends DateCom
 
     @Override
     protected void handleCell(LocalDate date) {
-        templateCellPicker.pickData(dataAccess, placeholderData.getJson()).getOptionalValue().ifPresent(templateCell -> {
+        templateCellPicker.pickData(dataAccess, placeholderData.getJson()).optional().ifPresent(templateCell -> {
             new OdfTableCellModifier<C, D>().modify(selection, new OdfTableCellModifierData.Simple(date, templateCell));
         });
     }

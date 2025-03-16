@@ -72,7 +72,7 @@ public class DataPickerResult<T> {
         return type.resolved && value != null;
     }
 
-    public Optional<T> getOptionalValue() {
+    public Optional<T> optional() {
         return Optional.ofNullable(value);
     }
 

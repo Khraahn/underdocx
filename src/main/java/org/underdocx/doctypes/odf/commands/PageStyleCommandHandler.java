@@ -70,18 +70,18 @@ public class PageStyleCommandHandler<C extends DocContainer<D>, D> extends Abstr
 
     private PageStyle createPageStyle() {
         return Convenience.build(new PageStyle(), pageStyle -> {
-            masterPagePicker.pickData(dataAccess, placeholderData.getJson()).getOptionalValue().ifPresent(masterPage -> {
+            masterPagePicker.pickData(dataAccess, placeholderData.getJson()).optional().ifPresent(masterPage -> {
                 pageStyle.value.masterPage = new Wrapper<>(masterPage);
                 pageStyle.value.breakBefore = new Wrapper<>("page");
             });
-            pageNumberPicker.pickData(dataAccess, placeholderData.getJson()).getOptionalValue().ifPresent(pageNumber ->
+            pageNumberPicker.pickData(dataAccess, placeholderData.getJson()).optional().ifPresent(pageNumber ->
                     pageStyle.value.pageNumber = new Wrapper<>("" + pageNumber));
-            pageBreakAfterPicker.pickData(dataAccess, placeholderData.getJson()).getOptionalValue().ifPresent(pageBreakAfter -> {
+            pageBreakAfterPicker.pickData(dataAccess, placeholderData.getJson()).optional().ifPresent(pageBreakAfter -> {
                 if (pageBreakAfter) {
                     pageStyle.value.breakAfter = new Wrapper<>("page");
                 }
             });
-            pageBreakBeforePicker.pickData(dataAccess, placeholderData.getJson()).getOptionalValue().ifPresent(pageBreakBefore -> {
+            pageBreakBeforePicker.pickData(dataAccess, placeholderData.getJson()).optional().ifPresent(pageBreakBefore -> {
                 if (pageBreakBefore) {
                     pageStyle.value.breakBefore = new Wrapper<>("page");
                 }
