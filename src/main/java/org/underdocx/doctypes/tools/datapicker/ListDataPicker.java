@@ -28,7 +28,7 @@ import org.underdocx.enginelayers.modelengine.data.DataNode;
 import java.util.Optional;
 
 /**
- * A {@link org.underdocx.doctypes.odf.commands.internal.datapicker.ExtendedDataPicker} that checks if provided node represents a list
+ * A {@link ExtendedDataPicker} that checks if provided node represents a list
  */
 public class ListDataPicker extends AbstractConvertDataPicker<DataNode> {
 

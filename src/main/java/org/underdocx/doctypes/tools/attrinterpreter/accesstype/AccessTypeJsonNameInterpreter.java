@@ -28,7 +28,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import org.underdocx.doctypes.tools.attrinterpreter.AbstractAttributeInterpreter;
 
 /**
- * A {@link AttributesInterpreter}
+ * A {@link org.underdocx.doctypes.tools.attrinterpreter.AttributesInterpreter}
  * that returns a {@link AccessType} according to the prefix of the corresponding json attribute.
  * For example:
  * Given JSON: {a:"a", $b:"b", *c:"c"},

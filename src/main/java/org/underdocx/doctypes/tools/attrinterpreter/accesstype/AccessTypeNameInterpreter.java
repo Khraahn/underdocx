@@ -27,7 +27,7 @@ package org.underdocx.doctypes.tools.attrinterpreter.accesstype;
 import org.underdocx.doctypes.tools.attrinterpreter.AbstractAttributeInterpreter;
 
 /**
- * A {@link AttributesInterpreter}
+ * A {@link org.underdocx.doctypes.tools.attrinterpreter.AttributesInterpreter}
  * that returns a {@link AccessType} according to the prefix of the provided name, independent from json.
  * For example:
  * interpreteAttribute("a") returns AccessType.ACCESS_ATTR_VALUE,
