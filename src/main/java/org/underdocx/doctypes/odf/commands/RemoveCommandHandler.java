@@ -26,8 +26,8 @@ package org.underdocx.doctypes.odf.commands;
 
 import org.underdocx.common.types.Pair;
 import org.underdocx.doctypes.DocContainer;
+import org.underdocx.doctypes.commands.internal.AbstractTextualCommandHandler;
 import org.underdocx.doctypes.modifiers.ModifiersProvider;
-import org.underdocx.doctypes.odf.commands.internal.AbstractTextualCommandHandler;
 import org.underdocx.doctypes.odf.modifiers.deletenode.OdfDeleteParentModifierData;
 import org.underdocx.doctypes.odf.modifiers.deletenode.OdfDeleteParentNodeModifier;
 import org.underdocx.doctypes.tools.datapicker.BooleanDataPicker;

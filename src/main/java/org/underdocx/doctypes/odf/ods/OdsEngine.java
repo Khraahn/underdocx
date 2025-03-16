@@ -25,9 +25,9 @@ SOFTWARE.
 package org.underdocx.doctypes.odf.ods;
 
 import org.odftoolkit.odfdom.doc.OdfSpreadsheetDocument;
+import org.underdocx.doctypes.commands.*;
 import org.underdocx.doctypes.odf.AbstractOdfEngine;
 import org.underdocx.doctypes.odf.commands.*;
-import org.underdocx.doctypes.odf.commands.forcommand.ForCommandHandler;
 import org.underdocx.doctypes.odf.commands.forcommand.ForListCommandHandler;
 import org.underdocx.doctypes.odf.commands.forcommand.ForRowsCommandHandler;
 import org.underdocx.enginelayers.modelengine.ModelEngine;

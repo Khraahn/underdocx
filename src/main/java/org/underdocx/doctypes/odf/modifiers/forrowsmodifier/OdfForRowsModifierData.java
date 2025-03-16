@@ -26,7 +26,7 @@ package org.underdocx.doctypes.odf.modifiers.forrowsmodifier;
 
 import org.underdocx.common.types.Pair;
 import org.underdocx.common.types.Range;
-import org.underdocx.doctypes.odf.modifiers.formodifier.ForModifierData;
+import org.underdocx.doctypes.modifiers.formodifier.ForModifierData;
 import org.underdocx.enginelayers.parameterengine.ParametersPlaceholderData;
 import org.w3c.dom.Node;
 

@@ -27,7 +27,7 @@ package org.underdocx.odf.parameterengine;
 import org.junit.jupiter.api.Test;
 import org.odftoolkit.odfdom.doc.OdfTextDocument;
 import org.underdocx.AbstractOdtTest;
-import org.underdocx.doctypes.odf.modifiers.stringmodifier.ReplaceWithTextModifier;
+import org.underdocx.doctypes.modifiers.stringmodifier.ReplaceWithTextModifier;
 import org.underdocx.doctypes.odf.odt.OdtContainer;
 import org.underdocx.doctypes.odf.odt.OdtEngine;
 import org.underdocx.doctypes.tools.attrinterpreter.AttributesInterpreter;

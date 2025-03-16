@@ -26,6 +26,7 @@ package org.underdocx.doctypes.txt;
 
 import org.underdocx.common.types.Resource;
 import org.underdocx.doctypes.AbstractDocContainer;
+import org.underdocx.doctypes.txt.internal.TxtXml;
 
 import java.io.IOException;
 import java.io.InputStream;

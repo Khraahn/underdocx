@@ -26,7 +26,7 @@ package org.underdocx.doctypes;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import org.underdocx.common.types.Pair;
-import org.underdocx.doctypes.odf.commands.AliasCommandHandler;
+import org.underdocx.doctypes.commands.AliasCommandHandler;
 import org.underdocx.enginelayers.baseengine.CommandHandler;
 import org.underdocx.enginelayers.baseengine.PlaceholdersProvider;
 import org.underdocx.enginelayers.modelengine.MCommandHandler;

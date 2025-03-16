@@ -46,7 +46,8 @@ public class DocTypeLayersArchTest {
                     "org.underdocx.doctypes.odf.odt..",
                     "org.underdocx.doctypes.odf.odg..",
                     "org.underdocx.doctypes.odf.odp..",
-                    "org.underdocx.doctypes.msoffice..");
+                    "org.underdocx.doctypes.msoffice..",
+                    "org.underdocx.doctypes.txt..");
 
     @ArchTest
     public static final ArchRule doctypeDoesNotAccessSubLayersOrEngine = ArchRuleDefinition.noClasses()
@@ -57,5 +58,15 @@ public class DocTypeLayersArchTest {
             .or().resideInAnyPackage("org.underdocx.doctypes.commons..")
             .should().accessClassesThat().resideInAnyPackage(
                     "org.underdocx.doctypes.odf..",
-                    "org.underdocx.doctypes.msoffice..");
+                    "org.underdocx.doctypes.msoffice..",
+                    "org.underdocx.doctypes.txt.."
+            );
+
+    @ArchTest
+    public static final ArchRule txtDoesNotAccessOdf = ArchRuleDefinition.noClasses()
+            .that().resideInAnyPackage("org.underdocx.doctypes.txt..")
+            .should().accessClassesThat().resideInAnyPackage(
+                    "org.underdocx.doctypes.odf..",
+                    "org.underdocx.doctypes.msoffice.."
+            );
 }

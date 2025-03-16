@@ -25,10 +25,10 @@ SOFTWARE.
 package org.underdocx.doctypes.odf.commands;
 
 import org.underdocx.doctypes.DocContainer;
+import org.underdocx.doctypes.modifiers.stringmodifier.ReplaceWithTextModifier;
 import org.underdocx.enginelayers.baseengine.CommandHandler;
 import org.underdocx.enginelayers.baseengine.CommandHandlerResult;
 import org.underdocx.enginelayers.baseengine.Selection;
-import org.underdocx.doctypes.odf.modifiers.stringmodifier.ReplaceWithTextModifier;
 
 import java.util.Optional;
 import java.util.function.Function;

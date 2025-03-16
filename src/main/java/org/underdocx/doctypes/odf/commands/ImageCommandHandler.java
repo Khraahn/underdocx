@@ -27,14 +27,15 @@ package org.underdocx.doctypes.odf.commands;
 import org.odftoolkit.odfdom.doc.OdfDocument;
 import org.underdocx.common.tools.Convenience;
 import org.underdocx.common.types.Resource;
+import org.underdocx.doctypes.commands.ifcondition.ConditionAttributeInterpreter;
+import org.underdocx.doctypes.commands.internal.AbstractCommandHandler;
+import org.underdocx.doctypes.commands.internal.modifiermodule.resource.ResourceCommandModule;
 import org.underdocx.doctypes.modifiers.ModifiersProvider;
+import org.underdocx.doctypes.modifiers.ifmodifier.IfModifier;
 import org.underdocx.doctypes.odf.AbstractOdfContainer;
 import org.underdocx.doctypes.odf.commands.image.ImagePlaceholderData;
-import org.underdocx.doctypes.odf.commands.internal.AbstractCommandHandler;
-import org.underdocx.doctypes.odf.commands.internal.modifiermodule.resource.ResourceCommandModule;
 import org.underdocx.doctypes.odf.modifiers.existingimage.OdfExistingImageModifier;
 import org.underdocx.doctypes.odf.modifiers.existingimage.OdfExistingImageModifierData;
-import org.underdocx.doctypes.odf.modifiers.ifmodifier.IfModifier;
 import org.underdocx.doctypes.tools.datapicker.BooleanDataPicker;
 import org.underdocx.doctypes.tools.datapicker.PredefinedDataPicker;
 import org.underdocx.doctypes.tools.datapicker.StringConvertDataPicker;
@@ -43,7 +44,7 @@ import org.underdocx.enginelayers.baseengine.CommandHandlerResult;
 
 /**
  * Implements the ${If} command. Is responsible for key "If" and "EndIf".
- * It uses the {@link org.underdocx.doctypes.odf.commands.ifcondition.ConditionAttributeInterpreter} to evaluate the condition
+ * It uses the {@link ConditionAttributeInterpreter} to evaluate the condition
  * It uses the {@link IfModifier} to manipulate the DOM
  */
 public class ImageCommandHandler<C extends AbstractOdfContainer<D>, D extends OdfDocument> extends AbstractCommandHandler<C, ImagePlaceholderData, D> {

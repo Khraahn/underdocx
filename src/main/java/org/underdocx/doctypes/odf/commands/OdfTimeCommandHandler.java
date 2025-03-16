@@ -25,6 +25,7 @@ SOFTWARE.
 package org.underdocx.doctypes.odf.commands;
 
 import org.underdocx.doctypes.DocContainer;
+import org.underdocx.doctypes.commands.TimeCommandHandler;
 import org.underdocx.doctypes.modifiers.ModifiersProvider;
 import org.underdocx.doctypes.odf.modifiers.tablecell.OdfTableCellModifier;
 import org.underdocx.doctypes.odf.modifiers.tablecell.OdfTableCellModifierData;

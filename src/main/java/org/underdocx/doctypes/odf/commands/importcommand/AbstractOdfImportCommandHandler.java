@@ -25,9 +25,10 @@ SOFTWARE.
 package org.underdocx.doctypes.odf.commands.importcommand;
 
 import org.odftoolkit.odfdom.doc.OdfDocument;
+import org.underdocx.doctypes.commands.internal.AbstractImportCommandHandler;
 import org.underdocx.doctypes.modifiers.ModifiersProvider;
+import org.underdocx.doctypes.modifiers.deleteplaceholder.DeletePlaceholderModifierData;
 import org.underdocx.doctypes.odf.AbstractOdfContainer;
-import org.underdocx.doctypes.odf.modifiers.deleteplaceholder.DeletePlaceholderModifierData;
 import org.underdocx.doctypes.odf.modifiers.deleteplaceholder.OdfDeletePlaceholderModifier;
 import org.underdocx.doctypes.odf.modifiers.importmodifier.OdfImportModifier;
 import org.underdocx.doctypes.odf.modifiers.importmodifier.OdfImportModifierData;

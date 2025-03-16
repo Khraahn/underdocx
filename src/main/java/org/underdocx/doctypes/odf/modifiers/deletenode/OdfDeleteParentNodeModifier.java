@@ -26,6 +26,7 @@ package org.underdocx.doctypes.odf.modifiers.deletenode;
 
 import org.underdocx.common.tree.Nodes;
 import org.underdocx.doctypes.DocContainer;
+import org.underdocx.doctypes.modifiers.deletenode.DeleteNodeModifier;
 import org.underdocx.enginelayers.baseengine.ModifierNodeResult;
 import org.underdocx.enginelayers.baseengine.Selection;
 import org.underdocx.enginelayers.baseengine.SelectionModifier;

@@ -30,7 +30,7 @@ import org.odftoolkit.odfdom.doc.OdfTextDocument;
 import org.underdocx.AbstractOdtTest;
 import org.underdocx.common.tree.Nodes;
 import org.underdocx.common.tree.nodepath.TreeNodeCollector;
-import org.underdocx.doctypes.odf.commands.internal.AbstractTextualCommandHandler;
+import org.underdocx.doctypes.commands.internal.AbstractTextualCommandHandler;
 import org.underdocx.doctypes.odf.modifiers.OdfModifiersProvider;
 import org.underdocx.doctypes.odf.odt.OdtContainer;
 import org.underdocx.doctypes.odf.odt.OdtEngine;

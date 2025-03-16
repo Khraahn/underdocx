@@ -26,8 +26,11 @@ package org.underdocx.doctypes.txt;
 
 import org.underdocx.common.types.Pair;
 import org.underdocx.doctypes.AbstractEngine;
-import org.underdocx.doctypes.odf.commands.*;
-import org.underdocx.doctypes.odf.commands.forcommand.ForCommandHandler;
+import org.underdocx.doctypes.commands.*;
+import org.underdocx.doctypes.txt.commands.TxtImportCommandHandler;
+import org.underdocx.doctypes.txt.internal.TxtParameterizedPlaceholderFactory;
+import org.underdocx.doctypes.txt.internal.TxtXml;
+import org.underdocx.doctypes.txt.modifiers.TxtModifiersProvider;
 import org.underdocx.enginelayers.modelengine.MCommandHandler;
 import org.underdocx.enginelayers.modelengine.ModelEngine;
 import org.underdocx.enginelayers.parameterengine.ParametersPlaceholderData;

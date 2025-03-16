@@ -26,8 +26,8 @@ package org.underdocx.doctypes.modifiers;
 
 import org.underdocx.doctypes.DocContainer;
 import org.underdocx.doctypes.TextNodeInterpreter;
-import org.underdocx.doctypes.odf.modifiers.deleteplaceholder.DeletePlaceholderModifierData;
-import org.underdocx.doctypes.odf.modifiers.internal.AreaModifierWithCommonAncestorData;
+import org.underdocx.doctypes.modifiers.deleteplaceholder.DeletePlaceholderModifierData;
+import org.underdocx.doctypes.modifiers.internal.AreaModifierWithCommonAncestorData;
 import org.underdocx.enginelayers.baseengine.ModifierNodeResult;
 import org.underdocx.enginelayers.baseengine.ModifierResult;
 import org.underdocx.enginelayers.baseengine.Selection;

@@ -26,10 +26,11 @@ package org.underdocx.doctypes.odf.commands.forcommand;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import org.underdocx.doctypes.DocContainer;
+import org.underdocx.doctypes.commands.forcommand.AbstractForCommandHandler;
 import org.underdocx.doctypes.modifiers.ModifiersProvider;
+import org.underdocx.doctypes.modifiers.formodifier.ForModifierData;
 import org.underdocx.doctypes.odf.modifiers.forlistmodifier.OdfForListModifier;
 import org.underdocx.doctypes.odf.modifiers.forlistmodifier.OdfForListModifierData;
-import org.underdocx.doctypes.odf.modifiers.formodifier.ForModifierData;
 import org.underdocx.doctypes.tools.attrinterpreter.PredefinedAttributesInterpreter;
 import org.underdocx.doctypes.tools.attrinterpreter.single.AttributeInterpreterFactory;
 import org.underdocx.enginelayers.baseengine.ModifierNodeResult;

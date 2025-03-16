@@ -31,6 +31,7 @@ import org.underdocx.common.tools.Convenience;
 import org.underdocx.common.tree.nodepath.TextNodePath;
 import org.underdocx.common.tree.nodepath.TreeNodeCollector;
 import org.underdocx.common.types.Wrapper;
+import org.underdocx.doctypes.modifiers.deleteplaceholder.DeletePlaceholderModifierData;
 import org.underdocx.doctypes.odf.tools.OdfNodes;
 import org.underdocx.doctypes.odf.tools.pagestyle.PageStyle;
 import org.underdocx.doctypes.odf.tools.pagestyle.PageStyleReader;

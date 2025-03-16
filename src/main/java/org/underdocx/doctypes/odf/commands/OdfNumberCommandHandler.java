@@ -26,8 +26,9 @@ package org.underdocx.doctypes.odf.commands;
 
 import org.underdocx.common.types.Pair;
 import org.underdocx.doctypes.DocContainer;
+import org.underdocx.doctypes.commands.NumberCommandHandler;
+import org.underdocx.doctypes.commands.internal.modifiermodule.missingdata.MissingDataCommandModuleResult;
 import org.underdocx.doctypes.modifiers.ModifiersProvider;
-import org.underdocx.doctypes.odf.commands.internal.modifiermodule.missingdata.MissingDataCommandModuleResult;
 import org.underdocx.doctypes.odf.modifiers.tablecell.OdfTableCellModifier;
 import org.underdocx.doctypes.odf.modifiers.tablecell.OdfTableCellModifierData;
 import org.underdocx.doctypes.tools.datapicker.PredefinedDataPicker;
