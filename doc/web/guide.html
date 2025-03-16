@@ -1886,9 +1886,9 @@ engine.run();</code></pre>
           NAME</code-word>.
         <pre class="highlightjs highlight nowrap"><code class="language-java hljs" data-lang="java">public class CustomPlaceholderExample {
 
-  private static class MyPlaceholdersProvider extends AbstractOdfPlaceholderFactory<OdtContainer, String, OdfTextDocument> {
+  private static class MyPlaceholdersProvider extends AbstractOdfPlaceholderFactory&lt;OdtContainer, String, OdfTextDocument&gt; {
 
-      private static final Regex regex = new Regex("\\<\\w+\\>");
+      private static final Regex regex = new Regex("\\&lt;\\w+\\&gt;");
       
       @Override
       public EncapsulatedNodesExtractor getExtractor() {
@@ -1896,11 +1896,11 @@ engine.run();</code></pre>
       }
 
       @Override
-      public Codec<String> getCodec() {
-          return new Codec<>() {
+      public Codec&lt;String&gt; getCodec() {
+          return new Codec&lt;&gt;() {
               @Override
               public String parse(String string) {
-                  if (string.startsWith("<") && string.endsWith(">"))
+                  if (string.startsWith("&lt;") && string.endsWith(">"))
                       return string.substring(1, string.length() - 1);
                   throw new RuntimeException("parse error");
               }
@@ -1913,10 +1913,10 @@ engine.run();</code></pre>
       }
   }
 
-  private static class UpperCaseCommandHandler implements CommandHandler<OdtContainer, String, OdfTextDocument> {
+  private static class UpperCaseCommandHandler implements CommandHandler&lt;OdtContainer, String, OdfTextDocument&gt; {
 
       @Override
-      public CommandHandlerResult tryExecuteCommand(Selection<OdtContainer, String, OdfTextDocument> selection) {
+      public CommandHandlerResult tryExecuteCommand(Selection&lt;OdtContainer, String, OdfTextDocument&gt; selection) {
           selection.getPlaceholderToolkit().ifPresent(toolkit -> {
               Node placeholderNode = selection.getNode();
               String word = toolkit.parsePlaceholder(placeholderNode);
@@ -1927,7 +1927,7 @@ engine.run();</code></pre>
   }
 
   public static void main(String[] args) throws IOException {
-      String content = "Hello <name>";
+      String content = "Hello &lt;name&gt;";
       OdtContainer doc = new OdtContainer(content);
       OdtEngine engine = new OdtEngine(doc);
       engine.registerCommandHandler(new MyPlaceholdersProvider(), new UpperCaseCommandHandler());
