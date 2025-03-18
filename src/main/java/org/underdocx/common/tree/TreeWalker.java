@@ -28,6 +28,7 @@ package org.underdocx.common.tree;
 import org.underdocx.common.enumerator.Enumerator;
 import org.w3c.dom.Node;
 
+import java.util.List;
 import java.util.function.Supplier;
 
 
@@ -44,13 +45,16 @@ public class TreeWalker implements Enumerator<TreeWalker.VisitState> {
 
     public TreeWalker(Node initialNode, Node scope) {
         this.initialNode = initialNode;
-        this.scope = scope;
+        this.scope = scope == null ? initialNode.getOwnerDocument() : scope;
     }
 
     public TreeWalker(Node initialNode, Node scope, Node firstValidNode) {
         this.initialNode = initialNode;
-        this.scope = scope;
+        this.scope = scope == null ? initialNode.getOwnerDocument() : scope;
         this.firstValidNode = firstValidNode;
+        if (firstValidNode != null) {
+            jump(firstValidNode);
+        }
     }
 
     public TreeWalker(TreeWalker treeWalker) {
@@ -119,11 +123,19 @@ public class TreeWalker implements Enumerator<TreeWalker.VisitState> {
     }
 
     public void jump(Node node) {
+        checkJumpNode(node);
         if (state != null && state.isValid) {
             firstValidNode = null;
         }
         initialNode = node;
         state = null;
+    }
+
+    private void checkJumpNode(Node node) {
+        List<Node> ancestor = Nodes.getAncestors(node, null);
+        if (!ancestor.contains(scope)) {
+            throw new RuntimeException("Invalid jump node provided as jump target");
+        }
     }
 
     public static Node findNextNode(Node node, Node scope, Node firstValidNodeOrNull, boolean skipChildren) {
