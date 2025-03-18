@@ -25,53 +25,20 @@ SOFTWARE.
 package org.underdocx.common.enumerator;
 
 import java.util.ArrayList;
-import java.util.List;
+import java.util.function.Supplier;
 
-public class SimpleLookAheadEnumerator<T> implements LookAheadEnumerator<T> {
+public class SimpleResetEnumerator<T> extends SimpleLookAheadEnumerator<T> implements ResetEnumerator<T> {
 
-    protected List<T> waiting = new ArrayList<>();
+    private final Supplier<Enumerator<T>> provider;
 
-    protected Enumerator<T> inner;
-
-    public SimpleLookAheadEnumerator(Enumerator<T> inner, boolean cacheAll) {
-        this.inner = inner;
-        if (cacheAll) {
-            lookAhead();
-        }
-    }
-
-
-    @Override
-    public boolean hasNext() {
-        if (waiting.isEmpty()) {
-            return inner.hasNext();
-        } else {
-            return waiting.size() > 0;
-        }
+    public SimpleResetEnumerator(Supplier<Enumerator<T>> provider, boolean cacheAll) {
+        super(provider.get(), cacheAll);
+        this.provider = provider;
     }
 
     @Override
-    public T next() {
-        if (waiting.isEmpty()) {
-            return inner.next();
-        } else {
-            return waiting.remove(0);
-        }
-    }
-
-    public List<T> lookAhead() {
-        waiting.addAll(inner.collect());
-        return new ArrayList<>(waiting);
-    }
-
-    public List<T> lookAhead(int count) {
-        for (int i = 1; i < count; i++) {
-            if (i > waiting.size()) {
-                if (inner.hasNext()) {
-                    waiting.add(inner.next());
-                }
-            }
-        }
-        return new ArrayList<>(waiting);
+    public void reset() {
+        inner = provider.get();
+        waiting = new ArrayList<>();
     }
 }

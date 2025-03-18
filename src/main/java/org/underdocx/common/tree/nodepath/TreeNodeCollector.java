@@ -24,29 +24,22 @@ SOFTWARE.
 
 package org.underdocx.common.tree.nodepath;
 
-import org.underdocx.common.enumerator.Enumerator;
 import org.underdocx.common.tools.Convenience;
+import org.underdocx.common.tree.SimpleTreeWalker;
 import org.underdocx.common.tree.TreeWalker;
 import org.w3c.dom.Node;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.function.Predicate;
 
-public class TreeNodeCollector implements Enumerator<Node> {
+public class TreeNodeCollector extends SimpleTreeWalker {
 
-    public static final Predicate<TreeWalker.VisitState> BeginVisitValidNodeFilter
-            = visitState -> visitState.isValid() && visitState.isBeginVisit();
-
-    private final Predicate<TreeWalker.VisitState> filter;
     private final List<Node> path;
-    private final TreeWalker walker;
 
     public TreeNodeCollector(Node start, Node limit, Node firstValidNodeOrNull, List<Node> path, Predicate<TreeWalker.VisitState> filter) {
+        super(start, limit, firstValidNodeOrNull, filter);
         this.path = path;
-        this.filter = filter;
-        this.walker = new TreeWalker(start, limit, firstValidNodeOrNull);
     }
 
     public TreeNodeCollector(Node start, Node limit, Node firstValidNodeOrNull, List<Node> path) {
@@ -57,17 +50,7 @@ public class TreeNodeCollector implements Enumerator<Node> {
         this(start, limit, firstValidNodeOrNull, new ArrayList<>(), BeginVisitValidNodeFilter);
     }
 
-    private Optional<Node> nextNode(boolean keepCurrentState) {
-        TreeWalker treeWalker = keepCurrentState ? new TreeWalker(walker) : walker;
-        Optional<TreeWalker.VisitState> next = treeWalker.next(filter);
-        return next.map(TreeWalker.VisitState::getNode);
-    }
-
     @Override
-    public boolean hasNext() {
-        return nextNode(true).isPresent();
-    }
-
     public Node next() {
         return Convenience.also(nextNode(false), optionalNode -> optionalNode.ifPresent(path::add)).orElse(null);
     }
