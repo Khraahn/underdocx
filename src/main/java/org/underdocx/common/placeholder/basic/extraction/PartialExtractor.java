@@ -35,9 +35,9 @@ import org.w3c.dom.Node;
 
 import java.util.List;
 
-public class AbstractPartialExtractor extends AbstractExtractor {
+public class PartialExtractor extends AbstractExtractor {
 
-    public AbstractPartialExtractor(TextDetector detector, TextNodeInterpreter interpreter) {
+    public PartialExtractor(TextDetector detector, TextNodeInterpreter interpreter) {
         super(detector, interpreter);
     }
 

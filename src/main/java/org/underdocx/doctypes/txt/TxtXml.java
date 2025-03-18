@@ -22,7 +22,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-package org.underdocx.doctypes.txt.internal;
+package org.underdocx.doctypes.txt;
 
 import org.apache.commons.io.IOUtils;
 import org.underdocx.common.codec.XMLCodec;

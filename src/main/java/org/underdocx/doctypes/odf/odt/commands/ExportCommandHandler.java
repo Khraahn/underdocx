@@ -25,7 +25,6 @@ SOFTWARE.
 package org.underdocx.doctypes.odf.odt.commands;
 
 import org.odftoolkit.odfdom.doc.OdfTextDocument;
-import org.underdocx.common.enumerator.Enumerator;
 import org.underdocx.common.types.Regex;
 import org.underdocx.common.types.Resource;
 import org.underdocx.doctypes.commands.internal.AbstractTextualCommandHandler;
@@ -36,18 +35,17 @@ import org.underdocx.doctypes.odf.modifiers.deleteplaceholder.OdfDeletePlacehold
 import org.underdocx.doctypes.odf.modifiers.importmodifier.OdfImportModifier;
 import org.underdocx.doctypes.odf.modifiers.importmodifier.OdfImportModifierData;
 import org.underdocx.doctypes.odf.odt.OdtContainer;
-import org.underdocx.doctypes.odf.tools.placeholder.OdfParameterizedPlaceholderFactory;
 import org.underdocx.doctypes.tools.attrinterpreter.PredefinedAttributesInterpreter;
 import org.underdocx.doctypes.tools.attrinterpreter.single.AttributeInterpreterFactory;
 import org.underdocx.doctypes.tools.datapicker.BinaryDataPicker;
 import org.underdocx.doctypes.tools.datapicker.PredefinedDataPicker;
 import org.underdocx.doctypes.tools.datapicker.StringConvertDataPicker;
 import org.underdocx.enginelayers.baseengine.CommandHandlerResult;
-import org.underdocx.enginelayers.baseengine.PlaceholdersProvider;
 import org.underdocx.enginelayers.parameterengine.ParametersPlaceholderData;
 import org.underdocx.environment.err.Problems;
 import org.w3c.dom.Node;
 
+import java.util.List;
 import java.util.Optional;
 
 public class ExportCommandHandler extends AbstractTextualCommandHandler<OdtContainer, OdfTextDocument> {
@@ -98,11 +96,9 @@ public class ExportCommandHandler extends AbstractTextualCommandHandler<OdtConta
         if (nameOrNull == null) {
             return Problems.ODF_FRAMEWORK_OPERARTION_EXCEPTION.exec(() -> targetDoc.getDocument().newParagraph("remove me"));
         } else {
-            PlaceholdersProvider<OdtContainer, ParametersPlaceholderData, OdfTextDocument> placeholderProvider = new OdfParameterizedPlaceholderFactory<OdtContainer, OdfTextDocument>().createProvider(targetDoc);
-
-            Enumerator<Node> allPlaceholders = placeholderProvider.getPlaceholders();
+            List<Node> allPlaceholders = Problems.ODF_FRAMEWORK_OPERARTION_EXCEPTION.exec(() -> placeholderToolkit.extractPlaceholders(targetDoc.getDocument().getContentRoot(), null));
             for (Node node : allPlaceholders) {
-                ParametersPlaceholderData currentPlaceholderData = placeholderProvider.getPlaceholderData(node);
+                ParametersPlaceholderData currentPlaceholderData = placeholderToolkit.parsePlaceholder(node);
                 if (currentPlaceholderData.getKey().equals(EXPORT_TARGET_KEY)) {
                     Optional<String> optionalName = targetNameInterpreter.interpretAttributes(currentPlaceholderData.getJson());
                     if (optionalName.isPresent() && optionalName.get().equals(nameOrNull)) {

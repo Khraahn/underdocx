@@ -24,10 +24,12 @@ SOFTWARE.
 
 package org.underdocx.enginelayers.baseengine;
 
+import org.underdocx.common.placeholder.TextualPlaceholderToolkit;
 import org.underdocx.doctypes.DocContainer;
 import org.w3c.dom.Node;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.function.Predicate;
 
 public interface EngineAccess<C extends DocContainer<D>, D> {
@@ -41,4 +43,6 @@ public interface EngineAccess<C extends DocContainer<D>, D> {
     List<SelectedNode<?>> lookAhead(Predicate<SelectedNode<?>> filter);
 
     List<Node> lookBack(Predicate<Node> filter);
+
+    <H extends CommandHandler<C, ?, D>> Optional<? extends TextualPlaceholderToolkit<?>> getToolkit(Class<H> commandHandler);
 }

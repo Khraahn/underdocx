@@ -22,15 +22,13 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-package org.underdocx.enginelayers.parameterengine.internal;
+package org.underdocx.enginelayers.parameterengine;
 
-import org.underdocx.common.placeholder.basic.extraction.AbstractPartialExtractor;
-import org.underdocx.doctypes.TextNodeInterpreter;
+public class ParametersPlaceholderCodec extends GenericParametersPlaceholderCodec {
 
-public class ParametersExtractor extends AbstractPartialExtractor {
+    public static ParametersPlaceholderCodec INSTANCE = new ParametersPlaceholderCodec();
 
-
-    public ParametersExtractor(TextNodeInterpreter interpreter) {
-        super(ParametersDetector.INSTANCE, interpreter);
+    public ParametersPlaceholderCodec() {
+        super("${", "}");
     }
 }

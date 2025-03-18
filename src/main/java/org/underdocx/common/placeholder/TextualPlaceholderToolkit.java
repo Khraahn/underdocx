@@ -25,6 +25,7 @@ SOFTWARE.
 package org.underdocx.common.placeholder;
 
 import org.underdocx.common.codec.Codec;
+import org.underdocx.common.tools.Convenience;
 import org.underdocx.common.tree.Nodes;
 import org.underdocx.doctypes.TextNodeInterpreter;
 import org.underdocx.environment.err.Problems;
@@ -32,6 +33,7 @@ import org.w3c.dom.Node;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import static org.underdocx.common.tools.Convenience.also;
 
@@ -53,12 +55,27 @@ public class TextualPlaceholderToolkit<P> {
     }
 
     private String getText(Node placeholder) {
-        return placeholder.getFirstChild().getNodeValue();
+        if (placeholder.hasChildNodes()) {
+            return placeholder.getFirstChild().getNodeValue();
+        } else {
+            return null;
+        }
+    }
+
+    public P parsePlaceholder(String content) {
+        return Problems.PLACEHOLDER_PARSE_ERROR.exec(() -> codec.parse(content), null, content);
     }
 
     public P parsePlaceholder(Node placeholder) {
-        String text = getText(placeholder);
-        return Problems.PLACEHOLDER_PARSE_ERROR.exec(() -> codec.parse(text), null, text);
+        return parsePlaceholder(getText(placeholder));
+    }
+
+    public Optional<P> tryParsePlaceholder(String content) {
+        return codec.tryParse(content);
+    }
+
+    public Optional<P> tryParsePlaceholder(Node placeholder) {
+        return tryParsePlaceholder(getText(placeholder));
     }
 
     public void setPlaceholder(Node placeholder, P data) {
@@ -113,5 +130,13 @@ public class TextualPlaceholderToolkit<P> {
         Node placeholder = getTextNodeInterpreter().createTextContainer(parent);
         setPlaceholder(placeholder, data);
         return placeholder;
+    }
+
+    public Optional<P> examineNode(Node node) {
+        return Convenience.buildOptional(w -> {
+            if (node.getParentNode() != null && node.getOwnerDocument() != null) {
+                tryParsePlaceholder(node).ifPresent(data -> w.value = data);
+            }
+        });
     }
 }

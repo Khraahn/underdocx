@@ -32,7 +32,7 @@ import org.underdocx.common.tree.nodepath.TextNodePath;
 import org.underdocx.common.tree.nodepath.TreeNodeCollector;
 import org.underdocx.common.types.Wrapper;
 import org.underdocx.doctypes.modifiers.deleteplaceholder.DeletePlaceholderModifierData;
-import org.underdocx.doctypes.txt.internal.TxtNodeInterpreter;
+import org.underdocx.doctypes.txt.placeholders.TxtNodeInterpreter;
 import org.underdocx.enginelayers.baseengine.ModifierNodeResult;
 import org.underdocx.enginelayers.baseengine.ModifierResult;
 import org.underdocx.enginelayers.baseengine.SelectionModifier;

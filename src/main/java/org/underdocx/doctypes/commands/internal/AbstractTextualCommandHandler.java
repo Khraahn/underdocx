@@ -26,7 +26,6 @@ package org.underdocx.doctypes.commands.internal;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.underdocx.common.placeholder.TextualPlaceholderToolkit;
-import org.underdocx.common.tools.Convenience;
 import org.underdocx.common.types.Regex;
 import org.underdocx.doctypes.DocContainer;
 import org.underdocx.doctypes.modifiers.ModifiersProvider;
@@ -37,10 +36,8 @@ import org.underdocx.doctypes.tools.datapicker.StringConvertDataPicker;
 import org.underdocx.enginelayers.baseengine.CommandHandlerResult;
 import org.underdocx.enginelayers.modelengine.data.DataNode;
 import org.underdocx.enginelayers.parameterengine.ParametersPlaceholderData;
-import org.underdocx.enginelayers.parameterengine.internal.ParametersPlaceholderCodec;
 import org.underdocx.environment.UnderdocxEnv;
 import org.underdocx.environment.err.Problems;
-import org.w3c.dom.Node;
 
 import java.util.Optional;
 import java.util.regex.Pattern;
@@ -100,14 +97,5 @@ public abstract class AbstractTextualCommandHandler<C extends DocContainer<D>, D
         ((ObjectNode) data.getJson()).put(DELETE_ON_EOD_ATTR, true);
     }
 
-    public static Optional<ParametersPlaceholderData> examineNode(Node node) {
-        return Convenience.buildOptional(w -> {
-            if (node.getParentNode() != null && node.getOwnerDocument() != null) {
-                String content = node.getTextContent();
-                if (content != null) {
-                    ParametersPlaceholderCodec.INSTANCE.tryParse(content).ifPresent(data -> w.value = data);
-                }
-            }
-        });
-    }
+
 }

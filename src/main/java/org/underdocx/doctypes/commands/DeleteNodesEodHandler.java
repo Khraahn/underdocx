@@ -24,6 +24,7 @@ SOFTWARE.
 
 package org.underdocx.doctypes.commands;
 
+import org.underdocx.common.placeholder.TextualPlaceholderToolkit;
 import org.underdocx.doctypes.DocContainer;
 import org.underdocx.doctypes.commands.internal.AbstractCommandHandler;
 import org.underdocx.doctypes.commands.internal.AbstractTextualCommandHandler;
@@ -54,11 +55,15 @@ public class DeleteNodesEodHandler<C extends DocContainer<D>, D> extends Abstrac
 
     @Override
     public void eodReached(C doc, EngineAccess<C, D> engineAccess) {
-        engineAccess.lookBack(node -> {
-            Optional<ParametersPlaceholderData> placeholderData = AbstractTextualCommandHandler.examineNode(node);
-            if (placeholderData.isEmpty()) return false;
-            return AbstractTextualCommandHandler.isMarkedForEodDeletion(placeholderData.get());
-        }).forEach(placeholderNode -> modifiers.getDeletePlaceholderModifier().modify(placeholderNode, DeletePlaceholderModifierData.DEFAULT));
+        engineAccess.getToolkit(StringCommandHandler.class).ifPresent(uToolkit -> {
+            TextualPlaceholderToolkit<ParametersPlaceholderData> toolkit = (TextualPlaceholderToolkit<ParametersPlaceholderData>) uToolkit;
+            engineAccess.lookBack(node -> {
+                Optional<ParametersPlaceholderData> placeholderData = toolkit.examineNode(node);
+                if (placeholderData.isEmpty()) return false;
+                return AbstractTextualCommandHandler.isMarkedForEodDeletion(placeholderData.get());
+            }).forEach(placeholderNode -> modifiers.getDeletePlaceholderModifier().modify(placeholderNode, DeletePlaceholderModifierData.DEFAULT));
+        });
+
     }
 
 }

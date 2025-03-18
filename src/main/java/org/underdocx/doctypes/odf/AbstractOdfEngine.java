@@ -25,7 +25,6 @@ SOFTWARE.
 package org.underdocx.doctypes.odf;
 
 import org.odftoolkit.odfdom.doc.OdfDocument;
-import org.underdocx.common.types.Pair;
 import org.underdocx.common.types.Regex;
 import org.underdocx.doctypes.AbstractEngine;
 import org.underdocx.doctypes.EngineAPI;
@@ -37,7 +36,7 @@ import org.underdocx.doctypes.odf.commands.image.ImagePlaceholdersProvider;
 import org.underdocx.doctypes.odf.modifiers.OdfModifiersProvider;
 import org.underdocx.doctypes.odf.placeholdersprovider.dollar.OdfSimpleDollarPlaceholderFactory;
 import org.underdocx.doctypes.odf.placeholdersprovider.dollar.image.SimpleDollarImagePlaceholdersProvider;
-import org.underdocx.doctypes.odf.tools.placeholder.OdfParameterizedPlaceholderFactory;
+import org.underdocx.doctypes.tools.placeholder.GenericTextualPlaceholderFactory;
 import org.underdocx.enginelayers.modelengine.MCommandHandler;
 import org.underdocx.enginelayers.modelengine.ModelEngine;
 import org.underdocx.enginelayers.parameterengine.ParametersPlaceholderData;
@@ -50,33 +49,30 @@ import java.util.regex.Pattern;
 
 public abstract class AbstractOdfEngine<C extends AbstractOdfContainer<D>, D extends OdfDocument> extends AbstractEngine<C, D> implements EngineAPI {
 
-    protected final OdfModifiersProvider modifiers = new OdfModifiersProvider();
+    protected final OdfModifiersProvider<C, D> modifiers = new OdfModifiersProvider<>();
 
-    public final SimpleDollarImagePlaceholdersProvider.SimpleDollarImagePlaceholdersProviderFactory<C, D> simpleDollarImage
+    protected final SimpleDollarImagePlaceholdersProvider.SimpleDollarImagePlaceholdersProviderFactory<C, D> simpleDollarImage
             = new SimpleDollarImagePlaceholdersProvider.SimpleDollarImagePlaceholdersProviderFactory<>();
-    public final OdfSimpleDollarPlaceholderFactory<C, D> simpleDollar
+    protected final OdfSimpleDollarPlaceholderFactory<C, D> simpleDollar
             = new OdfSimpleDollarPlaceholderFactory<>();
-    public final OdfParameterizedPlaceholderFactory<C, D> parameters
-            = new OdfParameterizedPlaceholderFactory<>();
-    public final ImagePlaceholdersProvider.ImagePlaceholdersProviderFactory<C, D> imagePlaceholdersProvider
-            = new ImagePlaceholdersProvider.ImagePlaceholdersProviderFactory();
+    protected GenericTextualPlaceholderFactory<C, ParametersPlaceholderData, D> parameters;
+    protected final ImagePlaceholdersProvider.ImagePlaceholdersProviderFactory<C, D> imagePlaceholdersProvider
+            = new ImagePlaceholdersProvider.ImagePlaceholdersProviderFactory<>();
 
     protected final MultiCommandHandler<C, D> multiCommandHandler = new MultiCommandHandler<>(modifiers);
     protected final AliasCommandHandler<C, D> aliasCommandHandler = new AliasCommandHandler<>(modifiers);
 
     abstract protected ModelEngine<C, D> getEngine();
 
+
+    public AbstractOdfEngine(GenericTextualPlaceholderFactory<C, ParametersPlaceholderData, D> parameters) {
+        this.parameters = parameters;
+    }
+
     public void registerStringReplacement(String key, String replacement) {
         multiCommandHandler.registerStringReplacement(key, replacement);
     }
 
-    public void registerAlias(String key, String placeholder, Pair<String, String>... attrReplacements) {
-        aliasCommandHandler.registerAlias(key, placeholder, attrReplacements);
-    }
-
-    public void registerAlias(String key, ParametersPlaceholderData placeholder, Pair<String, String>... attrReplacements) {
-        aliasCommandHandler.registerAlias(key, placeholder, attrReplacements);
-    }
 
     public void registerAlias(AliasCommandHandler.AliasData aliasData) {
         aliasCommandHandler.registerAlias(aliasData);

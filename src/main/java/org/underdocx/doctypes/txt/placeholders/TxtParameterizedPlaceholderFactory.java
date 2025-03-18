@@ -22,20 +22,19 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-package org.underdocx.doctypes.txt.internal;
+package org.underdocx.doctypes.txt.placeholders;
 
 import org.underdocx.common.codec.Codec;
 import org.underdocx.common.enumerator.Enumerator;
 import org.underdocx.common.placeholder.EncapsulatedNodesExtractor;
-import org.underdocx.common.placeholder.basic.extraction.AbstractPartialExtractor;
-import org.underdocx.common.tools.Convenience;
-import org.underdocx.common.tree.Nodes;
+import org.underdocx.common.placeholder.basic.extraction.PartialExtractor;
 import org.underdocx.doctypes.TextNodeInterpreter;
 import org.underdocx.doctypes.tools.placeholder.GenericTextualPlaceholderFactory;
 import org.underdocx.doctypes.txt.TxtContainer;
+import org.underdocx.doctypes.txt.TxtXml;
+import org.underdocx.enginelayers.parameterengine.ParametersDetector;
+import org.underdocx.enginelayers.parameterengine.ParametersPlaceholderCodec;
 import org.underdocx.enginelayers.parameterengine.ParametersPlaceholderData;
-import org.underdocx.enginelayers.parameterengine.internal.ParametersDetector;
-import org.underdocx.enginelayers.parameterengine.internal.ParametersPlaceholderCodec;
 import org.w3c.dom.Node;
 
 public class TxtParameterizedPlaceholderFactory implements GenericTextualPlaceholderFactory<TxtContainer, ParametersPlaceholderData, TxtXml> {
@@ -47,14 +46,12 @@ public class TxtParameterizedPlaceholderFactory implements GenericTextualPlaceho
 
     @Override
     public Enumerator<? extends Node> createSectionEnumerator(TxtContainer doc) {
-        return Convenience.build(Enumerator.empty(), result ->
-                Nodes.findFirstDescendantNode(doc.getDocument().getDoc(), "root").ifPresent(root ->
-                        result.value = Nodes.getChildren(root)));
+        return new TxtSectionEnumerator(doc);
     }
 
     @Override
     public EncapsulatedNodesExtractor getExtractor() {
-        return new AbstractPartialExtractor(ParametersDetector.INSTANCE, getTextNodeInterpreter());
+        return new PartialExtractor(ParametersDetector.INSTANCE, getTextNodeInterpreter());
     }
 
     @Override

@@ -22,7 +22,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-package org.underdocx.enginelayers.parameterengine.internal;
+package org.underdocx.enginelayers.parameterengine;
 
 import org.underdocx.common.placeholder.basic.detection.TextDetectionResult;
 import org.underdocx.common.placeholder.basic.detection.TextDetector;

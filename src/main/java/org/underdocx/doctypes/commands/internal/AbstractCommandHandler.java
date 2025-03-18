@@ -62,4 +62,5 @@ public abstract class AbstractCommandHandler<C extends DocContainer<D>, P, D> im
     public String toString() {
         return this.getClass().getSimpleName();
     }
+    
 }

@@ -40,8 +40,8 @@ import org.underdocx.doctypes.odf.AbstractOdfContainer;
 import org.underdocx.doctypes.odf.constants.OdfElement;
 import org.underdocx.doctypes.odf.constants.OdfLengthUnit;
 import org.underdocx.doctypes.odf.placeholdersprovider.dollar.image.BasicImagePlaceholderData;
+import org.underdocx.enginelayers.parameterengine.ParametersPlaceholderCodec;
 import org.underdocx.enginelayers.parameterengine.ParametersPlaceholderData;
-import org.underdocx.enginelayers.parameterengine.internal.ParametersPlaceholderCodec;
 import org.underdocx.environment.err.Problems;
 import org.w3c.dom.Node;
 

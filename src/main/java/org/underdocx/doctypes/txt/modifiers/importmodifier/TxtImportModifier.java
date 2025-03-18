@@ -31,7 +31,7 @@ import org.underdocx.doctypes.modifiers.ModifiersProvider;
 import org.underdocx.doctypes.modifiers.deleteplaceholder.DeletePlaceholderModifierData;
 import org.underdocx.doctypes.modifiers.internal.AbstractModifier;
 import org.underdocx.doctypes.txt.TxtContainer;
-import org.underdocx.doctypes.txt.internal.TxtXml;
+import org.underdocx.doctypes.txt.TxtXml;
 import org.underdocx.enginelayers.baseengine.ModifierNodeResult;
 import org.underdocx.enginelayers.baseengine.ModifierResult;
 import org.underdocx.enginelayers.baseengine.SelectionModifier;

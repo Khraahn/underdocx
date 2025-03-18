@@ -31,7 +31,7 @@ import org.underdocx.doctypes.modifiers.ModifiersProvider;
 import org.underdocx.doctypes.tools.datapicker.PredefinedDataPicker;
 import org.underdocx.doctypes.tools.datapicker.StringConvertDataPicker;
 import org.underdocx.doctypes.txt.TxtContainer;
-import org.underdocx.doctypes.txt.internal.TxtXml;
+import org.underdocx.doctypes.txt.TxtXml;
 import org.underdocx.doctypes.txt.modifiers.importmodifier.TxtImportModifier;
 import org.underdocx.doctypes.txt.modifiers.importmodifier.TxtImportModifierData;
 import org.underdocx.enginelayers.baseengine.CommandHandlerResult;

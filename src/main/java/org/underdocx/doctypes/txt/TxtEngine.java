@@ -27,10 +27,10 @@ package org.underdocx.doctypes.txt;
 import org.underdocx.common.types.Pair;
 import org.underdocx.doctypes.AbstractEngine;
 import org.underdocx.doctypes.commands.*;
+import org.underdocx.doctypes.tools.placeholder.GenericTextualPlaceholderFactory;
 import org.underdocx.doctypes.txt.commands.TxtImportCommandHandler;
-import org.underdocx.doctypes.txt.internal.TxtParameterizedPlaceholderFactory;
-import org.underdocx.doctypes.txt.internal.TxtXml;
 import org.underdocx.doctypes.txt.modifiers.TxtModifiersProvider;
+import org.underdocx.doctypes.txt.placeholders.TxtParameterizedPlaceholderFactory;
 import org.underdocx.enginelayers.modelengine.MCommandHandler;
 import org.underdocx.enginelayers.modelengine.ModelEngine;
 import org.underdocx.enginelayers.parameterengine.ParametersPlaceholderData;
@@ -41,7 +41,7 @@ public class TxtEngine extends AbstractEngine<TxtContainer, TxtXml> {
     private final ModelEngine<TxtContainer, TxtXml> engine;
 
     protected final TxtModifiersProvider modifiers = new TxtModifiersProvider();
-    public final TxtParameterizedPlaceholderFactory parameters = new TxtParameterizedPlaceholderFactory();
+    protected GenericTextualPlaceholderFactory<TxtContainer, ParametersPlaceholderData, TxtXml> parameters;
     protected final MultiCommandHandler<TxtContainer, TxtXml> multiCommandHandler = new MultiCommandHandler<>(modifiers);
     protected final AliasCommandHandler<TxtContainer, TxtXml> aliasCommandHandler = new AliasCommandHandler<>(modifiers);
 
@@ -68,6 +68,11 @@ public class TxtEngine extends AbstractEngine<TxtContainer, TxtXml> {
     }
 
     public TxtEngine(TxtContainer doc) {
+        this(doc, new TxtParameterizedPlaceholderFactory());
+    }
+
+    public TxtEngine(TxtContainer doc, GenericTextualPlaceholderFactory<TxtContainer, ParametersPlaceholderData, TxtXml> parameters) {
+        this.parameters = parameters;
         this.engine = new ModelEngine<>(doc);
         registerDefaultCommandHandlers();
     }

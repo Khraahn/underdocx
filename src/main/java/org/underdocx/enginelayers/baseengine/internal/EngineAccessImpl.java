@@ -25,16 +25,16 @@ SOFTWARE.
 package org.underdocx.enginelayers.baseengine.internal;
 
 import org.underdocx.common.enumerator.LookAheadEnumerator;
+import org.underdocx.common.placeholder.TextualPlaceholderToolkit;
 import org.underdocx.common.tools.Convenience;
 import org.underdocx.common.types.Pair;
 import org.underdocx.doctypes.DocContainer;
-import org.underdocx.enginelayers.baseengine.EngineAccess;
-import org.underdocx.enginelayers.baseengine.PlaceholdersProvider;
-import org.underdocx.enginelayers.baseengine.SelectedNode;
-import org.underdocx.enginelayers.baseengine.EngineListener;
+import org.underdocx.enginelayers.baseengine.*;
 import org.w3c.dom.Node;
 
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
@@ -45,14 +45,19 @@ public class EngineAccessImpl<C extends DocContainer<D>, D> implements EngineAcc
     private final Runnable rescan;
     private final Supplier<List<Node>> lookBack;
     private final Supplier<LookAheadEnumerator<Pair<PlaceholdersProvider<C, ?, D>, Node>>> lookAhead;
+    private final Map<Class<?>, PlaceholdersProvider<C, ?, D>> handler2ProviderMap;
 
 
-    public EngineAccessImpl(Set<EngineListener<C, D>> listeners, Runnable forceRescan, Supplier<LookAheadEnumerator<Pair<PlaceholdersProvider<C, ?, D>, Node>>> lookAhead, Supplier<List<Node>> lookBack) {
+    public EngineAccessImpl(Set<EngineListener<C, D>> listeners,
+                            Runnable forceRescan,
+                            Supplier<LookAheadEnumerator<Pair<PlaceholdersProvider<C, ?, D>, Node>>> lookAhead,
+                            Supplier<List<Node>> lookBack,
+                            Map<Class<?>, PlaceholdersProvider<C, ?, D>> handler2ProviderMap) {
         this.listeners = listeners;
         this.rescan = forceRescan;
         this.lookAhead = lookAhead;
         this.lookBack = lookBack;
-
+        this.handler2ProviderMap = handler2ProviderMap;
     }
 
     @Override
@@ -81,5 +86,13 @@ public class EngineAccessImpl<C extends DocContainer<D>, D> implements EngineAcc
 
     public List<Node> lookBack(Predicate<Node> filter) {
         return Convenience.filter(lookBack.get(), filter);
+    }
+
+    @Override
+    public <H extends CommandHandler<C, ?, D>> Optional<? extends TextualPlaceholderToolkit<?>> getToolkit(Class<H> commandHandler) {
+        PlaceholdersProvider<C, ?, D> provider = handler2ProviderMap.get(commandHandler);
+        if (provider != null) {
+            return provider.getPlaceholderToolkit();
+        } else return Optional.empty();
     }
 }

@@ -25,8 +25,10 @@ SOFTWARE.
 package org.underdocx.doctypes.odf.odt.commands;
 
 import org.odftoolkit.odfdom.doc.OdfTextDocument;
+import org.underdocx.common.placeholder.TextualPlaceholderToolkit;
 import org.underdocx.common.types.Regex;
 import org.underdocx.common.types.Resource;
+import org.underdocx.doctypes.commands.StringCommandHandler;
 import org.underdocx.doctypes.commands.internal.AbstractTextualCommandHandler;
 import org.underdocx.doctypes.modifiers.ModifiersProvider;
 import org.underdocx.doctypes.modifiers.deleteplaceholder.DeletePlaceholderModifierData;
@@ -66,11 +68,14 @@ public class UnderdocxCommandHandler extends AbstractTextualCommandHandler<OdtCo
     private class Listener implements EngineListener<OdtContainer, OdfTextDocument> {
         @Override
         public void eodReached(OdtContainer doc, EngineAccess<OdtContainer, OdfTextDocument> engineAccess) {
-            engineAccess.lookBack(node -> {
-                Optional<ParametersPlaceholderData> placeholderData = AbstractTextualCommandHandler.examineNode(node);
-                return placeholderData.filter(parametersPlaceholderData -> KEYS.matches(parametersPlaceholderData.getKey())).isPresent();
-            }).forEach(node -> {
-                modify(doc, node);
+            engineAccess.getToolkit(StringCommandHandler.class).ifPresent(uToolkit -> {
+                TextualPlaceholderToolkit<ParametersPlaceholderData> toolkit = (TextualPlaceholderToolkit<ParametersPlaceholderData>) uToolkit;
+                engineAccess.lookBack(node -> {
+                    Optional<ParametersPlaceholderData> placeholderData = toolkit.examineNode(node);
+                    return placeholderData.filter(parametersPlaceholderData -> KEYS.matches(parametersPlaceholderData.getKey())).isPresent();
+                }).forEach(node -> {
+                    modify(doc, node);
+                });
             });
         }
     }

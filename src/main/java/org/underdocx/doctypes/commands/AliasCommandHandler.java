@@ -43,8 +43,8 @@ import org.underdocx.enginelayers.baseengine.CommandHandlerResult;
 import org.underdocx.enginelayers.baseengine.SelectedNode;
 import org.underdocx.enginelayers.modelengine.data.DataNode;
 import org.underdocx.enginelayers.modelengine.data.simple.AbstractPredefinedDataNode;
+import org.underdocx.enginelayers.modelengine.data.simple.LeafDataNode;
 import org.underdocx.enginelayers.parameterengine.ParametersPlaceholderData;
-import org.underdocx.enginelayers.parameterengine.internal.ParametersPlaceholderCodec;
 import org.underdocx.environment.err.Problems;
 
 import java.util.*;
@@ -57,8 +57,8 @@ public class AliasCommandHandler<C extends DocContainer<D>, D> extends AbstractC
     private static final PredefinedDataPicker<Map<String, String>> attrReplacementsPocker = new AliasAttrReplacePicker().asPredefined("attrReplacements");
 
     public static class AttrKeyValue {
-        public String attrKey;
-        public DataNode attrValue;
+        protected String attrKey;
+        protected DataNode attrValue;
 
         public AttrKeyValue(String attrKey, DataNode attrValue) {
             this.attrKey = attrKey;
@@ -67,10 +67,10 @@ public class AliasCommandHandler<C extends DocContainer<D>, D> extends AbstractC
     }
 
     public static class AliasData {
-        public String aliasKey;
-        public String replaceKey;
-        public Set<AttrKeyValue> attributes = new HashSet<>();
-        public Map<String, String> attrReplacements = new HashMap<>();
+        protected String aliasKey;
+        protected String replaceKey;
+        protected Set<AttrKeyValue> attributes = new HashSet<>();
+        protected Map<String, String> attrReplacements = new HashMap<>();
 
         public AliasData(String aliasKey, String replaceKey) {
             this.aliasKey = aliasKey;
@@ -79,15 +79,30 @@ public class AliasCommandHandler<C extends DocContainer<D>, D> extends AbstractC
 
         public AliasData(String aliasKey, String replaceKey, Set<AttrKeyValue> attributes) {
             this.aliasKey = aliasKey;
-            this.attributes = attributes;
+            this.attributes.addAll(attributes);
             this.replaceKey = replaceKey;
         }
 
         public AliasData(String aliasKey, String replaceKey, Set<AttrKeyValue> attributes, Map<String, String> attrReplacements) {
             this.aliasKey = aliasKey;
-            this.attributes = attributes;
+            this.attributes.addAll(attributes);
             this.replaceKey = replaceKey;
-            this.attrReplacements = attrReplacements;
+            this.attrReplacements.putAll(attrReplacements);
+        }
+
+        public AliasData addAttribute(String attrName, DataNode value) {
+            attributes.add(new AttrKeyValue(attrName, value));
+            return this;
+        }
+
+        public AliasData addAttribute(String attrName, String value) {
+            attributes.add(new AttrKeyValue(attrName, new LeafDataNode<>(value)));
+            return this;
+        }
+
+        public AliasData addAttrReplacement(String attr, String attrReplace) {
+            attrReplacements.put(attr, attrReplace);
+            return this;
         }
     }
 
@@ -188,8 +203,10 @@ public class AliasCommandHandler<C extends DocContainer<D>, D> extends AbstractC
     }
 
     public void registerAlias(String key, String placeholderToParse, Pair<String, String>... attrReplacements) {
-        ParametersPlaceholderData parametersPlaceholderData = Problems.PLACEHOLDER_PARSE_ERROR.exec(() -> ParametersPlaceholderCodec.INSTANCE.parse(placeholderToParse.trim()));
-        registerAlias(key, parametersPlaceholderData, attrReplacements);
+        selection.getPlaceholderToolkit().ifPresent(toolkit -> {
+            ParametersPlaceholderData parametersPlaceholderData = Problems.PLACEHOLDER_PARSE_ERROR.exec(() -> toolkit.parsePlaceholder(placeholderToParse.trim()));
+            registerAlias(key, parametersPlaceholderData, attrReplacements);
+        });
     }
 
     private CommandHandlerResult replaceAllAliasNodes() {

@@ -22,23 +22,35 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-package org.underdocx.enginelayers.parameterengine.internal;
+package org.underdocx.enginelayers.parameterengine;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import org.underdocx.common.codec.Codec;
 import org.underdocx.common.codec.JsonCodec;
-import org.underdocx.enginelayers.parameterengine.ParametersPlaceholderData;
 import org.underdocx.environment.err.Problems;
 
-public class ParametersPlaceholderCodec implements Codec<ParametersPlaceholderData> {
+public class GenericParametersPlaceholderCodec implements Codec<ParametersPlaceholderData> {
 
     public final static JsonCodec JSON_CODEC = new JsonCodec(false, true, true);
-    public final static ParametersPlaceholderCodec INSTANCE = new ParametersPlaceholderCodec();
+    private final String prefix;
+    private final String suffix;
+    private final int pLength;
+    private final int sLength;
+    private final int minLength;
+
+
+    public GenericParametersPlaceholderCodec(String prefix, String suffix) {
+        this.prefix = prefix;
+        this.suffix = suffix;
+        this.pLength = prefix.length();
+        this.sLength = suffix.length();
+        this.minLength = pLength + sLength;
+    }
 
     @Override
     public ParametersPlaceholderData parse(String string) throws Exception {
-        if (string.startsWith("${") && string.endsWith("}") && string.length() > 3) {
-            String trimmedContent = string.substring(2, string.length() - 1).trim();
+        if (string.startsWith(prefix) && string.endsWith(suffix) && string.length() > minLength) {
+            String trimmedContent = string.substring(pLength, string.length() - (sLength)).trim();
             int spaceIndex = trimmedContent.indexOf(' ');
             if (spaceIndex >= 0) {
                 final String key = trimmedContent.substring(0, spaceIndex).trim();
@@ -58,9 +70,9 @@ public class ParametersPlaceholderCodec implements Codec<ParametersPlaceholderDa
         if (data.getJson() != null) {
             String jsonStr = JSON_CODEC.getTextContent(data.getJson());
             String paramsJson = jsonStr.substring(1, jsonStr.length() - 1);
-            return "${" + data.getKey() + " " + paramsJson + "}";
+            return prefix + data.getKey() + " " + paramsJson + suffix;
         } else {
-            return "${" + data.getKey() + "}";
+            return prefix + data.getKey() + suffix;
         }
     }
 }

@@ -52,6 +52,7 @@ public class BaseEngine<C extends DocContainer<D>, D> {
     protected boolean initialized = false;
 
     protected ArrayListValuedHashMap<PlaceholdersProvider<C, ?, D>, CommandHandler<C, ?, D>> registry = new ArrayListValuedHashMap<>();
+    protected HashMap<Class<?>, PlaceholdersProvider<C, ?, D>> reverseRegistry = new HashMap<>();
     protected IdentityHashMap<PlaceholdersProvider.Factory<C, ?, D>, PlaceholdersProvider<C, ?, D>> factoryProviderMap = new IdentityHashMap<>();
     protected LinkedHashSet<EngineListener<C, D>> listeners = new LinkedHashSet<>();
     protected LookAheadEnumerator<Pair<PlaceholdersProvider<C, ?, D>, Node>> placeholderEnumerator;
@@ -72,6 +73,7 @@ public class BaseEngine<C extends DocContainer<D>, D> {
 
     public <X> BaseEngine<C, D> registerCommandHandler(PlaceholdersProvider<C, X, D> provider, CommandHandler<C, X, D> commandHandler) {
         registry.put(provider, commandHandler);
+        reverseRegistry.put(commandHandler.getClass(), provider);
         return this;
     }
 
@@ -177,7 +179,7 @@ public class BaseEngine<C extends DocContainer<D>, D> {
             placeholderEnumerator = createPlaceholdersEnumerator();
             List<Node> visited = new ArrayList<>();
             rescan = false;
-            EngineAccess<C, D> engineAccess = new EngineAccessImpl<>(listeners, () -> rescan = true, () -> placeholderEnumerator, () -> visited);
+            EngineAccess<C, D> engineAccess = new EngineAccessImpl<>(listeners, () -> rescan = true, () -> placeholderEnumerator, () -> visited, reverseRegistry);
             if (initialized) {
                 listeners.forEach(listener -> {
                     listener.rescan(doc, engineAccess);

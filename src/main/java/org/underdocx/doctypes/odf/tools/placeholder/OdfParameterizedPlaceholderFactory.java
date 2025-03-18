@@ -27,17 +27,17 @@ package org.underdocx.doctypes.odf.tools.placeholder;
 import org.odftoolkit.odfdom.doc.OdfDocument;
 import org.underdocx.common.codec.Codec;
 import org.underdocx.common.placeholder.EncapsulatedNodesExtractor;
-import org.underdocx.common.placeholder.basic.extraction.AbstractPartialExtractor;
+import org.underdocx.common.placeholder.basic.extraction.PartialExtractor;
 import org.underdocx.doctypes.odf.AbstractOdfContainer;
+import org.underdocx.enginelayers.parameterengine.ParametersDetector;
+import org.underdocx.enginelayers.parameterengine.ParametersPlaceholderCodec;
 import org.underdocx.enginelayers.parameterengine.ParametersPlaceholderData;
-import org.underdocx.enginelayers.parameterengine.internal.ParametersDetector;
-import org.underdocx.enginelayers.parameterengine.internal.ParametersPlaceholderCodec;
 
 public class OdfParameterizedPlaceholderFactory<C extends AbstractOdfContainer<D>, D extends OdfDocument> extends AbstractOdfPlaceholderFactory<C, ParametersPlaceholderData, D> {
 
     @Override
     public EncapsulatedNodesExtractor getExtractor() {
-        return new AbstractPartialExtractor(ParametersDetector.INSTANCE, getTextNodeInterpreter());
+        return new PartialExtractor(ParametersDetector.INSTANCE, getTextNodeInterpreter());
     }
 
     @Override

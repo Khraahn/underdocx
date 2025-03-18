@@ -32,4 +32,5 @@ public interface EngineListener<C extends DocContainer<D>, D> {
 
     default void rescan(C doc, EngineAccess<C, D> engineAccess) {
     }
+
 }

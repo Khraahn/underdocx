@@ -26,7 +26,7 @@ package org.underdocx.odf.commands.alias;
 
 import org.junit.jupiter.api.Test;
 import org.underdocx.AbstractOdtTest;
-import org.underdocx.common.types.Pair;
+import org.underdocx.doctypes.commands.AliasCommandHandler;
 import org.underdocx.doctypes.odf.odt.OdtContainer;
 import org.underdocx.doctypes.odf.odt.OdtEngine;
 
@@ -68,7 +68,11 @@ public class AliasTest extends AbstractOdtTest {
                 """;
         OdtContainer doc = new OdtContainer(content);
         OdtEngine engine = new OdtEngine(doc);
-        engine.registerAlias("myDate", "${Date outputFormat:\"dd.MM.yyyy\"}", new Pair<>("v", "value"), new Pair<>("of", "outputFormat"));
+        engine.registerAlias(new AliasCommandHandler.AliasData("myDate", "Date")
+                .addAttribute("outputFormat", "dd.MM.yyyy")
+                .addAttrReplacement("v", "value")
+                .addAttrReplacement("of", "outputFormat")
+        );
         engine.pushLeafVariable("varFormat", "yyyy/MM/dd");
         engine.run();
         String ddmmyyyy = new SimpleDateFormat("dd.MM.yyyy").format(new Date());

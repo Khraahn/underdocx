@@ -28,8 +28,8 @@ import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.underdocx.AbstractTest;
 import org.underdocx.doctypes.tools.attrinterpreter.AttributesInterpreter;
+import org.underdocx.enginelayers.parameterengine.ParametersPlaceholderCodec;
 import org.underdocx.enginelayers.parameterengine.ParametersPlaceholderData;
-import org.underdocx.enginelayers.parameterengine.internal.ParametersPlaceholderCodec;
 
 import static org.assertj.core.api.Assertions.assertThat;
 

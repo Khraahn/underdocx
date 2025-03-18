@@ -26,6 +26,7 @@ package org.underdocx.odf.demo.demo_0_7_1;
 
 import org.junit.jupiter.api.Test;
 import org.underdocx.AbstractOdtTest;
+import org.underdocx.doctypes.commands.AliasCommandHandler;
 import org.underdocx.doctypes.odf.odt.OdtContainer;
 import org.underdocx.doctypes.odf.odt.OdtEngine;
 import org.underdocx.enginelayers.modelengine.data.DataNode;
@@ -49,8 +50,14 @@ public class DemoTest extends AbstractOdtTest {
         OdtEngine engine = new OdtEngine(doc);
 
         // Alias placeholders
-        engine.registerAlias("addHeaderAndFooter", "${Export $resource:\"master\"}");
-        engine.registerAlias("membersTable", "${Import $resource:\"membersTable\"}");
+        engine.registerAlias(
+                new AliasCommandHandler.AliasData("addHeaderAndFooter", "Export")
+                        .addAttribute("$resource", "master")
+        );
+        engine.registerAlias(
+                new AliasCommandHandler.AliasData("membersTable", "Import")
+                        .addAttribute("$resource", "membersTable")
+        );
 
         // Variables / Data
         engine.pushLeafVariable("membersTable", readResource("membertable.odt"));

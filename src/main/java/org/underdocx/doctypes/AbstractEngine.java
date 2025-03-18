@@ -25,7 +25,6 @@ SOFTWARE.
 package org.underdocx.doctypes;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import org.underdocx.common.types.Pair;
 import org.underdocx.doctypes.commands.AliasCommandHandler;
 import org.underdocx.enginelayers.baseengine.CommandHandler;
 import org.underdocx.enginelayers.baseengine.PlaceholdersProvider;
@@ -49,10 +48,6 @@ public abstract class AbstractEngine<C extends DocContainer<D>, D> implements En
     abstract protected ModelEngine<C, D> getEngine();
 
     public abstract void registerStringReplacement(String key, String replacement);
-
-    public abstract void registerAlias(String key, String placeholder, Pair<String, String>... attrReplacements);
-
-    public abstract void registerAlias(String key, ParametersPlaceholderData placeholder, Pair<String, String>... attrReplacements);
 
     public abstract void registerAlias(AliasCommandHandler.AliasData aliasData);
 
@@ -144,11 +139,9 @@ public abstract class AbstractEngine<C extends DocContainer<D>, D> implements En
                 String key = parseString(aliasListItem, "key");
                 String newKey = parseString(aliasListItem, "replaceKey");
                 AliasCommandHandler.AliasData aliasData = new AliasCommandHandler.AliasData(key, newKey);
-                parseMapWithKeyValueProperties(aliasListItem, "attributes", (propName, propVal) -> {
-                    aliasData.attributes.add(new AliasCommandHandler.AttrKeyValue(propName, propVal));
-                });
+                parseMapWithKeyValueProperties(aliasListItem, "attributes", aliasData::addAttribute);
                 parseMapWithKeyValueProperties(aliasListItem, "attrReplacements", (propName, propVal) -> {
-                    aliasData.attrReplacements.put(propName, parseString(propVal));
+                    aliasData.addAttrReplacement(propName, parseString(propVal));
                 });
                 registerAlias(aliasData);
             }

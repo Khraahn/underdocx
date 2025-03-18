@@ -33,7 +33,10 @@ import org.underdocx.doctypes.odf.commands.forcommand.ForRowsCommandHandler;
 import org.underdocx.doctypes.odf.odt.commands.ExportCommandHandler;
 import org.underdocx.doctypes.odf.odt.commands.OdtImportCommandHandler;
 import org.underdocx.doctypes.odf.odt.commands.UnderdocxCommandHandler;
+import org.underdocx.doctypes.odf.tools.placeholder.OdfParameterizedPlaceholderFactory;
+import org.underdocx.doctypes.tools.placeholder.GenericTextualPlaceholderFactory;
 import org.underdocx.enginelayers.modelengine.ModelEngine;
+import org.underdocx.enginelayers.parameterengine.ParametersPlaceholderData;
 
 
 public class OdtEngine extends AbstractOdfEngine<OdtContainer, OdfTextDocument> {
@@ -49,8 +52,8 @@ public class OdtEngine extends AbstractOdfEngine<OdtContainer, OdfTextDocument> 
         engine.registerCommandHandler(parameters, new ForCommandHandler<OdtContainer, OdfTextDocument>(modifiers));
         engine.registerCommandHandler(parameters, new OdfDateCommandHandler<>(modifiers));
         engine.registerCommandHandler(parameters, new OdfTimeCommandHandler<>(modifiers));
-        engine.registerCommandHandler(parameters, new CounterCommandHandler<>(modifiers));
-        engine.registerCommandHandler(parameters, new IfCommandHandler<>(modifiers));
+        engine.registerCommandHandler(parameters, new CounterCommandHandler<OdtContainer, OdfTextDocument>(modifiers));
+        engine.registerCommandHandler(parameters, new IfCommandHandler<OdtContainer, OdfTextDocument>(modifiers));
         engine.registerCommandHandler(parameters, new ForRowsCommandHandler<>(modifiers));
         engine.registerCommandHandler(parameters, new OdtImportCommandHandler(modifiers));
         engine.registerCommandHandler(imagePlaceholdersProvider, new ImageCommandHandler<>(modifiers));
@@ -67,6 +70,11 @@ public class OdtEngine extends AbstractOdfEngine<OdtContainer, OdfTextDocument> 
     }
 
     public OdtEngine(OdtContainer doc) {
+        this(doc, new OdfParameterizedPlaceholderFactory<>());
+    }
+
+    public OdtEngine(OdtContainer doc, GenericTextualPlaceholderFactory<OdtContainer, ParametersPlaceholderData, OdfTextDocument> parameters) {
+        super(parameters);
         this.engine = new ModelEngine<>(doc);
         registerDefaultCommandHandlers();
     }

@@ -45,6 +45,7 @@ public class Regex {
     public Optional<Pair<Integer, Integer>> findFirst(String text) {
         if (text == null) return Optional.empty();
         Matcher matcher = pattern.matcher(text);
+
         if (matcher.find()) {
             return Optional.of(new Pair<>(matcher.start(), matcher.end() - 1));
         } else {
