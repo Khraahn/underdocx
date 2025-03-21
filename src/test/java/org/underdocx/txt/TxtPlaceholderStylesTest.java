@@ -83,7 +83,7 @@ public class TxtPlaceholderStylesTest extends AbstractTxtTest {
         TxtContainer doc = new TxtContainer(content);
         TxtEngine engine = new TxtEngine(doc, TxtPlaceholderStyle.XML_COMMENT);
         engine.run();
-        show(doc);
+        //show(doc);
         assertNoPlaceholders(doc);
         assertOrder(doc, "Hans", "Otto", "Gerda");
     }
@@ -105,7 +105,7 @@ public class TxtPlaceholderStylesTest extends AbstractTxtTest {
                 .add("public static final String x2 = \"Y\";")
                 .end().build());
         engine.run();
-        show(doc);
+        //show(doc);
         assertNoPlaceholders(doc);
     }
 
