@@ -28,6 +28,7 @@ import org.junit.jupiter.api.Test;
 import org.underdocx.doctypes.txt.TxtContainer;
 import org.underdocx.doctypes.txt.TxtEngine;
 import org.underdocx.doctypes.txt.placeholders.TxtPlaceholderStyle;
+import org.underdocx.enginelayers.modelengine.data.simple.DataTreeBuilder;
 
 public class TxtPlaceholderStylesTest extends AbstractTxtTest {
 
@@ -66,4 +67,46 @@ public class TxtPlaceholderStylesTest extends AbstractTxtTest {
         assertNoPlaceholders(doc);
         assertContains(doc, "Bibi, Tina, Amadeus, Sabrina 2022-02-02");
     }
+
+
+    @Test
+    void testXMLTemplate() {
+        String content = """
+                <html><body>
+                  <ul>                    
+                    <!--${For value:["Hans", "Otto", "Gerda"], $as:"item"}-->
+                      <li><!--${$item}--></li>
+                    <!--${EndFor}-->
+                  </ul>      
+                </body></html>
+                """;
+        TxtContainer doc = new TxtContainer(content);
+        TxtEngine engine = new TxtEngine(doc, TxtPlaceholderStyle.XML_COMMENT);
+        engine.run();
+        show(doc);
+        assertNoPlaceholders(doc);
+        assertOrder(doc, "Hans", "Otto", "Gerda");
+    }
+
+    @Test
+    void testJavaTemplate() {
+        String content = """                
+                public class Test {
+                    /*!For $value:"entries", $as:"item"!*/
+                    /*!$item!*/
+                    /*!EndFor!*/
+                }
+                """;
+        TxtContainer doc = new TxtContainer(content);
+        TxtEngine engine = new TxtEngine(doc, TxtPlaceholderStyle.CODE_COMMENT);
+        engine.pushVariable("entries", DataTreeBuilder
+                .beginList()
+                .add("public static final String x1 = \"X\";")
+                .add("public static final String x2 = \"Y\";")
+                .end().build());
+        engine.run();
+        show(doc);
+        assertNoPlaceholders(doc);
+    }
+
 }
