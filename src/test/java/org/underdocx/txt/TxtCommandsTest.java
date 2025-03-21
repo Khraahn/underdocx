@@ -185,7 +185,7 @@ public class TxtCommandsTest extends AbstractTxtTest {
                 "${End}                   \n";
         TxtContainer doc = new TxtContainer(documentStr);
         TxtEngine engine = new TxtEngine(doc);
-        engine.registerStringReplacement("Begin", "${For value:[\"A\", \"B\", \"C\"], $as:\"element\"} ");
+        engine.registerStringReplacement("Begin", "${For value:[\"A\", \"B\", \"C\"], $as:\"element\"}");
         engine.registerStringReplacement("End", "${EndFor}");
         engine.setModel(new MapDataNode(jsonString));
         engine.run();
@@ -195,5 +195,17 @@ public class TxtCommandsTest extends AbstractTxtTest {
         assertContains(doc, "2 C");
         assertOrder(doc, "A", "B", "C");
         assertNoPlaceholders(doc);
+    }
+
+
+    @Test
+    public void testRescan() {
+        TxtContainer doc = new TxtContainer("${$x rescan:true}");
+        TxtEngine engine = new TxtEngine(doc);
+        engine.pushVariable("x", "${String value:\"abc\"}");
+        engine.run();
+        assertNotContains(doc, "${String");
+        assertNoPlaceholders(doc);
+        assertContains(doc, "abc");
     }
 }

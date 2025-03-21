@@ -22,29 +22,11 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-package org.underdocx.doctypes.odf.tools.placeholder;
+package org.underdocx.common.enumerator;
 
-import org.odftoolkit.odfdom.doc.OdfDocument;
-import org.odftoolkit.odfdom.dom.element.text.TextParagraphElementBase;
-import org.underdocx.common.enumerator.Enumerator;
-import org.underdocx.common.placeholder.basic.textnodeinterpreter.OdfTextNodeInterpreter;
-import org.underdocx.doctypes.TextNodeInterpreter;
-import org.underdocx.doctypes.odf.AbstractOdfContainer;
-import org.underdocx.doctypes.odf.tools.OdfDomElementWalker;
-import org.underdocx.doctypes.tools.placeholder.GenericTextualPlaceholderFactory;
-import org.w3c.dom.Node;
+import java.util.Optional;
 
-public abstract class AbstractOdfPlaceholderFactory<C extends AbstractOdfContainer<D>, P, D extends OdfDocument> implements GenericTextualPlaceholderFactory<C, P, D> {
+public interface InspectableEnumerator<T> extends Enumerator<T> {
 
-
-    @Override
-    public TextNodeInterpreter getTextNodeInterpreter() {
-        return OdfTextNodeInterpreter.INSTANCE;
-    }
-
-
-    @Override
-    public Enumerator<? extends Node> createSectionEnumerator(C doc) {
-        return new OdfDomElementWalker<>(doc, true, TextParagraphElementBase.class);
-    }
+    Optional<T> inspectNext();
 }

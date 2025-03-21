@@ -73,7 +73,7 @@ public interface CommandHandlerResult {
         }
 
         public CommandHandlerResult startAtNextNode(Node node) {
-            return Convenience.getOrDefault(Nodes.findNextNode(node), CommandHandlerResult.FACTORY::startAtNode, CommandHandlerResult.EXECUTED_END_OF_DOC);
+            return Convenience.getOrDefault(Nodes.findNextNode(node, true), CommandHandlerResult.FACTORY::startAtNode, CommandHandlerResult.EXECUTED_END_OF_DOC);
         }
     }
 

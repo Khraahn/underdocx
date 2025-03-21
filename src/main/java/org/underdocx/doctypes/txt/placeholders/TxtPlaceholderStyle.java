@@ -25,7 +25,7 @@ SOFTWARE.
 package org.underdocx.doctypes.txt.placeholders;
 
 import org.underdocx.common.codec.Codec;
-import org.underdocx.common.enumerator.Enumerator;
+import org.underdocx.common.enumerator.InspectableEnumerator;
 import org.underdocx.common.placeholder.EncapsulatedNodesExtractor;
 import org.underdocx.common.placeholder.basic.extraction.RegexExtractor;
 import org.underdocx.common.types.Regex;
@@ -66,8 +66,8 @@ public class TxtPlaceholderStyle {
         }
 
         @Override
-        public Enumerator<? extends Node> createSectionEnumerator(TxtContainer doc) {
-            return new TxtSectionEnumerator(doc);
+        public InspectableEnumerator<Node> createSectionEnumerator(TxtContainer doc, Node firstValidNode) {
+            return new TxtSectionEnumerator(doc, firstValidNode);
         }
 
         @Override

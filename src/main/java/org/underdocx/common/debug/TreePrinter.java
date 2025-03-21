@@ -36,15 +36,21 @@ import static org.underdocx.common.tools.Convenience.buildString;
 public class TreePrinter {
     private final Map<Node, String> nodeMarkerMap = new IdentityHashMap<>();
     private final Node tree;
-    private boolean noWS = false;
+    private final boolean noHash;
+    private final boolean noWS;
 
     public TreePrinter(Node tree) {
-        this.tree = tree;
+        this(tree, false, false);
     }
 
     public TreePrinter(Node tree, boolean noWhitespace) {
+        this(tree, noWhitespace, false);
+    }
+
+    public TreePrinter(Node tree, boolean noWhitespace, boolean noHash) {
         this.tree = tree;
         this.noWS = noWhitespace;
+        this.noHash = noHash;
     }
 
     public void addMarker(Node node, String marker) {
@@ -63,7 +69,11 @@ public class TreePrinter {
                         builder.append(state.getNode().getNodeValue());
                         checkMarker(builder, state);
                     } else {
-                        builder.append("<").append(state.getNode().getNodeName()).append(">");
+                        if (!noHash) {
+                            builder.append("<").append(state.getNode().getNodeName() + "@" + state.getNode().hashCode()).append(">");
+                        } else {
+                            builder.append("<").append(state.getNode().getNodeName()).append(">");
+                        }
                         checkMarker(builder, state);
                     }
                     intent++;
@@ -97,6 +107,10 @@ public class TreePrinter {
 
     public static void printTree(Node tree) {
         System.out.println(getTreeString(tree));
+    }
+
+    public static String getNodeString(Node node) {
+        return "" + node.getNodeName() + "@" + node.hashCode() + " content: " + node.getTextContent();
     }
 
 }

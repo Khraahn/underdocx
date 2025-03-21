@@ -22,38 +22,19 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-package org.underdocx.enginelayers.baseengine;
+package org.underdocx.common.debug;
 
 import org.underdocx.common.tree.Nodes;
 import org.w3c.dom.Node;
 
-import java.util.Optional;
+import java.util.List;
 
-public interface ModifierNodeResult extends ModifierResult {
-    Factory FACTORY = new Factory();
+public class DebugNodes {
 
-    boolean isEndOfDoc();
-
-    Optional<Node> getEndNode();
-
-    class Factory {
-
-        public ModifierNodeResult success(Node node, boolean excludeNode) {
-            if (node == null) {
-                return new DefaultModifierResult(true, null, false);
-            } else {
-                if (excludeNode) {
-                    Optional<Node> next = Nodes.findNextNode(node, true);
-                    if (next.isEmpty()) {
-                        return new DefaultModifierResult(true, null, true);
-                    }
-                    return new DefaultModifierResult(true, next.get(), false);
-                } else {
-                    return new DefaultModifierResult(true, node, false);
-                }
-            }
-        }
+    public static boolean isValid(Node node) {
+        if (node.getParentNode() == null) return false;
+        if (Nodes.getOwnerDocument(node).isEmpty()) return false;
+        List<Node> ancestors = Nodes.getAncestors(node, null);
+        return ancestors.get(ancestors.size() - 1) == node.getOwnerDocument();
     }
-
-
 }

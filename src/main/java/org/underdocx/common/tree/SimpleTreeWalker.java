@@ -24,13 +24,13 @@ SOFTWARE.
 
 package org.underdocx.common.tree;
 
-import org.underdocx.common.enumerator.Enumerator;
+import org.underdocx.common.enumerator.InspectableEnumerator;
 import org.w3c.dom.Node;
 
 import java.util.Optional;
 import java.util.function.Predicate;
 
-public class SimpleTreeWalker implements Enumerator<Node> {
+public class SimpleTreeWalker implements InspectableEnumerator<Node> {
 
     public static final Predicate<TreeWalker.VisitState> BeginVisitValidNodeFilter
             = visitState -> visitState.isValid() && visitState.isBeginVisit();
@@ -41,20 +41,30 @@ public class SimpleTreeWalker implements Enumerator<Node> {
 
     protected final Predicate<TreeWalker.VisitState> filter;
     protected final TreeWalker walker;
+    protected final boolean skipChildrenMode;
+    private boolean isFirst = true;
 
-    public SimpleTreeWalker(Node start, Node limit, Node firstValidNodeOrNull, Predicate<TreeWalker.VisitState> filter) {
+    public SimpleTreeWalker(Node start, Node limit, Node firstValidNodeOrNull, Predicate<TreeWalker.VisitState> filter, boolean skipChildrenMode) {
         this.filter = filter;
         this.walker = new TreeWalker(start, limit, firstValidNodeOrNull);
-    }
-
-    public SimpleTreeWalker(Node start, Node limit, Node firstValidNodeOrNull) {
-        this(start, limit, firstValidNodeOrNull, BeginVisitValidNodeFilter);
+        this.skipChildrenMode = skipChildrenMode;
     }
 
     protected Optional<Node> nextNode(boolean keepCurrentState) {
         TreeWalker treeWalker = keepCurrentState ? new TreeWalker(walker) : walker;
+        if (skipChildrenMode && !isFirst) {
+            treeWalker.nextSkipChildren();
+        }
+        if (isFirst && !keepCurrentState) {
+            isFirst = false;
+        }
         Optional<TreeWalker.VisitState> next = treeWalker.next(filter);
         return next.map(TreeWalker.VisitState::getNode);
+    }
+
+    @Override
+    public Optional<Node> inspectNext() {
+        return nextNode(true);
     }
 
     @Override
@@ -65,5 +75,6 @@ public class SimpleTreeWalker implements Enumerator<Node> {
     public Node next() {
         return nextNode(false).orElse(null);
     }
-    
+
+
 }

@@ -25,16 +25,15 @@ SOFTWARE.
 package org.underdocx.doctypes.odf.tools.placeholder;
 
 import org.odftoolkit.odfdom.doc.OdfDocument;
-import org.odftoolkit.odfdom.dom.element.text.TextParagraphElementBase;
 import org.underdocx.common.codec.Codec;
-import org.underdocx.common.enumerator.Enumerator;
+import org.underdocx.common.enumerator.InspectableEnumerator;
 import org.underdocx.common.placeholder.EncapsulatedNodesExtractor;
 import org.underdocx.common.placeholder.basic.extraction.RegexExtractor;
 import org.underdocx.common.placeholder.basic.textnodeinterpreter.OdfTextNodeInterpreter;
 import org.underdocx.common.types.Regex;
 import org.underdocx.doctypes.TextNodeInterpreter;
 import org.underdocx.doctypes.odf.AbstractOdfContainer;
-import org.underdocx.doctypes.odf.tools.OdfDomElementWalker;
+import org.underdocx.doctypes.odf.tools.OdfSectionsWalker;
 import org.underdocx.doctypes.tools.placeholder.GenericTextualPlaceholderFactory;
 import org.underdocx.enginelayers.parameterengine.GenericParametersPlaceholderCodec;
 import org.underdocx.enginelayers.parameterengine.ParametersPlaceholderData;
@@ -48,7 +47,7 @@ public class OdfPlaceholderStyle<C extends AbstractOdfContainer<D>, D extends Od
             new OdfPlaceholder("/*!", "!*/", new Regex("\\/\\*!.*?!\\*\\/"));
     public final GenericTextualPlaceholderFactory<C, ParametersPlaceholderData, D> HASH_COMMENT =
             new OdfPlaceholder("#!", "!#", new Regex("#!.*?!#"));
-    public final GenericTextualPlaceholderFactory<C, ParametersPlaceholderData, D> DEFAULT = new OdfParameterizedPlaceholderFactory<>();
+    public final GenericTextualPlaceholderFactory<C, ParametersPlaceholderData, D> DEFAULT = new OdfPlaceholderFactory<>();
 
 
     protected class OdfPlaceholder implements GenericTextualPlaceholderFactory<C, ParametersPlaceholderData, D> {
@@ -70,8 +69,8 @@ public class OdfPlaceholderStyle<C extends AbstractOdfContainer<D>, D extends Od
 
 
         @Override
-        public Enumerator<? extends Node> createSectionEnumerator(C doc) {
-            return new OdfDomElementWalker<>(doc, true, TextParagraphElementBase.class);
+        public InspectableEnumerator<Node> createSectionEnumerator(C doc, Node firstValidNode) {
+            return new OdfSectionsWalker(doc, firstValidNode);
         }
 
         @Override

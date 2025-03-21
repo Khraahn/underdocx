@@ -25,7 +25,6 @@ SOFTWARE.
 package org.underdocx.doctypes.odf.commands.image;
 
 import org.odftoolkit.odfdom.doc.OdfDocument;
-import org.odftoolkit.odfdom.dom.element.draw.DrawFrameElement;
 import org.underdocx.common.enumerator.Enumerator;
 import org.underdocx.common.placeholder.EncapsulatedNodesExtractor;
 import org.underdocx.common.placeholder.TextualPlaceholderToolkit;
@@ -35,7 +34,8 @@ import org.underdocx.common.tree.nodepath.TreeNodeCollector;
 import org.underdocx.doctypes.TextNodeInterpreter;
 import org.underdocx.doctypes.odf.AbstractOdfContainer;
 import org.underdocx.doctypes.odf.constants.OdfElement;
-import org.underdocx.doctypes.odf.tools.ElementByElementEnumerator;
+import org.underdocx.doctypes.odf.tools.OdfSectionsWalker;
+import org.underdocx.doctypes.tools.placeholder.GenericPlaceholderFromSectionsEnumerator;
 import org.underdocx.enginelayers.baseengine.PlaceholdersProvider;
 import org.w3c.dom.Node;
 
@@ -82,7 +82,9 @@ public class ImagePlaceholdersProvider<C extends AbstractOdfContainer<D>, D exte
     @Override
     public Enumerator<Node> getPlaceholders() {
         if (endOfDoc) return Enumerator.empty();
-        return new ElementByElementEnumerator<>(doc, (p, first) -> this.extractNodes(p, first), firstValidNode, true, DrawFrameElement.class);
+        //return new ElementByElementEnumerator<>(doc, (p, first) -> this.extractNodes(p, first), firstValidNode, true, DrawFrameElement.class);
+        OdfSectionsWalker sections = new OdfSectionsWalker(doc, firstValidNode);
+        return new GenericPlaceholderFromSectionsEnumerator(sections, this::extractNodes, firstValidNode);
     }
 
     @Override

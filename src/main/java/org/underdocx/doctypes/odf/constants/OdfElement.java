@@ -29,6 +29,7 @@ import org.w3c.dom.Node;
 import java.util.function.Predicate;
 
 public enum OdfElement implements Predicate<Node> {
+    DOCUMENT_CONTENT(OdfNameSpace.OFFICE, "document-content"),
     SPAN(OdfNameSpace.TEXT, "span"),
     PARAGRAPH(OdfNameSpace.TEXT, "p"),
     TAB(OdfNameSpace.TEXT, "tab"),

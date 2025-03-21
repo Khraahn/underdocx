@@ -22,38 +22,49 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-package org.underdocx.enginelayers.baseengine;
+package org.underdocx.common.enumerator;
 
-import org.underdocx.common.tree.Nodes;
-import org.w3c.dom.Node;
-
+import java.util.Arrays;
 import java.util.Optional;
 
-public interface ModifierNodeResult extends ModifierResult {
-    Factory FACTORY = new Factory();
+public class EnumeratorOfEnumerator<T> implements InspectableEnumerator<T> {
 
-    boolean isEndOfDoc();
+    private final Enumerator<Enumerator<T>> enumeratorOfEnumerators;
+    private Enumerator<T> currentEnumerator;
+    private T next;
 
-    Optional<Node> getEndNode();
+    @SafeVarargs
+    public EnumeratorOfEnumerator(Enumerator<T>... enumerators) {
+        enumeratorOfEnumerators = Enumerator.fromIterator(Arrays.asList(enumerators).iterator());
+        currentEnumerator = enumerators[0];
+        next = findNext();
+    }
 
-    class Factory {
-
-        public ModifierNodeResult success(Node node, boolean excludeNode) {
-            if (node == null) {
-                return new DefaultModifierResult(true, null, false);
-            } else {
-                if (excludeNode) {
-                    Optional<Node> next = Nodes.findNextNode(node, true);
-                    if (next.isEmpty()) {
-                        return new DefaultModifierResult(true, null, true);
-                    }
-                    return new DefaultModifierResult(true, next.get(), false);
-                } else {
-                    return new DefaultModifierResult(true, node, false);
-                }
-            }
+    private T findNext() {
+        while (!currentEnumerator.hasNext() && enumeratorOfEnumerators.hasNext()) {
+            currentEnumerator = enumeratorOfEnumerators.next();
         }
+        if (currentEnumerator.hasNext()) {
+            return currentEnumerator.next();
+        }
+        return null;
     }
 
 
+    @Override
+    public boolean hasNext() {
+        return next != null;
+    }
+
+    @Override
+    public T next() {
+        T tmp = next;
+        next = findNext();
+        return tmp;
+    }
+
+    @Override
+    public Optional<T> inspectNext() {
+        return Optional.ofNullable(next);
+    }
 }

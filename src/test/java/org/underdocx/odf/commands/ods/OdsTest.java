@@ -71,10 +71,7 @@ public class OdsTest extends AbstractOdtTest {
         //show(tables);
         Assertions.assertThat(findTextNode(tables, "$")).isFalse();
         Assertions.assertThat(findTextNode(tables, "Gerda")).isTrue();
-
-
     }
-
 
     @Test
     public void testOdsColmnStyles() throws IOException {

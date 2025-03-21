@@ -73,7 +73,6 @@ public class DemoTest extends AbstractOdtTest {
         doc.save(os);
         //show(doc);
 
-
         if (UnderdocxEnv.isLibreOfficeInstalled()) {
             OutputStream pos = new FileOutputStream(createFileInTempDir("demo0.6.0out.pdf"));
             doc.writePDF(pos);

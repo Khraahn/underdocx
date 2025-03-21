@@ -50,7 +50,7 @@ import org.w3c.dom.Node;
 import java.util.*;
 
 public class OdfForRowsModifier<C extends DocContainer<D>, D> extends AbstractAreaModifier<C, ParametersPlaceholderData, D, OdfForRowsModifierData, ModifierNodeResult> {
-    Node resultNode = null;
+
 
     public OdfForRowsModifier(ModifiersProvider<C, D> modifiers) {
         super(modifiers);
@@ -63,13 +63,14 @@ public class OdfForRowsModifier<C extends DocContainer<D>, D> extends AbstractAr
 
     @Override
     protected ModifierNodeResult modify() {
-        resultNode = null;
+
         Problems.INVALID_VALUE.check(modifierData.getRepeatRows().getLength() % modifierData.getRowGroupSize() == 0, "rowGroupSize", "" + modifierData.getRowGroupSize());
         List<Node> clonedRows = cloneRows();
         insertPlaceholdersInClonedRows(clonedRows);
-        new OdfDeletePlaceholderModifier().modify(selection.getNode(), DeletePlaceholderModifierData.DEFAULT);
+        Node previousNode = Nodes.findPreviousNode(selection.getNode()).orElseGet(null);
+        new OdfDeletePlaceholderModifier().modify(selection.getNode(), DeletePlaceholderModifierData.DEFAULT).getEndNode().get();
         new OdfDeletePlaceholderModifier().modify(area.right, DeletePlaceholderModifierData.DEFAULT);
-        return ModifierNodeResult.FACTORY.success(resultNode, false);
+        return ModifierNodeResult.FACTORY.success(previousNode, true);
     }
 
 
@@ -138,7 +139,6 @@ public class OdfForRowsModifier<C extends DocContainer<D>, D> extends AbstractAr
 
     private List<Node> findTableAndCloneableRows() {
         Node table = Problems.CANT_FIND_DOM_ELEMENT.get(findTable(), "table", null);
-        resultNode = table;
         return Problems.CANT_FIND_DOM_ELEMENT.notNullOrEmpty(getCloneableRows(table), "row");
     }
 

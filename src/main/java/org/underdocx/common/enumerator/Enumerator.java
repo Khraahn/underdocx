@@ -35,8 +35,13 @@ import java.util.function.Predicate;
 
 public interface Enumerator<T> extends Iterable<T>, Iterator<T>, Enumeration<T> {
 
-    static <T> Enumerator<T> empty() {
-        return new Enumerator<>() {
+    static <T> InspectableEnumerator<T> empty() {
+        return new InspectableEnumerator<T>() {
+            @Override
+            public Optional<T> inspectNext() {
+                return Optional.empty();
+            }
+
             @Override
             public boolean hasNext() {
                 return false;
@@ -45,6 +50,30 @@ public interface Enumerator<T> extends Iterable<T>, Iterator<T>, Enumeration<T> 
             @Override
             public T next() {
                 return null;
+            }
+        };
+    }
+
+    static <T> InspectableEnumerator<T> of(T... elements) {
+        return new InspectableEnumerator<T>() {
+            private T[] array = elements;
+            private int counter = 0;
+
+            @Override
+            public Optional<T> inspectNext() {
+                return (counter < elements.length) ? Optional.of(elements[counter]) : Optional.empty();
+            }
+
+            @Override
+            public boolean hasNext() {
+                return (counter < elements.length);
+            }
+
+            @Override
+            public T next() {
+                T tmp = array[counter];
+                counter++;
+                return tmp;
             }
         };
     }

@@ -1,9 +1,7 @@
 - Features
-  - txt dateien unterstützen
   - später ggf. docx unterstützen
 - Bekannte Probleme:
   - Prüfen ob Vectorgrafiken als Bilder verwendet werden können
 - Optimierungsmöglichkeiten:
   - getPlaceholderData sollte bei allem Handlern gecached werden (StringOutputModule)
-  - Für ODS Dateien anderen ElementByElement (basierend auf table)
   - Cache für Paar-Knoten (For-EndFor, If-EndIf) // reduziert das Scannen zukünftiger Knoten)

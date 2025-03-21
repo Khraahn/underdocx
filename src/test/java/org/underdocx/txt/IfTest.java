@@ -166,4 +166,20 @@ public class IfTest extends AbstractTxtTest {
         assertNoPlaceholders(doc);
     }
 
+    @Test
+    public void testIfSimpleConditions2() {
+        String documentStr = """
+                        ${Push key:"testTrue", value:true}
+                        B ${If $testTrue:true}B${EndIf} B
+                """;
+        TxtContainer doc = new TxtContainer(documentStr);
+        TxtEngine engine = new TxtEngine(doc);
+        engine.run();
+        //show(doc);
+        assertContains(doc, "B B B");
+
+        assertNotContains(doc, "INVALID");
+        assertNoPlaceholders(doc);
+    }
+
 }

@@ -38,7 +38,7 @@ public class TreeNodeCollector extends SimpleTreeWalker {
     private final List<Node> path;
 
     public TreeNodeCollector(Node start, Node limit, Node firstValidNodeOrNull, List<Node> path, Predicate<TreeWalker.VisitState> filter) {
-        super(start, limit, firstValidNodeOrNull, filter);
+        super(start, limit, firstValidNodeOrNull, filter, false);
         this.path = path;
     }
 

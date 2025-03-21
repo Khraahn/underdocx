@@ -273,7 +273,7 @@ public class Nodes {
                 : 1; // a->b*  vs   a->b*->c
     }
 
-    public static Optional<Node> findNextNode(Node node) {
+    public static Optional<Node> findNextNode(Node node, boolean skipTxtNode) {
         Node result = null;
         TreeWalker walker = new TreeWalker(node, null, null);
         while (result == null && walker.hasNext()) {
@@ -284,10 +284,39 @@ public class Nodes {
             if (state != null && state.isBeginVisit()) {
                 result = state.getNode();
             }
+            if (result != null && skipTxtNode && result.getNodeType() == Node.TEXT_NODE) {
+                result = null;
+            }
         }
         return Optional.ofNullable(result);
     }
 
+    public static Optional<Node> findPreviousNode(Node node) {
+        Node currentNode = node;
+        // Walk up until a previous sibling has been found
+        while (currentNode.getPreviousSibling() == null) {
+            currentNode = currentNode.getParentNode();
+            if (currentNode == null) return Optional.empty();
+        }
+        currentNode = currentNode.getPreviousSibling();
+        // find the last right child
+        while (currentNode.hasChildNodes()) {
+            currentNode = currentNode.getLastChild();
+        }
+        return Optional.of(currentNode);
+    }
+
+    public static boolean containsNode(Node tree, Node descendant) {
+        return Nodes.findFirstDescendantNode(tree, node -> node == descendant).isPresent();
+    }
+
+
+    public static Optional<Document> getOwnerDocument(Node node) {
+        if (node instanceof Document doc) {
+            return Optional.of(doc);
+        }
+        return Optional.ofNullable(node.getOwnerDocument());
+    }
 
 
 

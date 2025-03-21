@@ -25,37 +25,55 @@ SOFTWARE.
 package org.underdocx.common.tree;
 
 
-import org.underdocx.common.enumerator.Enumerator;
+import org.underdocx.common.enumerator.InspectableEnumerator;
+import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.function.Supplier;
 
 
 /**
  * Visits all nodes of a subtree (entering and leaving each node)
  */
-public class TreeWalker implements Enumerator<TreeWalker.VisitState> {
+public class TreeWalker implements InspectableEnumerator<TreeWalker.VisitState> {
 
     private Node initialNode;
-    private final Node scope;
+    private Node scope;
     private VisitState state = null;
     private Node firstValidNode = null;
 
 
-    public TreeWalker(Node initialNode, Node scope) {
+    private void ensureScope() {
+        if (scope != null) {
+            return;
+        }
+        if (initialNode instanceof Document) {
+            scope = initialNode;
+            return;
+        }
+        scope = initialNode.getOwnerDocument();
+    }
+
+    private void init(Node initialNode, Node scope) {
         this.initialNode = initialNode;
-        this.scope = scope == null ? initialNode.getOwnerDocument() : scope;
+        this.scope = scope;
+        ensureScope();
+    }
+
+    public TreeWalker(Node initialNode, Node scope) {
+        init(initialNode, scope);
     }
 
     public TreeWalker(Node initialNode, Node scope, Node firstValidNode) {
-        this.initialNode = initialNode;
-        this.scope = scope == null ? initialNode.getOwnerDocument() : scope;
+        init(initialNode, scope);
         this.firstValidNode = firstValidNode;
         if (firstValidNode != null) {
             jump(firstValidNode);
         }
     }
+
 
     public TreeWalker(TreeWalker treeWalker) {
         this.state = treeWalker.state != null ? new VisitState(treeWalker.state) : null;
@@ -91,10 +109,17 @@ public class TreeWalker implements Enumerator<TreeWalker.VisitState> {
         }
     }
 
+    @Override
     public boolean hasNext() {
         return nextState() != null;
     }
 
+    @Override
+    public Optional<VisitState> inspectNext() {
+        return Optional.ofNullable(nextState());
+    }
+
+    @Override
     public VisitState next() {
         return doNextInternal(this::nextState);
     }

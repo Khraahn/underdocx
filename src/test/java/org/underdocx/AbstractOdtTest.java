@@ -11,7 +11,7 @@ import org.underdocx.doctypes.TextNodeInterpreter;
 import org.underdocx.doctypes.odf.constants.OdfAttribute;
 import org.underdocx.doctypes.odf.constants.OdfElement;
 import org.underdocx.doctypes.odf.odt.OdtContainer;
-import org.underdocx.doctypes.odf.tools.OdfDomElementWalker;
+import org.underdocx.doctypes.odf.tools.OdfSectionsWalker;
 import org.underdocx.environment.UnderdocxEnv;
 import org.w3c.dom.Node;
 
@@ -124,7 +124,7 @@ public class AbstractOdtTest extends AbstractTest {
 
     protected int countParagraphs(OdtContainer doc) {
         int counter = 0;
-        OdfDomElementWalker walker = new OdfDomElementWalker(doc, true, TextParagraphElementBase.class);
+        OdfSectionsWalker walker = new OdfSectionsWalker(doc, null);
         while (walker.hasNext()) {
             counter++;
             walker.next();

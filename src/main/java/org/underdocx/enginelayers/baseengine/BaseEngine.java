@@ -95,7 +95,7 @@ public class BaseEngine<C extends DocContainer<D>, D> {
                             .fire();
                 }
                 if (result.value != CommandHandlerResult.IGNORED) {
-                    UnderdocxEnv.getInstance().logger.trace("Step " + step + ": commandHandler " + commandHandler + " returned type: " + result.value.getResultType().name() + ", (changed) node: " + selection.getNode());
+                    UnderdocxEnv.getInstance().logger.trace("Step " + step + ": commandHandler " + commandHandler + " returned type: " + result.value.getResultType().name() + ", (changed) node: " + selection.getNode() + ", nextValidNode: " + result.value.getRestartNode());
                     break;
                 }
             }
@@ -192,6 +192,7 @@ public class BaseEngine<C extends DocContainer<D>, D> {
             while (!rescan && placeholderEnumerator.hasNext()) {
                 step++;
                 Pair<PlaceholdersProvider<C, ?, D>, Node> placeholder = placeholderEnumerator.next();
+                UnderdocxEnv.getInstance().logger.trace("Processing placeholder: " + placeholder.right);
                 Selection<C, ?, D> selection = createSelection(placeholder.left, placeholder.right, engineAccess);
                 CommandHandlerResult executionResult = findAndExecCommandHandler(placeholder.left, selection);
                 reactOnExecutionResult(executionResult, selection);

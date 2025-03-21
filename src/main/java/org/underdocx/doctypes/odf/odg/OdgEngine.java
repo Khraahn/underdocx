@@ -31,7 +31,7 @@ import org.underdocx.doctypes.odf.commands.*;
 import org.underdocx.doctypes.odf.commands.forcommand.ForListCommandHandler;
 import org.underdocx.doctypes.odf.commands.forcommand.ForRowsCommandHandler;
 import org.underdocx.doctypes.odf.odg.commands.OdgImportCommandHandler;
-import org.underdocx.doctypes.odf.tools.placeholder.OdfParameterizedPlaceholderFactory;
+import org.underdocx.doctypes.odf.tools.placeholder.OdfPlaceholderFactory;
 import org.underdocx.doctypes.tools.placeholder.GenericTextualPlaceholderFactory;
 import org.underdocx.enginelayers.modelengine.ModelEngine;
 import org.underdocx.enginelayers.parameterengine.ParametersPlaceholderData;
@@ -65,7 +65,7 @@ public class OdgEngine extends AbstractOdfEngine<OdgContainer, OdfGraphicsDocume
     }
 
     public OdgEngine(OdgContainer doc) {
-        this(doc, new OdfParameterizedPlaceholderFactory<>());
+        this(doc, new OdfPlaceholderFactory<>());
     }
 
     public OdgEngine(OdgContainer doc, GenericTextualPlaceholderFactory<OdgContainer, ParametersPlaceholderData, OdfGraphicsDocument> parameters) {
