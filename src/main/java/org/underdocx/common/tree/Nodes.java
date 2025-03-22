@@ -53,51 +53,90 @@ public class Nodes {
         });
     }
 
+    private static class ChildrenEnumerator implements Enumerator<Node> {
+
+        private final NodeList nodeList;
+        private int counter;
+
+        private ChildrenEnumerator(Node node) {
+            this.nodeList = node.getChildNodes();
+            this.counter = 0;
+        }
+
+        private ChildrenEnumerator(ChildrenEnumerator other) {
+            this.nodeList = other.nodeList;
+            this.counter = other.counter;
+        }
+
+        @Override
+        public boolean hasNext() {
+            return nodeList.getLength() > counter;
+        }
+
+        @Override
+        public Node next() {
+            return nodeList.item(counter++);
+        }
+
+        @Override
+        public Enumerator<Node> cloneEnumerator() {
+            return new ChildrenEnumerator(this);
+        }
+    }
+
     public static Enumerator<Node> getChildren(Node node) {
-        return new Enumerator<>() {
-            private NodeList nodeList = node.getChildNodes();
-            private int counter = 0;
+        return new ChildrenEnumerator(node);
+    }
 
-            @Override
-            public boolean hasNext() {
-                return nodeList.getLength() > counter;
-            }
+    private static class ChildrenEnumeratorWithFilter implements Enumerator<Node> {
 
-            @Override
-            public Node next() {
-                return nodeList.item(counter++);
+        private final Enumerator<Node> inner;
+        private Node next;
+        private final Predicate<Node> filter;
+
+
+        private ChildrenEnumeratorWithFilter(Node node, Predicate<Node> filter) {
+            this.filter = filter;
+            this.inner = getChildren(node);
+            this.next = findNext();
+        }
+
+        private ChildrenEnumeratorWithFilter(ChildrenEnumeratorWithFilter other) {
+            this.inner = other.inner.cloneEnumerator();
+            this.next = other.next;
+            this.filter = other.filter;
+        }
+
+        private Node findNext() {
+            while (inner.hasNext()) {
+                Node toTest = inner.next();
+                if (filter.test(toTest)) {
+                    return toTest;
+                }
             }
-        };
+            return null;
+        }
+
+        @Override
+        public boolean hasNext() {
+            return next != null;
+        }
+
+        @Override
+        public Node next() {
+            Node result = next;
+            next = findNext();
+            return result;
+        }
+
+        @Override
+        public Enumerator<Node> cloneEnumerator() {
+            return new ChildrenEnumeratorWithFilter(this);
+        }
     }
 
     public static Enumerator<Node> getChildren(Node node, Predicate<Node> filter) {
-
-        return new Enumerator<>() {
-            private Enumerator<Node> inner = getChildren(node);
-            private Node next = findNext();
-
-            private Node findNext() {
-                while (inner.hasNext()) {
-                    Node toTest = inner.next();
-                    if (filter.test(toTest)) {
-                        return toTest;
-                    }
-                }
-                return null;
-            }
-
-            @Override
-            public boolean hasNext() {
-                return next != null;
-            }
-
-            @Override
-            public Node next() {
-                Node result = next;
-                next = findNext();
-                return result;
-            }
-        };
+        return new ChildrenEnumeratorWithFilter(node, filter);
     }
 
     @Deprecated
@@ -222,30 +261,51 @@ public class Nodes {
         return getSiblingsIterator(firstNode, limit).collect();
     }
 
-    public static Enumerator<Node> getSiblingsIterator(Node firstNode, Node limit) {
-        return new Enumerator<>() {
-            Node next = firstNode;
-            Boolean limitReached = false;
+    private static class SiblingsEnumerator implements Enumerator<Node> {
 
-            @Override
-            public boolean hasNext() {
-                return next != null;
-            }
+        private final Node limit;
+        private Node next;
+        private boolean limitReached;
 
-            @Override
-            public Node next() {
-                return Convenience.also(next, n -> {
-                    if (limitReached) {
-                        next = null;
-                    } else {
-                        next = next.getNextSibling();
-                        if (next == limit) {
-                            limitReached = true;
-                        }
+        private SiblingsEnumerator(Node firstNode, Node limit) {
+            this.next = firstNode;
+            this.limitReached = false;
+            this.limit = limit;
+        }
+
+        private SiblingsEnumerator(SiblingsEnumerator other) {
+            this.next = other.next;
+            this.limitReached = other.limitReached;
+            this.limit = other.limit;
+        }
+
+        @Override
+        public boolean hasNext() {
+            return next != null;
+        }
+
+        @Override
+        public Node next() {
+            return Convenience.also(next, n -> {
+                if (limitReached) {
+                    next = null;
+                } else {
+                    next = next.getNextSibling();
+                    if (next == limit) {
+                        limitReached = true;
                     }
-                });
-            }
-        };
+                }
+            });
+        }
+
+        @Override
+        public Enumerator<Node> cloneEnumerator() {
+            return new SiblingsEnumerator(this);
+        }
+    }
+
+    public static Enumerator<Node> getSiblingsIterator(Node firstNode, Node limit) {
+        return new SiblingsEnumerator(firstNode, limit);
     }
 
     public static int compareNodePositions(Node node1, Node node2) {

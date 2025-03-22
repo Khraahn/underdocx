@@ -24,10 +24,7 @@ SOFTWARE.
 
 package org.underdocx.common.enumerator;
 
-import java.util.Arrays;
-import java.util.Optional;
-
-public class EnumeratorOfEnumerator<T> implements InspectableEnumerator<T> {
+public class EnumeratorOfEnumerator<T> implements Enumerator<T> {
 
     private final Enumerator<Enumerator<T>> enumeratorOfEnumerators;
     private Enumerator<T> currentEnumerator;
@@ -35,9 +32,15 @@ public class EnumeratorOfEnumerator<T> implements InspectableEnumerator<T> {
 
     @SafeVarargs
     public EnumeratorOfEnumerator(Enumerator<T>... enumerators) {
-        enumeratorOfEnumerators = Enumerator.fromIterator(Arrays.asList(enumerators).iterator());
+        enumeratorOfEnumerators = Enumerator.of(enumerators);
         currentEnumerator = enumerators[0];
         next = findNext();
+    }
+
+    private EnumeratorOfEnumerator(EnumeratorOfEnumerator<T> other) {
+        this.enumeratorOfEnumerators = other.enumeratorOfEnumerators.cloneEnumerator();
+        this.currentEnumerator = other.currentEnumerator.cloneEnumerator();
+        this.next = other.next();
     }
 
     private T findNext() {
@@ -64,7 +67,9 @@ public class EnumeratorOfEnumerator<T> implements InspectableEnumerator<T> {
     }
 
     @Override
-    public Optional<T> inspectNext() {
-        return Optional.ofNullable(next);
+    public Enumerator<T> cloneEnumerator() {
+        return new EnumeratorOfEnumerator<>(this);
     }
+
+
 }

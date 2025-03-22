@@ -25,7 +25,7 @@ SOFTWARE.
 package org.underdocx.common.tree;
 
 
-import org.underdocx.common.enumerator.InspectableEnumerator;
+import org.underdocx.common.enumerator.Enumerator;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 
@@ -37,7 +37,7 @@ import java.util.function.Supplier;
 /**
  * Visits all nodes of a subtree (entering and leaving each node)
  */
-public class TreeWalker implements InspectableEnumerator<TreeWalker.VisitState> {
+public class TreeWalker implements Enumerator<TreeWalker.VisitState> {
 
     private Node initialNode;
     private Node scope;
@@ -202,4 +202,8 @@ public class TreeWalker implements InspectableEnumerator<TreeWalker.VisitState> 
         }
     }
 
+    @Override
+    public TreeWalker cloneEnumerator() {
+        return new TreeWalker(this);
+    }
 }

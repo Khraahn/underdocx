@@ -25,7 +25,6 @@ SOFTWARE.
 package org.underdocx.doctypes.odf.tools;
 
 import org.underdocx.common.enumerator.Enumerator;
-import org.underdocx.common.enumerator.InspectableEnumerator;
 import org.underdocx.common.tools.Convenience;
 import org.underdocx.common.tree.Nodes;
 import org.underdocx.doctypes.odf.AbstractOdfContainer;
@@ -34,9 +33,9 @@ import org.w3c.dom.Node;
 
 import java.util.Optional;
 
-public class OdfSectionsWalker implements InspectableEnumerator<Node> {
+public class OdfSectionsWalker implements Enumerator<Node> {
 
-    private final InspectableEnumerator<Node> mainEnumerator;
+    private final Enumerator<Node> mainEnumerator;
 
     private Optional<Node> getSectionOfValidNode(Node validNode) {
         return Convenience.buildOptional(result -> {
@@ -67,6 +66,10 @@ public class OdfSectionsWalker implements InspectableEnumerator<Node> {
         }
     }
 
+    private OdfSectionsWalker(OdfSectionsWalker other) {
+        this.mainEnumerator = other.mainEnumerator.cloneEnumerator();
+    }
+
     @Override
     public boolean hasNext() {
         return mainEnumerator.hasNext();
@@ -75,6 +78,11 @@ public class OdfSectionsWalker implements InspectableEnumerator<Node> {
     @Override
     public Node next() {
         return mainEnumerator.next();
+    }
+
+    @Override
+    public Enumerator<Node> cloneEnumerator() {
+        return new OdfSectionsWalker(this);
     }
 
     @Override

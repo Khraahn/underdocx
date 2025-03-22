@@ -35,8 +35,8 @@ import java.util.function.Predicate;
 
 public interface Enumerator<T> extends Iterable<T>, Iterator<T>, Enumeration<T> {
 
-    static <T> InspectableEnumerator<T> empty() {
-        return new InspectableEnumerator<T>() {
+    static <T> Enumerator<T> empty() {
+        return new Enumerator<>() {
             @Override
             public Optional<T> inspectNext() {
                 return Optional.empty();
@@ -51,57 +51,94 @@ public interface Enumerator<T> extends Iterable<T>, Iterator<T>, Enumeration<T> 
             public T next() {
                 return null;
             }
+
+            @Override
+            public Enumerator<T> cloneEnumerator() {
+                return this;
+            }
         };
     }
+
+    class ArrayEnumerator<T> implements Enumerator<T> {
+
+        private final T[] array;
+        private int index;
+
+        @SafeVarargs
+        public ArrayEnumerator(T... array) {
+            this.array = array;
+            this.index = 0;
+        }
+
+        @SafeVarargs
+        public ArrayEnumerator(int index, T... array) {
+            this.array = array;
+            this.index = index;
+        }
+
+
+        @Override
+        public boolean hasNext() {
+            return (index < array.length);
+        }
+
+        @Override
+        public T next() {
+            T tmp = array[index];
+            index++;
+            return tmp;
+        }
+
+        @Override
+        public Enumerator<T> cloneEnumerator() {
+            return new ArrayEnumerator<>(index, array);
+        }
+    }
+
+    class ListEnumerator<T> implements Enumerator<T> {
+
+        private final List<T> list;
+        private int index;
+
+        public ListEnumerator(List<T> list) {
+            this.list = list;
+            this.index = 0;
+        }
+
+        public ListEnumerator(int index, List<T> list) {
+            this.list = list;
+            this.index = index;
+        }
+
+
+        @Override
+        public boolean hasNext() {
+            return (index < list.size());
+        }
+
+        @Override
+        public T next() {
+            T tmp = list.get(index);
+            index++;
+            return tmp;
+        }
+
+        @Override
+        public Enumerator<T> cloneEnumerator() {
+            return new ListEnumerator<>(index, list);
+        }
+    }
+
 
     @SafeVarargs
-    static <T> InspectableEnumerator<T> of(T... elements) {
-        return new InspectableEnumerator<T>() {
-            private final T[] array = elements;
-            private int index = 0;
-
-            @Override
-            public Optional<T> inspectNext() {
-                return (index < elements.length) ? Optional.of(elements[index]) : Optional.empty();
-            }
-
-            @Override
-            public boolean hasNext() {
-                return (index < elements.length);
-            }
-
-            @Override
-            public T next() {
-                T tmp = array[index];
-                index++;
-                return tmp;
-            }
-        };
+    static <T> Enumerator<T> of(T... elements) {
+        return new ArrayEnumerator<>(elements);
     }
 
-    static <T> InspectableEnumerator<T> of(List<T> elements) {
-        return new InspectableEnumerator<T>() {
-            private final List<T> list = elements;
-            private int index = 0;
-
-            @Override
-            public Optional<T> inspectNext() {
-                return (index < elements.size()) ? Optional.of(elements.get(index)) : Optional.empty();
-            }
-
-            @Override
-            public boolean hasNext() {
-                return (index < elements.size());
-            }
-
-            @Override
-            public T next() {
-                T tmp = list.get(index);
-                index++;
-                return tmp;
-            }
-        };
+    static <T> Enumerator<T> of(List<T> elements) {
+        return new ListEnumerator<>(elements);
     }
+
 
     boolean hasNext();
 
@@ -152,24 +189,6 @@ public interface Enumerator<T> extends Iterable<T>, Iterator<T>, Enumeration<T> 
         Iterator.super.forEachRemaining(action);
     }
 
-    static <T> Enumerator<T> fromIterator(Iterator<T> iterator) {
-        return new Enumerator<>() {
-            @Override
-            public boolean hasNext() {
-                return iterator.hasNext();
-            }
-
-            @Override
-            public T next() {
-                return iterator.next();
-            }
-
-            @Override
-            public void remove() {
-                iterator.remove();
-            }
-        };
-    }
 
     @Override
     default Iterator<T> iterator() {
@@ -180,5 +199,11 @@ public interface Enumerator<T> extends Iterable<T>, Iterator<T>, Enumeration<T> 
         return !hasNext();
     }
 
+    Enumerator<T> cloneEnumerator();
+
+    default Optional<T> inspectNext() {
+        Enumerator<T> clone = cloneEnumerator();
+        return clone.hasNext() ? Optional.of(clone.next()) : Optional.empty();
+    }
 
 }

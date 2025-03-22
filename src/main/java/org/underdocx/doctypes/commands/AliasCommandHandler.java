@@ -27,6 +27,7 @@ package org.underdocx.doctypes.commands;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.underdocx.common.codec.JsonCodec;
+import org.underdocx.common.enumerator.Enumerator;
 import org.underdocx.common.tools.Convenience;
 import org.underdocx.common.types.Pair;
 import org.underdocx.doctypes.DocContainer;
@@ -215,7 +216,7 @@ public class AliasCommandHandler<C extends DocContainer<D>, D> extends AbstractC
         if (tryAliasExchange(currentData)) {
             selection.getPlaceholderToolkit().get().setPlaceholder(selection.getNode(), currentData);
             result = CommandHandlerResult.FACTORY.startAtNode(selection.getNode());
-            List<SelectedNode<?>> allWaiting = selection.getEngineAccess().lookAhead(selectedNode -> selectedNode.getPlaceholderData() instanceof ParametersPlaceholderData);
+            Enumerator<SelectedNode<?>> allWaiting = selection.getEngineAccess().lookAhead(selectedNode -> selectedNode.getPlaceholderData() instanceof ParametersPlaceholderData);
             for (SelectedNode<?> waiting : allWaiting) {
                 ParametersPlaceholderData placeholderData = (ParametersPlaceholderData) waiting.getPlaceholderData();
                 if (tryAliasExchange(placeholderData)) {

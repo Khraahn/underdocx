@@ -24,6 +24,7 @@ SOFTWARE.
 
 package org.underdocx.doctypes.commands;
 
+import org.underdocx.common.enumerator.Enumerator;
 import org.underdocx.common.types.Regex;
 import org.underdocx.doctypes.DocContainer;
 import org.underdocx.doctypes.commands.internal.AbstractCommandHandler;
@@ -60,7 +61,7 @@ public class MultiCommandHandler<C extends DocContainer<D>, D> extends AbstractC
     protected CommandHandlerResult tryExecuteCommand() {
         CommandHandlerResult result = trySelection(selection);
         if (result != CommandHandlerResult.IGNORED) {
-            List<SelectedNode<?>> allWaiting = selection.getEngineAccess().lookAhead(null);
+            Enumerator<SelectedNode<?>> allWaiting = selection.getEngineAccess().lookAhead(null);
             for (SelectedNode<?> waiting : allWaiting) {
                 if (waiting.getPlaceholderData() instanceof ParametersPlaceholderData) {
                     MSelection<C, ParametersPlaceholderData, D> newSelection = Node2MSelection.createMSelection(selection, (SelectedNode<ParametersPlaceholderData>) waiting);

@@ -24,18 +24,18 @@ SOFTWARE.
 
 package org.underdocx.doctypes.commands.internal;
 
+import org.underdocx.common.enumerator.Enumerator;
 import org.underdocx.common.types.Pair;
 import org.underdocx.enginelayers.baseengine.SelectedNode;
 import org.underdocx.enginelayers.parameterengine.ParametersPlaceholderData;
 
-import java.util.List;
 import java.util.Optional;
 import java.util.function.Predicate;
 
 public class AreaTools {
 
     public static Optional<Pair<SelectedNode<?>, SelectedNode<?>>>
-    findArea(List<SelectedNode<?>> futureNodes,
+    findArea(Enumerator<SelectedNode<?>> futureNodes,
              SelectedNode<?> startArea,
              Predicate<SelectedNode<?>> beginningNodeFilter,
              Predicate<SelectedNode<?>> endingNodeFilter) {
@@ -54,7 +54,7 @@ public class AreaTools {
     }
 
     public static Optional<Pair<SelectedNode<ParametersPlaceholderData>, SelectedNode<ParametersPlaceholderData>>>
-    findArea(List<SelectedNode<?>> futureNodes,
+    findArea(Enumerator<SelectedNode<?>> futureNodes,
              SelectedNode<ParametersPlaceholderData> start,
              String endKey) {
         String startKey = start.getPlaceholderData().getKey();

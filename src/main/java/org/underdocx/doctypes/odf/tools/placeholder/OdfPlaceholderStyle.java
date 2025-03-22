@@ -26,7 +26,7 @@ package org.underdocx.doctypes.odf.tools.placeholder;
 
 import org.odftoolkit.odfdom.doc.OdfDocument;
 import org.underdocx.common.codec.Codec;
-import org.underdocx.common.enumerator.InspectableEnumerator;
+import org.underdocx.common.enumerator.Enumerator;
 import org.underdocx.common.placeholder.EncapsulatedNodesExtractor;
 import org.underdocx.common.placeholder.basic.extraction.RegexExtractor;
 import org.underdocx.common.placeholder.basic.textnodeinterpreter.OdfTextNodeInterpreter;
@@ -69,7 +69,7 @@ public class OdfPlaceholderStyle<C extends AbstractOdfContainer<D>, D extends Od
 
 
         @Override
-        public InspectableEnumerator<Node> createSectionEnumerator(C doc, Node firstValidNode) {
+        public Enumerator<Node> createSectionEnumerator(C doc, Node firstValidNode) {
             return new OdfSectionsWalker(doc, firstValidNode);
         }
 

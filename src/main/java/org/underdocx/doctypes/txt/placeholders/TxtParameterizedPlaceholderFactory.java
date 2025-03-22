@@ -25,7 +25,7 @@ SOFTWARE.
 package org.underdocx.doctypes.txt.placeholders;
 
 import org.underdocx.common.codec.Codec;
-import org.underdocx.common.enumerator.InspectableEnumerator;
+import org.underdocx.common.enumerator.Enumerator;
 import org.underdocx.common.placeholder.EncapsulatedNodesExtractor;
 import org.underdocx.common.placeholder.basic.extraction.PartialExtractor;
 import org.underdocx.doctypes.TextNodeInterpreter;
@@ -45,7 +45,7 @@ public class TxtParameterizedPlaceholderFactory implements GenericTextualPlaceho
     }
 
     @Override
-    public InspectableEnumerator<Node> createSectionEnumerator(TxtContainer doc, Node firstValid) {
+    public Enumerator<Node> createSectionEnumerator(TxtContainer doc, Node firstValid) {
         return new TxtSectionEnumerator(doc, firstValid);
     }
 

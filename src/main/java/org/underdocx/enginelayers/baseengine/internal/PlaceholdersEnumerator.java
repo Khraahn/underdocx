@@ -55,6 +55,12 @@ public class PlaceholdersEnumerator<C extends DocContainer<D>, D> implements Enu
         });
     }
 
+    private PlaceholdersEnumerator(PlaceholdersEnumerator<C, D> other) {
+        other.currentEnumerators.forEach((key, value) -> this.currentEnumerators.put(key, value.cloneEnumerator()));
+        this.currentNodes.putAll(other.currentNodes);
+        this.next = other.next;
+    }
+
     private void findNext() {
         if (next == null) return;
         Node newElement = currentEnumerators.get(next.left).next();
@@ -74,5 +80,10 @@ public class PlaceholdersEnumerator<C extends DocContainer<D>, D> implements Enu
 
     public Pair<PlaceholdersProvider<C, ?, D>, Node> next() {
         return also(next, n -> findNext());
+    }
+
+    @Override
+    public PlaceholdersEnumerator<C, D> cloneEnumerator() {
+        return new PlaceholdersEnumerator<>(this);
     }
 }

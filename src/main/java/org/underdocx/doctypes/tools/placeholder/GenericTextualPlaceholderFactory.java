@@ -25,7 +25,7 @@ SOFTWARE.
 package org.underdocx.doctypes.tools.placeholder;
 
 import org.underdocx.common.codec.Codec;
-import org.underdocx.common.enumerator.InspectableEnumerator;
+import org.underdocx.common.enumerator.Enumerator;
 import org.underdocx.common.placeholder.EncapsulatedNodesExtractor;
 import org.underdocx.common.placeholder.TextualPlaceholderToolkit;
 import org.underdocx.doctypes.DocContainer;
@@ -37,7 +37,7 @@ public interface GenericTextualPlaceholderFactory<C extends DocContainer<D>, P, 
 
     TextNodeInterpreter getTextNodeInterpreter();
 
-    InspectableEnumerator<Node> createSectionEnumerator(C doc, Node firstValidNode);
+    Enumerator<Node> createSectionEnumerator(C doc, Node firstValidNode);
 
     EncapsulatedNodesExtractor getExtractor();
 

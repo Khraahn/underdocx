@@ -24,7 +24,7 @@ SOFTWARE.
 
 package org.underdocx.enginelayers.baseengine.internal;
 
-import org.underdocx.common.enumerator.LookAheadEnumerator;
+import org.underdocx.common.enumerator.Enumerator;
 import org.underdocx.common.placeholder.TextualPlaceholderToolkit;
 import org.underdocx.common.tools.Convenience;
 import org.underdocx.common.types.Pair;
@@ -44,13 +44,13 @@ public class EngineAccessImpl<C extends DocContainer<D>, D> implements EngineAcc
     private final Set<EngineListener<C, D>> listeners;
     private final Runnable rescan;
     private final Supplier<List<Node>> lookBack;
-    private final Supplier<LookAheadEnumerator<Pair<PlaceholdersProvider<C, ?, D>, Node>>> lookAhead;
+    private final Supplier<Enumerator<Pair<PlaceholdersProvider<C, ?, D>, Node>>> lookAhead;
     private final Map<Class<?>, PlaceholdersProvider<C, ?, D>> handler2ProviderMap;
 
 
     public EngineAccessImpl(Set<EngineListener<C, D>> listeners,
                             Runnable forceRescan,
-                            Supplier<LookAheadEnumerator<Pair<PlaceholdersProvider<C, ?, D>, Node>>> lookAhead,
+                            Supplier<Enumerator<Pair<PlaceholdersProvider<C, ?, D>, Node>>> lookAhead,
                             Supplier<List<Node>> lookBack,
                             Map<Class<?>, PlaceholdersProvider<C, ?, D>> handler2ProviderMap) {
         this.listeners = listeners;
@@ -75,13 +75,54 @@ public class EngineAccessImpl<C extends DocContainer<D>, D> implements EngineAcc
         rescan.run();
     }
 
-    public List<SelectedNode<?>> lookAhead(Predicate<SelectedNode<?>> filter) {
-        return Convenience.buildList(result -> lookAhead.get().lookAhead().forEach(pair -> {
-            SelectedNodeImpl<C, ?, D> selectedNode = new SelectedNodeImpl<>(pair.right, pair.left);
-            if (filter == null || filter.test(selectedNode)) {
-                result.add(selectedNode);
+    private class LookAheadEnumerator implements Enumerator<SelectedNode<?>> {
+        private final Predicate<SelectedNode<?>> filter;
+        private final Enumerator<Pair<PlaceholdersProvider<C, ?, D>, Node>> cloneEnumerator;
+        private SelectedNode<?> next;
+
+        protected LookAheadEnumerator(Enumerator<Pair<PlaceholdersProvider<C, ?, D>, Node>> engineEnumerator, Predicate<SelectedNode<?>> filter) {
+            this.cloneEnumerator = engineEnumerator.cloneEnumerator();
+            this.filter = filter;
+            this.next = findNext();
+        }
+
+        private LookAheadEnumerator(LookAheadEnumerator other) {
+            this.cloneEnumerator = other.cloneEnumerator.cloneEnumerator();
+            this.filter = other.filter;
+            this.next = other.next;
+        }
+
+        private SelectedNode<?> findNext() {
+            while (cloneEnumerator.hasNext()) {
+                Pair<PlaceholdersProvider<C, ?, D>, Node> pair = cloneEnumerator.next();
+                SelectedNodeImpl<C, ?, D> selectedNode = new SelectedNodeImpl<>(pair.right, pair.left);
+                if (filter == null || filter.test(selectedNode)) {
+                    return selectedNode;
+                }
             }
-        }));
+            return null;
+        }
+
+        @Override
+        public boolean hasNext() {
+            return next != null;
+        }
+
+        @Override
+        public SelectedNode<?> next() {
+            SelectedNode<?> tmp = next;
+            next = findNext();
+            return tmp;
+        }
+
+        @Override
+        public Enumerator<SelectedNode<?>> cloneEnumerator() {
+            return new LookAheadEnumerator(this);
+        }
+    }
+
+    public Enumerator<SelectedNode<?>> lookAhead(Predicate<SelectedNode<?>> filter) {
+        return new LookAheadEnumerator(lookAhead.get(), filter);
     }
 
     public List<Node> lookBack(Predicate<Node> filter) {

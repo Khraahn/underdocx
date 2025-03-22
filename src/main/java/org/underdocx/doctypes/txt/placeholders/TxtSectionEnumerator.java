@@ -2,7 +2,6 @@ package org.underdocx.doctypes.txt.placeholders;
 
 import org.underdocx.common.enumerator.Enumerator;
 import org.underdocx.common.enumerator.EnumeratorOfEnumerator;
-import org.underdocx.common.enumerator.InspectableEnumerator;
 import org.underdocx.common.tools.Convenience;
 import org.underdocx.common.tree.Nodes;
 import org.underdocx.common.tree.SimpleTreeWalker;
@@ -11,9 +10,9 @@ import org.w3c.dom.Node;
 
 import java.util.Optional;
 
-class TxtSectionEnumerator implements InspectableEnumerator<Node> {
+class TxtSectionEnumerator implements Enumerator<Node> {
 
-    private final InspectableEnumerator<Node> inner;
+    private final Enumerator<Node> inner;
 
     private Enumerator<Node> getSectionOfValidNodeAsEnumerator(Node validNode) {
         return Convenience.build(Enumerator.empty(), result -> {
@@ -32,7 +31,7 @@ class TxtSectionEnumerator implements InspectableEnumerator<Node> {
         }
     }
 
-    public InspectableEnumerator<Node> ensureCurrentSection(Node firstValid, InspectableEnumerator<Node> sections) {
+    public Enumerator<Node> ensureCurrentSection(Node firstValid, Enumerator<Node> sections) {
         return Convenience.build(sections, result ->
                 getSectionOfValidNode(firstValid).ifPresent(sectionContainingValidNode -> {
                     Optional<Node> nextSection = sections.inspectNext();
@@ -60,6 +59,10 @@ class TxtSectionEnumerator implements InspectableEnumerator<Node> {
         }
     }
 
+    private TxtSectionEnumerator(TxtSectionEnumerator other) {
+        this.inner = other.inner.cloneEnumerator();
+    }
+
     @Override
     public boolean hasNext() {
         return inner.hasNext();
@@ -71,7 +74,8 @@ class TxtSectionEnumerator implements InspectableEnumerator<Node> {
     }
 
     @Override
-    public Optional<Node> inspectNext() {
-        return inner.inspectNext();
+    public Enumerator<Node> cloneEnumerator() {
+        return new TxtSectionEnumerator(this);
     }
+
 }

@@ -24,6 +24,7 @@ SOFTWARE.
 
 package org.underdocx.enginelayers.baseengine;
 
+import org.underdocx.common.enumerator.Enumerator;
 import org.underdocx.common.placeholder.TextualPlaceholderToolkit;
 import org.underdocx.doctypes.DocContainer;
 import org.w3c.dom.Node;
@@ -40,7 +41,7 @@ public interface EngineAccess<C extends DocContainer<D>, D> {
 
     void forceRescan();
 
-    List<SelectedNode<?>> lookAhead(Predicate<SelectedNode<?>> filter);
+    Enumerator<SelectedNode<?>> lookAhead(Predicate<SelectedNode<?>> filter);
 
     List<Node> lookBack(Predicate<Node> filter);
 

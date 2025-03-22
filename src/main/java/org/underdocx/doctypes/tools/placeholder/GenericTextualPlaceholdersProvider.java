@@ -25,7 +25,6 @@ SOFTWARE.
 package org.underdocx.doctypes.tools.placeholder;
 
 import org.underdocx.common.enumerator.Enumerator;
-import org.underdocx.common.enumerator.InspectableEnumerator;
 import org.underdocx.common.placeholder.TextualPlaceholderToolkit;
 import org.underdocx.doctypes.DocContainer;
 import org.underdocx.enginelayers.baseengine.PlaceholdersProvider;
@@ -50,7 +49,7 @@ public class GenericTextualPlaceholdersProvider<C extends DocContainer<D>, P, D>
     @Override
     public Enumerator<Node> getPlaceholders() {
         if (endOfDoc) return Enumerator.empty();
-        InspectableEnumerator<Node> sections = info.createSectionEnumerator(doc, startNode);
+        Enumerator<Node> sections = info.createSectionEnumerator(doc, startNode);
         return new GenericPlaceholderFromSectionsEnumerator(
                 sections,
                 toolkit::extractPlaceholders,

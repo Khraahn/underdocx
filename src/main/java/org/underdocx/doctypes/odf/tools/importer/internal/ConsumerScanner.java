@@ -24,8 +24,12 @@ SOFTWARE.
 
 package org.underdocx.doctypes.odf.tools.importer.internal;
 
+import org.odftoolkit.odfdom.dom.OdfContentDom;
+import org.odftoolkit.odfdom.dom.OdfStylesDom;
+import org.underdocx.common.enumerator.Enumerator;
+import org.underdocx.common.enumerator.EnumeratorOfEnumerator;
 import org.underdocx.common.tools.Convenience;
-import org.underdocx.common.tree.TreeWalkers;
+import org.underdocx.common.tree.TreeWalker;
 import org.underdocx.doctypes.odf.AbstractOdfContainer;
 import org.underdocx.doctypes.odf.tools.importer.rules.ConsumerDescr;
 import org.underdocx.doctypes.odf.tools.importer.rules.Renameable;
@@ -47,7 +51,9 @@ public class ConsumerScanner implements Renameable {
 
     @Override
     public void rename(String resource) {
-        TreeWalkers treeWalkers = new TreeWalkers(doc.getContentDom(), doc.getStylesDom());
+        OdfContentDom c = doc.getContentDom();
+        OdfStylesDom s = doc.getStylesDom();
+        Enumerator<TreeWalker.VisitState> treeWalkers = new EnumeratorOfEnumerator<>(new TreeWalker(s, s), new TreeWalker(c, c));
         while (treeWalkers.hasNext()) {
             Convenience.also(treeWalkers.next(), next -> {
                 if (next.isBeginVisit()) {

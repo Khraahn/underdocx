@@ -25,8 +25,7 @@ SOFTWARE.
 package org.underdocx.enginelayers.baseengine;
 
 import org.apache.commons.collections4.multimap.ArrayListValuedHashMap;
-import org.underdocx.common.enumerator.LookAheadEnumerator;
-import org.underdocx.common.enumerator.SimpleLookAheadEnumerator;
+import org.underdocx.common.enumerator.Enumerator;
 import org.underdocx.common.types.Pair;
 import org.underdocx.doctypes.DocContainer;
 import org.underdocx.enginelayers.baseengine.internal.EngineAccessImpl;
@@ -55,7 +54,7 @@ public class BaseEngine<C extends DocContainer<D>, D> {
     protected HashMap<Class<?>, PlaceholdersProvider<C, ?, D>> reverseRegistry = new HashMap<>();
     protected IdentityHashMap<PlaceholdersProvider.Factory<C, ?, D>, PlaceholdersProvider<C, ?, D>> factoryProviderMap = new IdentityHashMap<>();
     protected LinkedHashSet<EngineListener<C, D>> listeners = new LinkedHashSet<>();
-    protected LookAheadEnumerator<Pair<PlaceholdersProvider<C, ?, D>, Node>> placeholderEnumerator;
+    protected Enumerator<Pair<PlaceholdersProvider<C, ?, D>, Node>> placeholderEnumerator;
 
 
     public BaseEngine(C doc) {
@@ -77,8 +76,8 @@ public class BaseEngine<C extends DocContainer<D>, D> {
         return this;
     }
 
-    protected LookAheadEnumerator<Pair<PlaceholdersProvider<C, ?, D>, Node>> createPlaceholdersEnumerator() {
-        return new SimpleLookAheadEnumerator<>(new PlaceholdersEnumerator<>(registry.keySet()), false);
+    protected Enumerator<Pair<PlaceholdersProvider<C, ?, D>, Node>> createPlaceholdersEnumerator() {
+        return new PlaceholdersEnumerator<>(registry.keySet());
     }
 
     protected CommandHandlerResult findAndExecCommandHandler(PlaceholdersProvider<C, ?, D> provider, Selection<C, ?, D> selection) {
@@ -122,6 +121,7 @@ public class BaseEngine<C extends DocContainer<D>, D> {
     }
 
     public Optional<Problem> run() {
+        long startTime = System.currentTimeMillis();
         Problem detectedError = null;
         try {
             runUncatched();
@@ -129,6 +129,8 @@ public class BaseEngine<C extends DocContainer<D>, D> {
             UnderdocxEnv.getInstance().logger.error(e);
             detectedError = Problems.UNEXPECTED_EXCEPION_CAUGHT.toProblem().handle(e);
         }
+        long endTime = System.currentTimeMillis();
+        UnderdocxEnv.getInstance().logger.trace("Engine execution: " + ((double) (endTime - startTime)) / 1000 + " sec");
         if (detectedError != null && UnderdocxEnv.getInstance().appendErrorReport) {
             doc.appendText(
                     "\n---------------------------\n" +

@@ -31,7 +31,6 @@ public class GenericPlaceholderFromSectionsEnumerator implements Enumerator<Node
 
     private final Enumerator<Node> validSections;
     private final PlaceholdersFromSectionExtractor extractor;
-
     private Enumerator<Node> currentCollectedNodes = Enumerator.of();
 
     public GenericPlaceholderFromSectionsEnumerator(Enumerator<Node> validSections, PlaceholdersFromSectionExtractor extractor, Node firstValidNode) {
@@ -40,6 +39,12 @@ public class GenericPlaceholderFromSectionsEnumerator implements Enumerator<Node
         if (validSections.hasNext()) {
             currentCollectedNodes = (extractor.extractPlaceholders(validSections.next(), firstValidNode));
         }
+    }
+
+    private GenericPlaceholderFromSectionsEnumerator(GenericPlaceholderFromSectionsEnumerator other) {
+        this.validSections = other.validSections.cloneEnumerator();
+        this.extractor = other.extractor;
+        this.currentCollectedNodes = other.currentCollectedNodes.cloneEnumerator();
     }
 
     @Override
@@ -62,6 +67,11 @@ public class GenericPlaceholderFromSectionsEnumerator implements Enumerator<Node
         } else {
             return null;
         }
+    }
+
+    @Override
+    public GenericPlaceholderFromSectionsEnumerator cloneEnumerator() {
+        return new GenericPlaceholderFromSectionsEnumerator(this);
     }
 
     public interface PlaceholdersFromSectionExtractor {

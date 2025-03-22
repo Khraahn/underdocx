@@ -24,13 +24,13 @@ SOFTWARE.
 
 package org.underdocx.common.tree;
 
-import org.underdocx.common.enumerator.InspectableEnumerator;
+import org.underdocx.common.enumerator.Enumerator;
 import org.w3c.dom.Node;
 
 import java.util.Optional;
 import java.util.function.Predicate;
 
-public class SimpleTreeWalker implements InspectableEnumerator<Node> {
+public class SimpleTreeWalker implements Enumerator<Node> {
 
     public static final Predicate<TreeWalker.VisitState> BeginVisitValidNodeFilter
             = visitState -> visitState.isValid() && visitState.isBeginVisit();
@@ -48,6 +48,13 @@ public class SimpleTreeWalker implements InspectableEnumerator<Node> {
         this.filter = filter;
         this.walker = new TreeWalker(start, limit, firstValidNodeOrNull);
         this.skipChildrenMode = skipChildrenMode;
+    }
+
+    private SimpleTreeWalker(SimpleTreeWalker other) {
+        this.filter = other.filter;
+        this.walker = other.walker.cloneEnumerator();
+        this.skipChildrenMode = other.skipChildrenMode;
+        this.isFirst = other.isFirst;
     }
 
     protected Optional<Node> nextNode(boolean keepCurrentState) {
@@ -74,6 +81,11 @@ public class SimpleTreeWalker implements InspectableEnumerator<Node> {
 
     public Node next() {
         return nextNode(false).orElse(null);
+    }
+
+    @Override
+    public Enumerator<Node> cloneEnumerator() {
+        return new SimpleTreeWalker(this);
     }
 
 
