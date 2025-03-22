@@ -59,6 +59,10 @@ public interface Enumerator<T> extends Iterable<T>, Iterator<T>, Enumeration<T> 
         };
     }
 
+    default Enumerator<T> cache() {
+        return CachedEnumerator.createCachedEnumerator(this);
+    }
+
     class ArrayEnumerator<T> implements Enumerator<T> {
 
         private final T[] array;

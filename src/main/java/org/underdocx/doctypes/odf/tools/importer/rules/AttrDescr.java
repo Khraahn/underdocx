@@ -24,10 +24,8 @@ SOFTWARE.
 
 package org.underdocx.doctypes.odf.tools.importer.rules;
 
-import org.underdocx.common.debug.NodePrinter;
 import org.underdocx.common.tools.Convenience;
 import org.underdocx.common.tools.StringHash;
-import org.underdocx.environment.UnderdocxEnv;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 
@@ -96,12 +94,12 @@ public class AttrDescr extends NodeDescr<AttrDescr> {
     public Optional<String> modifyValue(String resourceDescr, Node node) {
         return Convenience.buildOptional(result -> {
             getValue(node).ifPresent(value -> {
-                UnderdocxEnv.getInstance().logger.trace("attr before rename: " + new NodePrinter(node));
+                //UnderdocxEnv.getInstance().logger.trace("attr before rename: " + new NodePrinter(node));
                 String hash = getHash(resourceDescr);
                 String newValue = hash + "_" + value;
                 setValue(node, newValue);
                 result.value = newValue;
-                UnderdocxEnv.getInstance().logger.trace("attr after rename : " + new NodePrinter(node));
+                //UnderdocxEnv.getInstance().logger.trace("attr after rename : " + new NodePrinter(node));
             });
         });
     }
