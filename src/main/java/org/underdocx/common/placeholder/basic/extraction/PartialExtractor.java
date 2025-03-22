@@ -24,6 +24,7 @@ SOFTWARE.
 
 package org.underdocx.common.placeholder.basic.extraction;
 
+import org.underdocx.common.enumerator.Enumerator;
 import org.underdocx.common.placeholder.basic.detection.TextDetectionResult;
 import org.underdocx.common.placeholder.basic.detection.TextDetector;
 import org.underdocx.common.tools.Convenience;
@@ -41,8 +42,8 @@ public class PartialExtractor extends AbstractExtractor {
         super(detector, interpreter);
     }
 
-    @Override
-    public List<Node> extractNodes(Node tree, Node firstValidNodeOrNull) {
+    //  Calculate only next Placeholder node in Enumerator
+    private List<Node> extractNodesWorkaround(Node tree, Node firstValidNodeOrNull) {
         return Convenience.buildList(result -> {
             TreeWalker startNodeWalker = new TreeWalker(tree, tree, firstValidNodeOrNull);
             while (startNodeWalker.hasNext()) {
@@ -58,6 +59,11 @@ public class PartialExtractor extends AbstractExtractor {
                 });
             }
         });
+    }
+
+    @Override
+    public Enumerator<Node> extractNodes(Node tree, Node firstValidNodeOrNull) {
+        return Enumerator.of(extractNodesWorkaround(tree, firstValidNodeOrNull));
     }
 
     private TextDetectionResult.TextArea analyzeStartNode(Node node, Node scope) {

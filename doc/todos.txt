@@ -1,4 +1,8 @@
 - Features
+  - PartialExtractor workaround ausbauen
+  - FullPathExtractor workaround ausbauen
+  - DollarImagePlaceholdersProvider workaround ausbauen
+  - ImagePlaceholdersProvider workarund
   - später ggf. docx unterstützen
 - Bekannte Probleme:
   - Prüfen ob Vectorgrafiken als Bilder verwendet werden können

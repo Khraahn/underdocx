@@ -25,6 +25,7 @@ SOFTWARE.
 package org.underdocx.common.placeholder;
 
 import org.underdocx.common.codec.Codec;
+import org.underdocx.common.enumerator.Enumerator;
 import org.underdocx.common.tools.Convenience;
 import org.underdocx.common.tree.Nodes;
 import org.underdocx.doctypes.TextNodeInterpreter;
@@ -46,7 +47,7 @@ public class TextualPlaceholderToolkit<P> {
         this.extractor = extractor;
     }
 
-    public List<Node> extractPlaceholders(Node tree, Node firstValidNodeOrNull) {
+    public Enumerator<Node> extractPlaceholders(Node tree, Node firstValidNodeOrNull) {
         return extractor.extractNodes(tree, firstValidNodeOrNull);
     }
 

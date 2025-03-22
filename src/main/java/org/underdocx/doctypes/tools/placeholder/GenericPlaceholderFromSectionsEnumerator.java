@@ -27,22 +27,18 @@ package org.underdocx.doctypes.tools.placeholder;
 import org.underdocx.common.enumerator.Enumerator;
 import org.w3c.dom.Node;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-
 public class GenericPlaceholderFromSectionsEnumerator implements Enumerator<Node> {
 
     private final Enumerator<Node> validSections;
     private final PlaceholdersFromSectionExtractor extractor;
 
-    private List<Node> currentCollectedNodes = new ArrayList<>();
+    private Enumerator<Node> currentCollectedNodes = Enumerator.of();
 
     public GenericPlaceholderFromSectionsEnumerator(Enumerator<Node> validSections, PlaceholdersFromSectionExtractor extractor, Node firstValidNode) {
         this.validSections = validSections;
         this.extractor = extractor;
         if (validSections.hasNext()) {
-            currentCollectedNodes = new ArrayList<>(extractor.extractPlaceholders(validSections.next(), firstValidNode));
+            currentCollectedNodes = (extractor.extractPlaceholders(validSections.next(), firstValidNode));
         }
     }
 
@@ -50,7 +46,7 @@ public class GenericPlaceholderFromSectionsEnumerator implements Enumerator<Node
     public boolean hasNext() {
         while (currentCollectedNodes.isEmpty() && validSections.hasNext()) {
             Node nextSection = validSections.next();
-            currentCollectedNodes = new ArrayList<>(extractor.extractPlaceholders(nextSection, null));
+            currentCollectedNodes = extractor.extractPlaceholders(nextSection, null);
         }
         return !currentCollectedNodes.isEmpty();
     }
@@ -59,16 +55,16 @@ public class GenericPlaceholderFromSectionsEnumerator implements Enumerator<Node
     public Node next() {
         while (currentCollectedNodes.isEmpty() && validSections.hasNext()) {
             Node nextSection = validSections.next();
-            currentCollectedNodes = new ArrayList<>(extractor.extractPlaceholders(nextSection, null));
+            currentCollectedNodes = extractor.extractPlaceholders(nextSection, null);
         }
         if (!currentCollectedNodes.isEmpty()) {
-            return currentCollectedNodes.remove(0);
+            return currentCollectedNodes.next();
         } else {
             return null;
         }
     }
 
     public interface PlaceholdersFromSectionExtractor {
-        Collection<Node> extractPlaceholders(Node section, Node firstValidNode);
+        Enumerator<Node> extractPlaceholders(Node section, Node firstValidNode);
     }
 }

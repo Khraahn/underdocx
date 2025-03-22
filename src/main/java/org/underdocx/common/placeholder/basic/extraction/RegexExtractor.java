@@ -25,10 +25,10 @@ SOFTWARE.
 package org.underdocx.common.placeholder.basic.extraction;
 
 import org.underdocx.common.placeholder.basic.detection.RegexTextDetector;
-import org.underdocx.doctypes.TextNodeInterpreter;
 import org.underdocx.common.types.Regex;
+import org.underdocx.doctypes.TextNodeInterpreter;
 
-public class RegexExtractor extends AbstractFullPathExtractor {
+public class RegexExtractor extends FullPathExtractor {
 
     public RegexExtractor(Regex regEx, TextNodeInterpreter interpreter) {
         super(new RegexTextDetector(regEx), interpreter);

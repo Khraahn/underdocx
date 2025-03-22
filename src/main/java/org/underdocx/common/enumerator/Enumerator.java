@@ -54,25 +54,50 @@ public interface Enumerator<T> extends Iterable<T>, Iterator<T>, Enumeration<T> 
         };
     }
 
+    @SafeVarargs
     static <T> InspectableEnumerator<T> of(T... elements) {
         return new InspectableEnumerator<T>() {
-            private T[] array = elements;
-            private int counter = 0;
+            private final T[] array = elements;
+            private int index = 0;
 
             @Override
             public Optional<T> inspectNext() {
-                return (counter < elements.length) ? Optional.of(elements[counter]) : Optional.empty();
+                return (index < elements.length) ? Optional.of(elements[index]) : Optional.empty();
             }
 
             @Override
             public boolean hasNext() {
-                return (counter < elements.length);
+                return (index < elements.length);
             }
 
             @Override
             public T next() {
-                T tmp = array[counter];
-                counter++;
+                T tmp = array[index];
+                index++;
+                return tmp;
+            }
+        };
+    }
+
+    static <T> InspectableEnumerator<T> of(List<T> elements) {
+        return new InspectableEnumerator<T>() {
+            private final List<T> list = elements;
+            private int index = 0;
+
+            @Override
+            public Optional<T> inspectNext() {
+                return (index < elements.size()) ? Optional.of(elements.get(index)) : Optional.empty();
+            }
+
+            @Override
+            public boolean hasNext() {
+                return (index < elements.size());
+            }
+
+            @Override
+            public T next() {
+                T tmp = list.get(index);
+                index++;
                 return tmp;
             }
         };
@@ -149,6 +174,10 @@ public interface Enumerator<T> extends Iterable<T>, Iterator<T>, Enumeration<T> 
     @Override
     default Iterator<T> iterator() {
         return this;
+    }
+
+    default boolean isEmpty() {
+        return !hasNext();
     }
 
 

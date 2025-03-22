@@ -38,14 +38,14 @@ import java.util.List;
 import static org.underdocx.common.tools.Convenience.also;
 import static org.underdocx.common.tools.Convenience.buildList;
 
-public class AbstractFullPathExtractor extends AbstractExtractor {
+public class FullPathExtractor extends AbstractExtractor {
 
-    public AbstractFullPathExtractor(TextDetector detector, TextNodeInterpreter interpreter) {
+    public FullPathExtractor(TextDetector detector, TextNodeInterpreter interpreter) {
         super(detector, interpreter);
     }
 
-    @Override
-    public List<Node> extractNodes(Node tree, Node firstValidNodeOrNull) {
+    // TODO calculate only next placeholder in enumerator. Use TextNodeInterpreter to limit range (stop at start of partialTextContainer)
+    private List<Node> extractNodesWorkaround(Node tree, Node firstValidNodeOrNull) {
         return buildList(result -> {
             Node start = tree;
             while (start != null) {
@@ -60,5 +60,10 @@ public class AbstractFullPathExtractor extends AbstractExtractor {
                 }
             }
         });
+    }
+
+    @Override
+    public Enumerator<Node> extractNodes(Node tree, Node firstValidNodeOrNull) {
+        return Enumerator.of(extractNodesWorkaround(tree, firstValidNodeOrNull));
     }
 }

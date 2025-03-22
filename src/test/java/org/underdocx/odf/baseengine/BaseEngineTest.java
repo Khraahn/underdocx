@@ -93,7 +93,7 @@ public class BaseEngineTest extends AbstractOdtTest {
         Document xml = readXML("<root><p>Hallo $name :-)</p></root>");
         Node paragraph = Nodes.findFirstDescendantNode(xml, "p").get();
         EncapsulatedNodesExtractor extractor = new TestSimpleDollarProviderFactory().getExtractor();
-        List<Node> nodes = extractor.extractNodes(paragraph, null);
+        List<Node> nodes = extractor.extractNodes(paragraph, null).collect();
         assertThat(nodes.get(0).getFirstChild().getNodeValue()).isEqualTo("$name");
         String xmlTree = new TreePrinter(Nodes.findFirstDescendantNode(xml, "root").get(), true, true).toString();
         assertThat(xmlTree).isEqualTo("<root><p>Hallo <span>$name</span> :-)</p></root>");
@@ -143,7 +143,7 @@ public class BaseEngineTest extends AbstractOdtTest {
         Document xml = readXML("<root><p><x></x>Hallo $name :-)</p></root>");
         Node paragraph = Nodes.findFirstDescendantNode(xml, "p").get();
         EncapsulatedNodesExtractor extractor = new TestSimpleDollarProviderFactory().getExtractor();
-        List<Node> nodes = extractor.extractNodes(paragraph, null);
+        List<Node> nodes = extractor.extractNodes(paragraph, null).collect();
         assertThat(nodes.get(0).getFirstChild().getNodeValue()).isEqualTo("$name");
         String xmlTree = new TreePrinter(Nodes.findFirstDescendantNode(xml, "root").get(), true, true).toString();
         assertThat(xmlTree).isEqualTo("<root><p><x></x>Hallo <span>$name</span> :-)</p></root>");

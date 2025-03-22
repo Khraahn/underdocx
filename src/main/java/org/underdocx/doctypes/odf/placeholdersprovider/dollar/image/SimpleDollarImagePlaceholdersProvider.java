@@ -92,8 +92,8 @@ public class SimpleDollarImagePlaceholdersProvider<C extends AbstractOdfContaine
         ));
     }
 
-    @Override
-    public List<Node> extractNodes(Node tree, Node firstValidNodeOrNull) {
+    // TODO implement enumerator
+    private List<Node> extractNodesWorkaround(Node tree, Node firstValidNodeOrNull) {
         return Convenience.also(new ArrayList<Node>(), result -> {
             TreeNodeCollector collector = new TreeNodeCollector(tree, tree, firstValidNodeOrNull, new ArrayList<>(),
                     visitState -> visitState != null &&
@@ -105,6 +105,11 @@ public class SimpleDollarImagePlaceholdersProvider<C extends AbstractOdfContaine
                 if (isEncapsulatedNode(frame)) result.add(frame);
             });
         });
+    }
+
+    @Override
+    public Enumerator<Node> extractNodes(Node tree, Node firstValidNodeOrNull) {
+        return Enumerator.of(extractNodesWorkaround(tree, firstValidNodeOrNull));
     }
 
     @Override

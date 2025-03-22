@@ -24,14 +24,13 @@ SOFTWARE.
 
 package org.underdocx.common.placeholder;
 
+import org.underdocx.common.enumerator.Enumerator;
 import org.underdocx.doctypes.TextNodeInterpreter;
 import org.w3c.dom.Node;
 
-import java.util.List;
-
 public interface EncapsulatedNodesExtractor {
 
-    List<Node> extractNodes(Node tree, Node firstValidNodeOrNull);
+    Enumerator<Node> extractNodes(Node tree, Node firstValidNodeOrNull);
 
     boolean isEncapsulatedNode(Node node);
 
