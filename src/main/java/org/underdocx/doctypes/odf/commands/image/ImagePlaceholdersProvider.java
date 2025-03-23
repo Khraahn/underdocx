@@ -25,11 +25,11 @@ SOFTWARE.
 package org.underdocx.doctypes.odf.commands.image;
 
 import org.odftoolkit.odfdom.doc.OdfDocument;
+import org.underdocx.common.enumerator.AbstractPrepareNextEnumerator;
 import org.underdocx.common.enumerator.Enumerator;
 import org.underdocx.common.placeholder.EncapsulatedNodesExtractor;
 import org.underdocx.common.placeholder.TextualPlaceholderToolkit;
 import org.underdocx.common.placeholder.basic.textnodeinterpreter.OdfTextNodeInterpreter;
-import org.underdocx.common.tools.Convenience;
 import org.underdocx.common.tree.nodepath.TreeNodeCollector;
 import org.underdocx.doctypes.TextNodeInterpreter;
 import org.underdocx.doctypes.odf.AbstractOdfContainer;
@@ -40,7 +40,6 @@ import org.underdocx.enginelayers.baseengine.PlaceholdersProvider;
 import org.w3c.dom.Node;
 
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
 
 public class ImagePlaceholdersProvider<C extends AbstractOdfContainer<D>, D extends OdfDocument> implements EncapsulatedNodesExtractor, PlaceholdersProvider<C, ImagePlaceholderData, D> {
@@ -54,24 +53,46 @@ public class ImagePlaceholdersProvider<C extends AbstractOdfContainer<D>, D exte
 
     private static TextNodeInterpreter interpreter = OdfTextNodeInterpreter.INSTANCE;
 
-    // TODO implement enumerator
-    private List<Node> extractNodesWorkaround(Node tree, Node firstValidNodeOrNull) {
-        return Convenience.also(new ArrayList<Node>(), result -> {
-            TreeNodeCollector collector = new TreeNodeCollector(tree, tree, firstValidNodeOrNull, new ArrayList<>(),
+    private class ExtractEnumerator extends AbstractPrepareNextEnumerator<Node> {
+
+        private Enumerator<Node> inner;
+
+        private ExtractEnumerator(Node tree, Node firstValidNodeOrNull) {
+            super();
+            this.inner = new TreeNodeCollector(tree, tree, firstValidNodeOrNull, new ArrayList<>(),
                     visitState -> visitState != null &&
                             visitState.isValid() &&
                             visitState.isBeginVisit() &&
                             visitState.getNode() != null &&
                             OdfElement.FRAME.is(visitState.getNode()));
-            collector.forEach(frame -> {
-                if (isEncapsulatedNode(frame)) result.add(frame);
-            });
-        });
+            init();
+        }
+
+        private ExtractEnumerator(ExtractEnumerator other) {
+            super(other);
+            this.inner = other.inner.cloneEnumerator();
+        }
+
+        @Override
+        protected Node findNext() {
+            while (inner.hasNext()) {
+                Node frame = inner.next();
+                if (isEncapsulatedNode(frame)) {
+                    return frame;
+                }
+            }
+            return null;
+        }
+
+        @Override
+        public Enumerator<Node> cloneEnumerator() {
+            return new ExtractEnumerator(this);
+        }
     }
 
     @Override
     public Enumerator<Node> extractNodes(Node tree, Node firstValidNodeOrNull) {
-        return Enumerator.of(extractNodesWorkaround(tree, firstValidNodeOrNull));
+        return new ExtractEnumerator(tree, firstValidNodeOrNull);
     }
 
     @Override
