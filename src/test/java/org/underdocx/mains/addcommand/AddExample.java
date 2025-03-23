@@ -38,7 +38,7 @@ public class AddExample {
         }
     }
 
-    public static void main(String[] args) throws IOException {
+    public static File main() throws IOException {
         String content = """
                 ${Add a:2, b:3, target:"sum"}
                 ${$sum}
@@ -50,5 +50,10 @@ public class AddExample {
         File tmpFile = File.createTempFile("Test_", ".odt");
         doc.save(tmpFile);
         System.out.println("Document created: %s".formatted(tmpFile));
+        return tmpFile;
+    }
+
+    public static void main(String[] args) throws IOException {
+        main();
     }
 }

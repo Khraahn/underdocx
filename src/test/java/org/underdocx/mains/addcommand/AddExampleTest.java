@@ -22,10 +22,22 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-package org.underdocx.doctypes.odf.placeholdersprovider.dollar.image;
+package org.underdocx.mains.addcommand;
 
-public interface SimpleDollarImagePlaceholderData extends BasicImagePlaceholderData {
+import org.junit.jupiter.api.Test;
+import org.underdocx.AbstractOdtTest;
+import org.underdocx.doctypes.odf.odt.OdtContainer;
 
-    String getVariableName();
+import java.io.File;
+import java.io.IOException;
 
+public class AddExampleTest extends AbstractOdtTest {
+
+    @Test
+    public void testMain() throws IOException {
+        File tmpFile = AddExample.main();
+        OdtContainer doc = new OdtContainer(tmpFile);
+        assertNoPlaceholders(doc);
+        assertContains(doc, "5");
+    }
 }

@@ -72,7 +72,7 @@ public class CustomPlaceholderExample {
         }
     }
 
-    public static void main(String[] args) throws IOException {
+    public static File main() throws IOException {
         String content = "Hello <name>";
         OdtContainer doc = new OdtContainer(content);
         OdtEngine engine = new OdtEngine(doc);
@@ -80,5 +80,10 @@ public class CustomPlaceholderExample {
         engine.run();
         File tmpFile = File.createTempFile("Test_", ".odt");
         doc.save(tmpFile); // Expectation: Document containing "Hello NAME"
+        return tmpFile;
+    }
+
+    public static void main(String[] args) throws IOException {
+        main();
     }
 }

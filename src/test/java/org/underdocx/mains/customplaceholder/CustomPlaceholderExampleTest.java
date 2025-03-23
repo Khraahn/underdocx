@@ -22,41 +22,22 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-package org.underdocx.odf.demo;
+package org.underdocx.mains.customplaceholder;
 
 import org.junit.jupiter.api.Test;
 import org.underdocx.AbstractOdtTest;
 import org.underdocx.doctypes.odf.odt.OdtContainer;
-import org.underdocx.doctypes.odf.odt.OdtEngine;
-import org.underdocx.environment.UnderdocxEnv;
 
-import java.io.FileOutputStream;
+import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.util.Date;
 
-public class Demo_0_2_0_Test extends AbstractOdtTest {
+public class CustomPlaceholderExampleTest extends AbstractOdtTest {
 
     @Test
-    public void testDemoDoc() throws IOException {
-        InputStream is = getInputStream("demo0.2.0.odt");
-        String imageURL = createTmpUri(getInputStream("smile.png"), "png");
-        OutputStream os = new FileOutputStream(createFileInTempDir("demo0.2.0out.odt"));
-
-
-        OdtContainer doc = new OdtContainer(is);
-        OdtEngine engine = new OdtEngine(doc);
-        engine.registerSimpleDollarReplacement("name", System.getProperty("user.name"));
-        engine.registerSimpleDollarReplacement("date", String.valueOf(new Date()));
-        engine.registerSimpleDollarImageReplacement("image", imageURL, true);
-        engine.run();
-        doc.save(os);
-
-        if (UnderdocxEnv.isLibreOfficeInstalled()) {
-            OutputStream pos = new FileOutputStream(createFileInTempDir("demo0.2.0out.pdf"));
-            doc.writePDF(pos);
-        }
+    public void testMain() throws IOException {
+        File tmpFile = CustomPlaceholderExample.main();
+        OdtContainer doc = new OdtContainer(tmpFile);
+        assertNoPlaceholders(doc);
+        assertContains(doc, "Hello NAME");
     }
-
 }

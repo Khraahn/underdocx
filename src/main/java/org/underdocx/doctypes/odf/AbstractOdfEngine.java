@@ -25,36 +25,22 @@ SOFTWARE.
 package org.underdocx.doctypes.odf;
 
 import org.odftoolkit.odfdom.doc.OdfDocument;
-import org.underdocx.common.types.Regex;
 import org.underdocx.doctypes.AbstractEngine;
 import org.underdocx.doctypes.EngineAPI;
 import org.underdocx.doctypes.commands.AliasCommandHandler;
 import org.underdocx.doctypes.commands.MultiCommandHandler;
-import org.underdocx.doctypes.odf.commands.SimpleDollarImageReplaceCommand;
-import org.underdocx.doctypes.odf.commands.SimpleReplaceFunctionCommand;
 import org.underdocx.doctypes.odf.commands.image.ImagePlaceholdersProvider;
 import org.underdocx.doctypes.odf.modifiers.OdfModifiersProvider;
-import org.underdocx.doctypes.odf.placeholdersprovider.dollar.OdfSimpleDollarPlaceholderFactory;
-import org.underdocx.doctypes.odf.placeholdersprovider.dollar.image.SimpleDollarImagePlaceholdersProvider;
 import org.underdocx.doctypes.tools.placeholder.GenericTextualPlaceholderFactory;
 import org.underdocx.enginelayers.modelengine.MCommandHandler;
 import org.underdocx.enginelayers.modelengine.ModelEngine;
 import org.underdocx.enginelayers.parameterengine.ParametersPlaceholderData;
-import org.underdocx.environment.err.Problems;
-
-import java.net.URI;
-import java.util.Optional;
-import java.util.function.Function;
-import java.util.regex.Pattern;
 
 public abstract class AbstractOdfEngine<C extends AbstractOdfContainer<D>, D extends OdfDocument> extends AbstractEngine<C, D> implements EngineAPI {
 
     protected final OdfModifiersProvider<C, D> modifiers = new OdfModifiersProvider<>();
 
-    protected final SimpleDollarImagePlaceholdersProvider.SimpleDollarImagePlaceholdersProviderFactory<C, D> simpleDollarImage
-            = new SimpleDollarImagePlaceholdersProvider.SimpleDollarImagePlaceholdersProviderFactory<>();
-    protected final OdfSimpleDollarPlaceholderFactory<C, D> simpleDollar
-            = new OdfSimpleDollarPlaceholderFactory<>();
+
     protected GenericTextualPlaceholderFactory<C, ParametersPlaceholderData, D> parameters;
     protected final ImagePlaceholdersProvider.ImagePlaceholdersProviderFactory<C, D> imagePlaceholdersProvider
             = new ImagePlaceholdersProvider.ImagePlaceholdersProviderFactory<>();
@@ -82,41 +68,4 @@ public abstract class AbstractOdfEngine<C extends AbstractOdfContainer<D>, D ext
     public void registerParametersCommandHandler(MCommandHandler<C, ParametersPlaceholderData, D> commandHandler) {
         this.getEngine().registerCommandHandler(parameters, commandHandler);
     }
-
-    public void registerSimpleDollarReplaceFunction(Function<String, Optional<String>> replaceFunction) {
-        registerCommandHandler(simpleDollar, new SimpleReplaceFunctionCommand<C, D>(replaceFunction));
-    }
-
-
-    public void registerSimpleDollarReplacement(String variableName, String replacement) {
-        this.registerSimpleDollarReplacement(Pattern.compile(Pattern.quote(variableName)), replacement);
-    }
-
-    public void registerSimpleDollarReplacement(Pattern pattern, String replacement) {
-        this.registerSimpleDollarReplaceFunction(variableName ->
-                new Regex(pattern).matches(variableName) ? Optional.of(replacement) : Optional.empty()
-        );
-    }
-
-    public void registerSimpleDollarImageReplaceFunction(Function<String, Optional<URI>> replaceFunction, boolean keepWidth) {
-        registerCommandHandler(simpleDollarImage, new SimpleDollarImageReplaceCommand<>(replaceFunction, keepWidth));
-    }
-
-    public void registerSimpleDollarImageReplacement(String variableName, String imageURL, boolean keepWidth) {
-        this.registerSimpleDollarImageReplacement(Pattern.compile(Pattern.quote(variableName)), imageURL, keepWidth);
-    }
-
-    public void registerSimpleDollarImageReplacement(Pattern pattern, String imageURI, boolean keepWidth) {
-        this.registerSimpleDollarImageReplaceFunction(variableName ->
-                {
-                    try {
-                        return new Regex(pattern).matches(variableName) ? Optional.of(new URI(imageURI)) : Optional.empty();
-                    } catch (Exception e) {
-                        return Problems.INVALID_VALUE.toProblem().value(imageURI).exception(e).fire();
-                    }
-                }, keepWidth
-        );
-    }
-
-
 }
