@@ -24,19 +24,18 @@ SOFTWARE.
 
 package org.underdocx.common.placeholder.basic.extraction;
 
+import org.underdocx.common.enumerator.AbstractPrepareNextEnumerator;
 import org.underdocx.common.enumerator.Enumerator;
 import org.underdocx.common.placeholder.basic.detection.TextDetectionResult;
 import org.underdocx.common.placeholder.basic.detection.TextDetector;
+import org.underdocx.common.tools.Convenience;
+import org.underdocx.common.tree.SimpleTreeWalker;
 import org.underdocx.common.tree.TreeWalker;
 import org.underdocx.common.tree.nodepath.TextNodePath;
-import org.underdocx.common.tree.nodepath.TreeNodeCollector;
 import org.underdocx.doctypes.TextNodeInterpreter;
 import org.w3c.dom.Node;
 
 import java.util.List;
-
-import static org.underdocx.common.tools.Convenience.also;
-import static org.underdocx.common.tools.Convenience.buildList;
 
 public class FullPathExtractor extends AbstractExtractor {
 
@@ -44,26 +43,101 @@ public class FullPathExtractor extends AbstractExtractor {
         super(detector, interpreter);
     }
 
-    // TODO calculate only next placeholder in enumerator. Use TextNodeInterpreter to limit range (stop at start of partialTextContainer)
-    private List<Node> extractNodesWorkaround(Node tree, Node firstValidNodeOrNull) {
-        return buildList(result -> {
-            Node start = tree;
-            while (start != null) {
-                TextNodePath fullPath = new TextNodePath(also(new TreeNodeCollector(start, tree, firstValidNodeOrNull), Enumerator::collect).getNodes(), interpreter);
-                TextDetectionResult.TextArea area = detector.detect(fullPath).area;
-                if (area != null) {
-                    Node foundNode = getIfEncapsulated(area).orElse(Encapsulator.encapsulate(area));
-                    result.add(foundNode);
-                    start = TreeWalker.findNextNode(foundNode, tree, null, true);
-                } else {
-                    start = null;
-                }
+    private class TextSequenceEnumerator extends AbstractPrepareNextEnumerator<TextNodePath> {
+
+        private final Enumerator<Node> nodes;
+
+        private TextSequenceEnumerator(Node startNode, Node scope, Node firstValid) {
+            this.nodes = new SimpleTreeWalker(startNode, scope, firstValid);
+            init();
+        }
+
+        public TextSequenceEnumerator(TextSequenceEnumerator other) {
+            super(other);
+            this.nodes = other.nodes.cloneEnumerator();
+        }
+
+        private boolean isPlaceholderTextElement(Node node) {
+            if (node.getNodeType() == Node.TEXT_NODE) {
+                return interpreter.isTextRelatedType(node.getParentNode());
+            } else {
+                return interpreter.isTextOnlyType(node);
             }
-        });
+        }
+
+        @Override
+        protected TextNodePath findNext() {
+            List<Node> pathNodes = Convenience.buildList(result -> {
+                while (nodes.hasNext()) {
+                    Node currentNode = nodes.next();
+                    if (!isPlaceholderTextElement(currentNode)) {
+                        if (!result.isEmpty()) {
+                            break;
+                        }
+                    } else {
+                        result.add(currentNode);
+                    }
+                }
+            });
+            TextNodePath result = pathNodes.isEmpty() ? null : new TextNodePath(pathNodes, interpreter);
+            System.out.println(">>>> text node path: " + result);
+            return result;
+        }
+
+        @Override
+        public TextSequenceEnumerator cloneEnumerator() {
+            return new TextSequenceEnumerator(this);
+        }
     }
+
+    private class ExtractNodeEnumerator extends AbstractPrepareNextEnumerator<Node> {
+
+        private final Node tree;
+        private Node firstValidNode;
+        private Node start;
+
+        private ExtractNodeEnumerator(Node tree, Node firstValidNodeOrNull) {
+            this.tree = tree;
+            this.start = tree;
+            this.firstValidNode = firstValidNodeOrNull;
+            init();
+        }
+
+        private ExtractNodeEnumerator(ExtractNodeEnumerator other) {
+            super(other);
+            this.tree = other.tree;
+            this.start = other.start;
+            this.firstValidNode = other.firstValidNode;
+        }
+
+        @Override
+        protected Node findNext() {
+            return Convenience.build(result -> {
+                if (start != null) {
+                    TextSequenceEnumerator pathEnumerator = new TextSequenceEnumerator(start, tree, firstValidNode);
+                    while (pathEnumerator.hasNext()) {
+                        TextNodePath path = pathEnumerator.next();
+                        TextDetectionResult.TextArea area = detector.detect(path).area;
+                        if (area != null) {
+                            Node foundNode = getIfEncapsulated(area).orElse(Encapsulator.encapsulate(area));
+                            result.value = foundNode;
+                            start = TreeWalker.findNextNode(foundNode, tree, null, true);
+                            break;
+                        }
+                    }
+                }
+            });
+        }
+
+        @Override
+        public Enumerator<Node> cloneEnumerator() {
+            return new ExtractNodeEnumerator(this);
+        }
+    }
+
 
     @Override
     public Enumerator<Node> extractNodes(Node tree, Node firstValidNodeOrNull) {
-        return Enumerator.of(extractNodesWorkaround(tree, firstValidNodeOrNull));
+        return new ExtractNodeEnumerator(tree, firstValidNodeOrNull);
     }
 }

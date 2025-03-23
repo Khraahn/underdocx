@@ -50,6 +50,11 @@ public class SimpleTreeWalker implements Enumerator<Node> {
         this.skipChildrenMode = skipChildrenMode;
     }
 
+    public SimpleTreeWalker(Node start, Node limit, Node firstValidNodeOrNull) {
+        this(start, limit, firstValidNodeOrNull, BeginVisitValidNodeFilter, false);
+    }
+
+
     private SimpleTreeWalker(SimpleTreeWalker other) {
         this.filter = other.filter;
         this.walker = other.walker.cloneEnumerator();
