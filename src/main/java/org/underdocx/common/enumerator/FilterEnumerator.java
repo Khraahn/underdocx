@@ -35,7 +35,6 @@ public class FilterEnumerator<T> extends AbstractPrepareNextEnumerator<T> {
         super();
         this.filter = filter;
         this.inner = inner;
-        init();
     }
 
     public FilterEnumerator(FilterEnumerator<T> other) {

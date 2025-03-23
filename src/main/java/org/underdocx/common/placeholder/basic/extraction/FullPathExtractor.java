@@ -49,7 +49,6 @@ public class FullPathExtractor extends AbstractExtractor {
 
         private TextSequenceEnumerator(Node startNode, Node scope, Node firstValid) {
             this.nodes = new SimpleTreeWalker(startNode, scope, firstValid);
-            init();
         }
 
         public TextSequenceEnumerator(TextSequenceEnumerator other) {
@@ -100,7 +99,6 @@ public class FullPathExtractor extends AbstractExtractor {
             this.tree = tree;
             this.start = tree;
             this.firstValidNode = firstValidNodeOrNull;
-            init();
         }
 
         private ExtractNodeEnumerator(ExtractNodeEnumerator other) {

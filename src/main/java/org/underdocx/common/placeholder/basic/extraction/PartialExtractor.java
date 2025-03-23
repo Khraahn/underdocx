@@ -49,7 +49,6 @@ public class PartialExtractor extends AbstractExtractor {
         private ExtractNodeEnumerator(Node tree, Node firstValidNodeOrNull) {
             this.tree = tree;
             this.startNodeWalker = new TreeWalker(tree, tree, firstValidNodeOrNull);
-            init();
         }
 
         private ExtractNodeEnumerator(ExtractNodeEnumerator other) {

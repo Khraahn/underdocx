@@ -24,36 +24,66 @@ SOFTWARE.
 
 package org.underdocx.common.enumerator;
 
+import org.underdocx.common.tools.Convenience;
+
 public abstract class AbstractPrepareNextEnumerator<T> implements Enumerator<T> {
 
-    protected T next;
+    protected class PreparedNextElement {
+        private boolean isValid;
+        private T preparedNextElement;
+
+        public PreparedNextElement(T preparedNextElement, boolean valid) {
+            this.preparedNextElement = preparedNextElement;
+            this.isValid = valid;
+        }
+
+        public T getPreparedNextElement() {
+            return preparedNextElement;
+        }
+
+        public void setPreparedNextElement(T element) {
+            this.preparedNextElement = element;
+        }
+
+        public boolean isValid() {
+            return isValid;
+        }
+
+        public void setValid(boolean value) {
+            isValid = value;
+        }
+    }
+
+    protected PreparedNextElement next;
 
     protected AbstractPrepareNextEnumerator() {
         next = null;
+    }
+
+    protected AbstractPrepareNextEnumerator(T initialNode) {
+        next = new PreparedNextElement(initialNode, true);
     }
 
     protected AbstractPrepareNextEnumerator(AbstractPrepareNextEnumerator<T> other) {
         this.next = other.next;
     }
 
-
-    protected void init() {
-        next = findNext();
-    }
-
     protected abstract T findNext();
-
 
     @Override
     public boolean hasNext() {
-        return next != null;
+        if (next == null || !next.isValid) {
+            next = new PreparedNextElement(findNext(), true);
+        }
+        return next.getPreparedNextElement() != null;
     }
 
     @Override
     public T next() {
-        T tmp = next;
-        next = findNext();
-        return tmp;
+        if (next == null || !next.isValid) {
+            next = new PreparedNextElement(findNext(), true);
+        }
+        return Convenience.also(next.getPreparedNextElement(), n -> next.setValid(false));
     }
 
 

@@ -65,7 +65,6 @@ public class ImagePlaceholdersProvider<C extends AbstractOdfContainer<D>, D exte
                             visitState.isBeginVisit() &&
                             visitState.getNode() != null &&
                             OdfElement.FRAME.is(visitState.getNode()));
-            init();
         }
 
         private ExtractEnumerator(ExtractEnumerator other) {

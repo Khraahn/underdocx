@@ -24,26 +24,25 @@ SOFTWARE.
 
 package org.underdocx.common.enumerator;
 
-public class EnumeratorOfEnumerator<T> implements Enumerator<T> {
+public class EnumeratorOfEnumerator<T> extends AbstractPrepareNextEnumerator<T> {
 
     private final Enumerator<Enumerator<T>> enumeratorOfEnumerators;
     private Enumerator<T> currentEnumerator;
-    private T next;
+
 
     @SafeVarargs
     public EnumeratorOfEnumerator(Enumerator<T>... enumerators) {
         enumeratorOfEnumerators = Enumerator.of(enumerators);
         currentEnumerator = enumerators[0];
-        next = findNext();
     }
 
     private EnumeratorOfEnumerator(EnumeratorOfEnumerator<T> other) {
+        super(other);
         this.enumeratorOfEnumerators = other.enumeratorOfEnumerators.cloneEnumerator();
         this.currentEnumerator = other.currentEnumerator.cloneEnumerator();
-        this.next = other.next();
     }
 
-    private T findNext() {
+    protected T findNext() {
         while (!currentEnumerator.hasNext() && enumeratorOfEnumerators.hasNext()) {
             currentEnumerator = enumeratorOfEnumerators.next();
         }
@@ -51,19 +50,6 @@ public class EnumeratorOfEnumerator<T> implements Enumerator<T> {
             return currentEnumerator.next();
         }
         return null;
-    }
-
-
-    @Override
-    public boolean hasNext() {
-        return next != null;
-    }
-
-    @Override
-    public T next() {
-        T tmp = next;
-        next = findNext();
-        return tmp;
     }
 
     @Override

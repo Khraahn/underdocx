@@ -25,6 +25,7 @@ SOFTWARE.
 
 package org.underdocx.common.tree;
 
+import org.underdocx.common.enumerator.AbstractPrepareNextEnumerator;
 import org.underdocx.common.enumerator.Enumerator;
 import org.underdocx.common.enumerator.FilterEnumerator;
 import org.underdocx.common.tools.Convenience;
@@ -216,41 +217,35 @@ public class Nodes {
         return getSiblingsIterator(firstNode, limit).collect();
     }
 
-    private static class SiblingsEnumerator implements Enumerator<Node> {
+    private static class SiblingsEnumerator extends AbstractPrepareNextEnumerator<Node> {
 
         private final Node limit;
-        private Node next;
         private boolean limitReached;
 
         private SiblingsEnumerator(Node firstNode, Node limit) {
-            this.next = firstNode;
+            super(firstNode);
             this.limitReached = false;
             this.limit = limit;
         }
 
         private SiblingsEnumerator(SiblingsEnumerator other) {
-            this.next = other.next;
+            super(other);
             this.limitReached = other.limitReached;
             this.limit = other.limit;
         }
 
-        @Override
-        public boolean hasNext() {
-            return next != null;
-        }
 
         @Override
-        public Node next() {
-            return Convenience.also(next, n -> {
-                if (limitReached) {
-                    next = null;
-                } else {
-                    next = next.getNextSibling();
-                    if (next == limit) {
-                        limitReached = true;
-                    }
+        public Node findNext() {
+            if (limitReached) {
+                return null;
+            } else {
+                Node result = next.getPreparedNextElement().getNextSibling();
+                if (result == limit) {
+                    limitReached = true;
                 }
-            });
+                return result;
+            }
         }
 
         @Override

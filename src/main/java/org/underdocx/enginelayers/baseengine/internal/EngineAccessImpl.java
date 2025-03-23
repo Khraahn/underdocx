@@ -24,6 +24,7 @@ SOFTWARE.
 
 package org.underdocx.enginelayers.baseengine.internal;
 
+import org.underdocx.common.enumerator.AbstractPrepareNextEnumerator;
 import org.underdocx.common.enumerator.Enumerator;
 import org.underdocx.common.placeholder.TextualPlaceholderToolkit;
 import org.underdocx.common.tools.Convenience;
@@ -75,24 +76,23 @@ public class EngineAccessImpl<C extends DocContainer<D>, D> implements EngineAcc
         rescan.run();
     }
 
-    private class LookAheadEnumerator implements Enumerator<SelectedNode<?>> {
+    private class LookAheadEnumerator extends AbstractPrepareNextEnumerator<SelectedNode<?>> {
         private final Predicate<SelectedNode<?>> filter;
         private final Enumerator<Pair<PlaceholdersProvider<C, ?, D>, Node>> cloneEnumerator;
-        private SelectedNode<?> next;
 
         protected LookAheadEnumerator(Enumerator<Pair<PlaceholdersProvider<C, ?, D>, Node>> engineEnumerator, Predicate<SelectedNode<?>> filter) {
             this.cloneEnumerator = engineEnumerator.cloneEnumerator();
             this.filter = filter;
-            this.next = findNext();
         }
 
         private LookAheadEnumerator(LookAheadEnumerator other) {
+            super(other);
             this.cloneEnumerator = other.cloneEnumerator.cloneEnumerator();
             this.filter = other.filter;
-            this.next = other.next;
         }
 
-        private SelectedNode<?> findNext() {
+        @Override
+        protected SelectedNode<?> findNext() {
             while (cloneEnumerator.hasNext()) {
                 Pair<PlaceholdersProvider<C, ?, D>, Node> pair = cloneEnumerator.next();
                 SelectedNodeImpl<C, ?, D> selectedNode = new SelectedNodeImpl<>(pair.right, pair.left);
@@ -101,18 +101,6 @@ public class EngineAccessImpl<C extends DocContainer<D>, D> implements EngineAcc
                 }
             }
             return null;
-        }
-
-        @Override
-        public boolean hasNext() {
-            return next != null;
-        }
-
-        @Override
-        public SelectedNode<?> next() {
-            SelectedNode<?> tmp = next;
-            next = findNext();
-            return tmp;
         }
 
         @Override

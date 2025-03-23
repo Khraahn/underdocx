@@ -92,6 +92,4 @@ public class SimpleTreeWalker implements Enumerator<Node> {
     public Enumerator<Node> cloneEnumerator() {
         return new SimpleTreeWalker(this);
     }
-
-
 }

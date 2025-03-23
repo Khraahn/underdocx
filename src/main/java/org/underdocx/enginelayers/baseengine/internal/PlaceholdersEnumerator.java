@@ -24,9 +24,11 @@ SOFTWARE.
 
 package org.underdocx.enginelayers.baseengine.internal;
 
+import org.underdocx.common.enumerator.AbstractPrepareNextEnumerator;
 import org.underdocx.common.enumerator.Enumerator;
 import org.underdocx.common.tree.Nodes;
 import org.underdocx.common.types.Pair;
+import org.underdocx.common.types.Wrapper;
 import org.underdocx.doctypes.DocContainer;
 import org.underdocx.enginelayers.baseengine.PlaceholdersProvider;
 import org.w3c.dom.Node;
@@ -35,51 +37,42 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
-import static org.underdocx.common.tools.Convenience.also;
-
-public class PlaceholdersEnumerator<C extends DocContainer<D>, D> implements Enumerator<Pair<PlaceholdersProvider<C, ?, D>, Node>> {
+public class PlaceholdersEnumerator<C extends DocContainer<D>, D> extends AbstractPrepareNextEnumerator<Pair<PlaceholdersProvider<C, ?, D>, Node>> {
 
     private final Map<PlaceholdersProvider<C, ?, D>, Enumerator<Node>> currentEnumerators = new HashMap<>();
     private final Map<PlaceholdersProvider<C, ?, D>, Node> currentNodes = new HashMap<>();
-    private Pair<PlaceholdersProvider<C, ?, D>, Node> next = null;
 
 
     public PlaceholdersEnumerator(Set<PlaceholdersProvider<C, ?, D>> providers) {
         providers.forEach(provider -> currentEnumerators.put(provider, provider.getPlaceholders()));
         currentEnumerators.forEach((provider, enumerator) -> {
             Node node = enumerator.next();
-            if (node != null && (next == null || Nodes.compareNodePositions(node, next.right) < 0)) {
-                next = new Pair<>(provider, node);
+            if (node != null && (next == null || Nodes.compareNodePositions(node, next.getPreparedNextElement().right) < 0)) {
+                next = new PreparedNextElement(new Pair<>(provider, node), true);
             }
             currentNodes.put(provider, node);
         });
     }
 
     private PlaceholdersEnumerator(PlaceholdersEnumerator<C, D> other) {
+        super(other);
         other.currentEnumerators.forEach((key, value) -> this.currentEnumerators.put(key, value.cloneEnumerator()));
         this.currentNodes.putAll(other.currentNodes);
-        this.next = other.next;
     }
 
-    private void findNext() {
-        if (next == null) return;
-        Node newElement = currentEnumerators.get(next.left).next();
-        currentNodes.put(next.left, newElement);
-        next = null;
+    @Override
+    protected Pair<PlaceholdersProvider<C, ?, D>, Node> findNext() {
+        if (next == null || next.getPreparedNextElement() == null) return null;
+        Node newElement = currentEnumerators.get(next.getPreparedNextElement().left).next();
+        currentNodes.put(next.getPreparedNextElement().left, newElement);
+        Wrapper<Pair<PlaceholdersProvider<C, ?, D>, Node>> result = new Wrapper<>();
 
         currentNodes.forEach((provider, node) -> {
-            if (node != null && (next == null || Nodes.compareNodePositions(node, next.right) < 0)) {
-                next = new Pair<>(provider, node);
+            if (node != null && (result.value == null || Nodes.compareNodePositions(node, result.value.right) < 0)) {
+                result.value = new Pair<>(provider, node);
             }
         });
-    }
-
-    public boolean hasNext() {
-        return next != null;
-    }
-
-    public Pair<PlaceholdersProvider<C, ?, D>, Node> next() {
-        return also(next, n -> findNext());
+        return result.value;
     }
 
     @Override
