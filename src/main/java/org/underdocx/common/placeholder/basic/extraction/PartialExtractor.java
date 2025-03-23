@@ -24,6 +24,7 @@ SOFTWARE.
 
 package org.underdocx.common.placeholder.basic.extraction;
 
+import org.underdocx.common.enumerator.AbstractPrepareNextEnumerator;
 import org.underdocx.common.enumerator.Enumerator;
 import org.underdocx.common.placeholder.basic.detection.TextDetectionResult;
 import org.underdocx.common.placeholder.basic.detection.TextDetector;
@@ -34,36 +35,57 @@ import org.underdocx.common.tree.nodepath.TreeNodeCollector;
 import org.underdocx.doctypes.TextNodeInterpreter;
 import org.w3c.dom.Node;
 
-import java.util.List;
-
 public class PartialExtractor extends AbstractExtractor {
 
     public PartialExtractor(TextDetector detector, TextNodeInterpreter interpreter) {
         super(detector, interpreter);
     }
 
-    //  Calculate only next Placeholder node in Enumerator
-    private List<Node> extractNodesWorkaround(Node tree, Node firstValidNodeOrNull) {
-        return Convenience.buildList(result -> {
-            TreeWalker startNodeWalker = new TreeWalker(tree, tree, firstValidNodeOrNull);
-            while (startNodeWalker.hasNext()) {
-                Convenience.ifIs(startNodeWalker.next(), state -> state.isBeginVisit() && state.isValid(), state -> {
-                    Node startNode = state.getNode();
-                    Convenience.ifNotNull(analyzeStartNode(startNode, tree), textArea -> {
-                        Node placeholder = getIfEncapsulated(textArea).orElse(Encapsulator.encapsulate(textArea));
-                        result.add(placeholder);
-                        startNodeWalker.jump(placeholder);
-                        startNodeWalker.next();
-                        startNodeWalker.nextSkipChildren();
+    private class ExtractNodeEnumerator extends AbstractPrepareNextEnumerator<Node> {
+
+        private final Node tree;
+        private final TreeWalker startNodeWalker;
+
+        private ExtractNodeEnumerator(Node tree, Node firstValidNodeOrNull) {
+            this.tree = tree;
+            this.startNodeWalker = new TreeWalker(tree, tree, firstValidNodeOrNull);
+            init();
+        }
+
+        private ExtractNodeEnumerator(ExtractNodeEnumerator other) {
+            super(other);
+            this.tree = other.tree;
+            this.startNodeWalker = other.startNodeWalker.cloneEnumerator();
+        }
+
+        @Override
+        protected Node findNext() {
+            return Convenience.build(result -> {
+                while (result.value == null && startNodeWalker.hasNext()) {
+                    Convenience.ifIs(startNodeWalker.next(), state -> state.isBeginVisit() && state.isValid(), state -> {
+                        Node startNode = state.getNode();
+                        Convenience.ifNotNull(analyzeStartNode(startNode, tree), textArea -> {
+                            Node placeholder = getIfEncapsulated(textArea).orElse(Encapsulator.encapsulate(textArea));
+                            result.value = placeholder;
+                            startNodeWalker.jump(placeholder);
+                            startNodeWalker.next();
+                            startNodeWalker.nextSkipChildren();
+                        });
                     });
-                });
-            }
-        });
+                }
+            });
+        }
+
+        @Override
+        public Enumerator<Node> cloneEnumerator() {
+            return new ExtractNodeEnumerator(this);
+        }
     }
+
 
     @Override
     public Enumerator<Node> extractNodes(Node tree, Node firstValidNodeOrNull) {
-        return Enumerator.of(extractNodesWorkaround(tree, firstValidNodeOrNull));
+        return new ExtractNodeEnumerator(tree, firstValidNodeOrNull);
     }
 
     private TextDetectionResult.TextArea analyzeStartNode(Node node, Node scope) {

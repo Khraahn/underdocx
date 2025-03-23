@@ -81,7 +81,7 @@ public class EngineAccessImpl<C extends DocContainer<D>, D> implements EngineAcc
         private SelectedNode<?> next;
 
         protected LookAheadEnumerator(Enumerator<Pair<PlaceholdersProvider<C, ?, D>, Node>> engineEnumerator, Predicate<SelectedNode<?>> filter) {
-            this.cloneEnumerator = engineEnumerator.cache();
+            this.cloneEnumerator = engineEnumerator.cloneEnumerator();
             this.filter = filter;
             this.next = findNext();
         }

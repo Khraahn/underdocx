@@ -26,6 +26,7 @@ SOFTWARE.
 package org.underdocx.common.tree;
 
 import org.underdocx.common.enumerator.Enumerator;
+import org.underdocx.common.enumerator.FilterEnumerator;
 import org.underdocx.common.tools.Convenience;
 import org.underdocx.common.types.Wrapper;
 import org.w3c.dom.*;
@@ -88,55 +89,9 @@ public class Nodes {
         return new ChildrenEnumerator(node);
     }
 
-    private static class ChildrenEnumeratorWithFilter implements Enumerator<Node> {
-
-        private final Enumerator<Node> inner;
-        private Node next;
-        private final Predicate<Node> filter;
-
-
-        private ChildrenEnumeratorWithFilter(Node node, Predicate<Node> filter) {
-            this.filter = filter;
-            this.inner = getChildren(node);
-            this.next = findNext();
-        }
-
-        private ChildrenEnumeratorWithFilter(ChildrenEnumeratorWithFilter other) {
-            this.inner = other.inner.cloneEnumerator();
-            this.next = other.next;
-            this.filter = other.filter;
-        }
-
-        private Node findNext() {
-            while (inner.hasNext()) {
-                Node toTest = inner.next();
-                if (filter.test(toTest)) {
-                    return toTest;
-                }
-            }
-            return null;
-        }
-
-        @Override
-        public boolean hasNext() {
-            return next != null;
-        }
-
-        @Override
-        public Node next() {
-            Node result = next;
-            next = findNext();
-            return result;
-        }
-
-        @Override
-        public Enumerator<Node> cloneEnumerator() {
-            return new ChildrenEnumeratorWithFilter(this);
-        }
-    }
 
     public static Enumerator<Node> getChildren(Node node, Predicate<Node> filter) {
-        return new ChildrenEnumeratorWithFilter(node, filter);
+        return new FilterEnumerator<>(getChildren(node), filter);
     }
 
     @Deprecated
