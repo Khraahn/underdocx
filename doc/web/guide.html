@@ -54,7 +54,8 @@
         ODG Graphics (LibreOffice/OpenOffice Draw), ODP Presentations (LibreOffice/OpenOffice Impress), ODS Speadsheets
         (LibreOffic/OpenOffice Calc) and all plain text files as TXT, HTML, Scripts etc.
         It uses different types of parameterizable placeholders that will be replaced by custom texts, images, tables
-        and even other documents. This allows you to define "components" that can be easily reused. Underdocx also allows
+        and even other documents. This allows you to define "components" that can be easily reused. Underdocx also
+        allows
         you to define custom placeholders to provide custom functionalities.
         Also documents can be converted directly to PDF if LibreOffice has been installed on the system.<br>
         <br>
@@ -289,7 +290,8 @@ engine.setModel(model);</code></pre>
         <h3>Document Types</h3>
         <h4>OdtContainer / OdtEngine</h4>
         <code-word>OdtContainer</code-word> instances represent an ODT document which can be modified by
-        the <code-word>OdtEngine</code-word> or by user. <code-word>OdtContainer</code-word> provides multiple constructors to load
+        the <code-word>OdtEngine</code-word> or by user. <code-word>OdtContainer</code-word> provides multiple
+        constructors to load
         or create documents.
         <pre class="highlightjs highlight nowrap"><code class="language-java hljs" data-lang="java">public class Main {
   public static void main(String[] args) throws IOException {
@@ -301,12 +303,12 @@ engine.setModel(model);</code></pre>
     new OdtContainer(new File("file.odt"));
   }
 }</code></pre>
-    <code-word>OdtEngine</code-word> is the main class to process a ODT document, exchange its placeholder and to
-    register custom extensions to provide more placeholders or functionalities. This
-    example registers variable "name" at the engine and
-    processes a text document containing a single placeholder. A file is created
-    that contains text "Hello World"
-<pre class="highlightjs highlight nowrap"><code class="language-java hljs" data-lang="java">public class Main {
+        <code-word>OdtEngine</code-word> is the main class to process a ODT document, exchange its placeholder and to
+        register custom extensions to provide more placeholders or functionalities. This
+        example registers variable "name" at the engine and
+        processes a text document containing a single placeholder. A file is created
+        that contains text "Hello World"
+        <pre class="highlightjs highlight nowrap"><code class="language-java hljs" data-lang="java">public class Main {
   public static void main(String[] args) throws IOException {
    OdtContainer doc = new OdtContainer("Hello ${$name}");
    OdtEngine engine = new OdtEngine(doc);
@@ -319,7 +321,7 @@ engine.setModel(model);</code></pre>
 
 
         <h4>OdgContainer / OdgEgnine</h4>
-        <code-word>OdgContainer</code-word> and <code-word>OdgEngine</code-word> are responsible for 
+        <code-word>OdgContainer</code-word> and <code-word>OdgEngine</code-word> are responsible for
         ODG Graphics documents (LibreOffice Draw).
         These documents consists of pages that contain multiple graphic elements.
         The Engine will process the contained placeholders from first to last page and from background to foreground.
@@ -329,7 +331,7 @@ engine.setModel(model);</code></pre>
 
         <h4>OdpContainer / OdpEngine</h4>
         These instances represent are responsible for ODP Presentation documents (LibreOffice Impress).
-        Structure and usage of these classes are quite similar to 
+        Structure and usage of these classes are quite similar to
         <code-word>OdgContainer</code-word>/<code-word>OdgEngine</code-word>
 
         <h4>OdsContainer / OdsEngine</h4>
@@ -343,9 +345,9 @@ engine.setModel(model);</code></pre>
         by their names and let this spreadsheet remove with help of the ${Remove} command.
 
         <h4>TxtContainer / TxtEngine</h4>
-        <code-word>TxtEngine</code-word> and <code-word>OdgEngine</code-word> are responsible for 
+        <code-word>TxtEngine</code-word> and <code-word>OdgEngine</code-word> are responsible for
         all types of plain text files, for example .txt, .html, .sh etc.
-        The <code-word>TxtEngine</code-word> supports all commands except 
+        The <code-word>TxtEngine</code-word> supports all commands except
         <code-word>${Export}</code-word>, <code-word>${Image}</code-word> and <code-word>${Remove}</code-word>.
         The <code-word>${For}</code-word>-command does not supported attributes <code-word>rowNumber</code-word>
         and <code-word>listItem</code-word>
@@ -488,11 +490,11 @@ Item1
         The Additional "resolver" provides value 42 when property "x"
         is requested by a placeholder. "x" is not part of the reflected classes.
 
-          <h4>ReferredDataNode</h4>
-          This <code-word>DataNode</code-word>-Wrapper takes a <code-word>Supplier&lt;DataNode&gt;</code-word>
-          to dynamically provide a <code-word>DataNode</code-word> on request.
+        <h4>ReferredDataNode</h4>
+        This <code-word>DataNode</code-word>-Wrapper takes a <code-word>Supplier&lt;DataNode&gt;</code-word>
+        to dynamically provide a <code-word>DataNode</code-word> on request.
 
-          <pre class="highlightjs highlight nowrap"><code class="language-java hljs" data-lang="java">engine.pushVariable("data",
+        <pre class="highlightjs highlight nowrap"><code class="language-java hljs" data-lang="java">engine.pushVariable("data",
   DataTreeBuilder
     .beginMap()
       .add("name", "data1")
@@ -610,20 +612,20 @@ Item1
               text may contain placeholder itself to be interpreted
             </td>
           </tr>
-            <tr>
-                <td>
-                    templateCell
-                </td>
-                <td>
-                    String
-                </td>
-                <td>
-                    Use this attribute when the command is used within table cell.
-                    This attribute contains the address (table name and coordinates)
-                    to a cell that is formatted as expected. The template cell might be located in a different (temporary)
-                    table. For example templateCell:"TmpTable.D1"
-                </td>
-            </tr>
+          <tr>
+            <td>
+              templateCell
+            </td>
+            <td>
+              String
+            </td>
+            <td>
+              Use this attribute when the command is used within table cell.
+              This attribute contains the address (table name and coordinates)
+              to a cell that is formatted as expected. The template cell might be located in a different (temporary)
+              table. For example templateCell:"TmpTable.D1"
+            </td>
+          </tr>
         </table>
 
         Here is an example document with placeholder and its expectations when the code below is executed
@@ -793,37 +795,42 @@ Item1
         iteration. Every <code-word>${For}</code-word>-Command must have a corresponding
         <code-word>${EndFor}</code-word> command to define a repeatable area.
 
-          This is just an overview of provided attributes, see details in the next sections
-          <table>
-              <tr>
-                  <th>Attribute</th>
-                    <th>Description</th>
-              </tr>
-              <tr>
-                  <td>value</td>
-                  <td>Mandatory, the list of items to walk though.</td>
-              </tr>
-              <tr>
-                  <td>as</td>
-                  <td>makes the current item accessible by this name</td>
-              </tr>
-              <tr>
-                  <td>tableRow</td>
-                  <td>defines which row index or range of rows shall be repeated</td>
-              </tr>
-              <tr>
-                  <td>tableName</td>
-                  <td>you can use the attribute tableName to address the target table</td>
-              </tr>
-              <tr>
-                  <td>tableParent</td>
-                  <td>you can use this attribte to clarify that this loop is inside of the table that contains rows to repeat</td>
-              </tr>
-              <tr>
-                  <td>listItem</td>
-                  <td> list item index that shall be repeated</td>
-              </tr>
-          </table>
+        This is just an overview of provided attributes, see details in the next sections
+        <table>
+          <tr>
+            <th>Attribute</th>
+            <th>Description</th>
+          </tr>
+          <tr>
+            <td>value</td>
+            <td>Mandatory, the list of items to walk though.</td>
+          </tr>
+          <tr>
+            <td>as</td>
+            <td>makes the current item accessible by this name</td>
+          </tr>
+          <tr>
+            <td>tableRow</td>
+            <td>defines which row index or range of rows shall be repeated</td>
+          </tr>
+          <tr>
+            <td>rowGroupSize</td>
+            <td>how many rows blong to a single item</td>
+          </tr>
+          <tr>
+            <td>tableName</td>
+            <td>you can use the attribute tableName to address the target table</td>
+          </tr>
+          <tr>
+            <td>tableParent</td>
+            <td>you can use this attribte to clarify that this loop is inside of the table that contains rows to repeat
+            </td>
+          </tr>
+          <tr>
+            <td>listItem</td>
+            <td> list item index that shall be repeated</td>
+          </tr>
+        </table>
 
         <h4>Loops over model, variables or values</h4>
         Similar to the String command there is a mandatory <code-word>value</code-word>-Attribute, that addresses
@@ -960,12 +967,12 @@ Item1
 
         <div class="imageContainer"><img src="images/guide/ForTableName.png" /></div>
 
-          To style table cells use Attribute <code-word>templaceCell</code-word> of several commands. It
-          might be usefull to store styled cell addresses as variable, that can be used later by
-          the data.
+        To style table cells use Attribute <code-word>templaceCell</code-word> of several commands. It
+        might be usefull to store styled cell addresses as variable, that can be used later by
+        the data.
 
-          <div class="imageContainer"><img src="images/guide/tableStyledCell1.png" /></div>
-          <div class="imageContainer"><img src="images/guide/tableStyledCell2.png" /></div>
+        <div class="imageContainer"><img src="images/guide/tableStyledCell1.png" /></div>
+        <div class="imageContainer"><img src="images/guide/tableStyledCell2.png" /></div>
 
         <h4>Loop of ListItems</h4>
 
@@ -1138,17 +1145,19 @@ ${EndIf}</code></pre>
               beginFragmentRegex
             </td>
             <td>
-              For TXT files this optional regular expression marks the begin of a text fragment to import. The marked line is excluded
+              For TXT files this optional regular expression marks the begin of a text fragment to import. The marked
+              line is excluded
             </td>
-          </tr>       
+          </tr>
           <tr>
             <td>
               endFragmentRegex
             </td>
             <td>
-              For TXT files this optional regular expression marks the end of a text fragment to import. The marked line is excluded
+              For TXT files this optional regular expression marks the end of a text fragment to import. The marked line
+              is excluded
             </td>
-          </tr>                  
+          </tr>
         </table>
 
         This example code create a document with different Import-Placeholders. All of them will be replaced
@@ -1771,13 +1780,13 @@ ${myDate v:"2024-12-12"}</code></pre>
 
         <h2>Placeholder Styles</h2>
         You can change the syntax style of placeholders by implementing your own style or by
-          using predefined styles. Changing the placeholder style might help you to
-          edit (text) templates. The TxtEngine can use <code-word>TxtPlaceholderStyle</code-word> that
-          provides styles <code-word>XML-COMMENT</code-word>, <code-word>CODE-COMMENT</code-word> and
-          <code-word>HASH-COMMENT</code-word>.
-          <h3>XML-Comment Style</h3>
-          Use the XML-Comment style to hide the commands in XML comments.
- <pre class="highlightjs highlight nowrap"><code class="language-xml hljs" data-lang="xml">&lt;html&gt;&lt;body&gt;
+        using predefined styles. Changing the placeholder style might help you to
+        edit (text) templates. The TxtEngine can use <code-word>TxtPlaceholderStyle</code-word> that
+        provides styles <code-word>XML-COMMENT</code-word>, <code-word>CODE-COMMENT</code-word> and
+        <code-word>HASH-COMMENT</code-word>.
+        <h3>XML-Comment Style</h3>
+        Use the XML-Comment style to hide the commands in XML comments.
+        <pre class="highlightjs highlight nowrap"><code class="language-xml hljs" data-lang="xml">&lt;html&gt;&lt;body&gt;
   &lt;ul&gt;
     &lt;!--${For value:["Hans", "Otto", "Gerda"], $as:"item"}--&gt;
       &lt;li&gt;&lt;!--${$item}--&gt;&lt;/li&gt;
@@ -1785,17 +1794,18 @@ ${myDate v:"2024-12-12"}</code></pre>
   &lt;/ul&gt;
 &lt;/body&gt;&lt;/html&gt;</code></pre>
 
-          <h3>Code-Comment Style</h3>
-          Use the Code-Comment Style to hide the commands in language-comments as used in Java, TypeScript, C++ etc.
-          <pre class="highlightjs highlight nowrap"><code class="language-java hljs" data-lang="java">public class Test {
+        <h3>Code-Comment Style</h3>
+        Use the Code-Comment Style to hide the commands in language-comments as used in Java, TypeScript, C++ etc.
+        <pre class="highlightjs highlight nowrap"><code class="language-java hljs" data-lang="java">public class Test {
     /*!For $value:"entries", $as:"item"!*/
     /*!$item!*/
     /*!EndFor!*/
 }</code></pre>
 
-          <h3>Hash-Comment Style</h3>
-          Use the Hash-Comment Style to hide the commands in language-comments as used in Bash or Python
-          <pre class="highlightjs highlight nowrap"><code class="language-python hljs" data-lang="python">#!Join value:["Bibi", "Tina", "Amadeus", "Sabrina"]!# #!Date value:"2022-02-02"!#</code></pre>
+        <h3>Hash-Comment Style</h3>
+        Use the Hash-Comment Style to hide the commands in language-comments as used in Bash or Python
+        <pre
+          class="highlightjs highlight nowrap"><code class="language-python hljs" data-lang="python">#!Join value:["Bibi", "Tina", "Amadeus", "Sabrina"]!# #!Date value:"2022-02-02"!#</code></pre>
 
         <h2>PDF Generation</h2>
 
