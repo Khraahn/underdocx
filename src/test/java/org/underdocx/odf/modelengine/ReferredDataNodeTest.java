@@ -30,17 +30,17 @@ import org.underdocx.AbstractOdtTest;
 import org.underdocx.enginelayers.modelengine.data.simple.LeafDataNode;
 import org.underdocx.enginelayers.modelengine.data.simple.ListDataNode;
 import org.underdocx.enginelayers.modelengine.data.simple.MapDataNode;
-import org.underdocx.enginelayers.modelengine.data.simple.ReferredNode;
+import org.underdocx.enginelayers.modelengine.data.simple.ReferredDataNode;
 
-public class ReferredNodeTest extends AbstractOdtTest {
+public class ReferredDataNodeTest extends AbstractOdtTest {
 
     @Test
     public void testReferredNode() {
         ListDataNode aList = new ListDataNode();
 
         MapDataNode root = new MapDataNode();
-        root.add("listA", new ReferredNode(() -> aList));
-        root.add("listB", new ReferredNode(() -> aList));
+        root.add("listA", new ReferredDataNode(() -> aList));
+        root.add("listB", new ReferredDataNode(() -> aList));
 
         aList.add(new LeafDataNode<>("Paul"));
         aList.add(new LeafDataNode<>("Sam"));

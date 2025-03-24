@@ -29,7 +29,7 @@ import org.underdocx.AbstractOdtTest;
 import org.underdocx.doctypes.odf.odt.OdtContainer;
 import org.underdocx.doctypes.odf.odt.OdtEngine;
 import org.underdocx.enginelayers.modelengine.data.simple.DataTreeBuilder;
-import org.underdocx.enginelayers.modelengine.data.simple.ReferredNode;
+import org.underdocx.enginelayers.modelengine.data.simple.ReferredDataNode;
 
 import java.io.IOException;
 
@@ -71,19 +71,19 @@ public class ForRowsTest extends AbstractOdtTest {
                         .beginMap()
                         .add("name", "data1")
                         .add("value", "0.1")
-                        .addNode("style", new ReferredNode<>(() -> engine.getVariable("green").get()))
+                        .addNode("style", new ReferredDataNode<>(() -> engine.getVariable("green").get()))
                         .end()
 
                         .beginMap()
                         .add("name", "data2")
                         .add("value", "1.2")
-                        .addNode("style", new ReferredNode<>(() -> engine.getVariable("red").get()))
+                        .addNode("style", new ReferredDataNode<>(() -> engine.getVariable("red").get()))
                         .end()
 
                         .beginMap()
                         .add("name", "data3")
                         .add("value", "0.8")
-                        .addNode("style", new ReferredNode<>(() -> engine.getVariable("yellow").get()))
+                        .addNode("style", new ReferredDataNode<>(() -> engine.getVariable("yellow").get()))
                         .end()
 
 

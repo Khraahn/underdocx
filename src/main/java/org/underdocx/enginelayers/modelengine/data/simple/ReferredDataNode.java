@@ -30,11 +30,11 @@ import org.underdocx.enginelayers.modelengine.data.DataNode;
 import java.util.Set;
 import java.util.function.Supplier;
 
-public class ReferredNode<T> extends AbstractDataNode<T> {
+public class ReferredDataNode<T> extends AbstractDataNode<T> {
 
     private final Supplier<DataNode<T>> supplier;
 
-    public ReferredNode(Supplier<DataNode<T>> nodeSupplier) {
+    public ReferredDataNode(Supplier<DataNode<T>> nodeSupplier) {
         this.supplier = nodeSupplier;
         this.containedValue = null;
     }
@@ -44,11 +44,11 @@ public class ReferredNode<T> extends AbstractDataNode<T> {
     }
 
     @Override
-    protected ReferredNode<T> create(Object object) {
-        return Convenience.also(new ReferredNode<T>(() -> (DataNode<T>) object), referredNode -> referredNode.setParent(this));
+    protected ReferredDataNode<T> create(Object object) {
+        return Convenience.also(new ReferredDataNode<T>(() -> (DataNode<T>) object), referredDataNode -> referredDataNode.setParent(this));
     }
 
-    private ReferredNode<?> wrap(DataNode<?> node) {
+    private ReferredDataNode<?> wrap(DataNode<?> node) {
         if (node == null) {
             return null;
         }

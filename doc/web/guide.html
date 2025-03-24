@@ -499,7 +499,7 @@ Item1
     .beginMap()
       .add("name", "data1")
       .add("value", "0.1")
-      .addNode("style", new ReferredNode<>(() -> engine.getVariable("green").get()))
+      .addNode("style", new ReferredDataNode<>(() -> engine.getVariable("green").get()))
     .end()
   .build()
 );</code></pre>
