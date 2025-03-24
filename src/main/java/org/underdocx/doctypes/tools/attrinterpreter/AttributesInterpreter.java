@@ -57,7 +57,7 @@ public interface AttributesInterpreter<R, C> {
                 json -> ifIs(json.get(property), jp -> jp != null, jp -> w.value = jp)));
     }
 
-    static Optional<DataNode> getModelNodeAttribute(JsonNode attributes, String property) {
+    static Optional<DataNode<?>> getModelNodeAttribute(JsonNode attributes, String property) {
         Optional<JsonNode> attrValue = getComplexAttribute(attributes, property);
         if (attrValue.isPresent()) {
             JsonNode json = attrValue.get();

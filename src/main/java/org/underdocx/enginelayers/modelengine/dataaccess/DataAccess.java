@@ -32,24 +32,24 @@ import java.util.Optional;
 
 public interface DataAccess {
 
-    Optional<DataNode> getCurrentModelNode();
+    Optional<DataNode<?>> getCurrentModelNode();
 
-    DataNode getRootModelNode();
+    DataNode<?> getRootModelNode();
 
     DataPath getCurrentModelPath();
 
     void setCurrentModelPath(DataPath dataPath);
 
-    Pair<String, Optional<DataNode>> interpret(String suffix, boolean setAsCurrent);
+    Pair<String, Optional<DataNode<?>>> interpret(String suffix, boolean setAsCurrent);
 
     @Deprecated
     void setCurrentPath(String modelPath);
 
     void popVariable(String name);
 
-    Optional<DataNode> getVariable(String name);
+    Optional<DataNode<?>> getVariable(String name);
 
-    void pushVariable(String name, DataNode value);
+    void pushVariable(String name, DataNode<?> value);
 
 
 }

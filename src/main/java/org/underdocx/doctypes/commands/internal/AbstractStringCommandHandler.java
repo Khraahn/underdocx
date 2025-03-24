@@ -48,7 +48,7 @@ public abstract class AbstractStringCommandHandler<C extends DocContainer<D>, D>
 
     protected abstract StringOutputModuleConfig<C, D> getConfig();
 
-    protected StringOutputModuleConfig<C, D> buildConfig(String path, ExtendedDataPicker<DataNode> picker) {
+    protected StringOutputModuleConfig<C, D> buildConfig(String path, ExtendedDataPicker<DataNode<?>> picker) {
         return new StringOutputModuleConfig<>() {
             @Override
             public PredefinedDataPicker<String> getDataPicker() {

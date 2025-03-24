@@ -90,8 +90,6 @@ public class OdsTest extends AbstractOdtTest {
         dateCell = findCellWithText(tables, "80 %");
         Assertions.assertThat(dateCell.getOfficeValueAttribute()).isEqualTo(0.8);
         Assertions.assertThat(dateCell.getOfficeValueTypeAttribute()).isEqualTo("percentage");
-        Assertions.assertThat(dateCell.getStyleName()).isEqualTo("ce13");
-
-
+        Assertions.assertThat(dateCell.getStyleName()).isEqualTo("ce6");
     }
 }

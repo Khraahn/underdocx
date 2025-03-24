@@ -28,15 +28,15 @@ import org.underdocx.enginelayers.modelengine.data.DataNode;
 
 import java.util.Optional;
 
-public class VarNameDataPicker extends AbstractDataPicker<DataNode, Object> {
+public class VarNameDataPicker extends AbstractDataPicker<DataNode<?>, Object> {
 
     public VarNameDataPicker() {
         super(null, null);
     }
 
     @Override
-    protected DataPickerResult<DataNode> pickData(String variableName) {
-        Optional<DataNode> variable = model.getVariable(variableName);
+    protected DataPickerResult<DataNode<?>> pickData(String variableName) {
+        Optional<DataNode<?>> variable = model.getVariable(variableName);
         if (variable.isEmpty()) {
             return DataPickerResult.unresolvedMissingValue(DataPickerResult.ResultSource.VAR);
         }

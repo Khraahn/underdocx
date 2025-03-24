@@ -27,8 +27,8 @@ package org.underdocx.doctypes.odf.commands;
 import org.underdocx.doctypes.DocContainer;
 import org.underdocx.doctypes.commands.TimeCommandHandler;
 import org.underdocx.doctypes.modifiers.ModifiersProvider;
+import org.underdocx.doctypes.modifiers.tablecell.TableCellModifierData;
 import org.underdocx.doctypes.odf.modifiers.tablecell.OdfTableCellModifier;
-import org.underdocx.doctypes.odf.modifiers.tablecell.OdfTableCellModifierData;
 import org.underdocx.doctypes.tools.datapicker.PredefinedDataPicker;
 import org.underdocx.doctypes.tools.datapicker.StringConvertDataPicker;
 
@@ -44,7 +44,7 @@ public class OdfTimeCommandHandler<C extends DocContainer<D>, D> extends TimeCom
     @Override
     protected void handleCell(LocalDateTime time) {
         templateCellPicker.pickData(dataAccess, placeholderData.getJson()).optional().ifPresent(templateCell -> {
-            new OdfTableCellModifier<C, D>().modify(selection, new OdfTableCellModifierData.Simple(time, templateCell));
+            new OdfTableCellModifier<C, D>().modify(selection, new TableCellModifierData.Simple(time, templateCell));
         });
     }
 }

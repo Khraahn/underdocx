@@ -28,6 +28,7 @@ import org.underdocx.doctypes.DocContainer;
 import org.underdocx.doctypes.TextNodeInterpreter;
 import org.underdocx.doctypes.modifiers.deleteplaceholder.DeletePlaceholderModifierData;
 import org.underdocx.doctypes.modifiers.internal.AreaModifierWithCommonAncestorData;
+import org.underdocx.doctypes.modifiers.tablecell.TableCellModifierData;
 import org.underdocx.enginelayers.baseengine.ModifierNodeResult;
 import org.underdocx.enginelayers.baseengine.ModifierResult;
 import org.underdocx.enginelayers.baseengine.Selection;
@@ -48,6 +49,8 @@ public interface ModifiersProvider<C extends DocContainer<D>, D> {
     SelectionModifier<MSelection<C, ParametersPlaceholderData, D>, AreaModifierWithCommonAncestorData, ModifierNodeResult> getDeleteAreaModifier();
 
     SelectionModifier<Selection<C, ParametersPlaceholderData, D>, String, ModifierResult> getMarkupTextModifier();
+
+    SelectionModifier<MSelection<C, ParametersPlaceholderData, D>, TableCellModifierData, ModifierResult> getTableCellModifier();
 
     Optional<Node> findAncestorParagraphOrTableParent(Node node);
 

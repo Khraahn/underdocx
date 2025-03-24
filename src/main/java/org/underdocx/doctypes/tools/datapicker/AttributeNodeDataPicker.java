@@ -42,7 +42,7 @@ import org.underdocx.enginelayers.modelengine.data.DataNode;
  * pick("x") and json $x:"y" => returns value of registered variable y
  * pick("x") and json *x:"y" => returns value of model path y
  */
-public class AttributeNodeDataPicker extends AbstractDataPicker<DataNode, String> {
+public class AttributeNodeDataPicker extends AbstractDataPicker<DataNode<?>, String> {
 
     public AttributeNodeDataPicker() {
         this(new AccessTypeJsonNameInterpreter());
@@ -55,7 +55,7 @@ public class AttributeNodeDataPicker extends AbstractDataPicker<DataNode, String
     }
 
     @Override
-    protected DataPickerResult<DataNode> pickData(String name) {
+    protected DataPickerResult<DataNode<?>> pickData(String name) {
         AccessType accessType = typeInterpreter.interpretAttributes(attributes, name);
         return switch (accessType) {
             case ACCESS_CURRENT_MODEL_NODE, ACCESS_MODEL_BY_NAME ->

@@ -31,6 +31,7 @@ import org.underdocx.doctypes.modifiers.deletearea.DeleteAreaModifier;
 import org.underdocx.doctypes.modifiers.deleteplaceholder.DeletePlaceholderModifierData;
 import org.underdocx.doctypes.modifiers.internal.AreaModifierWithCommonAncestorData;
 import org.underdocx.doctypes.modifiers.stringmodifier.ReplaceWithTextModifier;
+import org.underdocx.doctypes.modifiers.tablecell.TableCellModifierData;
 import org.underdocx.doctypes.txt.TxtContainer;
 import org.underdocx.doctypes.txt.TxtXml;
 import org.underdocx.doctypes.txt.placeholders.TxtNodeInterpreter;
@@ -54,6 +55,11 @@ public class TxtModifiersProvider implements ModifiersProvider<TxtContainer, Txt
     @Override
     public SelectionModifier<Selection<TxtContainer, ParametersPlaceholderData, TxtXml>, String, ModifierResult> getMarkupTextModifier() {
         return (selection, modifierData) -> getReplaceWithTextModifier().modify(selection, modifierData);
+    }
+
+    @Override
+    public SelectionModifier<MSelection<TxtContainer, ParametersPlaceholderData, TxtXml>, TableCellModifierData, ModifierResult> getTableCellModifier() {
+        return (selection, modifierData) -> ModifierResult.SUCCESS;
     }
 
     @Override

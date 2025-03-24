@@ -95,13 +95,17 @@ public abstract class AbstractEngine<C extends DocContainer<D>, D> implements En
         pushVariable(name, AbstractPredefinedDataNode.createFromJson(json));
     }
 
+    public Optional<DataNode<?>> getVariable(String name) {
+        return getEngine().getVariable(name);
+    }
+
     public Optional<Problem> run() {
         return getEngine().run();
     }
 
 
-    private void parseMapWithKeyValueProperties(DataNode mainNode, String propertyName, BiConsumer<String, DataNode> consumer) {
-        DataNode variablesNode = mainNode.getProperty(propertyName);
+    private void parseMapWithKeyValueProperties(DataNode<?> mainNode, String propertyName, BiConsumer<String, DataNode<?>> consumer) {
+        DataNode<?> variablesNode = mainNode.getProperty(propertyName);
         if (variablesNode != null) {
             Problems.IMPORT_DATA_SCHEMA.checkNot(variablesNode.isNull() || variablesNode.getType() != DataNode.DataNodeType.MAP);
             variablesNode.getPropertyNames().forEach(key -> {
@@ -110,31 +114,31 @@ public abstract class AbstractEngine<C extends DocContainer<D>, D> implements En
         }
     }
 
-    private String parseString(DataNode node, String propertyName) {
-        DataNode stringNode = node.getProperty(propertyName);
+    private String parseString(DataNode<?> node, String propertyName) {
+        DataNode<?> stringNode = node.getProperty(propertyName);
         return parseString(stringNode);
     }
 
-    private String parseString(DataNode node) {
+    private String parseString(DataNode<?> node) {
         Problems.IMPORT_DATA_SCHEMA.checkNot(node.isNull() || node.getType() != DataNode.DataNodeType.LEAF || !(node.getValue() instanceof String));
         return node.getValue().toString();
     }
 
-    public void importData(DataNode importData) {
+    public void importData(DataNode<?> importData) {
         parseMapWithKeyValueProperties(importData, "variables", this::pushVariable);
         parseMapWithKeyValueProperties(importData, "stringReplacements", (key, value) -> {
             registerStringReplacement(key, parseString(value));
         });
-        DataNode model = importData.getProperty("model");
+        DataNode<?> model = importData.getProperty("model");
         if (model != null) {
             Problems.IMPORT_DATA_SCHEMA.checkNot(model.isNull() || model.getType() != DataNode.DataNodeType.MAP);
             setModel(model);
         }
-        DataNode aliasListNode = importData.getProperty("alias");
+        DataNode<?> aliasListNode = importData.getProperty("alias");
         if (aliasListNode != null) {
             Problems.IMPORT_DATA_SCHEMA.checkNot(aliasListNode.isNull() || aliasListNode.getType() != DataNode.DataNodeType.LIST);
             for (int i = 0; i < aliasListNode.getSize(); i++) {
-                DataNode aliasListItem = aliasListNode.getProperty(i);
+                DataNode<?> aliasListItem = aliasListNode.getProperty(i);
                 Problems.IMPORT_DATA_SCHEMA.checkNot(aliasListNode.isNull() || model.getType() != DataNode.DataNodeType.MAP);
                 String key = parseString(aliasListItem, "key");
                 String newKey = parseString(aliasListItem, "replaceKey");

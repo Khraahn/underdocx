@@ -51,10 +51,23 @@ public class OdfTables {
             Predicate<Node> predicate = (node) -> (OdfElement.TABLE.is(node));
             List<Node> tables = Nodes.findDescendantNodes(tree, predicate, true);
             for (Node table : tables) {
-                if (name.equals(OdfAttribute.TANLE_NAME.getAttributeNS((Element) table))) {
+                if (name.equals(OdfAttribute.TABLE_NAME.getAttributeNS((Element) table))) {
                     result.value = table;
                     break;
                 }
+            }
+        });
+    }
+
+    public static Optional<String> getCellParagraphStyle(Pair<Node, Node> styleNodes) {
+        return Convenience.buildOptional(result -> {
+            if (styleNodes.left != null) {
+                Nodes.getChildren(styleNodes.left, OdfElement.PARAGRAPH).tryNext().ifPresent(p ->
+                        result.value = OdfAttribute.TEXT_STYLE_NAME.getAttributeNS(p));
+            }
+            if (styleNodes.right != null) {
+                Nodes.getChildren(styleNodes.right, OdfElement.PARAGRAPH).tryNext().ifPresent(p ->
+                        result.value = OdfAttribute.TEXT_STYLE_NAME.getAttributeNS(p));
             }
         });
     }

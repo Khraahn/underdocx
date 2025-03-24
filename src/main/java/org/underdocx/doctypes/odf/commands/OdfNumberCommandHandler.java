@@ -29,8 +29,8 @@ import org.underdocx.doctypes.DocContainer;
 import org.underdocx.doctypes.commands.NumberCommandHandler;
 import org.underdocx.doctypes.commands.internal.modifiermodule.missingdata.MissingDataCommandModuleResult;
 import org.underdocx.doctypes.modifiers.ModifiersProvider;
+import org.underdocx.doctypes.modifiers.tablecell.TableCellModifierData;
 import org.underdocx.doctypes.odf.modifiers.tablecell.OdfTableCellModifier;
-import org.underdocx.doctypes.odf.modifiers.tablecell.OdfTableCellModifierData;
 import org.underdocx.doctypes.tools.datapicker.PredefinedDataPicker;
 import org.underdocx.doctypes.tools.datapicker.StringConvertDataPicker;
 import org.underdocx.enginelayers.baseengine.CommandHandlerResult;
@@ -47,7 +47,7 @@ public class OdfNumberCommandHandler<C extends DocContainer<D>, D> extends Numbe
         if (result.right == MissingDataCommandModuleResult.MissingDataCommandModuleResultType.VALUE_RECEIVED) {
             templateCellPicker.pickData(dataAccess, placeholderData.getJson()).optional().ifPresent(templacecell -> {
                 Number number = new NumberPicker().asPredefined("value").pickData(dataAccess, placeholderData.getJson()).optional().get().right;
-                new OdfTableCellModifier<C, D>().modify(selection, new OdfTableCellModifierData.Simple(number, templacecell));
+                new OdfTableCellModifier<C, D>().modify(selection, new TableCellModifierData.Simple(number, templacecell));
             });
         }
     }

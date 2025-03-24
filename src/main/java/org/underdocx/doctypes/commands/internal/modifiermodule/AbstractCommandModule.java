@@ -33,7 +33,7 @@ public abstract class AbstractCommandModule<C extends DocContainer<D>, P, D, R, 
 
     protected final U configuration;
     protected MSelection<C, P, D> selection;
-    protected P placholderData;
+    protected P placeholderData;
     protected EngineAccess<C, D> engineAccess;
     protected DataAccess dataAccess;
 
@@ -44,7 +44,7 @@ public abstract class AbstractCommandModule<C extends DocContainer<D>, P, D, R, 
     @Override
     public R execute(MSelection<C, P, D> selection) {
         this.selection = selection;
-        this.placholderData = selection.getPlaceholderData();
+        this.placeholderData = selection.getPlaceholderData();
         this.dataAccess = selection.getDataAccess().get();
         this.engineAccess = selection.getEngineAccess();
         return this.execute();

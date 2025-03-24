@@ -26,7 +26,7 @@ package org.underdocx.enginelayers.modelengine.data;
 
 import java.util.Set;
 
-public interface DataNode {
+public interface DataNode<T> {
 
     enum DataNodeType {
         MAP,
@@ -36,13 +36,13 @@ public interface DataNode {
 
     DataNodeType getType();
 
-    Object getValue();
+    T getValue();
 
-    DataNode getProperty(String name);
+    DataNode<?> getProperty(String name);
 
-    DataNode getProperty(int index);
+    DataNode<?> getProperty(int index);
 
-    DataNode getParent();
+    DataNode<?> getParent();
 
     int getSize();
 

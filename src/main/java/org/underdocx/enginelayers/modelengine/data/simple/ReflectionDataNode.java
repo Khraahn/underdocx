@@ -32,10 +32,10 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.*;
 
-public class ReflectionDataNode extends AbstractDataNode<Object> implements DataNode {
+public class ReflectionDataNode extends AbstractDataNode<Object> implements DataNode<Object> {
 
     private final Object containedValue;
-    protected DataNode parent;
+    protected DataNode<?> parent;
     protected Resolver resolver = ReflectionInterceptorRegistry.DEFAULT;
 
     public ReflectionDataNode(Object object) {
@@ -89,7 +89,7 @@ public class ReflectionDataNode extends AbstractDataNode<Object> implements Data
     }
 
     @Override
-    public DataNode getProperty(String name) {
+    public DataNode<?> getProperty(String name) {
         if (resolver != null) {
             Optional<AbstractDataNode> resolved = resolver.resolve(containedValue, name);
             if (resolved.isPresent()) {
@@ -113,7 +113,7 @@ public class ReflectionDataNode extends AbstractDataNode<Object> implements Data
     }
 
     @Override
-    public DataNode getProperty(int index) {
+    public DataNode<?> getProperty(int index) {
         if (getType() != DataNodeType.LIST) {
             return null;
         } else if (getValue() instanceof List<?>) {
@@ -128,7 +128,7 @@ public class ReflectionDataNode extends AbstractDataNode<Object> implements Data
     }
 
     @Override
-    public DataNode getParent() {
+    public DataNode<?> getParent() {
         return parent;
     }
 

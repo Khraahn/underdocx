@@ -29,6 +29,7 @@ import org.underdocx.common.tree.Nodes;
 import org.underdocx.common.types.Pair;
 import org.underdocx.common.types.Tripple;
 import org.underdocx.doctypes.DocContainer;
+import org.underdocx.doctypes.modifiers.tablecell.TableCellModifierData;
 import org.underdocx.doctypes.odf.constants.OdfAttribute;
 import org.underdocx.doctypes.odf.constants.OdfElement;
 import org.underdocx.doctypes.odf.tools.OdfTables;
@@ -44,11 +45,11 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Optional;
 
-public class OdfTableCellModifier<C extends DocContainer<D>, D> implements SelectionModifier<MSelection<C, ParametersPlaceholderData, D>, OdfTableCellModifierData, ModifierResult> {
+public class OdfTableCellModifier<C extends DocContainer<D>, D> implements SelectionModifier<MSelection<C, ParametersPlaceholderData, D>, TableCellModifierData, ModifierResult> {
 
 
     @Override
-    public ModifierResult modify(MSelection<C, ParametersPlaceholderData, D> selection, OdfTableCellModifierData modifierData) {
+    public ModifierResult modify(MSelection<C, ParametersPlaceholderData, D> selection, TableCellModifierData modifierData) {
         return Convenience.build((ModifierResult) ModifierResult.IGNORED, result ->
                 OdfTables.parseCellReference(modifierData.getStyleCellAddress()).ifPresent(address ->
                         findTable(selection, address).ifPresent(table -> {
@@ -68,6 +69,8 @@ public class OdfTableCellModifier<C extends DocContainer<D>, D> implements Selec
             OdfAttribute.OFFICE_DATE_VALUE.setAttributeNS(cell, DateTimeFormatter.ofPattern("yyyy-MM-dd").format(date));
         } else if (value instanceof Number number) {
             OdfAttribute.OFFICE_VALUE.setAttributeNS(cell, String.valueOf(number.doubleValue()));
+        } else if (value instanceof String) {
+            /* no value to copy */
         } else {
             return ModifierResult.IGNORED;
         }
@@ -75,6 +78,9 @@ public class OdfTableCellModifier<C extends DocContainer<D>, D> implements Selec
         OdfAttribute.OFFICE_VALUE_TYPE.copy(template, cell);
         OdfAttribute.CALCEXT_VALUE_TYPE.copy(template, cell);
         OdfAttribute.OFFICE_CURRENCY.copy(template, cell);
+        OdfTables.getCellParagraphStyle(templatePair).ifPresent(pStyle ->
+                Nodes.getChildren(cell, OdfElement.PARAGRAPH).tryNext().ifPresent(p ->
+                        OdfAttribute.TEXT_STYLE_NAME.setAttributeNS(p, pStyle)));
         return ModifierResult.SUCCESS;
     }
 

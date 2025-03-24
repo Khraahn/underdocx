@@ -32,9 +32,11 @@ import org.underdocx.doctypes.modifiers.deletearea.DeleteAreaModifier;
 import org.underdocx.doctypes.modifiers.deleteplaceholder.DeletePlaceholderModifierData;
 import org.underdocx.doctypes.modifiers.internal.AreaModifierWithCommonAncestorData;
 import org.underdocx.doctypes.modifiers.stringmodifier.ReplaceWithTextModifier;
+import org.underdocx.doctypes.modifiers.tablecell.TableCellModifierData;
 import org.underdocx.doctypes.odf.AbstractOdfContainer;
 import org.underdocx.doctypes.odf.modifiers.deleteplaceholder.OdfDeletePlaceholderModifier;
 import org.underdocx.doctypes.odf.modifiers.stringmodifier.OdfMarkupTextModifier;
+import org.underdocx.doctypes.odf.modifiers.tablecell.OdfTableCellModifier;
 import org.underdocx.doctypes.odf.tools.OdfNodes;
 import org.underdocx.enginelayers.baseengine.ModifierNodeResult;
 import org.underdocx.enginelayers.baseengine.ModifierResult;
@@ -65,6 +67,11 @@ public class OdfModifiersProvider<D extends AbstractOdfContainer<C>, C extends O
     @Override
     public SelectionModifier<Selection<D, ParametersPlaceholderData, C>, String, ModifierResult> getMarkupTextModifier() {
         return new OdfMarkupTextModifier<>();
+    }
+
+    @Override
+    public SelectionModifier<MSelection<D, ParametersPlaceholderData, C>, TableCellModifierData, ModifierResult> getTableCellModifier() {
+        return new OdfTableCellModifier<>();
     }
 
     @Override

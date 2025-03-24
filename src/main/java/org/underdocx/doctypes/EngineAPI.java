@@ -33,7 +33,7 @@ import java.util.Optional;
 
 public interface EngineAPI {
 
-    void importData(DataNode importData);
+    void importData(DataNode<?> importData);
 
     default void importData(InputStream is) {
         importData(new MapDataNode(is));

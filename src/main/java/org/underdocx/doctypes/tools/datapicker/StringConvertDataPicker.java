@@ -34,14 +34,14 @@ import java.util.Optional;
 public class StringConvertDataPicker implements ExtendedDataPicker<String> {
 
     private final Model2StringConverter converter;
-    private final ExtendedDataPicker<DataNode> dataPicker;
+    private final ExtendedDataPicker<DataNode<?>> dataPicker;
 
     public StringConvertDataPicker() {
         this(new AttributeNodeDataPicker(), new DefaultModel2StringConverter());
     }
 
     public StringConvertDataPicker(
-            ExtendedDataPicker<DataNode> dataPicker,
+            ExtendedDataPicker<DataNode<?>> dataPicker,
             Model2StringConverter converter
     ) {
         this.converter = converter;
@@ -49,14 +49,14 @@ public class StringConvertDataPicker implements ExtendedDataPicker<String> {
     }
 
     public StringConvertDataPicker(
-            ExtendedDataPicker<DataNode> dataPicker
+            ExtendedDataPicker<DataNode<?>> dataPicker
     ) {
         this.converter = new DefaultModel2StringConverter();
         this.dataPicker = dataPicker;
     }
 
     public DataPickerResult<String> pickData(String name, DataAccess dataAccess, JsonNode attributes) {
-        DataPickerResult<DataNode> tmpResult = dataPicker.pickData(name, dataAccess, attributes);
+        DataPickerResult<DataNode<?>> tmpResult = dataPicker.pickData(name, dataAccess, attributes);
         if (!tmpResult.isResolved()) {
             return DataPickerResult.convert(null, tmpResult);
         } else {
@@ -70,13 +70,13 @@ public class StringConvertDataPicker implements ExtendedDataPicker<String> {
     }
 
     public interface Model2StringConverter {
-        Optional<Wrapper<String>> convert(DataNode node);
+        Optional<Wrapper<String>> convert(DataNode<?> node);
     }
 
     public static class DefaultModel2StringConverter implements Model2StringConverter {
 
         @Override
-        public Optional<Wrapper<String>> convert(DataNode node) {
+        public Optional<Wrapper<String>> convert(DataNode<?> node) {
             if (node == null || node.isNull()) {
                 return Optional.of(new Wrapper<>(null));
             }

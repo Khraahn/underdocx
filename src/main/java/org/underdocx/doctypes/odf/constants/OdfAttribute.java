@@ -46,7 +46,7 @@ public enum OdfAttribute {
 
     TEXT_PROPERTIES_TEXT_DISPLAY(OdfNameSpace.TEXT, "display"),
 
-    TANLE_NAME(OdfNameSpace.TABLE, "name"),
+    TABLE_NAME(OdfNameSpace.TABLE, "name"),
 
     TABLE_NUMBER_ROWS_REPEATED(OdfNameSpace.TABLE, "number-rows-repeated"),
     TABLE_NUMBER_COLUMNS_REPEATED(OdfNameSpace.TABLE, "number-columns-repeated"),
@@ -59,6 +59,8 @@ public enum OdfAttribute {
     OFFICE_VALUE_TYPE(OdfNameSpace.OFFICE, "value-type"),
     OFFICE_CURRENCY(OdfNameSpace.OFFICE, "currency"),
     CALCEXT_VALUE_TYPE(OdfNameSpace.CALCEXT, "value-type"),
+
+    TEXT_STYLE_NAME(OdfNameSpace.TEXT, "style-name"),
     ;
 
     private final String pureName;

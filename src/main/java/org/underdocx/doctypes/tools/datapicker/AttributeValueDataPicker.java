@@ -32,7 +32,7 @@ import org.underdocx.enginelayers.modelengine.data.DataNode;
 
 import java.util.Optional;
 
-public class AttributeValueDataPicker extends AbstractDataPicker<DataNode, DataNode> {
+public class AttributeValueDataPicker extends AbstractDataPicker<DataNode<?>, DataNode<?>> {
 
     public AttributeValueDataPicker() {
         this(new AccessTypeJsonNameInterpreter(), AttributeInterpreterFactory.createModelNodeAttributeInterpreter(true));
@@ -44,19 +44,19 @@ public class AttributeValueDataPicker extends AbstractDataPicker<DataNode, DataN
 
     public AttributeValueDataPicker(
             AttributesInterpreter<AccessType, String> typeInterpreter,
-            AttributesInterpreter<Optional<DataNode>, String> attributeInterpreter
+            AttributesInterpreter<Optional<DataNode<?>>, String> attributeInterpreter
     ) {
         super(typeInterpreter, attributeInterpreter);
     }
 
     @Override
-    protected DataPickerResult<DataNode> pickData(String name) {
+    protected DataPickerResult<DataNode<?>> pickData(String name) {
         AccessType type = typeInterpreter.interpretAttributes(attributes, name);
         if (type != AccessType.ACCESS_ATTR_VALUE) {
             return DataPickerResult.unresolvedMissingAttr(DataPickerResult.ResultSource.ATTR_VALUE);
         }
         String attrName = type.rename(name);
-        Optional<DataNode> oNode = attributeInterpreter.interpretAttributes(attributes, attrName);
+        Optional<DataNode<?>> oNode = attributeInterpreter.interpretAttributes(attributes, attrName);
         if (oNode.isEmpty()) {
             return DataPickerResult.unresolvedInvalidAttrValue(DataPickerResult.ResultSource.ATTR_VALUE);
         } else {

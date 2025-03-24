@@ -32,7 +32,7 @@ import org.underdocx.enginelayers.modelengine.data.DataNode;
 
 import java.util.Optional;
 
-public class AttributeModelDataPicker extends AbstractDataPicker<DataNode, String> {
+public class AttributeModelDataPicker extends AbstractDataPicker<DataNode<?>, String> {
 
     private ModelNameDataPicker nameDataPicker = new ModelNameDataPicker();
 
@@ -52,7 +52,7 @@ public class AttributeModelDataPicker extends AbstractDataPicker<DataNode, Strin
     }
 
     @Override
-    protected DataPickerResult<DataNode> pickData(String name) {
+    protected DataPickerResult<DataNode<?>> pickData(String name) {
         AccessType type = typeInterpreter.interpretAttributes(attributes, name);
         if (name == null) {
             if (type != AccessType.ACCESS_CURRENT_MODEL_NODE) {
@@ -70,7 +70,7 @@ public class AttributeModelDataPicker extends AbstractDataPicker<DataNode, Strin
         return fetchModelNode(modelName);
     }
 
-    private DataPickerResult<DataNode> fetchModelNode(String modelName) {
+    private DataPickerResult<DataNode<?>> fetchModelNode(String modelName) {
         return nameDataPicker.pickData(modelName, model, null);
     }
 }

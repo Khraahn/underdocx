@@ -55,7 +55,7 @@ public class IfCommandHandler<C extends DocContainer<D>, D> extends AbstractText
     public static final String END_KEY = "EndIf";
     public static final Regex KEYS = new Regex(BEGIN_KEY + "|" + END_KEY);
 
-    private static final ExtendedDataPicker<DataNode> dataPicker = new NameDataPicker();
+    private static final ExtendedDataPicker<DataNode<?>> dataPicker = new NameDataPicker();
     private static final ConditionAttributeInterpreter conditionInterpreter = new ConditionAttributeInterpreter();
 
     public IfCommandHandler(ModifiersProvider<C, D> modifiers) {
@@ -71,7 +71,7 @@ public class IfCommandHandler<C extends DocContainer<D>, D> extends AbstractText
                         AreaTools.findArea(selection.getEngineAccess().lookAhead(null), selection, END_KEY), END_KEY);
         boolean match = conditionInterpreter.interpretAttributes(attributes, valueResolver -> {
             String property = valueResolver.left;
-            DataNode foundNode = dataPicker.pickData(property, dataAccess, attributes).optional().orElse(null);
+            DataNode<?> foundNode = dataPicker.pickData(property, dataAccess, attributes).optional().orElse(null);
             Object toCompareWith = valueResolver.right;
             return compare(foundNode, toCompareWith);
         });
@@ -82,7 +82,7 @@ public class IfCommandHandler<C extends DocContainer<D>, D> extends AbstractText
         return CommandHandlerResult.FACTORY.convert(modiferResult);
     }
 
-    private boolean compare(DataNode foundNode, Object toCompareWith) {
+    private boolean compare(DataNode<?> foundNode, Object toCompareWith) {
         // ${if $toCheck:null}
         if (toCompareWith == null) {
             return foundNode == null || foundNode.isNull();

@@ -32,23 +32,23 @@ import org.underdocx.enginelayers.modelengine.data.DataNode;
 
 import java.util.*;
 
-public abstract class AbstractPredefinedDataNode<T> extends AbstractDataNode<T> implements DataNode {
+public abstract class AbstractPredefinedDataNode<T> extends AbstractDataNode<T> implements DataNode<T> {
 
     protected static final JsonCodec jsonCodec = new JsonCodec(true, true, true);
 
 
     @Override
-    public DataNode getProperty(String name) {
+    public DataNode<?> getProperty(String name) {
         return null;
     }
 
     @Override
-    public DataNode getProperty(int index) {
+    public DataNode<?> getProperty(int index) {
         return null;
     }
 
     @Override
-    public DataNode getParent() {
+    public DataNode<?> getParent() {
         return parent;
     }
 

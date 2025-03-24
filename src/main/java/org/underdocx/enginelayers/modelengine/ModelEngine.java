@@ -42,24 +42,28 @@ import org.w3c.dom.Node;
 
 import java.util.*;
 
-public class ModelEngine<C extends DocContainer<D>, D> extends BaseEngine {
+public class ModelEngine<C extends DocContainer<D>, D> extends BaseEngine<C, D> {
 
-    protected DataNode modelRoot = new MapDataNode();
+    protected DataNode<?> modelRoot = new MapDataNode();
     protected DataPath currentDataPath = new DataPath();
-    protected Map<String, Deque<DataNode>> variableStacks = new HashMap<>();
+    protected Map<String, Deque<DataNode<?>>> variableStacks = new HashMap<>();
 
 
     public ModelEngine(C doc) {
         super(doc);
     }
 
-    public void setModelRoot(DataNode modelRoot) {
+    public void setModelRoot(DataNode<?> modelRoot) {
         this.modelRoot = modelRoot;
         this.currentDataPath = new DataPath();
     }
 
-    public void pushVariable(String varName, DataNode value) {
+    public void pushVariable(String varName, DataNode<?> value) {
         new ModelEngineDataAccess().pushVariable(varName, value);
+    }
+
+    public Optional<DataNode<?>> getVariable(String varName) {
+        return new ModelEngineDataAccess().getVariable(varName);
     }
 
     @Override
@@ -71,12 +75,12 @@ public class ModelEngine<C extends DocContainer<D>, D> extends BaseEngine {
     private class ModelEngineDataAccess implements DataAccess {
 
         @Override
-        public Optional<DataNode> getCurrentModelNode() {
+        public Optional<DataNode<?>> getCurrentModelNode() {
             return currentDataPath.interpret(modelRoot);
         }
 
         @Override
-        public DataNode getRootModelNode() {
+        public DataNode<?> getRootModelNode() {
             return modelRoot;
         }
 
@@ -91,20 +95,20 @@ public class ModelEngine<C extends DocContainer<D>, D> extends BaseEngine {
         }
 
         public void popVariable(String name) {
-            Deque<DataNode> stack = variableStacks.get(name);
+            Deque<DataNode<?>> stack = variableStacks.get(name);
             if (stack != null) {
                 stack.pop();
             }
         }
 
-        public Optional<DataNode> getVariable(String name) {
+        public Optional<DataNode<?>> getVariable(String name) {
             DataPath path = new DataPath(name);
             DataPathElement first = (path.getElements().size() > 0) ? path.getElements().get(0) : null;
             Problems.INVALID_VALUE.checkNot(
                     (first == null || !(first instanceof PropertyDataPathElement)), null, name);
-            Deque<DataNode> stack = variableStacks.get(((PropertyDataPathElement) first).getProperty());
+            Deque<DataNode<?>> stack = variableStacks.get(((PropertyDataPathElement) first).getProperty());
             if (stack != null) {
-                DataNode varValue = stack.peek();
+                DataNode<?> varValue = stack.peek();
                 if (varValue != null) {
                     path.subPath(1);
                     return path.interpret(varValue);
@@ -113,11 +117,11 @@ public class ModelEngine<C extends DocContainer<D>, D> extends BaseEngine {
             return Optional.empty();
         }
 
-        public void pushVariable(String name, DataNode value) {
+        public void pushVariable(String name, DataNode<?> value) {
             Problems.INVALID_VALUE.checkNot(
                     (name == null || name.isBlank() || name.contains(".") || name.contains("[") || name.contains("^") || name.contains("<")),
                     null, name);
-            Deque<DataNode> stack = variableStacks.get(name);
+            Deque<DataNode<?>> stack = variableStacks.get(name);
             if (stack == null) {
                 stack = new LinkedList<>();
                 variableStacks.put(name, stack);
@@ -126,10 +130,10 @@ public class ModelEngine<C extends DocContainer<D>, D> extends BaseEngine {
         }
 
         @Override
-        public Pair<String, Optional<DataNode>> interpret(String suffix, boolean setAsCurrent) {
+        public Pair<String, Optional<DataNode<?>>> interpret(String suffix, boolean setAsCurrent) {
             DataPath p = setAsCurrent ? currentDataPath : currentDataPath.clone();
             p.interpret(suffix);
-            Optional<DataNode> subNode = p.interpret(modelRoot);
+            Optional<DataNode<?>> subNode = p.interpret(modelRoot);
             return new Pair<>(p.toString(), subNode);
         }
 

@@ -38,14 +38,14 @@ import org.underdocx.enginelayers.modelengine.data.DataNode;
  * pickData("*x") returns the model value of the path "x". All JSON attributes are ignored
  * pickData("x") return the value of the JSON attribute "x".
  */
-public class NameDataPicker extends AbstractDataPicker<DataNode, String> {
+public class NameDataPicker extends AbstractDataPicker<DataNode<?>, String> {
 
     public NameDataPicker() {
         super(new AccessTypeNameInterpreter(), null);
     }
 
     @Override
-    protected DataPickerResult<DataNode> pickData(String name) {
+    protected DataPickerResult<DataNode<?>> pickData(String name) {
         AccessType accessType = typeInterpreter.interpretAttributes(attributes, name);
         String pureName = AccessType.getPureName(name);
         return switch (accessType) {

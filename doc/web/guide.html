@@ -85,12 +85,12 @@
         <pre class="highlightjs highlight nowrap"><code class="language-xml hljs" data-lang="xml">&lt;dependency&gt;
     &lt;groupId&gt;io.github.winterrifier&lt;/groupId&gt;
     &lt;artifactId&gt;underdocx&lt;/artifactId&gt;
-    &lt;version&gt;0.10.0&lt;/version&gt;
+    &lt;version&gt;0.10.1&lt;/version&gt;
 &lt;/dependency&gt;</code></pre>
 
         When you use Gradle your dependency should look like this
 
-        <pre class="padding"><code>implementation 'io.github.winterrifier:underdocx:0.10.0'</code></pre>
+        <pre class="padding"><code>implementation 'io.github.winterrifier:underdocx:0.10.1'</code></pre>
 
         You can also visit <a href="https://central.sonatype.com/artifact/io.github.winterrifier/underdocx"
           target="_blank">
@@ -488,6 +488,22 @@ Item1
         The Additional "resolver" provides value 42 when property "x"
         is requested by a placeholder. "x" is not part of the reflected classes.
 
+          <h4>ReferredDataNode</h4>
+          This <code-word>DataNode</code-word>-Wrapper takes a <code-word>Supplier&lt;DataNode&gt;</code-word>
+          to dynamically provide a <code-word>DataNode</code-word> on request.
+
+          <pre class="highlightjs highlight nowrap"><code class="language-java hljs" data-lang="java">engine.pushVariable("data",
+  DataTreeBuilder
+    .beginMap()
+      .add("name", "data1")
+      .add("value", "0.1")
+      .addNode("style", new ReferredNode<>(() -> engine.getVariable("green").get()))
+    .end()
+  .build()
+);</code></pre>
+
+
+
         <h2>Predefined Commands</h2>
 
         Underdocx provides multiple predefined placeholders and attributes to enable some basic
@@ -594,6 +610,20 @@ Item1
               text may contain placeholder itself to be interpreted
             </td>
           </tr>
+            <tr>
+                <td>
+                    templateCell
+                </td>
+                <td>
+                    String
+                </td>
+                <td>
+                    Use this attribute when the command is used within table cell.
+                    This attribute contains the address (table name and coordinates)
+                    to a cell that is formatted as expected. The template cell might be located in a different (temporary)
+                    table. For example templateCell:"TmpTable.D1"
+                </td>
+            </tr>
         </table>
 
         Here is an example document with placeholder and its expectations when the code below is executed
@@ -763,6 +793,38 @@ Item1
         iteration. Every <code-word>${For}</code-word>-Command must have a corresponding
         <code-word>${EndFor}</code-word> command to define a repeatable area.
 
+          This is just an overview of provided attributes, see details in the next sections
+          <table>
+              <tr>
+                  <th>Attribute</th>
+                    <th>Description</th>
+              </tr>
+              <tr>
+                  <td>value</td>
+                  <td>Mandatory, the list of items to walk though.</td>
+              </tr>
+              <tr>
+                  <td>as</td>
+                  <td>makes the current item accessible by this name</td>
+              </tr>
+              <tr>
+                  <td>tableRow</td>
+                  <td>defines which row index or range of rows shall be repeated</td>
+              </tr>
+              <tr>
+                  <td>tableName</td>
+                  <td>you can use the attribute tableName to address the target table</td>
+              </tr>
+              <tr>
+                  <td>tableParent</td>
+                  <td>you can use this attribte to clarify that this loop is inside of the table that contains rows to repeat</td>
+              </tr>
+              <tr>
+                  <td>listItem</td>
+                  <td> list item index that shall be repeated</td>
+              </tr>
+          </table>
+
         <h4>Loops over model, variables or values</h4>
         Similar to the String command there is a mandatory <code-word>value</code-word>-Attribute, that addresses
         the list of items to walk though. The attribute may refer a variable, a model node or directly use the
@@ -897,6 +959,13 @@ Item1
         the <code-word>${For}</code-word> command.
 
         <div class="imageContainer"><img src="images/guide/ForTableName.png" /></div>
+
+          To style table cells use Attribute <code-word>templaceCell</code-word> of several commands. It
+          might be usefull to store styled cell addresses as variable, that can be used later by
+          the data.
+
+          <div class="imageContainer"><img src="images/guide/tableStyledCell1.png" /></div>
+          <div class="imageContainer"><img src="images/guide/tableStyledCell2.png" /></div>
 
         <h4>Loop of ListItems</h4>
 
@@ -1284,7 +1353,7 @@ ${EndIf}</code></pre>
           </tr>
           <tr>
             <td>templateCell</td>
-            <td>Use this attribute when the command is used within spreadsheet table cell (ODS).
+            <td>Use this attribute when the command is used within table cell.
               This attribute contains the address (table name and coordinates)
               to a cell that is formatted as expected. The template cell might be located in a different (temporary)
               table. For example templateCell:"TmpTable.D1"
@@ -1354,7 +1423,7 @@ ${Date $value:"date"}</code></pre>
           </tr>
           <tr>
             <td>templateCell</td>
-            <td>Use this attribute when the command is used within spreadsheet table cell (ODS).
+            <td>Use this attribute when the command is used within table cell.
               This attribute contains the address (table name and coordinates)
               to a cell that is formatted as expected. The template cell might be located in a different (temporary)
               table. For example templateCell:"TmpTable.D1"
@@ -1418,7 +1487,7 @@ ${Time value:"2024-12-24 02:03:45"}</code></pre>
           </tr>
           <tr>
             <td>templateCell</td>
-            <td>Use this attribute when the command is used within spreadsheet table cell (ODS).
+            <td>Use this attribute when the command is used within table cell.
               This attribute contains the address (table name and coordinates)
               to a cell that is formatted as expected. The template cell might be located in a different (temporary)
               table. For example templateCell:"TmpTable.D1"
@@ -1755,16 +1824,16 @@ ${myDate v:"2024-12-12"}</code></pre>
         <pre class="padding"><code>git clone https://github.com/winterrifier/underdocx.git
 cd underdocx
 mvn clean install -P buildCli</code></pre>
-        After execution there will be a target folder that contains "underdocx-0.10.0-jar-with-dependencies.jar".
+        After execution there will be a target folder that contains "underdocx-0.10.1-jar-with-dependencies.jar".
         You can use this jar file as CLI tool.
 
         <h3>Usage of CLI</h3>
         To call Underdocx by CLI use this syntax:
         <pre
-          class="padding"><code>java -jar underdocx-0.10.0-jar-with-dependencies.jar &lt;engineType&gt; &lt;templateFile&gt; &lt;outFile&gt; &lt;dataJsonFile&gt;</code></pre>
+          class="padding"><code>java -jar underdocx-0.10.1-jar-with-dependencies.jar &lt;engineType&gt; &lt;templateFile&gt; &lt;outFile&gt; &lt;dataJsonFile&gt;</code></pre>
         For example:
         <pre
-          class="padding"><code>java -jar underdocx-0.10.0-jar-with-dependencies.jar ODT template.odt out.odt data.json</code></pre>
+          class="padding"><code>java -jar underdocx-0.10.1-jar-with-dependencies.jar ODT template.odt out.odt data.json</code></pre>
         Note: It is also possible to add custom Placeholder/Command implementations (see section Custom Extensions).
         Implement interface <code-word>EngineProvider</code-word>,
         include your classes to the classpath, execute <code-word>UnderdocxEngineRunder</code-word> as main class and

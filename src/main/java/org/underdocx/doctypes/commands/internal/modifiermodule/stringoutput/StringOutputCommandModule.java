@@ -30,6 +30,7 @@ import org.underdocx.doctypes.commands.internal.modifiermodule.AbstractCommandMo
 import org.underdocx.doctypes.commands.internal.modifiermodule.missingdata.MissingDataCommandModule;
 import org.underdocx.doctypes.commands.internal.modifiermodule.missingdata.MissingDataCommandModuleConfig;
 import org.underdocx.doctypes.commands.internal.modifiermodule.missingdata.MissingDataCommandModuleResult;
+import org.underdocx.doctypes.modifiers.tablecell.TableCellModifierData;
 import org.underdocx.doctypes.tools.datapicker.*;
 import org.underdocx.enginelayers.baseengine.CommandHandlerResult;
 import org.underdocx.enginelayers.parameterengine.ParametersPlaceholderData;
@@ -42,6 +43,7 @@ public class StringOutputCommandModule<C extends DocContainer<D>, D> extends Abs
     private static final PredefinedDataPicker<String> alignPicker = new OneOfDataPicker<>("left", "right").asPredefined("align");
     private static final PredefinedDataPicker<Integer> paddingPicker = new IntegerDataPicker().asPredefined("padding");
     private static final PredefinedDataPicker<String> truncatedPicker = new StringConvertDataPicker().asPredefined("truncated");
+    private static final PredefinedDataPicker<String> templateCellPicker = new StringConvertDataPicker().asPredefined("templateCell");
 
 
     public StringOutputCommandModule(MissingDataCommandModuleConfig<C, D, String> configuration) {
@@ -50,8 +52,8 @@ public class StringOutputCommandModule<C extends DocContainer<D>, D> extends Abs
 
     @Override
     protected Pair<CommandHandlerResult, MissingDataCommandModuleResult.MissingDataCommandModuleResultType> execute() {
-        boolean shouldRescan = rescanDataPicker.pickData(dataAccess, placholderData.getJson()).optional().orElse(false);
-        boolean useMarkup = markupDataPicker.pickData(dataAccess, placholderData.getJson()).optional().orElse(false);
+        boolean shouldRescan = rescanDataPicker.pickData(dataAccess, placeholderData.getJson()).optional().orElse(false);
+        boolean useMarkup = markupDataPicker.pickData(dataAccess, placeholderData.getJson()).optional().orElse(false);
         MissingDataCommandModule<C, D, String> module = new MissingDataCommandModule<>(configuration);
         MissingDataCommandModuleResult<String> moduleResult = module.execute(selection);
         return switch (moduleResult.resultType) {
@@ -61,6 +63,9 @@ public class StringOutputCommandModule<C extends DocContainer<D>, D> extends Abs
                 } else {
                     String output = handlePadding(moduleResult.value);
                     configuration.getModifiers().getReplaceWithTextModifier().modify(selection, output);
+                    templateCellPicker.pickData(dataAccess, placeholderData.getJson()).optional().ifPresent(templacecell -> {
+                        configuration.getModifiers().getTableCellModifier().modify(selection, new TableCellModifierData.Simple(output, templacecell));
+                    });
                 }
                 yield shouldRescan
                         ? new Pair<>(CommandHandlerResult.FACTORY.startAtNode(selection.getNode()), moduleResult.resultType)
@@ -73,15 +78,15 @@ public class StringOutputCommandModule<C extends DocContainer<D>, D> extends Abs
 
     private String handlePadding(String input) {
         String output = input;
-        Integer padding = paddingPicker.pickData(dataAccess, placholderData.getJson()).optional().orElse(null);
+        Integer padding = paddingPicker.pickData(dataAccess, placeholderData.getJson()).optional().orElse(null);
         if (padding != null) {
-            String align = alignPicker.pickData(dataAccess, placholderData.getJson()).optional().orElse("left");
+            String align = alignPicker.pickData(dataAccess, placeholderData.getJson()).optional().orElse("left");
             if (align.equals("left")) {
                 output = String.format("%-" + padding + "s", output);
             } else {
                 output = String.format("%-" + padding + "s", output);
             }
-            String truncated = truncatedPicker.pickData(dataAccess, placholderData.getJson()).optional().orElse(null);
+            String truncated = truncatedPicker.pickData(dataAccess, placeholderData.getJson()).optional().orElse(null);
             if (truncated != null && output.length() > padding) {
                 int maxLength = padding - truncated.length();
                 output = output.substring(0, maxLength) + truncated;

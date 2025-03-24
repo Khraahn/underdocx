@@ -74,11 +74,11 @@ public class AttributeInterpreterFactory {
         return new SinglePropertyInterpreter<>(AttributesInterpreter::getComplexAttribute);
     }
 
-    public static AttributesInterpreter<Optional<DataNode>, String> createModelNodeAttributeInterpreter(boolean ignoreAccessPrefix) {
+    public static AttributesInterpreter<Optional<DataNode<?>>, String> createModelNodeAttributeInterpreter(boolean ignoreAccessPrefix) {
         return new SinglePropertyInterpreter<>(ignoreAccessPrefix, AttributesInterpreter::getModelNodeAttribute);
     }
 
-    public static AttributesInterpreter<Optional<DataNode>, String> createModelNodeAttributeInterpreter() {
+    public static AttributesInterpreter<Optional<DataNode<?>>, String> createModelNodeAttributeInterpreter() {
         return new SinglePropertyInterpreter<>(AttributesInterpreter::getModelNodeAttribute);
     }
 

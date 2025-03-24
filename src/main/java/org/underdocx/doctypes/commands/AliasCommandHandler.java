@@ -110,7 +110,7 @@ public class AliasCommandHandler<C extends DocContainer<D>, D> extends AbstractC
     private static class AliasAttributesPicker extends AbstractConvertDataPicker<Set<AttrKeyValue>> {
 
         @Override
-        protected Optional<Set<AttrKeyValue>> convert(DataNode attributesNode) {
+        protected Optional<Set<AttrKeyValue>> convert(DataNode<?> attributesNode) {
             return Convenience.buildOptional(new HashSet<>(), result -> {
                 if (attributesNode != null && attributesNode.getType() != DataNode.DataNodeType.MAP) {
                     result.value = null;
@@ -128,7 +128,7 @@ public class AliasCommandHandler<C extends DocContainer<D>, D> extends AbstractC
     private static class AliasAttrReplacePicker extends AbstractConvertDataPicker<Map<String, String>> {
 
         @Override
-        protected Optional<Map<String, String>> convert(DataNode attrReplacements) {
+        protected Optional<Map<String, String>> convert(DataNode<?> attrReplacements) {
             return Convenience.buildOptional(new HashMap<>(), result -> {
                 if (attrReplacements != null && attrReplacements.getType() != DataNode.DataNodeType.MAP) {
                     result.value = null;

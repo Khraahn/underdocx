@@ -22,15 +22,15 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-package org.underdocx.doctypes.odf.modifiers.tablecell;
+package org.underdocx.doctypes.modifiers.tablecell;
 
-public interface OdfTableCellModifierData {
+public interface TableCellModifierData {
 
     Object getValue();
 
     String getStyleCellAddress();
 
-    class Simple implements OdfTableCellModifierData {
+    class Simple implements TableCellModifierData {
         Object value;
         String styleCellAddress;
 

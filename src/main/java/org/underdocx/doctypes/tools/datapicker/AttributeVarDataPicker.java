@@ -32,7 +32,7 @@ import org.underdocx.enginelayers.modelengine.data.DataNode;
 
 import java.util.Optional;
 
-public class AttributeVarDataPicker extends AbstractDataPicker<DataNode, String> {
+public class AttributeVarDataPicker extends AbstractDataPicker<DataNode<?>, String> {
 
     public AttributeVarDataPicker() {
         this(new AccessTypeJsonNameInterpreter(), AttributeInterpreterFactory.createStringAttributeInterpreter(true));
@@ -50,7 +50,7 @@ public class AttributeVarDataPicker extends AbstractDataPicker<DataNode, String>
     }
 
     @Override
-    protected DataPickerResult<DataNode> pickData(String name) {
+    protected DataPickerResult<DataNode<?>> pickData(String name) {
         AccessType type = typeInterpreter.interpretAttributes(attributes, name);
         if (type != AccessType.ACCESS_VARIABLE_BY_NAME) {
             return DataPickerResult.unresolvedMissingAttr(DataPickerResult.ResultSource.VAR);

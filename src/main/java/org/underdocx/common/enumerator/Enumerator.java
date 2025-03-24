@@ -148,6 +148,14 @@ public interface Enumerator<T> extends Iterable<T>, Iterator<T>, Enumeration<T> 
 
     T next();
 
+    default Optional<T> tryNext() {
+        return Convenience.buildOptional(result -> {
+            if (hasNext()) {
+                result.value = next();
+            }
+        });
+    }
+
     default Optional<T> next(Predicate<T> filter) {
         while (hasNext()) {
             T element = next();

@@ -36,18 +36,18 @@ import java.util.Optional;
  */
 public abstract class AbstractConvertDataPicker<T> implements ExtendedDataPicker<T> {
 
-    private final ExtendedDataPicker<DataNode> dataPicker;
+    private final ExtendedDataPicker<DataNode<?>> dataPicker;
 
     public AbstractConvertDataPicker() {
         this(new AttributeNodeDataPicker());
     }
 
-    public AbstractConvertDataPicker(ExtendedDataPicker<DataNode> dataPicker) {
+    public AbstractConvertDataPicker(ExtendedDataPicker<DataNode<?>> dataPicker) {
         this.dataPicker = dataPicker;
     }
 
     public DataPickerResult<T> pickData(String name, DataAccess dataAccess, JsonNode attributes) {
-        DataPickerResult<DataNode> tmpResult = dataPicker.pickData(name, dataAccess, attributes);
+        DataPickerResult<DataNode<?>> tmpResult = dataPicker.pickData(name, dataAccess, attributes);
         if (!tmpResult.isResolved()) {
             return DataPickerResult.convert(null, tmpResult);
         } else {
@@ -61,5 +61,5 @@ public abstract class AbstractConvertDataPicker<T> implements ExtendedDataPicker
         }
     }
 
-    protected abstract Optional<T> convert(DataNode node);
+    protected abstract Optional<T> convert(DataNode<?> node);
 }

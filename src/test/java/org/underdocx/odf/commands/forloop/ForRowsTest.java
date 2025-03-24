@@ -28,6 +28,8 @@ import org.junit.jupiter.api.Test;
 import org.underdocx.AbstractOdtTest;
 import org.underdocx.doctypes.odf.odt.OdtContainer;
 import org.underdocx.doctypes.odf.odt.OdtEngine;
+import org.underdocx.enginelayers.modelengine.data.simple.DataTreeBuilder;
+import org.underdocx.enginelayers.modelengine.data.simple.ReferredNode;
 
 import java.io.IOException;
 
@@ -57,5 +59,39 @@ public class ForRowsTest extends AbstractOdtTest {
         assertOrder(doc, "2", "Johanna", "Sommer");
         assertOrder(doc, "3", "Helene", "Fischer");
         assertOrder(doc, "1", "2", "3");
+    }
+
+    @Test
+    public void testStyledCells() {
+        OdtContainer doc = readOdt("LoopStyledCells.odt");
+        OdtEngine engine = new OdtEngine(doc);
+        engine.pushVariable("data",
+                DataTreeBuilder.beginList()
+
+                        .beginMap()
+                        .add("name", "data1")
+                        .add("value", "0.1")
+                        .addNode("style", new ReferredNode<>(() -> engine.getVariable("green").get()))
+                        .end()
+
+                        .beginMap()
+                        .add("name", "data2")
+                        .add("value", "1.2")
+                        .addNode("style", new ReferredNode<>(() -> engine.getVariable("red").get()))
+                        .end()
+
+                        .beginMap()
+                        .add("name", "data3")
+                        .add("value", "0.8")
+                        .addNode("style", new ReferredNode<>(() -> engine.getVariable("yellow").get()))
+                        .end()
+
+
+                        .end().build());
+        engine.run();
+        //show(doc);
+
+        assertNoPlaceholders(doc);
+        assertOrder(doc, "data1", "0.1", "data2", "1.2", "data3", "0.8");
     }
 }

@@ -26,7 +26,7 @@ package org.underdocx.enginelayers.modelengine.data.simple;
 
 import org.underdocx.enginelayers.modelengine.data.DataNode;
 
-public abstract class AbstractDataNode<T> implements DataNode {
+public abstract class AbstractDataNode<T> implements DataNode<T> {
 
     protected T containedValue;
     protected AbstractDataNode<?> parent;
