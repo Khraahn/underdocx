@@ -31,7 +31,7 @@ import org.underdocx.odf.commands.odg.AbstractOdgTest;
 
 import java.io.IOException;
 
-public class OdgCloneCommandHandler extends AbstractOdgTest {
+public class OdgCloneTest extends AbstractOdgTest {
 
     @Test
     public void testClonePage() throws IOException {

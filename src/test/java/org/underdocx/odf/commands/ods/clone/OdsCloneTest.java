@@ -31,7 +31,7 @@ import org.underdocx.odf.commands.ods.AbstractOdsTest;
 
 import java.io.IOException;
 
-public class OdsCloneCommandHandler extends AbstractOdsTest {
+public class OdsCloneTest extends AbstractOdsTest {
 
     @Test
     public void testCloneTable() throws IOException {
