@@ -47,6 +47,7 @@ public enum OdfAttribute {
     TEXT_PROPERTIES_TEXT_DISPLAY(OdfNameSpace.TEXT, "display"),
 
     TABLE_NAME(OdfNameSpace.TABLE, "name"),
+    DRAW_NAME(OdfNameSpace.DRAW, "name"),
 
     TABLE_NUMBER_ROWS_REPEATED(OdfNameSpace.TABLE, "number-rows-repeated"),
     TABLE_NUMBER_COLUMNS_REPEATED(OdfNameSpace.TABLE, "number-columns-repeated"),
@@ -113,6 +114,14 @@ public enum OdfAttribute {
 
     public boolean isIn(Node src) {
         return getAttributeNS(src) != null;
+    }
+
+    public boolean hasValue(Node src, String value) {
+        String found = getAttributeNS(src);
+        if (found == null) {
+            return value == null;
+        }
+        return found.equals(value);
     }
 
     public void removeAttributeNS(Node node) {

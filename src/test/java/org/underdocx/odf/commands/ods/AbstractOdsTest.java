@@ -22,21 +22,21 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-package org.underdocx.odf.commands.odg;
+package org.underdocx.odf.commands.ods;
 
 import org.assertj.core.api.Assertions;
 import org.underdocx.AbstractOdtTest;
 import org.underdocx.common.tree.Nodes;
-import org.underdocx.doctypes.odf.odg.OdgContainer;
+import org.underdocx.doctypes.odf.ods.OdsContainer;
 import org.w3c.dom.Node;
 
-public class AbstractOdgTest extends AbstractOdtTest {
+public class AbstractOdsTest extends AbstractOdtTest {
 
-    protected boolean findTextNode(OdgContainer doc, String text) {
+    protected boolean findTextNode(OdsContainer doc, String text) {
         return !findTextNode(doc.getContentRoot(), text).isEmpty();
     }
 
-    protected void assertTextNodeOrder(OdgContainer doc, String... txts) {
+    protected void assertTextNodeOrder(OdsContainer doc, String... txts) {
         for (int i = 0; i < txts.length - 1; i++) {
             Node node1 = findTextNode(doc.getContentRoot(), txts[i]).get(0);
             Node node2 = findTextNode(doc.getContentRoot(), txts[i + 1]).get(0);

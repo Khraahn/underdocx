@@ -24,13 +24,18 @@ SOFTWARE.
 
 package org.underdocx.doctypes.odf.tools;
 
+import org.odftoolkit.odfdom.doc.OdfDocument;
 import org.odftoolkit.odfdom.dom.element.OdfStylableElement;
 import org.odftoolkit.odfdom.dom.element.office.OfficeTextElement;
 import org.odftoolkit.odfdom.dom.element.table.TableTableElement;
 import org.odftoolkit.odfdom.dom.element.text.TextParagraphElementBase;
 import org.underdocx.common.tools.Convenience;
 import org.underdocx.common.tree.Nodes;
+import org.underdocx.common.tree.TreePaths;
 import org.underdocx.doctypes.odf.AbstractOdfContainer;
+import org.underdocx.doctypes.odf.constants.OdfAttribute;
+import org.underdocx.doctypes.odf.constants.OdfElement;
+import org.underdocx.doctypes.odf.ods.OdsContainer;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
@@ -88,5 +93,50 @@ public class OdfNodes {
         }
     }
 
+    public static Optional<Node> findMainTable(OdsContainer doc, String name) {
+        return Convenience.buildOptional(result -> {
+            Node content = doc.getContentDom().getFirstChild();
+            TreePaths paths = new TreePaths(content, OdfElement.OFFICE_BODY, OdfElement.OFFICE_SPREADSHEET, OdfElement.TABLE);
+            for (Node spreadsheet : paths) {
+                if (OdfAttribute.TABLE_NAME.hasValue(spreadsheet, name)) {
+                    result.value = spreadsheet;
+                }
+            }
+        });
+    }
+
+    public static <T extends OdfDocument> Optional<Node> findMainPage(AbstractOdfContainer<T> doc, String name) {
+        return Convenience.buildOptional(result -> {
+            Node content = doc.getContentDom().getFirstChild();
+            TreePaths paths = new TreePaths(content, OdfElement.OFFICE_BODY, OdfElement.OFFICE_DRAWING.or(OdfElement.OFFICE_PRESENTATION), OdfElement.PAGE);
+            for (Node page : paths) {
+                if (OdfAttribute.DRAW_NAME.hasValue(page, name)) {
+                    result.value = page;
+                }
+            }
+        });
+    }
+
+    /**
+     * returns the office:spreadsheet node for ODS documents
+     * returns the office:drawing node for ODG documents
+     * returns the office:presentation node for ODP documents
+     * returns the office:text node for ODT documents
+     */
+    public static <T extends OdfDocument> Optional<Node> getMainContentNode(AbstractOdfContainer<T> doc) {
+        return Convenience.buildOptional(result -> {
+            Node content = doc.getContentDom().getFirstChild();
+            TreePaths paths = new TreePaths(
+                    content,
+                    OdfElement.OFFICE_BODY,
+                    OdfElement.OFFICE_DRAWING
+                            .or(OdfElement.OFFICE_PRESENTATION)
+                            .or(OdfElement.OFFICE_TEXT)
+                            .or(OdfElement.OFFICE_SPREADSHEET));
+            if (paths.hasNext()) {
+                result.value = paths.next();
+            }
+        });
+    }
 
 }

@@ -22,25 +22,23 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-package org.underdocx.odf.commands.odg;
+package org.underdocx.odf.commands.odg.clone;
 
-import org.assertj.core.api.Assertions;
-import org.underdocx.AbstractOdtTest;
-import org.underdocx.common.tree.Nodes;
+import org.junit.jupiter.api.Test;
 import org.underdocx.doctypes.odf.odg.OdgContainer;
-import org.w3c.dom.Node;
+import org.underdocx.doctypes.odf.odg.OdgEngine;
+import org.underdocx.odf.commands.odg.AbstractOdgTest;
 
-public class AbstractOdgTest extends AbstractOdtTest {
+import java.io.IOException;
 
-    protected boolean findTextNode(OdgContainer doc, String text) {
-        return !findTextNode(doc.getContentRoot(), text).isEmpty();
-    }
+public class OdgCloneCommandHandler extends AbstractOdgTest {
 
-    protected void assertTextNodeOrder(OdgContainer doc, String... txts) {
-        for (int i = 0; i < txts.length - 1; i++) {
-            Node node1 = findTextNode(doc.getContentRoot(), txts[i]).get(0);
-            Node node2 = findTextNode(doc.getContentRoot(), txts[i + 1]).get(0);
-            Assertions.assertThat(Nodes.compareNodePositions(node1, node2)).isLessThan(0);
-        }
+    @Test
+    public void testClonePage() throws IOException {
+        OdgContainer doc = new OdgContainer(readResource("ClonePage.odg"));
+        OdgEngine engine = new OdgEngine(doc);
+        engine.run();
+        //show(doc);
+        assertTextNodeOrder(doc, "2", "10", "42", "50", "178", "180");
     }
 }

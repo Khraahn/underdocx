@@ -30,6 +30,12 @@ import java.util.function.Predicate;
 
 public enum OdfElement implements Predicate<Node> {
     DOCUMENT_CONTENT(OdfNameSpace.OFFICE, "document-content"),
+    OFFICE_BODY(OdfNameSpace.OFFICE, "body"),
+    OFFICE_SPREADSHEET(OdfNameSpace.OFFICE, "spreadsheet"),
+    OFFICE_DRAWING(OdfNameSpace.OFFICE, "drawing"),
+    OFFICE_PRESENTATION(OdfNameSpace.OFFICE, "presentation"),
+    OFFICE_TEXT(OdfNameSpace.OFFICE, "text"),
+
     SPAN(OdfNameSpace.TEXT, "span"),
     PARAGRAPH(OdfNameSpace.TEXT, "p"),
     TAB(OdfNameSpace.TEXT, "tab"),

@@ -62,6 +62,9 @@ public class OdgEngine extends AbstractOdfEngine<OdgContainer, OdfGraphicsDocume
         engine.registerCommandHandler(parameters, new OdgImportCommandHandler(modifiers));
         engine.registerCommandHandler(parameters, new OdfNumberCommandHandler<>(modifiers));
         engine.registerCommandHandler(parameters, new RemoveCommandHandler<>(modifiers));
+        engine.registerCommandHandler(parameters, new OdfCloneCommandHandler<>(modifiers));
+        engine.registerCommandHandler(parameters, new ConcatCommandHandler<>(modifiers));
+        engine.registerCommandHandler(parameters, new CalcCommandHandler<>(modifiers));
     }
 
     public OdgEngine(OdgContainer doc) {

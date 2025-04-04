@@ -60,6 +60,9 @@ public class OdsEngine extends AbstractOdfEngine<OdsContainer, OdfSpreadsheetDoc
         engine.registerCommandHandler(parameters, aliasCommandHandler);
         engine.registerCommandHandler(parameters, new OdfNumberCommandHandler<>(modifiers));
         engine.registerCommandHandler(parameters, new RemoveCommandHandler<>(modifiers));
+        engine.registerCommandHandler(parameters, new OdfCloneCommandHandler<>(modifiers));
+        engine.registerCommandHandler(parameters, new ConcatCommandHandler<>(modifiers));
+        engine.registerCommandHandler(parameters, new CalcCommandHandler<>(modifiers));
     }
 
     public OdsEngine(OdsContainer doc) {

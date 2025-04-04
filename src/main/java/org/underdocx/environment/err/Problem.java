@@ -24,8 +24,8 @@ SOFTWARE.
 
 package org.underdocx.environment.err;
 
-import org.underdocx.enginelayers.baseengine.CommandHandler;
 import org.underdocx.common.tools.Convenience;
+import org.underdocx.enginelayers.baseengine.CommandHandler;
 import org.w3c.dom.Node;
 
 import java.util.ArrayList;
@@ -188,7 +188,7 @@ public class Problem {
     public String getSingleLineReport() {
         List<String> elements = new ArrayList<>();
         Convenience.ifNotNull(description, description -> elements.add(description));
-        Convenience.ifNotNull(getString(command), command -> elements.add("hander: " + command));
+        Convenience.ifNotNull(getString(command), command -> elements.add("handler: " + command));
         Convenience.ifNotNull(property, property -> elements.add("property: " + property));
         Convenience.ifNotNull(value, value -> elements.add("value: " + value));
         Convenience.ifNotNull(getString(node), node -> elements.add("node: " + node));

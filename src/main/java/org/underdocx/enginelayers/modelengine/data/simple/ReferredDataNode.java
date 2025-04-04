@@ -32,6 +32,10 @@ import java.util.function.Supplier;
 
 public class ReferredDataNode<T> extends AbstractDataNode<T> {
 
+    public static <T> ReferredDataNode<T> convertToReferredDataNode(DataNode<T> node) {
+        return new ReferredDataNode<>(() -> node);
+    }
+
     private final Supplier<DataNode<T>> supplier;
 
     public ReferredDataNode(Supplier<DataNode<T>> nodeSupplier) {

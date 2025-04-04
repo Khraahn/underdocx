@@ -116,7 +116,6 @@ public class BaseEngine<C extends DocContainer<D>, D> {
             } catch (IOException e) {
                 UnderdocxEnv.getInstance().logger.error("Failed to create debug file", e);
             }
-
         }
     }
 

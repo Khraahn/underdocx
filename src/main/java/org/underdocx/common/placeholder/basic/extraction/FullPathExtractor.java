@@ -79,7 +79,6 @@ public class FullPathExtractor extends AbstractExtractor {
                 }
             });
             TextNodePath result = pathNodes.isEmpty() ? null : new TextNodePath(pathNodes, interpreter);
-            System.out.println(">>>> text node path: " + result);
             return result;
         }
 

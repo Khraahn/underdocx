@@ -32,8 +32,7 @@ public class ListDataNode extends AbstractPredefinedDataNode<List<AbstractDataNo
     public ListDataNode() {
         this.containedValue = new ArrayList<>();
     }
-
-
+    
     @Override
     protected void removeChild(AbstractDataNode<?> node) {
         getValue().remove(node);
