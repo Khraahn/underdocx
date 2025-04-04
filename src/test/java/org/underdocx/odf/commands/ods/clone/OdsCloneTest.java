@@ -38,7 +38,7 @@ public class OdsCloneTest extends AbstractOdsTest {
         OdsContainer doc = new OdsContainer(readResource("CloneTables.ods"));
         OdsEngine engine = new OdsEngine(doc);
         engine.run();
-        show(doc);
+        //show(doc);
         assertTextNodeOrder(doc, "2", "10", "42", "50", "178", "180");
     }
 }
