@@ -41,7 +41,7 @@ public class DataPickerResult<T> {
             return switch (accessType) {
                 case ACCESS_ATTR_VALUE -> ATTR_VALUE;
                 case MISSING_ACCESS -> UNKNOWN;
-                case ACCESS_VARIABLE_BY_NAME -> VAR;
+                case ACCESS_VARIABLE_BY_NAME, ACCESS_VAR_CONTAINS_NAME_OF_VAR -> VAR;
                 case ACCESS_MODEL_BY_NAME, ACCESS_CURRENT_MODEL_NODE -> MODEL;
             };
         }

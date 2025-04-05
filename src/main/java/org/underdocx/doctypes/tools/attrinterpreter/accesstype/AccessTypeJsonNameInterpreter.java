@@ -45,7 +45,9 @@ public class AccessTypeJsonNameInterpreter extends AbstractAttributeInterpreter<
     @Override
     protected AccessType interpretAttributes() {
         AccessType accessType = null;
-        if (configuration != null && hasAttribute(AccessType.ACCESS_MODEL_BY_NAME.rename(configuration))) {
+        if (configuration != null && hasAttribute(AccessType.ACCESS_VAR_CONTAINS_NAME_OF_VAR.rename(configuration))) {
+            accessType = AccessType.ACCESS_VAR_CONTAINS_NAME_OF_VAR;
+        } else if (configuration != null && hasAttribute(AccessType.ACCESS_MODEL_BY_NAME.rename(configuration))) {
             accessType = AccessType.ACCESS_MODEL_BY_NAME;
         } else if (configuration != null && hasAttribute(AccessType.ACCESS_VARIABLE_BY_NAME.rename(configuration))) {
             accessType = AccessType.ACCESS_VARIABLE_BY_NAME;

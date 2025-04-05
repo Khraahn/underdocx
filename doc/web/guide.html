@@ -219,6 +219,16 @@ engine.pushVariable("dateToShow", lastYear);</code></pre>
         For example:
         <pre class="padding"><code>Example: 19.01.2024</code></pre>
 
+        <h4>Variable referencing Variable</h4>
+        In some cases it might be useful that a variable stores the name/address of an other variable.
+        This variable reference can be resolved with prefix '$$'.
+        The folowing example stores the value "Hello World" in variable "out", and Variable "reference" stores
+        the variable name "out". The prefix '$$' is used to resolve "reference" and to print out "Hello World" directly.
+        <pre class="padding"><code>${Push key:"out", value:"Hello World"}
+${Push key:"reference", value:"out"}
+${String $$value:"reference"}</code></pre>
+
+
         <h4>Model</h4>
 
         The model is a static hierarchical data structure the template engine can navigate through during

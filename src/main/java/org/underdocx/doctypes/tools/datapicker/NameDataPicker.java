@@ -53,6 +53,7 @@ public class NameDataPicker extends AbstractDataPicker<DataNode<?>, String> {
                     new ModelNameDataPicker().pickData(pureName, model, attributes);
             case ACCESS_ATTR_VALUE -> new AttributeValueDataPicker(typeInterpreter).pickData(name, model, attributes);
             case ACCESS_VARIABLE_BY_NAME -> new VarNameDataPicker().pickData(pureName, model, attributes);
+            case ACCESS_VAR_CONTAINS_NAME_OF_VAR -> new Var2VarNameDataPicker().pickData(pureName, model, attributes);
             case MISSING_ACCESS -> DataPickerResult.unresolvedMissingAttr(DataPickerResult.ResultSource.UNKNOWN);
         };
     }
