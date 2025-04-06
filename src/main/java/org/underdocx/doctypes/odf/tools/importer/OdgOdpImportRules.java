@@ -59,6 +59,13 @@ public class OdgOdpImportRules extends AbstractImportRules {
         this.pageName = pageName;
     }
 
+    public static OdgOdpImportRules createRules(String pageName, NodeFilter copyContentNodeFilter) {
+        OdgOdpImportRules result = new OdgOdpImportRules(pageName);
+        result.copyContentNodeFilter = copyContentNodeFilter;
+        result.init();
+        return result;
+    }
+
     protected void createRules() {
         providerDescrs.addAll(Arrays.asList(
                 new ProviderDescr(
@@ -87,13 +94,6 @@ public class OdgOdpImportRules extends AbstractImportRules {
         return node -> DRAW_PAGE.test(node) && name.equals(DRAW_PAGE_NAME.getValue(node).orElse(null));
     }
 
-    public static OdgOdpImportRules createRules(String pageName, NodeFilter copyContentNodeFilter) {
-        OdgOdpImportRules result = new OdgOdpImportRules(pageName);
-        result.copyContentNodeFilter = copyContentNodeFilter;
-        result.init();
-        return result;
-    }
-
     public static class OdgOdpCopyExecutor implements MainCopyExecutor {
         private final TagPathDescr mainCopyRule;
 
@@ -103,18 +103,12 @@ public class OdgOdpImportRules extends AbstractImportRules {
 
         @Override
         public void copy(AbstractOdfContainer<?> source, Node targetRefInsertAfter) {
-            Node insertAfterElement = Nodes.findAncestorChild(targetRefInsertAfter, DRAW_PAGE).get();
             Document targetOwnerDocument = targetRefInsertAfter.getOwnerDocument();
-            Node siblingRef = insertAfterElement.getNextSibling();
-            Node targetParent = insertAfterElement.getParentNode();
+            Node page = Nodes.findOldestAncestorNode(targetRefInsertAfter, DRAW_PAGE).get();
             List<Node> allToCopy = mainCopyRule.findAll(source);
             allToCopy.forEach(toCopy -> {
                 Node clone = targetOwnerDocument.importNode(toCopy, true);
-                if (siblingRef != null) {
-                    targetParent.insertBefore(clone, siblingRef);
-                } else {
-                    targetParent.appendChild(clone);
-                }
+                page.appendChild(clone);
             });
         }
     }

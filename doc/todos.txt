@@ -1,5 +1,6 @@
 - Features
   - Remove auch für Tabellen/Pages über ihren Namen
+  - Push sollte fehler werden wenn value nicht gefunden wird
   - später ggf. docx unterstützen
 - Bekannte Probleme:
   - Prüfen ob Vectorgrafiken als Bilder verwendet werden können
