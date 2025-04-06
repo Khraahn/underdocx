@@ -1,4 +1,5 @@
 - Features
+  - Remove auch für Tabellen/Pages über ihren Namen
   - später ggf. docx unterstützen
 - Bekannte Probleme:
   - Prüfen ob Vectorgrafiken als Bilder verwendet werden können

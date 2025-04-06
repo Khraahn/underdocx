@@ -28,6 +28,7 @@ import org.junit.jupiter.api.Test;
 import org.underdocx.AbstractOdtTest;
 import org.underdocx.doctypes.odf.odt.OdtContainer;
 import org.underdocx.doctypes.odf.odt.OdtEngine;
+import org.underdocx.enginelayers.modelengine.data.simple.LeafDataNode;
 import org.underdocx.enginelayers.modelengine.data.simple.MapDataNode;
 
 public class IfTest extends AbstractOdtTest {
@@ -44,6 +45,22 @@ public class IfTest extends AbstractOdtTest {
         assertContains(doc, "P P");
 
         assertNotContains(doc, "INVALID");
+        assertNoPlaceholders(doc);
+    }
+
+    @Test
+    public void testSingleIfContainsPlaceholders() {
+        String documentStr = """
+                ${If $testTrue:true}${String value:"Hello World"}${EndIf}
+                ${String value:"Test"}
+                """;
+        OdtContainer doc = new OdtContainer(documentStr);
+        OdtEngine engine = new OdtEngine(doc);
+        engine.pushVariable("testTrue", new LeafDataNode<>(true));
+        engine.run();
+        //show(doc);
+        assertContains(doc, "Hello World");
+        assertContains(doc, "Test");
         assertNoPlaceholders(doc);
     }
 

@@ -24,6 +24,7 @@ SOFTWARE.
 
 package org.underdocx.doctypes.modifiers.ifmodifier;
 
+import org.underdocx.common.tree.Nodes;
 import org.underdocx.doctypes.DocContainer;
 import org.underdocx.doctypes.modifiers.ModifiersProvider;
 import org.underdocx.doctypes.modifiers.deleteplaceholder.DeletePlaceholderModifierData;
@@ -47,8 +48,10 @@ public class IfModifier<C extends DocContainer<D>, D> extends AbstractAreaModifi
     @Override
     protected ModifierNodeResult modify() {
         if (modifierData.isMatch()) {
+            Node previousNode = Nodes.findPreviousNode(area.left).get();
             modifiers.getDeletePlaceholderModifier().modify(area.left, DeletePlaceholderModifierData.DEFAULT);
-            return modifiers.getDeletePlaceholderModifier().modify(area.right, DeletePlaceholderModifierData.DEFAULT);
+            modifiers.getDeletePlaceholderModifier().modify(area.right, DeletePlaceholderModifierData.DEFAULT);
+            return ModifierNodeResult.FACTORY.success(previousNode, true);
         } else {
             return modifiers.getDeleteAreaModifier().modify(selection, new AreaModifierWithCommonAncestorData.DefaultAreaModifierWithCommonAncestorData(
                     area, getCommonAncestorNode(modifierData)

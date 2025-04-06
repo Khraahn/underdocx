@@ -24,7 +24,6 @@ SOFTWARE.
 
 package org.underdocx.doctypes;
 
-import org.underdocx.common.tools.TmpFile;
 import org.underdocx.common.types.Resource;
 
 import java.io.ByteArrayInputStream;
@@ -80,12 +79,6 @@ public abstract class AbstractDocContainer<D> implements DocContainer<D> {
     @Override
     public void setDocument(D doc) {
         this.doc = doc;
-    }
-
-    public File createTmpFile(String prefix, boolean deleteOnExit, Long lifetime) throws IOException {
-        File tmpFile = TmpFile.createTmpFile(prefix, "." + getFileExtension(), deleteOnExit, lifetime);
-        save(tmpFile);
-        return tmpFile;
     }
 
 

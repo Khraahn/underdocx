@@ -24,8 +24,10 @@ SOFTWARE.
 
 package org.underdocx.doctypes;
 
+import org.underdocx.common.tools.TmpFile;
 import org.underdocx.environment.UnderdocxEnv;
 
+import java.awt.*;
 import java.io.*;
 
 public interface DocContainer<D> {
@@ -70,7 +72,12 @@ public interface DocContainer<D> {
     }
 
 
-    File createTmpFile(String prefix, boolean deleteOnExit, Long lifetime) throws IOException;
+    default File createTmpFile(String prefix, boolean deleteOnExit, Long lifetime) throws IOException {
+        File tmpFile = TmpFile.createTmpFile(prefix, "." + getFileExtension(), deleteOnExit, lifetime);
+        save(tmpFile);
+        return tmpFile;
+    }
+
 
     default String createURI(Long lifetime) throws IOException {
         return createTmpFile(lifetime).toURI().toString();
@@ -81,5 +88,10 @@ public interface DocContainer<D> {
     }
 
     void appendText(String content);
+
+    default void show() throws IOException {
+        File tmp = createTmpFile("preview_", false, null);
+        Desktop.getDesktop().open(tmp);
+    }
 
 }
