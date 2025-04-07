@@ -1323,10 +1323,11 @@ ${EndIf}</code></pre>
 
           <tr>
             <td>keepWidth</td>
-            <td>yes</td>
+            <td>no</td>
             <td>
               when true, replaced image will have same width as this template image and height will be recalculated.
-              When false, replaced image will have same height as this template image and width will be recalculated
+              When false, replaced image will have same height as this template image and width will be recalculated.
+                When not set the origin size of the image won't change.
             </td>
           </tr>
         </table>
@@ -1646,7 +1647,8 @@ ${myDate v:"2024-12-12"}</code></pre>
         Removes the paragraph, page or table which contains this placeholder. In ODS, ODG and ODS documents
         you could use this command to create a temporary area with commands that will be removed in the
         final document. In this temporary area you can define ${Alias} commands or ${For} statements
-        addressing remote tables.
+        addressing remote tables. When attribute "name" is used, the table or page that has this name
+          will be removed.
 
         <table>
           <tr>
@@ -1668,6 +1670,12 @@ ${myDate v:"2024-12-12"}</code></pre>
               later
             </td>
           </tr>
+            <tr>
+                <td>name</td>
+                <td>Optional: Remove the table or page that has this name. If not set the parent page or table
+                    will be removed that contains this placeholder
+                </td>
+            </tr>
         </table>
 
         <h3>${Clone}-Command</h3>

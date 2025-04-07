@@ -22,50 +22,38 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-package org.underdocx.doctypes.odf.modifiers.existingimage;
+package org.underdocx.doctypes.odf.modifiers.deletenode;
 
-import org.underdocx.common.types.Resource;
+public interface OdfDeleteNamedNodeModifierData {
 
-public interface OdfExistingImageModifierData {
+    String getName();
 
-    Resource getResource();
+    Type getNodeType();
 
-    String getFileName();
+    enum Type {
+        TABLE,
+        PAGE
+    }
 
-    Boolean getKeepWidth();
+    class Simple implements OdfDeleteNamedNodeModifierData {
 
-    String getNewDesc();
+        private String name;
+        private Type type;
 
-    class Simple implements OdfExistingImageModifierData {
-        Boolean keepWidth;
-        Resource resource;
-        String newName;
-        String newDesc;
 
-        public Simple(Boolean keepWidth, Resource resource, String newName, String newDesc) {
-            this.keepWidth = keepWidth;
-            this.resource = resource;
-            this.newName = newName;
-            this.newDesc = newDesc;
+        public Simple(String name, Type type) {
+            this.name = name;
+            this.type = type;
         }
 
         @Override
-        public Resource getResource() {
-            return resource;
-        }
-
-        public String getFileName() {
-            return newName;
+        public String getName() {
+            return name;
         }
 
         @Override
-        public Boolean getKeepWidth() {
-            return keepWidth;
-        }
-
-        @Override
-        public String getNewDesc() {
-            return newDesc;
+        public Type getNodeType() {
+            return type;
         }
     }
 }

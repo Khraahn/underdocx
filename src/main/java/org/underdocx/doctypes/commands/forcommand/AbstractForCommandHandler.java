@@ -353,7 +353,7 @@ public abstract class AbstractForCommandHandler<C extends DocContainer<D>, D> ex
             placeholder.addIntAttribute(VariableCommandHandler.VALUE_ATTR, index);
         }));
         replaceData.right.add(also(new ParametersPlaceholderData.Simple(VariableCommandHandler.KEY_POP), placeholder ->
-                placeholder.addStringAttribute(VariableCommandHandler.KEY_ATTR, asAttrValue)));
+                placeholder.addStringAttribute(VariableCommandHandler.KEY_ATTR, INDEX)));
         if (index == listNode.getSize() - 1) {
             replaceData.right.add(also(new ParametersPlaceholderData.Simple(ModelCommandHandler.KEY), placeholder -> {
                 String path = dataAccess.getCurrentModelPath().toString();

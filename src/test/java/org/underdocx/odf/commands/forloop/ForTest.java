@@ -265,6 +265,7 @@ public class ForTest extends AbstractOdtTest {
         OdtEngine engine = new OdtEngine(doc);
         engine.setModel(new MapDataNode(jsonString));
         engine.run();
+        // show(doc);
         assertContains(doc, "0 A");
         assertContains(doc, "1 B");
         assertContains(doc, "2 C");

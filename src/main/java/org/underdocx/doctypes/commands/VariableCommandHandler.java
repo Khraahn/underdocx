@@ -24,12 +24,15 @@ SOFTWARE.
 
 package org.underdocx.doctypes.commands;
 
-import org.underdocx.common.tools.Convenience;
 import org.underdocx.common.types.Regex;
 import org.underdocx.doctypes.DocContainer;
 import org.underdocx.doctypes.commands.internal.AbstractTextualCommandHandler;
 import org.underdocx.doctypes.modifiers.ModifiersProvider;
+import org.underdocx.doctypes.tools.datapicker.AttributeNodeDataPicker;
+import org.underdocx.doctypes.tools.datapicker.PredefinedDataPicker;
+import org.underdocx.doctypes.tools.datapicker.StringConvertDataPicker;
 import org.underdocx.enginelayers.baseengine.CommandHandlerResult;
+import org.underdocx.enginelayers.modelengine.data.DataNode;
 
 
 public class VariableCommandHandler<C extends DocContainer<D>, D> extends AbstractTextualCommandHandler<C, D> {
@@ -45,6 +48,9 @@ public class VariableCommandHandler<C extends DocContainer<D>, D> extends Abstra
         super(KEYS, modifiers);
     }
 
+    private static final PredefinedDataPicker<String> keyAttr = new StringConvertDataPicker().asPredefined(KEY_ATTR);
+    private static final PredefinedDataPicker<DataNode<?>> valueAttr = new AttributeNodeDataPicker().asPredefined(VALUE_ATTR);
+
     @Override
     protected CommandHandlerResult tryExecuteTextualCommand() {
         markForEodDeletion();
@@ -56,15 +62,15 @@ public class VariableCommandHandler<C extends DocContainer<D>, D> extends Abstra
     }
 
     private CommandHandlerResult handlePushCommand() {
-        return Convenience.build(CommandHandlerResult.EXECUTED_PROCEED, result ->
-                resolveStringByAttr(KEY_ATTR).ifPresent(key ->
-                        resolveNodeByAttr(VALUE_ATTR).ifPresent(modelValue ->
-                                dataAccess.pushVariable(key, modelValue))));
+        String key = keyAttr.expect(dataAccess, placeholderData.getJson());
+        DataNode<?> data = valueAttr.expect(dataAccess, placeholderData.getJson());
+        dataAccess.pushVariable(key, data);
+        return CommandHandlerResult.EXECUTED_PROCEED;
     }
 
     private CommandHandlerResult handlePopCommand() {
-        return Convenience.build(CommandHandlerResult.EXECUTED_PROCEED, result ->
-                resolveStringByAttr(KEY_ATTR).ifPresent(key ->
-                        dataAccess.popVariable(key)));
+        String key = keyAttr.expect(dataAccess, placeholderData.getJson());
+        dataAccess.popVariable(key);
+        return CommandHandlerResult.EXECUTED_PROCEED;
     }
 }

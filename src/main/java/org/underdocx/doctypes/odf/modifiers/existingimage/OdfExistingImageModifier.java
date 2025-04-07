@@ -53,18 +53,20 @@ public class OdfExistingImageModifier<C extends DocContainer<D>, P extends Basic
             placeholder.exchangeImage(resource, newName);
         }
         UnderdocxEnv.getInstance().logger.trace("new image dimension; " + importImageWidthHeight);
-        if (modifierData.isKeepWidth()) {
-            String newHeightUnit = placeholder.getWidthUnit();
-            UnderdocxEnv.getInstance().logger.trace("template image width to keep: " + placeholder.getWidthValue());
-            double height = placeholder.getWidthValue() * importImageWidthHeight.right / importImageWidthHeight.left;
-            UnderdocxEnv.getInstance().logger.trace("calculated height: " + height);
-            placeholder.setHeight(height, newHeightUnit);
-        } else {
-            String newWidthUnit = placeholder.getHeightUnit();
-            UnderdocxEnv.getInstance().logger.trace("template image height to keep: " + placeholder.getHeightValue());
-            double width = placeholder.getHeightValue() * importImageWidthHeight.left / importImageWidthHeight.right;
-            UnderdocxEnv.getInstance().logger.trace("calculated width: " + width);
-            placeholder.setWidth(width, newWidthUnit);
+        if (modifierData.getKeepWidth() != null) {
+            if (modifierData.getKeepWidth()) {
+                String newHeightUnit = placeholder.getWidthUnit();
+                UnderdocxEnv.getInstance().logger.trace("template image width to keep: " + placeholder.getWidthValue());
+                double height = placeholder.getWidthValue() * importImageWidthHeight.right / importImageWidthHeight.left;
+                UnderdocxEnv.getInstance().logger.trace("calculated height: " + height);
+                placeholder.setHeight(height, newHeightUnit);
+            } else {
+                String newWidthUnit = placeholder.getHeightUnit();
+                UnderdocxEnv.getInstance().logger.trace("template image height to keep: " + placeholder.getHeightValue());
+                double width = placeholder.getHeightValue() * importImageWidthHeight.left / importImageWidthHeight.right;
+                UnderdocxEnv.getInstance().logger.trace("calculated width: " + width);
+                placeholder.setWidth(width, newWidthUnit);
+            }
         }
         String title = modifierData.getNewDesc();
         placeholder.setDesc(title == null ? newName : title);

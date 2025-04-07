@@ -43,4 +43,16 @@ public class AbstractOdgTest extends AbstractOdtTest {
             Assertions.assertThat(Nodes.compareNodePositions(node1, node2)).isLessThan(0);
         }
     }
+
+    public void assertContains(OdgContainer doc, String text) {
+        Assertions.assertThat(findTextNode(doc, text)).isTrue();
+    }
+
+    public void assertNotContains(OdgContainer doc, String text) {
+        Assertions.assertThat(findTextNode(doc, text)).isFalse();
+    }
+
+    public void assertNoPlaceholders(OdgContainer doc) {
+        Assertions.assertThat(findTextNode(doc, "$")).isFalse();
+    }
 }

@@ -22,50 +22,25 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-package org.underdocx.doctypes.odf.modifiers.existingimage;
+package org.underdocx.odf.commands.odg.remove;
 
-import org.underdocx.common.types.Resource;
+import org.junit.jupiter.api.Test;
+import org.underdocx.doctypes.odf.odg.OdgContainer;
+import org.underdocx.doctypes.odf.odg.OdgEngine;
+import org.underdocx.odf.commands.odg.AbstractOdgTest;
 
-public interface OdfExistingImageModifierData {
+import java.io.IOException;
 
-    Resource getResource();
+public class RemovePageTest extends AbstractOdgTest {
 
-    String getFileName();
-
-    Boolean getKeepWidth();
-
-    String getNewDesc();
-
-    class Simple implements OdfExistingImageModifierData {
-        Boolean keepWidth;
-        Resource resource;
-        String newName;
-        String newDesc;
-
-        public Simple(Boolean keepWidth, Resource resource, String newName, String newDesc) {
-            this.keepWidth = keepWidth;
-            this.resource = resource;
-            this.newName = newName;
-            this.newDesc = newDesc;
-        }
-
-        @Override
-        public Resource getResource() {
-            return resource;
-        }
-
-        public String getFileName() {
-            return newName;
-        }
-
-        @Override
-        public Boolean getKeepWidth() {
-            return keepWidth;
-        }
-
-        @Override
-        public String getNewDesc() {
-            return newDesc;
-        }
+    @Test
+    public void testRemovePage() throws IOException {
+        OdgContainer doc = new OdgContainer(readResource("Remove.odg"));
+        OdgEngine engine = new OdgEngine(doc);
+        engine.run();
+        //show(doc);
+        assertNotContains(doc, "INVALID");
+        assertContains(doc, "Hello World");
+        assertNoPlaceholders(doc);
     }
 }

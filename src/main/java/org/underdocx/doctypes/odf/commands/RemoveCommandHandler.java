@@ -24,15 +24,18 @@ SOFTWARE.
 
 package org.underdocx.doctypes.odf.commands;
 
-import org.underdocx.common.types.Pair;
+import org.underdocx.common.types.Tripple;
 import org.underdocx.doctypes.DocContainer;
 import org.underdocx.doctypes.commands.internal.AbstractTextualCommandHandler;
 import org.underdocx.doctypes.modifiers.ModifiersProvider;
+import org.underdocx.doctypes.odf.modifiers.deletenode.OdfDeleteNamedNodeModifier;
+import org.underdocx.doctypes.odf.modifiers.deletenode.OdfDeleteNamedNodeModifierData;
 import org.underdocx.doctypes.odf.modifiers.deletenode.OdfDeleteParentModifierData;
 import org.underdocx.doctypes.odf.modifiers.deletenode.OdfDeleteParentNodeModifier;
 import org.underdocx.doctypes.tools.datapicker.BooleanDataPicker;
 import org.underdocx.doctypes.tools.datapicker.OneOfDataPicker;
 import org.underdocx.doctypes.tools.datapicker.PredefinedDataPicker;
+import org.underdocx.doctypes.tools.datapicker.StringConvertDataPicker;
 import org.underdocx.enginelayers.baseengine.CommandHandlerResult;
 import org.underdocx.enginelayers.baseengine.EngineAccess;
 import org.underdocx.enginelayers.baseengine.EngineListener;
@@ -47,49 +50,60 @@ public class RemoveCommandHandler<C extends DocContainer<D>, D> extends Abstract
     public static final String PAGE = "page";
     public static final String TABLE = "table";
     public static final String PARAGRAPH = "paragraph";
-    public static PredefinedDataPicker<String> typeAttrPicker = new OneOfDataPicker<String>(TABLE, PAGE, PARAGRAPH).asPredefined("type");
+    public static PredefinedDataPicker<String> typeAttrPicker = new OneOfDataPicker<>(TABLE, PAGE, PARAGRAPH).asPredefined("type");
+    public static PredefinedDataPicker<String> nameAttrPicker = new StringConvertDataPicker().asPredefined("name");
     public static PredefinedDataPicker<Boolean> nowAttrPicker = new BooleanDataPicker().asPredefined("now");
 
-    private Set<Pair<Node, String>> toRemoveLater = new HashSet<>();
-
-    @Override
-    public void init(C container, EngineAccess<C, D> engineAccess) {
-        engineAccess.addListener(new Listener());
-    }
+    private Set<Tripple<Node, String, String>> toRemoveLater = new HashSet<>();
 
     public RemoveCommandHandler(ModifiersProvider modifiers) {
         super("Remove", modifiers);
     }
 
     @Override
+    public void init(C container, EngineAccess<C, D> engineAccess) {
+        engineAccess.addListener(new Listener());
+    }
+
+    @Override
     protected CommandHandlerResult tryExecuteTextualCommand() {
         String type = typeAttrPicker.expect(dataAccess, placeholderData.getJson());
         boolean now = nowAttrPicker.expect(dataAccess, placeholderData.getJson());
+        String name = nameAttrPicker.pickData(dataAccess, placeholderData.getJson()).optional().orElse(null);
         if (now) {
-            return exec(type, selection.getNode());
+            return exec(type, selection.getNode(), name);
         } else {
-            toRemoveLater.add(new Pair<>(selection.getNode(), type));
+            toRemoveLater.add(new Tripple<>(selection.getNode(), type, name));
             markForEodDeletion(selection.getPlaceholderData());
             return CommandHandlerResult.EXECUTED_PROCEED;
         }
     }
 
-    private CommandHandlerResult exec(String type, Node node) {
-        Predicate<Node> filter = switch (type) {
-            case PAGE -> OdfDeleteParentModifierData.ODF_PAGE;
-            case TABLE -> OdfDeleteParentModifierData.ODF_TABLE;
-            case PARAGRAPH -> OdfDeleteParentModifierData.ODF_PARAGRAPH;
-            default -> throw new IllegalStateException("Unexpected value: " + type);
-        };
-        return CommandHandlerResult.FACTORY.convert(OdfDeleteParentNodeModifier.modify(node, new OdfDeleteParentModifierData.Simple(filter)));
+    private CommandHandlerResult exec(String type, Node node, String name) {
+        if (name == null) {
+            Predicate<Node> filter = switch (type) {
+                case PAGE -> OdfDeleteParentModifierData.ODF_PAGE;
+                case TABLE -> OdfDeleteParentModifierData.ODF_TABLE;
+                case PARAGRAPH -> OdfDeleteParentModifierData.ODF_PARAGRAPH;
+                default -> throw new IllegalStateException("Unexpected value: " + type);
+            };
+            return CommandHandlerResult.FACTORY.convert(OdfDeleteParentNodeModifier.modify(node, new OdfDeleteParentModifierData.Simple(filter)));
+        } else {
+            OdfDeleteNamedNodeModifierData.Type nodeType = switch (type) {
+                case PAGE -> OdfDeleteNamedNodeModifierData.Type.PAGE;
+                case TABLE -> OdfDeleteNamedNodeModifierData.Type.TABLE;
+                default -> throw new IllegalStateException("Unexpected value: " + type);
+            };
+            return CommandHandlerResult.FACTORY.convert(OdfDeleteNamedNodeModifier.modify(node, new OdfDeleteNamedNodeModifierData.Simple(name, nodeType)));
+        }
     }
 
     private class Listener implements EngineListener<C, D> {
 
         @Override
         public void eodReached(C doc, EngineAccess<C, D> engineAccess) {
-            toRemoveLater.forEach(pair -> {
-                exec(pair.right, pair.left);
+            toRemoveLater.forEach(tripple -> {
+                exec(tripple.middle, tripple.left, tripple.right);
             });
         }
 
