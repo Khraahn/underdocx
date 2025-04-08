@@ -36,6 +36,7 @@ import org.underdocx.environment.UnderdocxEnv;
 import org.underdocx.environment.err.Problems;
 import org.xml.sax.SAXException;
 
+import java.awt.*;
 import java.io.*;
 import java.net.URI;
 import java.util.Scanner;
@@ -116,16 +117,27 @@ public abstract class AbstractOdfContainer<T extends OdfDocument> extends Abstra
                 UnderdocxEnv.getInstance().logger.info("PDF generation execution, error code: " + exitCode + " output: " + output);
             }
             String pdfFileName = new Regex("." + getFileExtension()).replaceAll(tmpOdtFileName, ".pdf");
+
             File pdfFile = new File(tmpDir.getAbsolutePath() + "/" + pdfFileName);
             pdfFile.deleteOnExit();
             try (FileInputStream fis = new FileInputStream(pdfFile)) {
+                UnderdocxEnv.getInstance().logger.info("Copying pdf file data to outputStream");
                 IOUtils.copy(fis, os);
             }
+            UnderdocxEnv.getInstance().logger.info("deleting tmp pdf file");
             pdfFile.delete();
+            UnderdocxEnv.getInstance().logger.info("deleting tmp odf file");
             tmpOdtFile.delete();
         } catch (Exception e) {
             throw new IOException(e);
         }
+    }
+
+    public void showPDF() throws IOException {
+        File pdfFile = File.createTempFile("tmp", ".pdf");
+        writePDF(new FileOutputStream(pdfFile));
+        Desktop.getDesktop().open(pdfFile);
+        UnderdocxEnv.getInstance().logger.info("opened pdf file: " + pdfFile);
     }
 
     public abstract OdfElement getContentRoot();
