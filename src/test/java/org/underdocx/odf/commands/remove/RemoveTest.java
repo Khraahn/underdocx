@@ -36,8 +36,8 @@ public class RemoveTest extends AbstractOdtTest {
     @Test
     public void testRemove() throws IOException {
         OdtContainer doc = new OdtContainer(readResource("RemoveTest.odt"));
-        OdtEngine engine = new OdtEngine(doc);
-        engine.run();
+        OdtEngine engine = new OdtEngine();
+        engine.run(doc);
         //show(doc);
         assertNoPlaceholders(doc);
         assertNotContains(doc, "ERROR");

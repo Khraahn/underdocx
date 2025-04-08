@@ -32,9 +32,9 @@ processed by the template engine:
 public class HelloWorld {
     public static void main(String[] args) throws IOException {
         OdtContainer doc = new OdtContainer("Hello ${$name}");
-        OdtEngine engine = new OdtEngine(doc);
+        OdtEngine engine = new OdtEngine();
         engine.pushVariable("name", "World");
-        engine.run();
+        engine.run(doc);
         File tmpFile = File.createTempFile("Test_", ".odt");
         doc.save(tmpFile);
         System.out.println("Document created: %s".formatted(tmpFile));
@@ -56,7 +56,7 @@ This code snipped reads the template document above and replaces the placeholder
 ```java
 // Prepare document and engine
 OdtContainer doc = new OdtContainer(is);
-OdtEngine engine = new OdtEngine(doc);
+OdtEngine engine = new OdtEngine();
 
 // Alias placeholders
 engine.registerStringReplacement("addHeaderAndFooter", "${Export $resource:\"master\"} ");
@@ -72,7 +72,7 @@ engine.pushVariable("contact", "Mr. Silie");
 engine.pushVariable("signature", "Jon Sutton");
 
 // Execute the engine
-engine.run();
+engine.run(doc);
 doc.save(os);
 ```
 And you get a filled document like this one:

@@ -75,9 +75,9 @@ public class CustomPlaceholderExample {
     public static File main() throws IOException {
         String content = "Hello <name>";
         OdtContainer doc = new OdtContainer(content);
-        OdtEngine engine = new OdtEngine(doc);
+        OdtEngine engine = new OdtEngine();
         engine.registerCommandHandler(new MyPlaceholdersProvider(), new UpperCaseCommandHandler());
-        engine.run();
+        engine.run(doc);
         File tmpFile = File.createTempFile("Test_", ".odt");
         doc.save(tmpFile); // Expectation: Document containing "Hello NAME"
         return tmpFile;

@@ -49,8 +49,8 @@ public class ModelEngine<C extends DocContainer<D>, D> extends BaseEngine<C, D> 
     protected Map<String, Deque<DataNode<?>>> variableStacks = new HashMap<>();
 
 
-    public ModelEngine(C doc) {
-        super(doc);
+    public ModelEngine() {
+        super();
     }
 
     public void setModelRoot(DataNode<?> modelRoot) {
@@ -70,6 +70,14 @@ public class ModelEngine<C extends DocContainer<D>, D> extends BaseEngine<C, D> 
     protected Selection createSelection(PlaceholdersProvider provider, Node node, EngineAccess engineAccess) {
         Selection baseSelection = super.createSelection(provider, node, engineAccess);
         return new MSelectionWrapper(baseSelection, new ModelEngineDataAccess());
+    }
+
+    public <X> BaseEngine<C, D> registerCommandHandler(PlaceholdersProvider<C, X, D> provider, MCommandHandler<C, X, D> commandHandler) {
+        return super.registerCommandHandler(provider, commandHandler);
+    }
+
+    public <X> BaseEngine<C, D> registerCommandHandler(PlaceholdersProvider.Factory<C, X, D> provider, MCommandHandler<C, X, D> commandHandler) {
+        return super.registerCommandHandler(provider, commandHandler);
     }
 
     private class ModelEngineDataAccess implements DataAccess {
@@ -141,14 +149,6 @@ public class ModelEngine<C extends DocContainer<D>, D> extends BaseEngine<C, D> 
         public void setCurrentPath(String modelPath) {
             currentDataPath = new DataPath(modelPath);
         }
-    }
-
-    public <X> BaseEngine<C, D> registerCommandHandler(PlaceholdersProvider<C, X, D> provider, MCommandHandler<C, X, D> commandHandler) {
-        return super.registerCommandHandler(provider, commandHandler);
-    }
-
-    public <X> BaseEngine<C, D> registerCommandHandler(PlaceholdersProvider.Factory<C, X, D> provider, MCommandHandler<C, X, D> commandHandler) {
-        return super.registerCommandHandler(provider, commandHandler);
     }
 
 

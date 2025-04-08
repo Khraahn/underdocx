@@ -51,9 +51,9 @@ public class TxtStringAndModelTest extends AbstractTxtTest {
                 "C ${String *value:\"^c.d[1]\"} C      \n" +
                 "D ${String *value:\"^no\"} D          \n";
         TxtContainer doc = new TxtContainer(documentStr);
-        TxtEngine engine = new TxtEngine(doc);
+        TxtEngine engine = new TxtEngine();
         engine.setModel(new MapDataNode(jsonString));
-        engine.run();
+        engine.run(doc);
         //show(doc);
         assertContains(doc, "A Test0 A");
         assertContains(doc, "B Test0 B");
@@ -94,9 +94,9 @@ public class TxtStringAndModelTest extends AbstractTxtTest {
 
                 "";
         TxtContainer doc = new TxtContainer(documentStr);
-        TxtEngine engine = new TxtEngine(doc);
+        TxtEngine engine = new TxtEngine();
         engine.setModel(new MapDataNode(jsonString));
-        engine.run();
+        engine.run(doc);
         assertContains(doc, "A attX1 A");
         assertContains(doc, "B Test0 B");
         assertContains(doc, "C attX1 C");

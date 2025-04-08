@@ -35,19 +35,19 @@ import java.util.Optional;
 public class GenericTextualPlaceholdersProvider<C extends DocContainer<D>, P, D> implements PlaceholdersProvider<C, P, D> {
 
     private final TextualPlaceholderToolkit<P> toolkit;
-    private final C doc;
+
     private final GenericTextualPlaceholderFactory<C, P, D> info;
     private Node startNode = null;
     private boolean endOfDoc = false;
 
-    protected GenericTextualPlaceholdersProvider(C doc, GenericTextualPlaceholderFactory<C, P, D> info) {
+    protected GenericTextualPlaceholdersProvider(GenericTextualPlaceholderFactory<C, P, D> info) {
         this.info = info;
         this.toolkit = info.createToolkit();
-        this.doc = doc;
+
     }
 
     @Override
-    public Enumerator<Node> getPlaceholders() {
+    public Enumerator<Node> getPlaceholders(C doc) {
         if (endOfDoc) return Enumerator.empty();
         Enumerator<Node> sections = info.createSectionEnumerator(doc, startNode);
         return new GenericPlaceholderFromSectionsEnumerator(

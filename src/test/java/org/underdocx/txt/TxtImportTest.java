@@ -47,9 +47,9 @@ public class TxtImportTest extends AbstractTxtTest {
                 D
                 """
         );
-        TxtEngine engine = new TxtEngine(doc);
+        TxtEngine engine = new TxtEngine();
         engine.pushLeafVariable("toImport", toImport);
-        engine.run();
+        engine.run(doc);
         //show(doc);
         assertOrder(doc, "A", "BBBBBBB", "CCCCCCC", "D");
         assertNoPlaceholders(doc);
@@ -73,9 +73,9 @@ public class TxtImportTest extends AbstractTxtTest {
                 D
                 """
         );
-        TxtEngine engine = new TxtEngine(doc);
+        TxtEngine engine = new TxtEngine();
         engine.pushLeafVariable("toImport", toImport);
-        engine.run();
+        engine.run(doc);
         //show(doc);
         assertOrder(doc, "A", "BBBBBBB", "CCCCCCC", "D");
         assertNoPlaceholders(doc);

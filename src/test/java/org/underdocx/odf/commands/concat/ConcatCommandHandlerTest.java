@@ -39,8 +39,8 @@ public class ConcatCommandHandlerTest extends AbstractOdtTest {
                 ${$result}                
                 """;
         OdtContainer doc = new OdtContainer(content);
-        OdtEngine engine = new OdtEngine(doc);
-        engine.run();
+        OdtEngine engine = new OdtEngine();
+        engine.run(doc);
         //show(doc);
         assertContains(doc, "A[2]");
         assertNoPlaceholders(doc);
@@ -54,8 +54,8 @@ public class ConcatCommandHandlerTest extends AbstractOdtTest {
                 ${Join $value:"result"}          
                 """;
         OdtContainer doc = new OdtContainer(content);
-        OdtEngine engine = new OdtEngine(doc);
-        engine.run();
+        OdtEngine engine = new OdtEngine();
+        engine.run(doc);
         //show(doc);
         assertContains(doc, "A, 2, B");
         assertNoPlaceholders(doc);

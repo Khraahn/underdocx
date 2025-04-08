@@ -25,9 +25,9 @@ SOFTWARE.
 package org.underdocx.doctypes.odf.odp;
 
 import org.odftoolkit.odfdom.doc.OdfPresentationDocument;
+import org.underdocx.common.cli.EngineProvider;
 import org.underdocx.common.types.Resource;
 import org.underdocx.doctypes.EngineAPI;
-import org.underdocx.common.cli.EngineProvider;
 
 public class OdpEngineProvider implements EngineProvider<OdpContainer, OdfPresentationDocument> {
     @Override
@@ -36,8 +36,8 @@ public class OdpEngineProvider implements EngineProvider<OdpContainer, OdfPresen
     }
 
     @Override
-    public EngineAPI createEngine(OdpContainer doc) {
-        return new OdpEngine(doc);
+    public EngineAPI<OdpContainer, OdfPresentationDocument> createEngine() {
+        return new OdpEngine();
     }
 
 }

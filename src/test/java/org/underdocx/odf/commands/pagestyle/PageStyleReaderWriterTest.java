@@ -117,9 +117,9 @@ public class PageStyleReaderWriterTest extends AbstractOdtTest {
                     "D": "D !",
                 }
                 """;
-        OdtEngine engine = new OdtEngine(doc);
+        OdtEngine engine = new OdtEngine();
         engine.setModel(new MapDataNode(json));
-        engine.run();
+        engine.run(doc);
         testStyledDoc(doc);
         assertContains(doc, "!");
         assertNoPlaceholders(doc);

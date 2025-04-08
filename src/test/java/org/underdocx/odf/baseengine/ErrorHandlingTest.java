@@ -43,9 +43,9 @@ public class ErrorHandlingTest extends AbstractOdtTest {
                 "A ${@b onNull:\"fallback\" fallback \"hugo\"} A          \n" + // A hugo A
                 "";
         OdtContainer doc = new OdtContainer(documentStr);
-        OdtEngine engine = new OdtEngine(doc);
+        OdtEngine engine = new OdtEngine();
         engine.setModel(new MapDataNode(jsonString));
-        Problem error = engine.run().get();
+        Problem error = engine.run(doc).get();
         //show(doc);
         Assertions.assertThat(error).isNotNull();
         Assertions.assertThat(error.toString()).contains("Can't parse placeholder");

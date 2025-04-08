@@ -45,8 +45,8 @@ public class DateTimeTest extends AbstractOdtTest {
                 D ${Date value:"04.03.2022",  inputFormat:"dd.MM.yyyy", outputFormat:"dd.MM.yyyy"}                
                 """;
         OdtContainer doc = new OdtContainer(content);
-        OdtEngine engine = new OdtEngine(doc);
-        engine.run();
+        OdtEngine engine = new OdtEngine();
+        engine.run(doc);
         //show(doc);
         String ddMMyyyy = DateTimeFormatter.ofPattern("dd.MM.yyyy").format(LocalDate.now());
         String yyyyMMdd = DateTimeFormatter.ofPattern("yyyy-MM-dd").format(LocalDate.now());
@@ -66,8 +66,8 @@ public class DateTimeTest extends AbstractOdtTest {
                 D ${Time value:"2011-12-02 08.42.11", inputFormat:"yyyy-MM-dd HH.mm.ss", outputFormat:"HH.mm"}                
                 """;
         OdtContainer doc = new OdtContainer(content);
-        OdtEngine engine = new OdtEngine(doc);
-        engine.run();
+        OdtEngine engine = new OdtEngine();
+        engine.run(doc);
         //show(doc);
         String defTime = DateTimeFormatter.ofPattern("HH:mm:ss").format(LocalDateTime.now());
         String oTime = DateTimeFormatter.ofPattern("HH.mm.ss").format(LocalDateTime.now());

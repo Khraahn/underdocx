@@ -43,10 +43,10 @@ public class DemoTest extends AbstractOdtTest {
         OutputStream os = new FileOutputStream(createFileInTempDir("demo0.5.0out.odt"));
 
         OdtContainer doc = new OdtContainer(is);
-        OdtEngine engine = new OdtEngine(doc);
+        OdtEngine engine = new OdtEngine();
         engine.pushVariable("header", new LeafDataNode<>(readData("header.odt")));
 
-        engine.run();
+        engine.run(doc);
         //show(doc);
         doc.save(os);
 

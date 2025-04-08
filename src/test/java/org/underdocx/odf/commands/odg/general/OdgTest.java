@@ -38,9 +38,9 @@ public class OdgTest extends AbstractOdgTest {
     @Test
     public void testOdg() throws IOException {
         OdgContainer graphics = new OdgContainer(readResource("TestGraphics.odg"));
-        OdgEngine engine = new OdgEngine(graphics);
+        OdgEngine engine = new OdgEngine();
         engine.pushVariable("image", readResource("smile.png"));
-        engine.run();
+        engine.run(graphics);
         //show(graphics);
         Assertions.assertThat(findTextNode(graphics, "$")).isFalse();
         Assertions.assertThat(findTextNode(graphics, "A")).isTrue();

@@ -51,12 +51,12 @@ public class ImageTest extends AbstractOdtTest {
         String uri = tmpFile.toURI().toString();
 
         OdtContainer doc = readOdt("ImageTest.odt");
-        OdtEngine engine = new OdtEngine(doc);
+        OdtEngine engine = new OdtEngine();
         engine.pushVariable("name1", new LeafDataNode<>("Smile1.png"));
         engine.pushVariable("data", new LeafDataNode<>(binaryData));
         engine.pushVariable("name2", new LeafDataNode<>("Smile2.png"));
         engine.pushVariable("uri", new LeafDataNode<>(uri));
-        engine.run();
+        engine.run(doc);
         //show(doc);
         assertNoPlaceholders(doc);
         List<Node> descNodes = Nodes.findDescendantNodes(doc.getContentDom(), OdfElement.DESC.getQualifiedName(), true);

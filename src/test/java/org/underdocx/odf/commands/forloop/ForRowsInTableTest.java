@@ -36,8 +36,8 @@ public class ForRowsInTableTest extends AbstractOdtTest {
     @Test
     public void testTableRowsParentTable() throws IOException {
         OdtContainer doc = new OdtContainer(getInputStream("TableLoopInTable.odt"));
-        OdtEngine engine = new OdtEngine(doc);
-        engine.run();
+        OdtEngine engine = new OdtEngine();
+        engine.run(doc);
         //show(doc);
         assertNoPlaceholders(doc);
         assertOrder(doc, "1", "Hans", "Müller");
@@ -49,8 +49,8 @@ public class ForRowsInTableTest extends AbstractOdtTest {
     @Test
     public void testTableRowsTableName() throws IOException {
         OdtContainer doc = new OdtContainer(getInputStream("TableLoopTableName.odt"));
-        OdtEngine engine = new OdtEngine(doc);
-        engine.run();
+        OdtEngine engine = new OdtEngine();
+        engine.run(doc);
         //show(doc);
         assertNoPlaceholders(doc);
         assertOrder(doc, "1", "Hans", "Müller");

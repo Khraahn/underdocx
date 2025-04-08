@@ -40,6 +40,16 @@ public class OdgEngine extends AbstractOdfEngine<OdgContainer, OdfGraphicsDocume
 
     private final ModelEngine<OdgContainer, OdfGraphicsDocument> engine;
 
+    public OdgEngine() {
+        this(new OdfPlaceholderFactory<>());
+    }
+
+    public OdgEngine(GenericTextualPlaceholderFactory<OdgContainer, ParametersPlaceholderData, OdfGraphicsDocument> parameters) {
+        super(parameters);
+        this.engine = new ModelEngine<>();
+        registerDefaultCommandHandlers();
+    }
+
     protected void registerDefaultCommandHandlers() {
         engine.registerCommandHandler(parameters, new ModelCommandHandler<>(modifiers));
         engine.registerCommandHandler(parameters, new StringCommandHandler<OdgContainer, OdfGraphicsDocument>(modifiers));
@@ -65,16 +75,6 @@ public class OdgEngine extends AbstractOdfEngine<OdgContainer, OdfGraphicsDocume
         engine.registerCommandHandler(parameters, new OdfCloneCommandHandler<>(modifiers));
         engine.registerCommandHandler(parameters, new ConcatCommandHandler<>(modifiers));
         engine.registerCommandHandler(parameters, new CalcCommandHandler<>(modifiers));
-    }
-
-    public OdgEngine(OdgContainer doc) {
-        this(doc, new OdfPlaceholderFactory<>());
-    }
-
-    public OdgEngine(OdgContainer doc, GenericTextualPlaceholderFactory<OdgContainer, ParametersPlaceholderData, OdfGraphicsDocument> parameters) {
-        super(parameters);
-        this.engine = new ModelEngine<>(doc);
-        registerDefaultCommandHandlers();
     }
 
     @Override

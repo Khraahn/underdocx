@@ -38,8 +38,8 @@ public class ShortStringFallbackTest extends AbstractOdtTest {
         InputStream is = getInputStream("ShortStringFallback.odt");
 
         OdtContainer doc = new OdtContainer(is);
-        OdtEngine engine = new OdtEngine(doc);
-        engine.run();
+        OdtEngine engine = new OdtEngine();
+        engine.run(doc);
         //show(doc);
         assertContains(doc, "unknown");
         assertNoPlaceholders(doc);

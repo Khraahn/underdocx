@@ -45,8 +45,8 @@ public class ExportTest extends AbstractOdtTest {
                 ${Export uri:"%s", name:"target"}
                 ZZZ
                 """.formatted(targetURI));
-        OdtEngine engine = new OdtEngine(sourceDoc);
-        engine.run();
+        OdtEngine engine = new OdtEngine();
+        engine.run(sourceDoc);
         //show(sourceDoc);
         assertNoPlaceholders(sourceDoc);
         assertOrder(sourceDoc, "AAA", "ZZZ", "BBB");
@@ -64,8 +64,8 @@ public class ExportTest extends AbstractOdtTest {
                 ${Export uri:"%s"}
                 ZZZ
                 """.formatted(targetURI));
-        OdtEngine engine = new OdtEngine(sourceDoc);
-        engine.run();
+        OdtEngine engine = new OdtEngine();
+        engine.run(sourceDoc);
         assertNoPlaceholders(sourceDoc);
         assertOrder(sourceDoc, "AAA", "BBB", "ZZZ");
     }

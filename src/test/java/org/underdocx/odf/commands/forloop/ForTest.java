@@ -70,9 +70,9 @@ public class ForTest extends AbstractOdtTest {
                 "${$index} ${$element}                                    \n" +
                 "${EndFor}                                               \n";
         OdtContainer doc = new OdtContainer(documentStr);
-        OdtEngine engine = new OdtEngine(doc);
+        OdtEngine engine = new OdtEngine();
         engine.setModel(new MapDataNode(jsonString));
-        engine.run();
+        engine.run(doc);
         //show(doc);
         assertContains(doc, "0 A");
         assertContains(doc, "1 B");
@@ -118,10 +118,10 @@ public class ForTest extends AbstractOdtTest {
                 "${$index} ${$element}                                    \n" +
                 "${EndFor}                                               \n";
         OdtContainer doc = new OdtContainer(documentStr);
-        OdtEngine engine = new OdtEngine(doc);
+        OdtEngine engine = new OdtEngine();
         engine.setModel(new MapDataNode(jsonString));
         engine.pushVariable("aList", Arrays.asList("A", "B", "C"));
-        engine.run();
+        engine.run(doc);
         assertContains(doc, "0 A");
         assertContains(doc, "1 B");
         assertContains(doc, "2 C");
@@ -168,9 +168,9 @@ public class ForTest extends AbstractOdtTest {
                 "${$index} ${$element}                                    \n" +
                 "${EndFor}                                               \n";
         OdtContainer doc = new OdtContainer(documentStr);
-        OdtEngine engine = new OdtEngine(doc);
+        OdtEngine engine = new OdtEngine();
         engine.setModel(new MapDataNode(jsonString));
-        engine.run();
+        engine.run(doc);
         assertContains(doc, "0 A");
         assertContains(doc, "1 B");
         assertContains(doc, "2 C");
@@ -215,9 +215,9 @@ public class ForTest extends AbstractOdtTest {
                 "${$index} ${*element}                                    \n" +
                 "${EndFor}                                               \n";
         OdtContainer doc = new OdtContainer(documentStr);
-        OdtEngine engine = new OdtEngine(doc);
+        OdtEngine engine = new OdtEngine();
         engine.setModel(new MapDataNode(jsonString));
-        engine.run();
+        engine.run(doc);
         assertContains(doc, "0 A");
         assertContains(doc, "1 B");
         assertContains(doc, "2 C");
@@ -262,9 +262,9 @@ public class ForTest extends AbstractOdtTest {
                 "${$index} ${*}                                    \n" +
                 "${EndFor}                                               \n";
         OdtContainer doc = new OdtContainer(documentStr);
-        OdtEngine engine = new OdtEngine(doc);
+        OdtEngine engine = new OdtEngine();
         engine.setModel(new MapDataNode(jsonString));
-        engine.run();
+        engine.run(doc);
         // show(doc);
         assertContains(doc, "0 A");
         assertContains(doc, "1 B");

@@ -67,13 +67,13 @@ public class OdpEngine extends AbstractOdfEngine<OdpContainer, OdfPresentationDo
         engine.registerCommandHandler(parameters, new CalcCommandHandler<>(modifiers));
     }
 
-    public OdpEngine(OdpContainer doc) {
-        this(doc, new OdfPlaceholderFactory<>());
+    public OdpEngine() {
+        this(new OdfPlaceholderFactory<>());
     }
 
-    public OdpEngine(OdpContainer doc, GenericTextualPlaceholderFactory<OdpContainer, ParametersPlaceholderData, OdfPresentationDocument> parameters) {
+    public OdpEngine(GenericTextualPlaceholderFactory<OdpContainer, ParametersPlaceholderData, OdfPresentationDocument> parameters) {
         super(parameters);
-        this.engine = new ModelEngine<>(doc);
+        this.engine = new ModelEngine<>();
         registerDefaultCommandHandlers();
     }
 

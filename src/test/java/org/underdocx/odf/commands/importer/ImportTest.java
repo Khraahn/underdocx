@@ -41,9 +41,9 @@ public class ImportTest extends AbstractOdtTest {
                 Begin
                 ${Import $data:"binaryDocument"}
                 End""");
-        OdtEngine engine = new OdtEngine(doc);
+        OdtEngine engine = new OdtEngine();
         engine.pushVariable("binaryDocument", new LeafDataNode<>(readData("Source.odt")));
-        engine.run();
+        engine.run(doc);
         //show(doc);
         assertNoPlaceholders(doc);
         assertOrder(doc, "Begin", "Lorem ipsum", "1A", "---", "End");
@@ -58,8 +58,8 @@ public class ImportTest extends AbstractOdtTest {
                 "Begin                        \n" +
                 "${Import uri:\"" + uri + "\"}  \n" +
                 "End");
-        OdtEngine engine = new OdtEngine(doc);
-        engine.run();
+        OdtEngine engine = new OdtEngine();
+        engine.run(doc);
         //show(doc);
         assertNoPlaceholders(doc);
         assertOrder(doc, "Begin", "Lorem ipsum", "1A", "---", "End");
@@ -71,9 +71,9 @@ public class ImportTest extends AbstractOdtTest {
                 Begin
                 ${Import $resource:"resourceDoc"}
                 End""");
-        OdtEngine engine = new OdtEngine(doc);
+        OdtEngine engine = new OdtEngine();
         engine.pushVariable("resourceDoc", new LeafDataNode<>(readResource("Source.odt")));
-        engine.run();
+        engine.run(doc);
         // show(doc);
         assertNoPlaceholders(doc);
         assertOrder(doc, "Begin", "Lorem ipsum", "1A", "---", "End");

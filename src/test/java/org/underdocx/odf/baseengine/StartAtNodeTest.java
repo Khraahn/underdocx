@@ -80,10 +80,10 @@ public class StartAtNodeTest extends AbstractOdtTest {
                 Result: ${$testcounter}
                 """;
         OdtContainer doc = new OdtContainer(docContent);
-        OdtEngine engine = new OdtEngine(doc);
+        OdtEngine engine = new OdtEngine();
         engine.registerParametersCommandHandler(new IncVarPlaceholder());
         engine.registerParametersCommandHandler(new ReplaceWithIncVarAndProceesAtNextNode());
-        engine.run();
+        engine.run(doc);
         //show(doc);
         assertNotContains(doc, "ReplaceWithIncVar");
         assertContains(doc, "IncVar");
@@ -99,10 +99,10 @@ public class StartAtNodeTest extends AbstractOdtTest {
                 Result: ${$testcounter}
                 """;
         OdtContainer doc = new OdtContainer(docContent);
-        OdtEngine engine = new OdtEngine(doc);
+        OdtEngine engine = new OdtEngine();
         engine.registerParametersCommandHandler(new IncVarPlaceholder());
         engine.registerParametersCommandHandler(new ReplaceWithIncVarAndProceesAtNextNode());
-        engine.run();
+        engine.run(doc);
         //show(doc);
         assertNotContains(doc, "ReplaceWithIncVar");
         assertNotContains(doc, "Model");
@@ -124,10 +124,10 @@ public class StartAtNodeTest extends AbstractOdtTest {
                 Result: ${$testcounter}
                 """;
         OdtContainer doc = new OdtContainer(docContent);
-        OdtEngine engine = new OdtEngine(doc);
+        OdtEngine engine = new OdtEngine();
         engine.registerParametersCommandHandler(new IncVarPlaceholder());
         engine.registerParametersCommandHandler(new ReplaceWithIncVarAndProceesAtNextNode());
-        engine.run();
+        engine.run(doc);
         //show(doc);
         assertNotContains(doc, "ReplaceWithIncVar");
         assertNotContains(doc, "Model");

@@ -51,9 +51,9 @@ public class ShortStringTest extends AbstractOdtTest {
                 "C ${*^c.d[1]} C            \n" +
                 "D ${*^no} D                \n";
         OdtContainer doc = new OdtContainer(documentStr);
-        OdtEngine engine = new OdtEngine(doc);
+        OdtEngine engine = new OdtEngine();
         engine.setModel(new MapDataNode(jsonString));
-        engine.run();
+        engine.run(doc);
         assertContains(doc, "A Test0 A");
         assertContains(doc, "B Test0 B");
         assertContains(doc, "C Test3 C");
@@ -92,9 +92,9 @@ public class ShortStringTest extends AbstractOdtTest {
 
                 "";
         OdtContainer doc = new OdtContainer(documentStr);
-        OdtEngine engine = new OdtEngine(doc);
+        OdtEngine engine = new OdtEngine();
         engine.setModel(new MapDataNode(jsonString));
-        engine.run();
+        engine.run(doc);
         assertContains(doc, "A attX1 A");
         assertContains(doc, "B Test0 B");
         assertContains(doc, "C attX1 C");

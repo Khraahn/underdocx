@@ -43,11 +43,11 @@ public class MultiCommandTest extends AbstractOdtTest {
                 "${$index} ${$element}    \n" +
                 "${End}                   \n";
         OdtContainer doc = new OdtContainer(documentStr);
-        OdtEngine engine = new OdtEngine(doc);
+        OdtEngine engine = new OdtEngine();
         engine.registerStringReplacement("Begin", "${For value:[\"A\", \"B\", \"C\"], $as:\"element\"} ");
         engine.registerStringReplacement("End", "${EndFor}");
         engine.setModel(new MapDataNode(jsonString));
-        engine.run();
+        engine.run(doc);
         // show(doc);
         assertContains(doc, "0 A");
         assertContains(doc, "1 B");

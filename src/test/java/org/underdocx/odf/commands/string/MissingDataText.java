@@ -47,9 +47,9 @@ public class MissingDataText extends AbstractOdtTest {
                 "  ${*b onNull:\"deletePlaceholderDeleteEmptyParagraph\"}  \n" + // -
                 "";
         OdtContainer doc = new OdtContainer(documentStr);
-        OdtEngine engine = new OdtEngine(doc);
+        OdtEngine engine = new OdtEngine();
         engine.setModel(new MapDataNode(jsonString));
-        engine.run();
+        engine.run(doc);
         assertContains(doc, "A hugo A");
         assertContains(doc, "B B");
         assertContains(doc, "C C");
@@ -73,9 +73,9 @@ public class MissingDataText extends AbstractOdtTest {
                 "  ${*b onEmpty:\"deletePlaceholderDeleteEmptyParagraph\"}  \n" + // -
                 "";
         OdtContainer doc = new OdtContainer(documentStr);
-        OdtEngine engine = new OdtEngine(doc);
+        OdtEngine engine = new OdtEngine();
         engine.setModel(new MapDataNode(jsonString));
-        engine.run();
+        engine.run(doc);
         assertContains(doc, "A hugo A");
         assertContains(doc, "B B");
         assertContains(doc, "C C");
@@ -99,9 +99,9 @@ public class MissingDataText extends AbstractOdtTest {
                 "  ${*b onError:\"deletePlaceholderDeleteEmptyParagraph\"}  \n" + // -
                 "";
         OdtContainer doc = new OdtContainer(documentStr);
-        OdtEngine engine = new OdtEngine(doc);
+        OdtEngine engine = new OdtEngine();
         engine.setModel(new MapDataNode(jsonString));
-        engine.run();
+        engine.run(doc);
         assertContains(doc, "A hugo A");
         assertContains(doc, "B B");
         assertContains(doc, "C C");

@@ -39,8 +39,8 @@ public class IfTest extends AbstractOdtTest {
                 Test
                 """;
         OdtContainer doc = new OdtContainer(documentStr);
-        OdtEngine engine = new OdtEngine(doc);
-        engine.run();
+        OdtEngine engine = new OdtEngine();
+        engine.run(doc);
         // show(doc);
         assertContains(doc, "P P");
 
@@ -55,9 +55,9 @@ public class IfTest extends AbstractOdtTest {
                 ${String value:"Test"}
                 """;
         OdtContainer doc = new OdtContainer(documentStr);
-        OdtEngine engine = new OdtEngine(doc);
+        OdtEngine engine = new OdtEngine();
         engine.pushVariable("testTrue", new LeafDataNode<>(true));
-        engine.run();
+        engine.run(doc);
         //show(doc);
         assertContains(doc, "Hello World");
         assertContains(doc, "Test");
@@ -100,9 +100,9 @@ public class IfTest extends AbstractOdtTest {
                 U ${If *model:"x"} INVALID ${EndIf}U        
                 """;
         OdtContainer doc = new OdtContainer(documentStr);
-        OdtEngine engine = new OdtEngine(doc);
+        OdtEngine engine = new OdtEngine();
         engine.setModel(new MapDataNode(jsonString));
-        engine.run();
+        engine.run(doc);
         //show(doc);
         assertContains(doc, "A A A");
         assertContains(doc, "B B B");
@@ -139,8 +139,8 @@ public class IfTest extends AbstractOdtTest {
                 B              
                 """;
         OdtContainer doc = new OdtContainer(documentStr);
-        OdtEngine engine = new OdtEngine(doc);
-        engine.run();
+        OdtEngine engine = new OdtEngine();
+        engine.run(doc);
         //show(doc);
         assertNoPlaceholders(doc);
         assertNotContains(doc, "X");
@@ -156,8 +156,8 @@ public class IfTest extends AbstractOdtTest {
                 ${If and:[{$testString:"Test"},{not:{$testTrue:true}}]} INVALID ${EndIf}
                 """;
         OdtContainer doc = new OdtContainer(documentStr);
-        OdtEngine engine = new OdtEngine(doc);
-        engine.run();
+        OdtEngine engine = new OdtEngine();
+        engine.run(doc);
         //show(doc);
         assertContains(doc, "OK");
         assertNotContains(doc, "INVALID");
@@ -173,8 +173,8 @@ public class IfTest extends AbstractOdtTest {
                 ${If or:[{$testString:"x"},{$testTrue:false}]} INVALID ${EndIf}
                 """;
         OdtContainer doc = new OdtContainer(documentStr);
-        OdtEngine engine = new OdtEngine(doc);
-        engine.run();
+        OdtEngine engine = new OdtEngine();
+        engine.run(doc);
         //show(doc);
         assertContains(doc, "OK");
         assertNotContains(doc, "INVALID");

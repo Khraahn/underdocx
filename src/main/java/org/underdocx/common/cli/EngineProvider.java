@@ -32,6 +32,6 @@ public interface EngineProvider<C extends DocContainer<D>, D> {
 
     C load(Resource r) throws Exception;
 
-    EngineAPI createEngine(C doc);
+    EngineAPI<C, D> createEngine();
 
 }

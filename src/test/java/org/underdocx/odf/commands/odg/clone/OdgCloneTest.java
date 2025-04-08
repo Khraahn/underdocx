@@ -36,8 +36,8 @@ public class OdgCloneTest extends AbstractOdgTest {
     @Test
     public void testClonePage() throws IOException {
         OdgContainer doc = new OdgContainer(readResource("ClonePage.odg"));
-        OdgEngine engine = new OdgEngine(doc);
-        engine.run();
+        OdgEngine engine = new OdgEngine();
+        engine.run(doc);
         //show(doc);
         assertTextNodeOrder(doc, "2", "10", "42", "50", "178", "180");
     }

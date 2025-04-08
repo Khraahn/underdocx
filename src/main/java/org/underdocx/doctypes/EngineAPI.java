@@ -31,7 +31,7 @@ import org.underdocx.environment.err.Problem;
 import java.io.InputStream;
 import java.util.Optional;
 
-public interface EngineAPI {
+public interface EngineAPI<C extends DocContainer<D>, D> {
 
     void importData(DataNode<?> importData);
 
@@ -39,7 +39,7 @@ public interface EngineAPI {
         importData(new MapDataNode(is));
     }
 
-    Optional<Problem> run();
+    Optional<Problem> run(C doc);
 
 
 }

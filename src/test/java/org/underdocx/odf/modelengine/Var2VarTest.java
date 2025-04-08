@@ -39,8 +39,8 @@ public class Var2VarTest extends AbstractOdtTest {
                 ${String $$value:"reference"}
                 """;
         OdtContainer doc = new OdtContainer(content);
-        OdtEngine engine = new OdtEngine(doc);
-        engine.run();
+        OdtEngine engine = new OdtEngine();
+        engine.run(doc);
         //show(doc);
         assertNoPlaceholders(doc);
         assertContains(doc, "Hello World");

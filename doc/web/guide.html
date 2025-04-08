@@ -106,9 +106,9 @@
         <pre class="highlightjs highlight nowrap"><code class="language-java hljs" data-lang="java">public class HelloWorld {
   public static void main(String[] args) throws IOException {
     OdtContainer doc = new OdtContainer("Hello ${$name}");
-    OdtEngine engine = new OdtEngine(doc);
+    OdtEngine engine = new OdtEngine();
     engine.pushVariable("name", "World");
-    engine.run();
+    engine.run(doc);
     File tmpFile = File.createTempFile("Test_", ".odt");
     doc.save(tmpFile);
     System.out.println("Document created: %s".formatted(tmpFile));
@@ -321,9 +321,9 @@ engine.setModel(model);</code></pre>
         <pre class="highlightjs highlight nowrap"><code class="language-java hljs" data-lang="java">public class Main {
   public static void main(String[] args) throws IOException {
    OdtContainer doc = new OdtContainer("Hello ${$name}");
-   OdtEngine engine = new OdtEngine(doc);
+   OdtEngine engine = new OdtEngine();
    engine.pushVariable("name", "World");
-   engine.run();
+   engine.run(doc);
    File tmpFile = File.createTempFile("Test_", ".odt");
    doc.save(tmpFile);
   }
@@ -406,9 +406,9 @@ Resource resource = new Resource.Base64Resource(String b64Data);      </code></p
       ]}
     """);
     OdtContainer doc = new OdtContainer("Hello ${$persons[1].name}");
-    OdtEngine engine = new OdtEngine(doc);
+    OdtEngine engine = new OdtEngine();
     engine.pushVariable("persons", persons);
-    engine.run();
+    engine.run(doc);
     File tmpFile = File.createTempFile("Test_", ".odt");
     doc.save(tmpFile);
   }
@@ -480,9 +480,9 @@ public static void main (String[] args) {
     name.equals("x")
     ? java.util.Optional.of(new LeafDataNode("42"))
     : Optional.empty();
-  OdtEngine engine = new OdtEngine(doc);
+  OdtEngine engine = new OdtEngine();
   engine.setModel(new TestClassA(), resolver);
-  engine.run();
+  engine.run(doc);
   File tmpFile = File.createTempFile("Test_", ".odt");
   doc.save(tmpFile);
 }</code></pre>
@@ -789,10 +789,10 @@ Item1
                        size="20"&gt;large&lt;/font&gt;"
         }
       """;
-      OdtEngine engine = new OdtEngine(doc);;
+      OdtEngine engine = new OdtEngine();;
       engine.pushVariable("text", "Variable");
       engine.setModel(new MapDataNode(modelData));
-      engine.run();
+      engine.run(doc);
       doc.createTmpFile("Test", false, null);
   }
 }</code></pre>
@@ -1182,12 +1182,12 @@ ${EndIf}</code></pre>
               ${Import $resource:"resource"}
               """.formatted("file:///home/User/doc1.odt");
       OdtContainer doc = new OdtContainer(content);
-      OdtEngine engine = new OdtEngine(doc);
+      OdtEngine engine = new OdtEngine();
       byte[] data = Files.readAllBytes(Paths.get(file));
       engine.pushLeafVariable("data", data);
       Resource resource = new Resource.FileResource(file);
       engine.pushLeafVariable("resource", resource);
-      engine.run();
+      engine.run(doc);
       doc.createTmpFile("Test", false, null);
       doc.save(tmpFile);
   }
@@ -2028,11 +2028,11 @@ mvn clean install -P buildCli</code></pre>
             <guide-b>${End}</guide-b>
           """;
 OdtContainer doc = new OdtContainer(documentStr);
-OdtEngine engine = new OdtEngine(doc);
+OdtEngine engine = new OdtEngine();
 engine.registerStringReplacement(<guide-b>"Begin"</guide-b>, 
   "${For value:[\"A\", \"B\", \"C\"], $as:\"element\"} ");
 engine.registerStringReplacement(<guide-b>"End"</guide-b>, "${EndFor}");
-engine.run();</code></pre>
+engine.run(doc);</code></pre>
 
         <h3>Custom Handlers</h3>
 
@@ -2088,9 +2088,9 @@ engine.run();</code></pre>
               ${$sum}
               """;
       OdtContainer doc = new OdtContainer(content);
-      OdtEngine engine = new OdtEngine(doc);
+      OdtEngine engine = new OdtEngine();
       engine.registerParametersCommandHandler(new AddCommandHandler());
-      engine.run();
+      engine.run(doc);
       File tmpFile = File.createTempFile("Test_", ".odt");
       doc.save(tmpFile);
       System.out.println("Document created: %s".formatted(tmpFile));
@@ -2164,9 +2164,9 @@ engine.run();</code></pre>
   public static void main(String[] args) throws IOException {
       String content = "Hello &lt;name&gt;";
       OdtContainer doc = new OdtContainer(content);
-      OdtEngine engine = new OdtEngine(doc);
+      OdtEngine engine = new OdtEngine();
       engine.registerCommandHandler(new MyPlaceholdersProvider(), new UpperCaseCommandHandler());
-      engine.run();
+      engine.run(doc);
       File tmpFile = File.createTempFile("Test_", ".odt");
       doc.save(tmpFile); // Expectation: Document containing "Hello NAME"
   }

@@ -36,8 +36,8 @@ public class OdtEngineProvider implements EngineProvider<OdtContainer, OdfTextDo
     }
 
     @Override
-    public EngineAPI createEngine(OdtContainer doc) {
-        return new OdtEngine(doc);
+    public EngineAPI<OdtContainer, OdfTextDocument> createEngine() {
+        return new OdtEngine();
     }
 
 }

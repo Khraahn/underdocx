@@ -33,7 +33,7 @@ import java.util.Optional;
 
 public interface PlaceholdersProvider<C extends DocContainer<D>, P, D> {
 
-    Enumerator<Node> getPlaceholders();
+    Enumerator<Node> getPlaceholders(C doc);
 
     P getPlaceholderData(Node node);
 

@@ -36,8 +36,8 @@ public class ForListTest extends AbstractOdtTest {
     @Test
     public void testListLoop() throws IOException {
         OdtContainer doc = new OdtContainer(getInputStream("ListLoop.odt"));
-        OdtEngine engine = new OdtEngine(doc);
-        engine.run();
+        OdtEngine engine = new OdtEngine();
+        engine.run(doc);
         //show(doc);
         assertNoPlaceholders(doc);
         assertOrder(doc, "1", "Hans", "Müller");
@@ -49,8 +49,8 @@ public class ForListTest extends AbstractOdtTest {
     @Test
     public void testListLoopEnumeration() throws IOException {
         OdtContainer doc = new OdtContainer(getInputStream("ListLoopEnumeration.odt"));
-        OdtEngine engine = new OdtEngine(doc);
-        engine.run();
+        OdtEngine engine = new OdtEngine();
+        engine.run(doc);
         //show(doc);
         assertNoPlaceholders(doc);
         assertOrder(doc, "1", "Hans", "Müller");

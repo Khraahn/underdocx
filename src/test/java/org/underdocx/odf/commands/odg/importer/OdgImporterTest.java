@@ -37,10 +37,10 @@ public class OdgImporterTest extends AbstractOdgTest {
     @Test
     public void testImport() throws IOException {
         OdgContainer graphics = new OdgContainer(readResource("ImportTest.odg"));
-        OdgEngine engine = new OdgEngine(graphics);
+        OdgEngine engine = new OdgEngine();
         engine.pushLeafVariable("toImport", readResource("ToImport.odg"));
         engine.pushLeafVariable("toImport2", readResource("ToImport2.odg"));
-        engine.run();
+        engine.run(graphics);
         //show(graphics);
         assertTextNodeOrder(graphics, "should be imported", "Text2");
         Assertions.assertThat(findTextNode(graphics, "should be imported")).isTrue();

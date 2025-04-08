@@ -36,8 +36,8 @@ public class RemovePageTest extends AbstractOdgTest {
     @Test
     public void testRemovePage() throws IOException {
         OdgContainer doc = new OdgContainer(readResource("Remove.odg"));
-        OdgEngine engine = new OdgEngine(doc);
-        engine.run();
+        OdgEngine engine = new OdgEngine();
+        engine.run(doc);
         //show(doc);
         assertNotContains(doc, "INVALID");
         assertContains(doc, "Hello World");

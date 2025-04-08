@@ -39,8 +39,8 @@ public class ForNoDataTest extends AbstractOdtTest {
                 "${$index} ${$element}                                    \n" +
                 "${EndFor}                                               \n";
         OdtContainer doc = new OdtContainer(documentStr);
-        OdtEngine engine = new OdtEngine(doc);
-        engine.run();
+        OdtEngine engine = new OdtEngine();
+        engine.run(doc);
         //show(doc);
         assertNoPlaceholders(doc);
     }

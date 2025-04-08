@@ -38,8 +38,8 @@ public class ForRowsTest extends AbstractOdtTest {
     @Test
     public void testTableRows() throws IOException {
         OdtContainer doc = new OdtContainer(getInputStream("TableLoop.odt"));
-        OdtEngine engine = new OdtEngine(doc);
-        engine.run();
+        OdtEngine engine = new OdtEngine();
+        engine.run(doc);
         //show(doc);
         assertNoPlaceholders(doc);
         assertOrder(doc, "1", "Hans", "Müller");
@@ -51,8 +51,8 @@ public class ForRowsTest extends AbstractOdtTest {
     @Test
     public void testTableRowGroups() throws IOException {
         OdtContainer doc = new OdtContainer(getInputStream("TableLoopGroups.odt"));
-        OdtEngine engine = new OdtEngine(doc);
-        engine.run();
+        OdtEngine engine = new OdtEngine();
+        engine.run(doc);
         //show(doc);
         assertNoPlaceholders(doc);
         assertOrder(doc, "1", "Hans", "Müller");
@@ -64,7 +64,7 @@ public class ForRowsTest extends AbstractOdtTest {
     @Test
     public void testStyledCells() {
         OdtContainer doc = readOdt("LoopStyledCells.odt");
-        OdtEngine engine = new OdtEngine(doc);
+        OdtEngine engine = new OdtEngine();
         engine.pushVariable("data",
                 DataTreeBuilder.beginList()
 
@@ -88,7 +88,7 @@ public class ForRowsTest extends AbstractOdtTest {
 
 
                         .end().build());
-        engine.run();
+        engine.run(doc);
         //show(doc);
 
         assertNoPlaceholders(doc);

@@ -47,7 +47,7 @@ public class DemoTest extends AbstractOdtTest {
 
         // Prepare document and engine
         OdtContainer doc = new OdtContainer(is);
-        OdtEngine engine = new OdtEngine(doc);
+        OdtEngine engine = new OdtEngine();
 
         // Alias placeholders
         engine.registerAlias(
@@ -69,7 +69,7 @@ public class DemoTest extends AbstractOdtTest {
         engine.pushVariable("signature", "Jon Sutton");
 
         // Execute the engine
-        engine.run();
+        engine.run(doc);
         doc.save(os);
         //show(doc);
 

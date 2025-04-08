@@ -40,8 +40,8 @@ public class UnderdocxCommandHandlerTest extends AbstractOdtTest {
     @Test
     public void testUnderdocx() {
         OdtContainer doc = new OdtContainer("${underdocx}");
-        OdtEngine engine = new OdtEngine(doc);
-        engine.run();
+        OdtEngine engine = new OdtEngine();
+        engine.run(doc);
         //show(doc);
         assertNoPlaceholders(doc);
         List<Node> drawImagesNodes = Nodes.findDescendantNodes(doc.getContentDom(), OdfElement.FRAME.getQualifiedName(), true);

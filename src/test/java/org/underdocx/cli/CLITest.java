@@ -102,9 +102,9 @@ public class CLITest extends AbstractOdtTest {
     @Test
     public void testImport() {
         OdtContainer doc = new OdtContainer(docContent);
-        OdtEngine engine = new OdtEngine(doc);
+        OdtEngine engine = new OdtEngine();
         engine.importData(importData);
-        engine.run();
+        engine.run(doc);
         //show(doc);
         assertNoPlaceholders(doc);
         assertContains(doc, "Hello World");

@@ -37,8 +37,8 @@ public class IfTest extends AbstractTxtTest {
                 Test
                 """;
         TxtContainer doc = new TxtContainer(documentStr);
-        TxtEngine engine = new TxtEngine(doc);
-        engine.run();
+        TxtEngine engine = new TxtEngine();
+        engine.run(doc);
         // show(doc);
         assertContains(doc, "P P");
 
@@ -82,9 +82,9 @@ public class IfTest extends AbstractTxtTest {
                 U ${If *model:"x"} INVALID ${EndIf}U        
                 """;
         TxtContainer doc = new TxtContainer(documentStr);
-        TxtEngine engine = new TxtEngine(doc);
+        TxtEngine engine = new TxtEngine();
         engine.setModel(new MapDataNode(jsonString));
-        engine.run();
+        engine.run(doc);
         //show(doc);
         assertContains(doc, "A A A");
         assertContains(doc, "B B B");
@@ -121,8 +121,8 @@ public class IfTest extends AbstractTxtTest {
                 B           
                 """;
         TxtContainer doc = new TxtContainer(documentStr);
-        TxtEngine engine = new TxtEngine(doc);
-        engine.run();
+        TxtEngine engine = new TxtEngine();
+        engine.run(doc);
         //show(doc);
         System.out.println(doc.getDocument().getXmlText());
         assertNoPlaceholders(doc);
@@ -140,8 +140,8 @@ public class IfTest extends AbstractTxtTest {
                 ${If and:[{$testString:"Test"},{not:{$testTrue:true}}]} INVALID ${EndIf}
                 """;
         TxtContainer doc = new TxtContainer(documentStr);
-        TxtEngine engine = new TxtEngine(doc);
-        engine.run();
+        TxtEngine engine = new TxtEngine();
+        engine.run(doc);
         // show(doc);
         assertContains(doc, "OK");
         assertNotContains(doc, "INVALID");
@@ -158,8 +158,8 @@ public class IfTest extends AbstractTxtTest {
                 ${If or:[{$testString:"x"},{$testTrue:false}]} INVALID ${EndIf}
                 """;
         TxtContainer doc = new TxtContainer(documentStr);
-        TxtEngine engine = new TxtEngine(doc);
-        engine.run();
+        TxtEngine engine = new TxtEngine();
+        engine.run(doc);
         //show(doc);
         assertContains(doc, "OK");
         assertNotContains(doc, "INVALID");
@@ -173,8 +173,8 @@ public class IfTest extends AbstractTxtTest {
                         B ${If $testTrue:true}B${EndIf} B
                 """;
         TxtContainer doc = new TxtContainer(documentStr);
-        TxtEngine engine = new TxtEngine(doc);
-        engine.run();
+        TxtEngine engine = new TxtEngine();
+        engine.run(doc);
         //show(doc);
         assertContains(doc, "B B B");
 

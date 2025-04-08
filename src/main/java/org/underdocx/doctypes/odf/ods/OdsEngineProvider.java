@@ -36,8 +36,8 @@ public class OdsEngineProvider implements EngineProvider<OdsContainer, OdfSpread
     }
 
     @Override
-    public EngineAPI createEngine(OdsContainer doc) {
-        return new OdsEngine(doc);
+    public EngineAPI<OdsContainer, OdfSpreadsheetDocument> createEngine() {
+        return new OdsEngine();
     }
 
 }

@@ -42,7 +42,7 @@ import org.underdocx.environment.err.Problems;
 import java.util.Optional;
 import java.util.function.BiConsumer;
 
-public abstract class AbstractEngine<C extends DocContainer<D>, D> implements EngineAPI {
+public abstract class AbstractEngine<C extends DocContainer<D>, D> implements EngineAPI<C, D> {
 
 
     abstract protected ModelEngine<C, D> getEngine();
@@ -99,8 +99,8 @@ public abstract class AbstractEngine<C extends DocContainer<D>, D> implements En
         return getEngine().getVariable(name);
     }
 
-    public Optional<Problem> run() {
-        return getEngine().run();
+    public Optional<Problem> run(C doc) {
+        return getEngine().run(doc);
     }
 
 

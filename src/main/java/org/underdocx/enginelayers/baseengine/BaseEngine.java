@@ -44,7 +44,7 @@ import static org.underdocx.common.tools.Convenience.build;
 
 public class BaseEngine<C extends DocContainer<D>, D> {
 
-    protected final C doc;
+    protected C doc;
 
     protected int step = 0;
     protected boolean rescan = true;
@@ -56,9 +56,14 @@ public class BaseEngine<C extends DocContainer<D>, D> {
     protected LinkedHashSet<EngineListener<C, D>> listeners = new LinkedHashSet<>();
     protected Enumerator<Pair<PlaceholdersProvider<C, ?, D>, Node>> placeholderEnumerator;
 
+    public BaseEngine() {
+    }
 
-    public BaseEngine(C doc) {
+    private void prepareRun(C doc) {
         this.doc = doc;
+        step = 0;
+        rescan = true;
+        initialized = false;
     }
 
     public <X> BaseEngine<C, D> registerCommandHandler(PlaceholdersProvider.Factory<C, X, D> providerFactory, CommandHandler<C, X, D> commandHandler) {
@@ -77,7 +82,7 @@ public class BaseEngine<C extends DocContainer<D>, D> {
     }
 
     protected Enumerator<Pair<PlaceholdersProvider<C, ?, D>, Node>> createPlaceholdersEnumerator() {
-        return new PlaceholdersEnumerator<>(registry.keySet()).cache();
+        return new PlaceholdersEnumerator<>(doc, registry.keySet()).cache();
     }
 
     protected CommandHandlerResult findAndExecCommandHandler(PlaceholdersProvider<C, ?, D> provider, Selection<C, ?, D> selection) {
@@ -119,7 +124,8 @@ public class BaseEngine<C extends DocContainer<D>, D> {
         }
     }
 
-    public Optional<Problem> run() {
+    public Optional<Problem> run(C doc) {
+        prepareRun(doc);
         long startTime = System.currentTimeMillis();
         Problem detectedError = null;
         try {
@@ -142,7 +148,6 @@ public class BaseEngine<C extends DocContainer<D>, D> {
         }
         return Optional.ofNullable(detectedError);
     }
-
 
     protected void reactOnExecutionResult(CommandHandlerResult executionResult, Selection<C, ?, D> selection) {
         switch (executionResult.getResultType()) {
@@ -175,7 +180,6 @@ public class BaseEngine<C extends DocContainer<D>, D> {
     }
 
     protected void runUncatched() {
-        initialized = false;
         while (rescan) {
             placeholderEnumerator = createPlaceholdersEnumerator();
             List<Node> visited = new ArrayList<>();

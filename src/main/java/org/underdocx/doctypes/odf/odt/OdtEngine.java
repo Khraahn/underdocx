@@ -72,13 +72,13 @@ public class OdtEngine extends AbstractOdfEngine<OdtContainer, OdfTextDocument> 
         engine.registerCommandHandler(parameters, new CalcCommandHandler<>(modifiers));
     }
 
-    public OdtEngine(OdtContainer doc) {
-        this(doc, new OdfPlaceholderFactory<>());
+    public OdtEngine() {
+        this(new OdfPlaceholderFactory<>());
     }
 
-    public OdtEngine(OdtContainer doc, GenericTextualPlaceholderFactory<OdtContainer, ParametersPlaceholderData, OdfTextDocument> parameters) {
+    public OdtEngine(GenericTextualPlaceholderFactory<OdtContainer, ParametersPlaceholderData, OdfTextDocument> parameters) {
         super(parameters);
-        this.engine = new ModelEngine<>(doc);
+        this.engine = new ModelEngine<>();
         registerDefaultCommandHandlers();
     }
 

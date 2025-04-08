@@ -48,7 +48,7 @@ public interface GenericTextualPlaceholderFactory<C extends DocContainer<D>, P, 
     }
 
     default PlaceholdersProvider<C, P, D> createProvider(C doc) {
-        return new GenericTextualPlaceholdersProvider<>(doc, this);
+        return new GenericTextualPlaceholdersProvider<>(this);
     }
 
 

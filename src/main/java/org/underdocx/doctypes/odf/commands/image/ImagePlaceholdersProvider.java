@@ -43,12 +43,10 @@ import java.util.ArrayList;
 import java.util.Optional;
 
 public class ImagePlaceholdersProvider<C extends AbstractOdfContainer<D>, D extends OdfDocument> implements EncapsulatedNodesExtractor, PlaceholdersProvider<C, ImagePlaceholderData, D> {
-    private final C doc;
     private Node firstValidNode = null;
     private boolean endOfDoc;
 
-    public ImagePlaceholdersProvider(C doc) {
-        this.doc = doc;
+    public ImagePlaceholdersProvider() {
     }
 
     private static TextNodeInterpreter interpreter = OdfTextNodeInterpreter.INSTANCE;
@@ -96,7 +94,7 @@ public class ImagePlaceholdersProvider<C extends AbstractOdfContainer<D>, D exte
 
     @Override
     public boolean isEncapsulatedNode(Node node) {
-        return ImagePlaceholderData.createPlaceholder(node, doc).isPresent();
+        return ImagePlaceholderData.createPlaceholder(node).isPresent();
     }
 
     @Override
@@ -105,7 +103,7 @@ public class ImagePlaceholdersProvider<C extends AbstractOdfContainer<D>, D exte
     }
 
     @Override
-    public Enumerator<Node> getPlaceholders() {
+    public Enumerator<Node> getPlaceholders(C doc) {
         if (endOfDoc) return Enumerator.empty();
         //return new ElementByElementEnumerator<>(doc, (p, first) -> this.extractNodes(p, first), firstValidNode, true, DrawFrameElement.class);
         OdfSectionsWalker sections = new OdfSectionsWalker(doc, firstValidNode);
@@ -114,7 +112,7 @@ public class ImagePlaceholdersProvider<C extends AbstractOdfContainer<D>, D exte
 
     @Override
     public ImagePlaceholderData getPlaceholderData(Node node) {
-        return ImagePlaceholderData.createPlaceholder(node, doc).get();
+        return ImagePlaceholderData.createPlaceholder(node).get();
     }
 
     @Override
@@ -132,7 +130,7 @@ public class ImagePlaceholdersProvider<C extends AbstractOdfContainer<D>, D exte
 
         @Override
         public PlaceholdersProvider<C, ImagePlaceholderData, D> createProvider(C doc) {
-            return new ImagePlaceholdersProvider<>(doc);
+            return new ImagePlaceholdersProvider<>();
         }
     }
 

@@ -38,8 +38,8 @@ public class TxtPlaceholderStylesTest extends AbstractTxtTest {
                 <!--${Join value:["Bibi", "Tina", "Amadeus", "Sabrina"]}--> <!--${Date value:"2022-02-02"}-->
                 """;
         TxtContainer doc = new TxtContainer(content);
-        TxtEngine engine = new TxtEngine(doc, TxtPlaceholderStyle.XML_COMMENT);
-        engine.run();
+        TxtEngine engine = new TxtEngine(TxtPlaceholderStyle.XML_COMMENT);
+        engine.run(doc);
         assertNoPlaceholders(doc);
         assertContains(doc, "Bibi, Tina, Amadeus, Sabrina 2022-02-02");
     }
@@ -50,8 +50,8 @@ public class TxtPlaceholderStylesTest extends AbstractTxtTest {
                 /*!Join value:["Bibi", "Tina", "Amadeus", "Sabrina"]!*/ /*!Date value:"2022-02-02"!*/
                 """;
         TxtContainer doc = new TxtContainer(content);
-        TxtEngine engine = new TxtEngine(doc, TxtPlaceholderStyle.CODE_COMMENT);
-        engine.run();
+        TxtEngine engine = new TxtEngine(TxtPlaceholderStyle.CODE_COMMENT);
+        engine.run(doc);
         assertNoPlaceholders(doc);
         assertContains(doc, "Bibi, Tina, Amadeus, Sabrina 2022-02-02");
     }
@@ -62,8 +62,8 @@ public class TxtPlaceholderStylesTest extends AbstractTxtTest {
                 #!Join value:["Bibi", "Tina", "Amadeus", "Sabrina"]!# #!Date value:"2022-02-02"!#
                 """;
         TxtContainer doc = new TxtContainer(content);
-        TxtEngine engine = new TxtEngine(doc, TxtPlaceholderStyle.HASH_COMMENT);
-        engine.run();
+        TxtEngine engine = new TxtEngine(TxtPlaceholderStyle.HASH_COMMENT);
+        engine.run(doc);
         assertNoPlaceholders(doc);
         assertContains(doc, "Bibi, Tina, Amadeus, Sabrina 2022-02-02");
     }
@@ -81,8 +81,8 @@ public class TxtPlaceholderStylesTest extends AbstractTxtTest {
                 </body></html>
                 """;
         TxtContainer doc = new TxtContainer(content);
-        TxtEngine engine = new TxtEngine(doc, TxtPlaceholderStyle.XML_COMMENT);
-        engine.run();
+        TxtEngine engine = new TxtEngine(TxtPlaceholderStyle.XML_COMMENT);
+        engine.run(doc);
         //show(doc);
         assertNoPlaceholders(doc);
         assertOrder(doc, "Hans", "Otto", "Gerda");
@@ -98,13 +98,13 @@ public class TxtPlaceholderStylesTest extends AbstractTxtTest {
                 }
                 """;
         TxtContainer doc = new TxtContainer(content);
-        TxtEngine engine = new TxtEngine(doc, TxtPlaceholderStyle.CODE_COMMENT);
+        TxtEngine engine = new TxtEngine(TxtPlaceholderStyle.CODE_COMMENT);
         engine.pushVariable("entries", DataTreeBuilder
                 .beginList()
                 .add("public static final String x1 = \"X\";")
                 .add("public static final String x2 = \"Y\";")
                 .end().build());
-        engine.run();
+        engine.run(doc);
         //show(doc);
         assertNoPlaceholders(doc);
     }

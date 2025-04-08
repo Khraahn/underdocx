@@ -69,13 +69,13 @@ public class TxtEngine extends AbstractEngine<TxtContainer, TxtXml> {
         engine.registerCommandHandler(parameters, new CalcCommandHandler<>(modifiers));
     }
 
-    public TxtEngine(TxtContainer doc) {
-        this(doc, new TxtParameterizedPlaceholderFactory());
+    public TxtEngine() {
+        this(new TxtParameterizedPlaceholderFactory());
     }
 
-    public TxtEngine(TxtContainer doc, GenericTextualPlaceholderFactory<TxtContainer, ParametersPlaceholderData, TxtXml> parameters) {
+    public TxtEngine(GenericTextualPlaceholderFactory<TxtContainer, ParametersPlaceholderData, TxtXml> parameters) {
         this.parameters = parameters;
-        this.engine = new ModelEngine<>(doc);
+        this.engine = new ModelEngine<>();
         registerDefaultCommandHandlers();
     }
 

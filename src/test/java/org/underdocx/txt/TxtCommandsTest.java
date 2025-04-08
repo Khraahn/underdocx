@@ -48,9 +48,9 @@ public class TxtCommandsTest extends AbstractTxtTest {
                 "${$index} ${$element}                                    \n" +
                 "${EndFor}                                               \n";
         TxtContainer doc = new TxtContainer(documentStr);
-        TxtEngine engine = new TxtEngine(doc);
+        TxtEngine engine = new TxtEngine();
         engine.setModel(new MapDataNode(jsonString));
-        engine.run();
+        engine.run(doc);
         //show(doc);
         assertContains(doc, "0 A");
         assertContains(doc, "1 B");
@@ -69,8 +69,8 @@ public class TxtCommandsTest extends AbstractTxtTest {
                 D ${Date value:"04.03.2022",  inputFormat:"dd.MM.yyyy", outputFormat:"dd.MM.yyyy"}                
                 """;
         TxtContainer doc = new TxtContainer(content);
-        TxtEngine engine = new TxtEngine(doc);
-        engine.run();
+        TxtEngine engine = new TxtEngine();
+        engine.run(doc);
         //show(doc);
         String ddMMyyyy = DateTimeFormatter.ofPattern("dd.MM.yyyy").format(LocalDate.now());
         String yyyyMMdd = DateTimeFormatter.ofPattern("yyyy-MM-dd").format(LocalDate.now());
@@ -90,8 +90,8 @@ public class TxtCommandsTest extends AbstractTxtTest {
                 D ${Time value:"2011-12-02 08.42.11", inputFormat:"yyyy-MM-dd HH.mm.ss", outputFormat:"HH.mm"}                
                 """;
         TxtContainer doc = new TxtContainer(content);
-        TxtEngine engine = new TxtEngine(doc);
-        engine.run();
+        TxtEngine engine = new TxtEngine();
+        engine.run(doc);
         //show(doc);
         String defTime = DateTimeFormatter.ofPattern("HH:mm:ss").format(LocalDateTime.now());
         String oTime = DateTimeFormatter.ofPattern("HH.mm.ss").format(LocalDateTime.now());
@@ -110,8 +110,8 @@ public class TxtCommandsTest extends AbstractTxtTest {
                 C: ${Join value:["Bibi", "Tina", "Amadeus", "Sabrina"], limit: 2, truncated:" usw."}
                 """;
         TxtContainer doc = new TxtContainer(content);
-        TxtEngine engine = new TxtEngine(doc);
-        engine.run();
+        TxtEngine engine = new TxtEngine();
+        engine.run(doc);
         assertNoPlaceholders(doc);
         assertContains(doc, "A: Bibi, Tina, Amadeus, Sabrina");
         assertContains(doc, "B: Bibi, Tina, Amadeus und Sabrina");
@@ -127,8 +127,8 @@ public class TxtCommandsTest extends AbstractTxtTest {
                 D: ${Number value:1234567.89, format:"000000000.000", lang:"en-US"}
                 """;
         TxtContainer doc = new TxtContainer(content);
-        TxtEngine engine = new TxtEngine(doc);
-        engine.run();
+        TxtEngine engine = new TxtEngine();
+        engine.run(doc);
         //show(doc);
         assertNoPlaceholders(doc);
         assertOrder(doc, "A: 1.234.567,89", "B: 1,234,567.89", "C: 1.234.567,9", "D: 001234567.890");
@@ -142,8 +142,8 @@ public class TxtCommandsTest extends AbstractTxtTest {
                 C: ${Number value:1234567, format:"#.00", lang:"de-DE", prefix:"!!", suffix:"€", multiplier:10.0}
                 """;
         TxtContainer doc = new TxtContainer(content);
-        TxtEngine engine = new TxtEngine(doc);
-        engine.run();
+        TxtEngine engine = new TxtEngine();
+        engine.run(doc);
         //show(doc);
         assertNoPlaceholders(doc);
         assertOrder(doc, "A: !!-12345678,90€", "B: !!-12345670€", "C: !!12345670,00€");
@@ -160,8 +160,8 @@ public class TxtCommandsTest extends AbstractTxtTest {
                 D: ${Date}
                 """;
         TxtContainer doc = new TxtContainer(content);
-        TxtEngine engine = new TxtEngine(doc);
-        engine.run();
+        TxtEngine engine = new TxtEngine();
+        engine.run(doc);
         //show(doc);
         String ddmmyyyy = new SimpleDateFormat("dd.MM.yyyy").format(new Date());
         String yyyymmdd = new SimpleDateFormat("yyyy/MM/dd").format(new Date());
@@ -184,11 +184,11 @@ public class TxtCommandsTest extends AbstractTxtTest {
                 "${$index} ${$element}    \n" +
                 "${End}                   \n";
         TxtContainer doc = new TxtContainer(documentStr);
-        TxtEngine engine = new TxtEngine(doc);
+        TxtEngine engine = new TxtEngine();
         engine.registerStringReplacement("Begin", "${For value:[\"A\", \"B\", \"C\"], $as:\"element\"}");
         engine.registerStringReplacement("End", "${EndFor}");
         engine.setModel(new MapDataNode(jsonString));
-        engine.run();
+        engine.run(doc);
         // show(doc);
         assertContains(doc, "0 A");
         assertContains(doc, "1 B");
@@ -201,9 +201,9 @@ public class TxtCommandsTest extends AbstractTxtTest {
     @Test
     public void testRescan() {
         TxtContainer doc = new TxtContainer("${$x rescan:true}");
-        TxtEngine engine = new TxtEngine(doc);
+        TxtEngine engine = new TxtEngine();
         engine.pushVariable("x", "${String value:\"abc\"}");
-        engine.run();
+        engine.run(doc);
         assertNotContains(doc, "${String");
         assertNoPlaceholders(doc);
         assertContains(doc, "abc");

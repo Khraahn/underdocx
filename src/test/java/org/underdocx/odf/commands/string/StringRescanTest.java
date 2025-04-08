@@ -34,18 +34,18 @@ public class StringRescanTest extends AbstractOdtTest {
     @Test
     public void testNoRescan() {
         OdtContainer doc = new OdtContainer("${$x}");
-        OdtEngine engine = new OdtEngine(doc);
+        OdtEngine engine = new OdtEngine();
         engine.pushVariable("x", "${String value:\"abc\"}");
-        engine.run();
+        engine.run(doc);
         assertContains(doc, "${String");
     }
 
     @Test
     public void testRescan() {
         OdtContainer doc = new OdtContainer("${$x rescan:true}");
-        OdtEngine engine = new OdtEngine(doc);
+        OdtEngine engine = new OdtEngine();
         engine.pushVariable("x", "${String value:\"abc\"}");
-        engine.run();
+        engine.run(doc);
         assertNotContains(doc, "${String");
         assertNoPlaceholders(doc);
         assertContains(doc, "abc");

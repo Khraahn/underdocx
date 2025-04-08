@@ -83,11 +83,11 @@ public class UnderdocxEngineRunner {
                     }
                     engineProvider = createEngineProvider(args[0]);
                     doc = loadDocFile(engineProvider, args[1]);
-                    engine = engineProvider.createEngine(doc);
+                    engine = engineProvider.createEngine();
                     if (args.length == 4) {
                         loadData(args[3]);
                     }
-                    Optional<Problem> egnineResult = engine.run();
+                    Optional<Problem> egnineResult = engine.run(doc);
                     saveData(args[2]);
                     if (egnineResult.isPresent()) {
                         String problem = egnineResult.get().toString();

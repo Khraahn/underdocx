@@ -66,8 +66,8 @@ public class OdsTest extends AbstractOdtTest {
     @Test
     public void testOds() throws IOException {
         OdsContainer tables = new OdsContainer(readResource("TestTables.ods"));
-        OdsEngine engine = new OdsEngine(tables);
-        engine.run();
+        OdsEngine engine = new OdsEngine();
+        engine.run(tables);
         //show(tables);
         Assertions.assertThat(findTextNode(tables, "$")).isFalse();
         Assertions.assertThat(findTextNode(tables, "Gerda")).isTrue();
@@ -76,8 +76,8 @@ public class OdsTest extends AbstractOdtTest {
     @Test
     public void testOdsColmnStyles() throws IOException {
         OdsContainer tables = new OdsContainer(readResource("TestTableColumnTypes.ods"));
-        OdsEngine engine = new OdsEngine(tables);
-        engine.run();
+        OdsEngine engine = new OdsEngine();
+        engine.run(tables);
         //show(tables);
         Assertions.assertThat(findTextNode(tables, "$")).isFalse();
         Assertions.assertThat(findTextNode(tables, "Hans")).isTrue();

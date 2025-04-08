@@ -43,8 +43,8 @@ public class CalcCommandHandlerTest extends AbstractOdtTest {
                 E ${Calc $a:"i4", $b:"i1", operator:"/", key:"result"}${$result}                
                 """;
         OdtContainer doc = new OdtContainer(content);
-        OdtEngine engine = new OdtEngine(doc);
-        engine.run();
+        OdtEngine engine = new OdtEngine();
+        engine.run(doc);
         //show(doc);
         assertOrder(doc, "A 3", "B 2", "C 8", "E 4");
     }
@@ -61,8 +61,8 @@ public class CalcCommandHandlerTest extends AbstractOdtTest {
                 E ${Calc $a:"i4", $b:"i1", operator:"/", key:"result"}${$result}                
                 """;
         OdtContainer doc = new OdtContainer(content);
-        OdtEngine engine = new OdtEngine(doc);
-        engine.run();
+        OdtEngine engine = new OdtEngine();
+        engine.run(doc);
         //show(doc);
         assertOrder(doc, "A 3.0", "B 2.0", "C 8.0", "E 4.0");
     }
@@ -75,8 +75,8 @@ public class CalcCommandHandlerTest extends AbstractOdtTest {
                 A ${Calc $a:"i1", $b:"i4", operator:"+", key:"result"}${$result}
                 """;
         OdtContainer doc = new OdtContainer(content);
-        OdtEngine engine = new OdtEngine(doc);
-        engine.run();
+        OdtEngine engine = new OdtEngine();
+        engine.run(doc);
         //show(doc);
         assertOrder(doc, "A 4.1");
     }

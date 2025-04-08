@@ -46,8 +46,8 @@ public class AliasTest extends AbstractOdtTest {
                 D: ${Date}
                 """;
         OdtContainer doc = new OdtContainer(content);
-        OdtEngine engine = new OdtEngine(doc);
-        engine.run();
+        OdtEngine engine = new OdtEngine();
+        engine.run(doc);
         String ddmmyyyy = new SimpleDateFormat("dd.MM.yyyy").format(new Date());
         String yyyymmdd = new SimpleDateFormat("yyyy/MM/dd").format(new Date());
         String defaultDate = new SimpleDateFormat("yyyy-MM-dd").format(new Date());
@@ -67,14 +67,14 @@ public class AliasTest extends AbstractOdtTest {
                 D: ${Date}
                 """;
         OdtContainer doc = new OdtContainer(content);
-        OdtEngine engine = new OdtEngine(doc);
+        OdtEngine engine = new OdtEngine();
         engine.registerAlias(new AliasCommandHandler.AliasData("myDate", "Date")
                 .addAttribute("outputFormat", "dd.MM.yyyy")
                 .addAttrReplacement("v", "value")
                 .addAttrReplacement("of", "outputFormat")
         );
         engine.pushLeafVariable("varFormat", "yyyy/MM/dd");
-        engine.run();
+        engine.run(doc);
         String ddmmyyyy = new SimpleDateFormat("dd.MM.yyyy").format(new Date());
         String yyyymmdd = new SimpleDateFormat("yyyy/MM/dd").format(new Date());
         String defaultDate = new SimpleDateFormat("yyyy-MM-dd").format(new Date());

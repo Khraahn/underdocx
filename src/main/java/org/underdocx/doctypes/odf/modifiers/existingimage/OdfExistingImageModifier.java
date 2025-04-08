@@ -24,9 +24,10 @@ SOFTWARE.
 
 package org.underdocx.doctypes.odf.modifiers.existingimage;
 
+import org.odftoolkit.odfdom.doc.OdfDocument;
 import org.underdocx.common.types.Pair;
 import org.underdocx.common.types.Resource;
-import org.underdocx.doctypes.DocContainer;
+import org.underdocx.doctypes.odf.AbstractOdfContainer;
 import org.underdocx.doctypes.odf.placeholdersprovider.dollar.image.BasicImagePlaceholderData;
 import org.underdocx.enginelayers.baseengine.ModifierResult;
 import org.underdocx.enginelayers.baseengine.Selection;
@@ -36,7 +37,7 @@ import org.underdocx.environment.UnderdocxEnv;
 import java.net.URI;
 import java.util.Optional;
 
-public class OdfExistingImageModifier<C extends DocContainer<D>, P extends BasicImagePlaceholderData, D> implements SelectionModifier<Selection<C, P, D>, OdfExistingImageModifierData, ModifierResult> {
+public class OdfExistingImageModifier<C extends AbstractOdfContainer<D>, P extends BasicImagePlaceholderData, D extends OdfDocument> implements SelectionModifier<Selection<C, P, D>, OdfExistingImageModifierData, ModifierResult> {
 
     @Override
     public ModifierResult modify(Selection<C, P, D> selection, OdfExistingImageModifierData modifierData) {
@@ -47,10 +48,10 @@ public class OdfExistingImageModifier<C extends DocContainer<D>, P extends Basic
         Optional<URI> importImageUri = resource.getURI();
         if (importImageUri.isPresent()) {
             importImageWidthHeight = BasicImagePlaceholderData.getDimension(importImageUri.get());
-            placeholder.exchangeImage(importImageUri.get());
+            placeholder.exchangeImage(importImageUri.get(), selection.getDocContainer().getContentDom());
         } else {
             importImageWidthHeight = BasicImagePlaceholderData.getDimension(resource);
-            placeholder.exchangeImage(resource, newName);
+            placeholder.exchangeImage(resource, newName, selection.getDocContainer().getContentDom());
         }
         UnderdocxEnv.getInstance().logger.trace("new image dimension; " + importImageWidthHeight);
         if (modifierData.getKeepWidth() != null) {

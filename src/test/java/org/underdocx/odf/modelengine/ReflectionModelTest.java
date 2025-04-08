@@ -71,9 +71,9 @@ public class ReflectionModelTest extends AbstractOdtTest {
     @Test
     public void testReflectionModelEngine() {
         OdtContainer doc = new OdtContainer("${String *value:\"b.c[0]\"}");
-        OdtEngine engine = new OdtEngine(doc);
+        OdtEngine engine = new OdtEngine();
         engine.setModel(new TestClassA());
-        engine.run();
+        engine.run(doc);
         assertContains(doc, "Item1");
         assertNoPlaceholders(doc);
     }
@@ -84,12 +84,12 @@ public class ReflectionModelTest extends AbstractOdtTest {
                 "${String *value:\"b.x\"}      \n" +
                 "${String *value:\"b.c[0]\"}   \n" +
                 "${String *value:\"b.c[0]\"}   \n");
-        OdtEngine engine = new OdtEngine(doc);
+        OdtEngine engine = new OdtEngine();
         engine.setModel(new TestClassA(),
                 (object, name) -> name.equals("x")
                         ? java.util.Optional.of(new LeafDataNode("42"))
                         : Optional.empty());
-        engine.run();
+        engine.run(doc);
         assertContains(doc, "Item1");
         assertContains(doc, "42");
         assertNoPlaceholders(doc);
@@ -105,9 +105,9 @@ public class ReflectionModelTest extends AbstractOdtTest {
         ReflectionDataNode.Resolver resolver = (object, name) -> name.equals("x")
                 ? java.util.Optional.of(new LeafDataNode("42"))
                 : Optional.empty();
-        OdtEngine engine = new OdtEngine(doc);
+        OdtEngine engine = new OdtEngine();
         engine.setModel(new TestClassA(), resolver);
-        engine.run();
+        engine.run(doc);
         //show(doc);
         assertContains(doc, "Item1");
         assertContains(doc, "42");
@@ -119,11 +119,11 @@ public class ReflectionModelTest extends AbstractOdtTest {
         OdtContainer doc = new OdtContainer("" +
                 "${*a}      \n" +
                 "${*c}      \n");
-        OdtEngine engine = new OdtEngine(doc);
+        OdtEngine engine = new OdtEngine();
         engine.setModel(new TestClassA());
         ReflectionInterceptorRegistry.DEFAULT.register(TestClassA.class, "c",
                 (reflectionObject, requestedProperty) -> Optional.of(new LeafDataNode("Hugo")));
-        engine.run();
+        engine.run(doc);
         assertContains(doc, "Hallo");
         assertContains(doc, "Hugo");
         assertNoPlaceholders(doc);

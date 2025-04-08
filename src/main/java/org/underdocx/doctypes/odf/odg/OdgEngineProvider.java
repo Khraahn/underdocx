@@ -36,8 +36,8 @@ public class OdgEngineProvider implements EngineProvider<OdgContainer, OdfGraphi
     }
 
     @Override
-    public EngineAPI createEngine(OdgContainer doc) {
-        return new OdgEngine(doc);
+    public EngineAPI<OdgContainer, OdfGraphicsDocument> createEngine() {
+        return new OdgEngine();
     }
 
 }

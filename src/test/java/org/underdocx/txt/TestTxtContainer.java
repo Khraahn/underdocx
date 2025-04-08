@@ -71,7 +71,7 @@ public class TestTxtContainer extends AbstractTxtTest {
         PlaceholdersProvider<TxtContainer, ParametersPlaceholderData, TxtXml> placeholderProvider
                 = new TxtParameterizedPlaceholderFactory().createProvider(doc);
         List<ParametersPlaceholderData> allPlaceholders = Convenience.buildList(result ->
-                placeholderProvider.getPlaceholders().forEach(node ->
+                placeholderProvider.getPlaceholders(doc).forEach(node ->
                         result.add(placeholderProvider.getPlaceholderData(node))));
 
         Assertions.assertThat(allPlaceholders.size()).isEqualTo(2);
@@ -87,7 +87,7 @@ public class TestTxtContainer extends AbstractTxtTest {
         PlaceholdersProvider<TxtContainer, ParametersPlaceholderData, TxtXml> placeholderProvider
                 = new TxtParameterizedPlaceholderFactory().createProvider(doc);
         List<Node> allPlaceholders = Convenience.buildList(result ->
-                placeholderProvider.getPlaceholders().forEach(node ->
+                placeholderProvider.getPlaceholders(doc).forEach(node ->
                         result.add(node)));
 
         Assertions.assertThat(allPlaceholders.size()).isEqualTo(2);
@@ -108,7 +108,7 @@ public class TestTxtContainer extends AbstractTxtTest {
         PlaceholdersProvider<TxtContainer, ParametersPlaceholderData, TxtXml> placeholderProvider
                 = new TxtParameterizedPlaceholderFactory().createProvider(doc);
         List<Node> allPlaceholders = Convenience.buildList(result ->
-                placeholderProvider.getPlaceholders().forEach(node ->
+                placeholderProvider.getPlaceholders(doc).forEach(node ->
                         result.add(node)));
 
         Assertions.assertThat(allPlaceholders.size()).isEqualTo(1);

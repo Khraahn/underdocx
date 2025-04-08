@@ -50,9 +50,9 @@ public class ModelVariableTest extends AbstractOdtTest {
                 "B ${$y} B                              \n" + // B Test0 B
                 "";
         OdtContainer doc = new OdtContainer(documentStr);
-        OdtEngine engine = new OdtEngine(doc);
+        OdtEngine engine = new OdtEngine();
         engine.setModel(new MapDataNode(jsonString));
-        engine.run();
+        engine.run(doc);
         assertContains(doc, "B Test0 B");
         assertNoPlaceholders(doc);
     }
@@ -74,9 +74,9 @@ public class ModelVariableTest extends AbstractOdtTest {
                 "B ${$model.a.b[0]} B                 \n" + // B Test0 B
                 "";
         OdtContainer doc = new OdtContainer(documentStr);
-        OdtEngine engine = new OdtEngine(doc);
+        OdtEngine engine = new OdtEngine();
         engine.setModel(new MapDataNode(jsonString));
-        engine.run();
+        engine.run(doc);
         assertContains(doc, "B Test0 B");
         assertNoPlaceholders(doc);
     }
@@ -97,9 +97,9 @@ public class ModelVariableTest extends AbstractOdtTest {
                 "B ${$model.a.b[0]} B                 \n" + // B Test0 B
                 "";
         OdtContainer doc = new OdtContainer(documentStr);
-        OdtEngine engine = new OdtEngine(doc);
+        OdtEngine engine = new OdtEngine();
         engine.pushVariable("model", new MapDataNode(jsonString));
-        engine.run();
+        engine.run(doc);
         assertContains(doc, "B Test0 B");
         assertNoPlaceholders(doc);
     }

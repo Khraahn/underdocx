@@ -37,8 +37,8 @@ public class PageStyleCommandTest extends AbstractOdtTest {
     @Test
     public void testPageCommand() {
         OdtContainer doc = readOdt("PageStyleCommand.odt");
-        OdtEngine engine = new OdtEngine(doc);
-        engine.run();
+        OdtEngine engine = new OdtEngine();
+        engine.run(doc);
         //show(doc);
         PageStyle pageStyleA = PageStyleReader.readPageStyle(getParagraph(doc, "A"));
         Assertions.assertThat(pageStyleA.isEmpty()).isTrue();

@@ -65,13 +65,13 @@ public class OdsEngine extends AbstractOdfEngine<OdsContainer, OdfSpreadsheetDoc
         engine.registerCommandHandler(parameters, new CalcCommandHandler<>(modifiers));
     }
 
-    public OdsEngine(OdsContainer doc) {
-        this(doc, new OdfPlaceholderFactory<>());
+    public OdsEngine() {
+        this(new OdfPlaceholderFactory<>());
     }
 
-    public OdsEngine(OdsContainer doc, GenericTextualPlaceholderFactory<OdsContainer, ParametersPlaceholderData, OdfSpreadsheetDocument> parameters) {
+    public OdsEngine(GenericTextualPlaceholderFactory<OdsContainer, ParametersPlaceholderData, OdfSpreadsheetDocument> parameters) {
         super(parameters);
-        this.engine = new ModelEngine<>(doc);
+        this.engine = new ModelEngine<>();
         registerDefaultCommandHandlers();
     }
 

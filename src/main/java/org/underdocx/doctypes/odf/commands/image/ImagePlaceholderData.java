@@ -36,7 +36,6 @@ import org.underdocx.common.tree.Nodes;
 import org.underdocx.common.types.Regex;
 import org.underdocx.common.types.Resource;
 import org.underdocx.common.types.Tripple;
-import org.underdocx.doctypes.odf.AbstractOdfContainer;
 import org.underdocx.doctypes.odf.constants.OdfElement;
 import org.underdocx.doctypes.odf.constants.OdfLengthUnit;
 import org.underdocx.doctypes.odf.placeholdersprovider.dollar.image.BasicImagePlaceholderData;
@@ -56,15 +55,15 @@ public class ImagePlaceholderData implements BasicImagePlaceholderData {
     private final DrawImageElement drawImageElement;
     private final ParametersPlaceholderData parameterizedPlaceholder;
     private final DrawFrameElement drawFrameElement;
-    private final OdfContentDom dom;
+
     private final SvgDescElement svgDesc;
 
-    public ImagePlaceholderData(OdfContentDom dom, DrawFrameElement drawFrameElement, DrawImageElement drawImageElement, SvgDescElement svgDesc, ParametersPlaceholderData parameterizedPlaceholder) {
+    public ImagePlaceholderData(DrawFrameElement drawFrameElement, DrawImageElement drawImageElement, SvgDescElement svgDesc, ParametersPlaceholderData parameterizedPlaceholder) {
         this.drawImageElement = drawImageElement;
         this.drawFrameElement = drawFrameElement;
         this.svgDesc = svgDesc;
         this.parameterizedPlaceholder = parameterizedPlaceholder;
-        this.dom = dom;
+
     }
 
 
@@ -103,11 +102,11 @@ public class ImagePlaceholderData implements BasicImagePlaceholderData {
         return content == null ? "" : content.trim();
     }
 
-    public static Optional<ImagePlaceholderData> createPlaceholder(Node node, AbstractOdfContainer doc) {
+    public static Optional<ImagePlaceholderData> createPlaceholder(Node node) {
         if (!(node instanceof DrawFrameElement)) return Optional.empty(); // fast check
         return Convenience.buildOptional(w ->
                 getImageElements(node).ifPresent(elements -> parse(getDescrStatic(elements.right)).ifPresent(phd ->
-                        w.value = new ImagePlaceholderData(doc.getContentDom(), elements.left, elements.middle, elements.right, phd))));
+                        w.value = new ImagePlaceholderData(elements.left, elements.middle, elements.right, phd))));
 
     }
 
@@ -170,7 +169,7 @@ public class ImagePlaceholderData implements BasicImagePlaceholderData {
         setHeightAttr(value + unit);
     }
 
-    public void exchangeImage(URI imageUri) {
+    public void exchangeImage(URI imageUri, OdfContentDom dom) {
         OdfDrawImage image = new OdfDrawImage(dom);
         try {
             String packagePath = image.newImage(imageUri);
@@ -182,7 +181,7 @@ public class ImagePlaceholderData implements BasicImagePlaceholderData {
         }
     }
 
-    public void exchangeImage(Resource resource, String imageSuffix) {
+    public void exchangeImage(Resource resource, String imageSuffix, OdfContentDom dom) {
         URI uri = null;
         try {
             File tmpFile = TmpFile.createTmpFile("image_", imageSuffix, true, 10000L);
@@ -192,7 +191,7 @@ public class ImagePlaceholderData implements BasicImagePlaceholderData {
         } catch (Exception e) {
             Problems.IO_EXCEPTION.fire(e);
         }
-        exchangeImage(uri);
+        exchangeImage(uri, dom);
     }
 
 }

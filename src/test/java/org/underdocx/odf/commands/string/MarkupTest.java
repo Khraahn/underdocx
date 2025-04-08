@@ -35,9 +35,9 @@ public class MarkupTest extends AbstractOdtTest {
     @Test
     public void testMarkup() {
         OdtContainer doc = new OdtContainer("${$x markup:true}");
-        OdtEngine engine = new OdtEngine(doc);
+        OdtEngine engine = new OdtEngine();
         engine.pushVariable("x", "This <font size=\"20pt\">is</font> <b>a\n<i>Markup <u>Test</u></i></b>");
-        engine.run();
+        engine.run(doc);
         //show(doc);
         assertContains(doc, "This is a");
         Assertions.assertThat(countElements(doc.getContentDom(), "text:span")).isGreaterThan(3);
@@ -47,9 +47,9 @@ public class MarkupTest extends AbstractOdtTest {
     @Test
     public void testFontName() {
         OdtContainer doc = new OdtContainer("${$x markup:true}");
-        OdtEngine engine = new OdtEngine(doc);
+        OdtEngine engine = new OdtEngine();
         engine.pushVariable("x", "This <font size=\"20pt\" name=\"Magneto\">is</font> <b>a\n<i>Markup <u>Test</u></i></b>");
-        engine.run();
+        engine.run(doc);
         //show(doc);
         assertContains(doc, "This is a");
         Assertions.assertThat(countElements(doc.getContentDom(), "text:span")).isGreaterThan(3);

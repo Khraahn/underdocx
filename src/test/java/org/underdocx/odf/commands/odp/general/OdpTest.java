@@ -57,9 +57,9 @@ public class OdpTest extends AbstractOdtTest {
     @Test
     public void testOdp() throws IOException {
         OdpContainer presentation = new OdpContainer(readResource("TestPresentation.odp"));
-        OdpEngine engine = new OdpEngine(presentation);
+        OdpEngine engine = new OdpEngine();
         engine.pushVariable("image", readResource("smile.png"));
-        engine.run();
+        engine.run(presentation);
         //show(presentation);
         Assertions.assertThat(findTextNode(presentation, "$")).isFalse();
         Assertions.assertThat(findTextNode(presentation, "A")).isTrue();

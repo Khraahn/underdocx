@@ -37,9 +37,9 @@ public class OdpImporterTest extends AbstractOdpTest {
     @Test
     public void testImport() throws IOException {
         OdpContainer graphics = new OdpContainer(readResource("ImportTest.odp"));
-        OdpEngine engine = new OdpEngine(graphics);
+        OdpEngine engine = new OdpEngine();
         engine.pushLeafVariable("toImport", readResource("ToImport.odp"));
-        engine.run();
+        engine.run(graphics);
         //show(graphics);
         Assertions.assertThat(findTextNode(graphics, "should be imported")).isTrue();
         Assertions.assertThat(findTextNode(graphics, "$")).isFalse();

@@ -39,8 +39,8 @@ public class OdfPlaceholderStylesTest extends AbstractOdtTest {
                 <!--${Join value:["Bibi", "Tina", "Amadeus", "Sabrina"]}--> <!--${Date value:"2022-02-02"}-->
                 """;
         OdtContainer doc = new OdtContainer(content);
-        OdtEngine engine = new OdtEngine(doc, new OdfPlaceholderStyle<OdtContainer, OdfTextDocument>().XML_COMMENT);
-        engine.run();
+        OdtEngine engine = new OdtEngine(new OdfPlaceholderStyle<OdtContainer, OdfTextDocument>().XML_COMMENT);
+        engine.run(doc);
         assertNoPlaceholders(doc);
         assertContains(doc, "Bibi, Tina, Amadeus, Sabrina 2022-02-02");
     }
@@ -51,8 +51,8 @@ public class OdfPlaceholderStylesTest extends AbstractOdtTest {
                 /*!Join value:["Bibi", "Tina", "Amadeus", "Sabrina"]!*/ /*!Date value:"2022-02-02"!*/
                 """;
         OdtContainer doc = new OdtContainer(content);
-        OdtEngine engine = new OdtEngine(doc, new OdfPlaceholderStyle<OdtContainer, OdfTextDocument>().CODE_COMMENT);
-        engine.run();
+        OdtEngine engine = new OdtEngine(new OdfPlaceholderStyle<OdtContainer, OdfTextDocument>().CODE_COMMENT);
+        engine.run(doc);
         assertNoPlaceholders(doc);
         assertContains(doc, "Bibi, Tina, Amadeus, Sabrina 2022-02-02");
     }
@@ -63,8 +63,8 @@ public class OdfPlaceholderStylesTest extends AbstractOdtTest {
                 #!Join value:["Bibi", "Tina", "Amadeus", "Sabrina"]!# #!Date value:"2022-02-02"!#
                 """;
         OdtContainer doc = new OdtContainer(content);
-        OdtEngine engine = new OdtEngine(doc, new OdfPlaceholderStyle<OdtContainer, OdfTextDocument>().HASH_COMMENT);
-        engine.run();
+        OdtEngine engine = new OdtEngine(new OdfPlaceholderStyle<OdtContainer, OdfTextDocument>().HASH_COMMENT);
+        engine.run(doc);
         assertNoPlaceholders(doc);
         assertContains(doc, "Bibi, Tina, Amadeus, Sabrina 2022-02-02");
     }

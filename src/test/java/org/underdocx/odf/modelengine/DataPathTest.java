@@ -126,9 +126,9 @@ public class DataPathTest extends AbstractOdtTest {
                 "${Model value:\"aList\", activeModelPathPrefix:\"element\" } \n" +
                 "${String *value:\"element[1]\"}                              \n";
         OdtContainer doc = new OdtContainer(documentStr);
-        OdtEngine engine = new OdtEngine(doc);
+        OdtEngine engine = new OdtEngine();
         engine.setModel(new MapDataNode(jsonString));
-        engine.run();
+        engine.run(doc);
         assertContains(doc, "B");
         assertNoPlaceholders(doc);
     }

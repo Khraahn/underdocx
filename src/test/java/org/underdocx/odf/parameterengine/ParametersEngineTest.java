@@ -39,14 +39,14 @@ public class ParametersEngineTest extends AbstractOdtTest {
     @Test
     public void testParametersEngine() {
         OdtContainer doc = new OdtContainer("ABC ${Key att1:\"value1\"} XYZ");
-        OdtEngine engine = new OdtEngine(doc);
+        OdtEngine engine = new OdtEngine();
         engine.registerParametersCommandHandler(
                 selection -> {
                     String text = AttributesInterpreter.getStringAttribute(selection.getPlaceholderData().getJson(), "att1").get();
                     new ReplaceWithTextModifier<OdtContainer, ParametersPlaceholderData, OdfTextDocument>().modify(selection, text);
                     return CommandHandlerResult.EXECUTED_PROCEED;
                 });
-        engine.run();
+        engine.run(doc);
         assertContains(doc, "ABC value1 XYZ");
         assertNoPlaceholders(doc);
     }
@@ -54,7 +54,7 @@ public class ParametersEngineTest extends AbstractOdtTest {
     @Test
     public void testParameterKey() {
         OdtContainer doc = new OdtContainer("ABC ${Key att1:\"value1\"} XYZ");
-        OdtEngine engine = new OdtEngine(doc);
+        OdtEngine engine = new OdtEngine();
         engine.registerParametersCommandHandler(
                 selection -> {
                     if (selection.getPlaceholderData().getKey().equals("Key")
@@ -63,7 +63,7 @@ public class ParametersEngineTest extends AbstractOdtTest {
                         return CommandHandlerResult.EXECUTED_PROCEED;
                     else return CommandHandlerResult.IGNORED;
                 });
-        engine.run();
+        engine.run(doc);
         assertContains(doc, "ABC Test XYZ");
         assertNoPlaceholders(doc);
     }

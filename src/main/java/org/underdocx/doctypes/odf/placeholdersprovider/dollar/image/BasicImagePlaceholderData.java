@@ -24,6 +24,7 @@ SOFTWARE.
 
 package org.underdocx.doctypes.odf.placeholdersprovider.dollar.image;
 
+import org.odftoolkit.odfdom.dom.OdfContentDom;
 import org.underdocx.common.types.Pair;
 import org.underdocx.common.types.Resource;
 import org.underdocx.environment.err.Problems;
@@ -53,9 +54,9 @@ public interface BasicImagePlaceholderData {
 
     void setHeight(double value, String unit);
 
-    void exchangeImage(URI imageUrl);
+    void exchangeImage(URI imageUrl, OdfContentDom dom);
 
-    void exchangeImage(Resource resource, String suffix);
+    void exchangeImage(Resource resource, String suffix, OdfContentDom dom);
 
     static Pair<Double, Double> getDimension(URI uri) {
         try {

@@ -42,9 +42,11 @@ public class PlaceholdersEnumerator<C extends DocContainer<D>, D> extends Abstra
     private final Map<PlaceholdersProvider<C, ?, D>, Enumerator<Node>> currentEnumerators = new HashMap<>();
     private final Map<PlaceholdersProvider<C, ?, D>, Node> currentNodes = new HashMap<>();
 
+    private C doc;
 
-    public PlaceholdersEnumerator(Set<PlaceholdersProvider<C, ?, D>> providers) {
-        providers.forEach(provider -> currentEnumerators.put(provider, provider.getPlaceholders()));
+    public PlaceholdersEnumerator(C doc, Set<PlaceholdersProvider<C, ?, D>> providers) {
+        this.doc = doc;
+        providers.forEach(provider -> currentEnumerators.put(provider, provider.getPlaceholders(doc)));
         currentEnumerators.forEach((provider, enumerator) -> {
             Node node = enumerator.next();
             if (node != null && (next == null || Nodes.compareNodePositions(node, next.getPreparedNextElement().right) < 0)) {
@@ -56,6 +58,7 @@ public class PlaceholdersEnumerator<C extends DocContainer<D>, D> extends Abstra
 
     private PlaceholdersEnumerator(PlaceholdersEnumerator<C, D> other) {
         super(other);
+        this.doc = other.doc;
         other.currentEnumerators.forEach((key, value) -> this.currentEnumerators.put(key, value.cloneEnumerator()));
         this.currentNodes.putAll(other.currentNodes);
     }

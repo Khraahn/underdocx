@@ -39,8 +39,8 @@ public class BaseEngineTest extends AbstractOdtTest {
         InputStream is = getInputStream("SoftLineBreakPlaceholder.odt");
 
         OdtContainer doc = new OdtContainer(is);
-        OdtEngine engine = new OdtEngine(doc);
-        engine.run();
+        OdtEngine engine = new OdtEngine();
+        engine.run(doc);
         assertContains(doc, "A Test B");
         assertNoPlaceholders(doc);
 
@@ -49,11 +49,11 @@ public class BaseEngineTest extends AbstractOdtTest {
     @Test
     public void testHeaderFooter() {
         OdtContainer doc = readOdt("HeaderFooter.odt");
-        OdtEngine engine = new OdtEngine(doc);
+        OdtEngine engine = new OdtEngine();
         engine.pushLeafVariable("header", "Header!");
         engine.pushLeafVariable("footer", "Footer!");
         engine.pushLeafVariable("content", "Content!");
-        engine.run();
+        engine.run(doc);
         assertNoPlaceholders(doc);
         assertContains(doc, "Header!");
         assertContains(doc, "Footer!");

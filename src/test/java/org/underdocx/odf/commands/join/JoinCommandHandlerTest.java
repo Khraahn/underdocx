@@ -38,8 +38,8 @@ public class JoinCommandHandlerTest extends AbstractOdtTest {
                 C: ${Join value:["Bibi", "Tina", "Amadeus", "Sabrina"], limit: 2, truncated:" usw."}
                 """;
         OdtContainer doc = new OdtContainer(content);
-        OdtEngine engine = new OdtEngine(doc);
-        engine.run();
+        OdtEngine engine = new OdtEngine();
+        engine.run(doc);
         assertNoPlaceholders(doc);
         assertContains(doc, "A: Bibi, Tina, Amadeus, Sabrina");
         assertContains(doc, "B: Bibi, Tina, Amadeus und Sabrina");
