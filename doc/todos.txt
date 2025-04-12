@@ -1,4 +1,7 @@
 - Features
+  - CustomShapes mit austauschbaren Hintergrundbildern => Bilder mit runden Ecken, Bilder in Sternen etc
+  - Import in eine neue Page: neuer Pagename angeben + Mastervorlage
+  - ggf. Import von Tabellen ausschließlich als neue Tabelle mit Import-Tabellennamen oder Angabe neuer Tabellenname
   - später ggf. docx unterstützen
 - Bekannte Probleme:
   - Prüfen ob Vectorgrafiken als Bilder verwendet werden können
