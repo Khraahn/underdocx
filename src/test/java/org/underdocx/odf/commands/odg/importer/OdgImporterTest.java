@@ -45,6 +45,16 @@ public class OdgImporterTest extends AbstractOdgTest {
         assertTextNodeOrder(graphics, "should be imported", "Text2");
         Assertions.assertThat(findTextNode(graphics, "should be imported")).isTrue();
         Assertions.assertThat(findTextNode(graphics, "$")).isFalse();
+    }
+
+    @Test
+    public void testCreateNewPageAndImport() throws IOException {
+        OdgContainer graphics = new OdgContainer(readResource("CreatePageAndImport.odg"));
+        OdgEngine engine = new OdgEngine();
+        engine.pushLeafVariable("toImport", readResource("ToImport.odg"));
+        engine.run(graphics);
+        show(graphics);
+        assertTextNodeOrder(graphics, "should be imported", "Last Text");
 
     }
 }

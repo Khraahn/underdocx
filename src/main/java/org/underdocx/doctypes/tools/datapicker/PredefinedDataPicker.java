@@ -43,4 +43,8 @@ public interface PredefinedDataPicker<T> {
         return Problems.MISSING_VALUE.get(getData(dataAccess, jsonNode), getName());
     }
 
+    default T getDataOrNull(DataAccess dataAccess, JsonNode jsonNode) {
+        return getData(dataAccess, jsonNode).orElse(null);
+    }
+
 }

@@ -27,6 +27,7 @@ package org.underdocx.doctypes.odf.commands.importcommand;
 import org.odftoolkit.odfdom.doc.OdfDocument;
 import org.underdocx.doctypes.modifiers.ModifiersProvider;
 import org.underdocx.doctypes.odf.AbstractOdfContainer;
+import org.underdocx.doctypes.odf.tools.OdfNodes;
 import org.underdocx.doctypes.tools.datapicker.PredefinedDataPicker;
 import org.underdocx.doctypes.tools.datapicker.StringConvertDataPicker;
 import org.underdocx.environment.err.Problems;
@@ -47,7 +48,11 @@ public abstract class AbstractOdgOdpImportCommandHandler<C extends AbstractOdfCo
 
     @Override
     protected Node getRefNode() {
-        // TODO find toPage
-        return selection.getNode();
+        String toPageName = toPageNameAttr.getData(dataAccess, placeholderData.getJson()).orElse(null);
+        if (toPageName != null) {
+            return Problems.CANT_FIND_DOM_ELEMENT.get(OdfNodes.findMainPage(selection.getDocContainer(), toPageName), toPageName);
+        } else {
+            return selection.getNode();
+        }
     }
 }
