@@ -42,7 +42,7 @@ import org.w3c.dom.Node;
 import java.util.ArrayList;
 import java.util.Optional;
 
-public class NewImageProvider<C extends AbstractOdfContainer<D>, D extends OdfDocument> implements EncapsulatedNodesExtractor, PlaceholdersProvider<C, NewImageData, D> {
+public class ImageProvider<C extends AbstractOdfContainer<D>, D extends OdfDocument> implements EncapsulatedNodesExtractor, PlaceholdersProvider<C, ImageData, D> {
     private static TextNodeInterpreter interpreter = OdfTextNodeInterpreter.INSTANCE;
 
     private Node firstValidNode = null;
@@ -91,7 +91,7 @@ public class NewImageProvider<C extends AbstractOdfContainer<D>, D extends OdfDo
 
     @Override
     public boolean isEncapsulatedNode(Node node) {
-        return NewImageData.create(node).isPresent();
+        return ImageData.create(node).isPresent();
     }
 
     @Override
@@ -108,12 +108,12 @@ public class NewImageProvider<C extends AbstractOdfContainer<D>, D extends OdfDo
     }
 
     @Override
-    public NewImageData getPlaceholderData(Node node) {
-        return NewImageData.create(node).get();
+    public ImageData getPlaceholderData(Node node) {
+        return ImageData.create(node).get();
     }
 
     @Override
-    public Optional<TextualPlaceholderToolkit<NewImageData>> getPlaceholderToolkit() {
+    public Optional<TextualPlaceholderToolkit<ImageData>> getPlaceholderToolkit() {
         return Optional.empty();
     }
 
@@ -123,11 +123,11 @@ public class NewImageProvider<C extends AbstractOdfContainer<D>, D extends OdfDo
         this.endOfDoc = endOfDoc;
     }
 
-    public static class NewImagePlaceholdersProviderFactory<C extends AbstractOdfContainer<D>, D extends OdfDocument> implements PlaceholdersProvider.Factory<C, NewImageData, D> {
+    public static class NewImagePlaceholdersProviderFactory<C extends AbstractOdfContainer<D>, D extends OdfDocument> implements PlaceholdersProvider.Factory<C, ImageData, D> {
 
         @Override
-        public PlaceholdersProvider<C, NewImageData, D> createProvider(C doc) {
-            return new NewImageProvider<>();
+        public PlaceholdersProvider<C, ImageData, D> createProvider(C doc) {
+            return new ImageProvider<>();
         }
     }
 }

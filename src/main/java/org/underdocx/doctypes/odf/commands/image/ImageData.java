@@ -25,24 +25,23 @@ SOFTWARE.
 package org.underdocx.doctypes.odf.commands.image;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import org.odftoolkit.odfdom.dom.OdfContentDom;
+import org.odftoolkit.odfdom.doc.OdfDocument;
 import org.odftoolkit.odfdom.dom.element.svg.SvgDescElement;
-import org.odftoolkit.odfdom.incubator.doc.draw.OdfDrawImage;
-import org.underdocx.common.tools.TmpFile;
+import org.odftoolkit.odfdom.pkg.OdfPackage;
 import org.underdocx.common.types.Pair;
 import org.underdocx.common.types.Resource;
 import org.underdocx.doctypes.odf.constants.OdfElement;
 import org.underdocx.enginelayers.parameterengine.ParametersPlaceholderCodec;
 import org.underdocx.enginelayers.parameterengine.ParametersPlaceholderData;
+import org.underdocx.environment.UnderdocxEnv;
 import org.underdocx.environment.err.Problems;
 import org.w3c.dom.Node;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.net.URI;
+import java.io.InputStream;
+import java.util.Base64;
 import java.util.Optional;
 
-public abstract class NewImageData {
+public abstract class ImageData {
 
     protected static Optional<ParametersPlaceholderData> parse(String descr) {
         return ParametersPlaceholderCodec.INSTANCE.tryParse(descr);
@@ -66,12 +65,12 @@ public abstract class NewImageData {
         return Optional.empty();
     }
 
-    public static Optional<? extends NewImageData> create(Node node) {
-        Optional<? extends NewImageData> data = NewMainImageData.createMainImageData(node);
+    public static Optional<? extends ImageData> create(Node node) {
+        Optional<? extends ImageData> data = MainImageData.createMainImageData(node);
         if (data.isPresent()) {
             return data;
         } else {
-            return NewBackgroundImageData.createBackgroundImageData(node);
+            return BackgroundImageData.createBackgroundImageData(node);
         }
     }
 
@@ -79,7 +78,7 @@ public abstract class NewImageData {
     protected final SvgDescElement svgDesc;
 
 
-    protected NewImageData(SvgDescElement svgDesc, ParametersPlaceholderData data) {
+    protected ImageData(SvgDescElement svgDesc, ParametersPlaceholderData data) {
         this.svgDesc = svgDesc;
         this.parameterizedPlaceholder = data;
     }
@@ -101,25 +100,56 @@ public abstract class NewImageData {
         svgDesc.setTextContent(name);
     }
 
-    public String newImage(URI imageUri, OdfContentDom dom) {
-        OdfDrawImage image = new OdfDrawImage(dom);
-        try {
-            return image.newImage(imageUri);
-        } catch (Exception e) {
-            return Problems.ODF_FRAMEWORK_OPERARTION_EXCEPTION.fire(e);
+    private String getExtension(String filename) {
+        int index = filename.lastIndexOf(".");
+        if (index >= 0 && filename.length() > index) {
+            return filename.substring(index + 1).toLowerCase();
+        } else {
+            return filename.toLowerCase();
         }
     }
 
-    public URI createUri(Resource resource, String imageSuffix) {
-        URI uri = null;
-        try {
-            File tmpFile = TmpFile.createTmpFile("image_", imageSuffix, true, 10000L);
-            byte[] data = resource.getData();
-            new FileOutputStream(tmpFile).write(data);
-            uri = tmpFile.toURI();
-        } catch (Exception e) {
-            Problems.IO_EXCEPTION.fire(e);
+    private String getFile(String path) {
+        String result = path;
+        int index = result.lastIndexOf("\\");
+        if (index >= 0 && result.length() > index) {
+            result = result.substring(index + 1);
         }
-        return uri;
+        index = result.lastIndexOf("/");
+        if (index >= 0 && result.length() > index) {
+            result = result.substring(index + 1);
+        }
+        return result;
+    }
+
+    public String getMimeType(String imageName) {
+        String extension = getExtension(imageName);
+        return switch (extension) {
+            case "png" -> "image/png";
+            case "jpeg", "jpg" -> "image/jpeg";
+            case "svg" -> "image/svg+xml";
+            case "tif", "tiff" -> "image/tiff";
+            case "webp" -> "image/webp";
+            case "gif" -> "image/gif";
+            default -> "image/bmp";
+        };
+    }
+
+    public String getSafeIdentifier(Resource resource) {
+        return Base64.getEncoder().encodeToString(resource.getIdentifier().getBytes());
+    }
+
+    public Pair<String, String> store(Resource resource, OdfDocument doc) {
+        String fileName = getFile(resource.getIdentifier());
+        String packageName = "Pictures/" + fileName;
+        String mimeType = getMimeType(fileName);
+        InputStream data = Problems.IO_EXCEPTION.exec(resource::openStream);
+        OdfPackage pack = doc.getPackage();
+        if (pack.contains(packageName)) {
+            UnderdocxEnv.getInstance().logger.trace("Image " + fileName + " found in " + packageName);
+        } else {
+            Problems.IO_EXCEPTION.run(() -> pack.insert(data, packageName, mimeType));
+        }
+        return new Pair<>(fileName, packageName);
     }
 }

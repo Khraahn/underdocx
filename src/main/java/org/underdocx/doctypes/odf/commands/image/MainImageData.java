@@ -24,12 +24,13 @@ SOFTWARE.
 
 package org.underdocx.doctypes.odf.commands.image;
 
-import org.odftoolkit.odfdom.dom.OdfContentDom;
+import org.odftoolkit.odfdom.doc.OdfDocument;
 import org.odftoolkit.odfdom.dom.element.draw.DrawFrameElement;
 import org.odftoolkit.odfdom.dom.element.draw.DrawImageElement;
 import org.odftoolkit.odfdom.dom.element.svg.SvgDescElement;
 import org.underdocx.common.tools.Convenience;
 import org.underdocx.common.tree.Nodes;
+import org.underdocx.common.types.Pair;
 import org.underdocx.common.types.Regex;
 import org.underdocx.common.types.Resource;
 import org.underdocx.doctypes.odf.constants.OdfElement;
@@ -37,22 +38,21 @@ import org.underdocx.doctypes.odf.constants.OdfLengthUnit;
 import org.underdocx.enginelayers.parameterengine.ParametersPlaceholderData;
 import org.w3c.dom.Node;
 
-import java.net.URI;
 import java.util.Optional;
 
-public class NewMainImageData extends NewImageData {
+public class MainImageData extends ImageData {
     private final static Regex number = new Regex("[0-9]+(\\.[0-9]+)?");
 
     private final DrawImageElement drawImageElement;
     private final DrawFrameElement drawFrameElement;
 
-    protected NewMainImageData(SvgDescElement svgDesc, DrawFrameElement drawFrameElement, DrawImageElement drawImageElement, ParametersPlaceholderData data) {
+    protected MainImageData(SvgDescElement svgDesc, DrawFrameElement drawFrameElement, DrawImageElement drawImageElement, ParametersPlaceholderData data) {
         super(svgDesc, data);
         this.drawImageElement = drawImageElement;
         this.drawFrameElement = drawFrameElement;
     }
 
-    public static Optional<NewMainImageData> createMainImageData(Node node) {
+    public static Optional<MainImageData> createMainImageData(Node node) {
         return Convenience.buildOptional(result -> {
             getBaseData(node).ifPresent(baseData -> {
                 Node parentNode = node.getParentNode();
@@ -60,7 +60,7 @@ public class NewMainImageData extends NewImageData {
                     DrawFrameElement drawFrameElement = (DrawFrameElement) parentNode;
                     Nodes.getChildren(drawFrameElement, OdfElement.IMAGE).tryNext().ifPresent(imageNode -> {
                         DrawImageElement drawImageElement = (DrawImageElement) imageNode;
-                        result.value = new NewMainImageData(baseData.left, drawFrameElement, drawImageElement, baseData.right);
+                        result.value = new MainImageData(baseData.left, drawFrameElement, drawImageElement, baseData.right);
                     });
                 }
             });
@@ -108,17 +108,9 @@ public class NewMainImageData extends NewImageData {
     }
 
 
-    public void exchangeImage(URI imageUri, OdfContentDom dom) {
-        String packagePath = newImage(imageUri, dom);
-        drawImageElement.setXlinkHrefAttribute(packagePath);
-        setDesc(packagePath);
-        // TODO set mimetype? String mimeType = OdfFileEntry.getMediaTypeString(imageUri.toString());
+    public void exchangeImage(Resource resource, OdfDocument doc) {
+        Pair<String, String> fileNameAndPath = store(resource, doc);
+        drawImageElement.setXlinkHrefAttribute(fileNameAndPath.right);
+        setDesc(fileNameAndPath.right);
     }
-
-    public void exchangeImage(Resource resource, String imageSuffix, OdfContentDom dom) {
-        URI uri = createUri(resource, imageSuffix);
-        exchangeImage(uri, dom);
-    }
-
-
 }

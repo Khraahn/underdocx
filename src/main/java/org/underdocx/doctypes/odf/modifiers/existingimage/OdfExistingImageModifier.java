@@ -28,8 +28,8 @@ import org.odftoolkit.odfdom.doc.OdfDocument;
 import org.underdocx.common.types.Pair;
 import org.underdocx.common.types.Resource;
 import org.underdocx.doctypes.odf.AbstractOdfContainer;
-import org.underdocx.doctypes.odf.commands.image.NewImageData;
-import org.underdocx.doctypes.odf.commands.image.NewMainImageData;
+import org.underdocx.doctypes.odf.commands.image.ImageData;
+import org.underdocx.doctypes.odf.commands.image.MainImageData;
 import org.underdocx.doctypes.odf.placeholdersprovider.dollar.image.BasicImagePlaceholderData;
 import org.underdocx.enginelayers.baseengine.ModifierResult;
 import org.underdocx.enginelayers.baseengine.Selection;
@@ -39,22 +39,18 @@ import org.underdocx.environment.UnderdocxEnv;
 import java.net.URI;
 import java.util.Optional;
 
-public class OdfExistingImageModifier<C extends AbstractOdfContainer<D>, D extends OdfDocument> implements SelectionModifier<Selection<C, NewImageData, D>, OdfExistingImageModifierData, ModifierResult> {
+public class OdfExistingImageModifier<C extends AbstractOdfContainer<D>, D extends OdfDocument> implements SelectionModifier<Selection<C, ImageData, D>, OdfExistingImageModifierData, ModifierResult> {
 
     @Override
-    public ModifierResult modify(Selection<C, NewImageData, D> selection, OdfExistingImageModifierData modifierData) {
-        NewMainImageData placeholder = (NewMainImageData) selection.getPlaceholderData();
+    public ModifierResult modify(Selection<C, ImageData, D> selection, OdfExistingImageModifierData modifierData) {
+        MainImageData placeholder = (MainImageData) selection.getPlaceholderData();
         Pair<Double, Double> importImageWidthHeight;
         String newName = modifierData.getFileName();
         Resource resource = modifierData.getResource();
         Optional<URI> importImageUri = resource.getURI();
-        if (importImageUri.isPresent()) {
-            importImageWidthHeight = BasicImagePlaceholderData.getDimension(importImageUri.get());
-            placeholder.exchangeImage(importImageUri.get(), selection.getDocContainer().getContentDom());
-        } else {
-            importImageWidthHeight = BasicImagePlaceholderData.getDimension(resource);
-            placeholder.exchangeImage(resource, newName, selection.getDocContainer().getContentDom());
-        }
+        importImageWidthHeight = BasicImagePlaceholderData.getDimension(resource);
+        placeholder.exchangeImage(resource, selection.getDocContainer().getDocument());
+
         UnderdocxEnv.getInstance().logger.trace("new image dimension; " + importImageWidthHeight);
         if (modifierData.getKeepWidth() != null) {
             if (modifierData.getKeepWidth()) {

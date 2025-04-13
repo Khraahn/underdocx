@@ -29,7 +29,7 @@ import org.underdocx.doctypes.AbstractEngine;
 import org.underdocx.doctypes.EngineAPI;
 import org.underdocx.doctypes.commands.AliasCommandHandler;
 import org.underdocx.doctypes.commands.MultiCommandHandler;
-import org.underdocx.doctypes.odf.commands.image.NewImageProvider;
+import org.underdocx.doctypes.odf.commands.image.ImageProvider;
 import org.underdocx.doctypes.odf.modifiers.OdfModifiersProvider;
 import org.underdocx.doctypes.tools.placeholder.GenericTextualPlaceholderFactory;
 import org.underdocx.enginelayers.modelengine.MCommandHandler;
@@ -42,8 +42,8 @@ public abstract class AbstractOdfEngine<C extends AbstractOdfContainer<D>, D ext
 
 
     protected GenericTextualPlaceholderFactory<C, ParametersPlaceholderData, D> parameters;
-    protected final NewImageProvider.NewImagePlaceholdersProviderFactory<C, D> imagePlaceholdersProvider
-            = new NewImageProvider.NewImagePlaceholdersProviderFactory<>();
+    protected final ImageProvider.NewImagePlaceholdersProviderFactory<C, D> imagePlaceholdersProvider
+            = new ImageProvider.NewImagePlaceholdersProviderFactory<>();
 
     protected final MultiCommandHandler<C, D> multiCommandHandler = new MultiCommandHandler<>(modifiers);
     protected final AliasCommandHandler<C, D> aliasCommandHandler = new AliasCommandHandler<>(modifiers);

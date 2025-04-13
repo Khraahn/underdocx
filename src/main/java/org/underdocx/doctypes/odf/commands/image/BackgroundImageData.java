@@ -32,22 +32,22 @@ import org.w3c.dom.Node;
 
 import java.util.Optional;
 
-public class NewBackgroundImageData extends NewImageData {
+public class BackgroundImageData extends ImageData {
 
     private final DrawShapeElementBase drawShape;
 
-    protected NewBackgroundImageData(DrawShapeElementBase drawShape, SvgDescElement svgDesc, ParametersPlaceholderData data) {
+    protected BackgroundImageData(DrawShapeElementBase drawShape, SvgDescElement svgDesc, ParametersPlaceholderData data) {
         super(svgDesc, data);
         this.drawShape = drawShape;
     }
 
-    public static Optional<NewBackgroundImageData> createBackgroundImageData(Node node) {
+    public static Optional<BackgroundImageData> createBackgroundImageData(Node node) {
         return Convenience.buildOptional(result -> {
             getBaseData(node).ifPresent(baseData -> {
                 Node parentNode = node.getParentNode();
                 if (parentNode instanceof DrawShapeElementBase) {
                     DrawShapeElementBase drawCustomShapeElement = (DrawShapeElementBase) parentNode;
-                    result.value = new NewBackgroundImageData(drawCustomShapeElement, baseData.left, baseData.right);
+                    result.value = new BackgroundImageData(drawCustomShapeElement, baseData.left, baseData.right);
                 }
             });
         });

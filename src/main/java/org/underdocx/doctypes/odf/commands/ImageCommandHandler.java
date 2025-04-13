@@ -32,8 +32,8 @@ import org.underdocx.doctypes.commands.internal.modifiermodule.resource.Resource
 import org.underdocx.doctypes.modifiers.ModifiersProvider;
 import org.underdocx.doctypes.modifiers.ifmodifier.IfModifier;
 import org.underdocx.doctypes.odf.AbstractOdfContainer;
-import org.underdocx.doctypes.odf.commands.image.NewImageData;
-import org.underdocx.doctypes.odf.commands.image.NewMainImageData;
+import org.underdocx.doctypes.odf.commands.image.ImageData;
+import org.underdocx.doctypes.odf.commands.image.MainImageData;
 import org.underdocx.doctypes.odf.modifiers.backgroundimage.OdfBackgroundImageModifier;
 import org.underdocx.doctypes.odf.modifiers.backgroundimage.OdfBackgroundImageModifierData;
 import org.underdocx.doctypes.odf.modifiers.existingimage.OdfExistingImageModifier;
@@ -49,7 +49,7 @@ import org.underdocx.enginelayers.baseengine.CommandHandlerResult;
  * It uses the {@link ConditionAttributeInterpreter} to evaluate the condition
  * It uses the {@link IfModifier} to manipulate the DOM
  */
-public class ImageCommandHandler<C extends AbstractOdfContainer<D>, D extends OdfDocument> extends AbstractCommandHandler<C, NewImageData, D> {
+public class ImageCommandHandler<C extends AbstractOdfContainer<D>, D extends OdfDocument> extends AbstractCommandHandler<C, ImageData, D> {
     public static final String NAME_ATTR = "name";
     public static final String DESC_ATTR = "desc";
     public static final String KEEP_WIDTH_ATTR = "keepWidth";
@@ -66,8 +66,8 @@ public class ImageCommandHandler<C extends AbstractOdfContainer<D>, D extends Od
     protected CommandHandlerResult tryExecuteCommand() {
         String name = namePicker.expect(dataAccess, placeholderData.getJson());
         String newDesc = descPicker.pickData(dataAccess, placeholderData.getJson()).optional().orElse(null);
-        Resource resource = new ResourceCommandModule<C, NewImageData, D>(placeholderData.getJson()).execute(selection);
-        if (placeholderData instanceof NewMainImageData) {
+        Resource resource = new ResourceCommandModule<C, ImageData, D>(placeholderData.getJson()).execute(selection);
+        if (placeholderData instanceof MainImageData) {
             handleMainImage(name, newDesc, resource);
         } else {
             handleBackgroundImage(name, newDesc, resource);

@@ -53,7 +53,7 @@ public class OdgImporterTest extends AbstractOdgTest {
         OdgEngine engine = new OdgEngine();
         engine.pushLeafVariable("toImport", readResource("ToImport.odg"));
         engine.run(graphics);
-        show(graphics);
+        //show(graphics);
         assertTextNodeOrder(graphics, "should be imported", "Last Text");
 
     }

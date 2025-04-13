@@ -135,6 +135,14 @@ public interface Problematic {
         }
     }
 
+    default void run(Callable<Void> executable) {
+        try {
+            executable.call();
+        } catch (Exception e) {
+            fire(e);
+        }
+    }
+
 
     default <T> T exec(Callable<T> executable, String failedProperty, String failedValue) {
         try {

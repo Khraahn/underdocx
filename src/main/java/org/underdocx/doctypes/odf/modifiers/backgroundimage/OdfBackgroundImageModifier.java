@@ -31,15 +31,13 @@ import org.odftoolkit.odfdom.dom.element.style.StyleGraphicPropertiesElement;
 import org.odftoolkit.odfdom.dom.element.style.StyleStyleElement;
 import org.odftoolkit.odfdom.dom.style.props.OdfStylePropertiesSet;
 import org.underdocx.doctypes.odf.AbstractOdfContainer;
-import org.underdocx.doctypes.odf.commands.image.NewBackgroundImageData;
-import org.underdocx.doctypes.odf.commands.image.NewImageData;
+import org.underdocx.doctypes.odf.commands.image.BackgroundImageData;
+import org.underdocx.doctypes.odf.commands.image.ImageData;
 import org.underdocx.enginelayers.baseengine.ModifierResult;
 import org.underdocx.enginelayers.baseengine.Selection;
 import org.underdocx.enginelayers.baseengine.SelectionModifier;
 
-import java.net.URI;
-
-public class OdfBackgroundImageModifier<C extends AbstractOdfContainer<D>, D extends OdfDocument> implements SelectionModifier<Selection<C, NewImageData, D>, OdfBackgroundImageModifierData, ModifierResult> {
+public class OdfBackgroundImageModifier<C extends AbstractOdfContainer<D>, D extends OdfDocument> implements SelectionModifier<Selection<C, ImageData, D>, OdfBackgroundImageModifierData, ModifierResult> {
 
     private String removePathPrefix(String name) {
         String result = name;
@@ -53,21 +51,15 @@ public class OdfBackgroundImageModifier<C extends AbstractOdfContainer<D>, D ext
     }
 
     @Override
-    public ModifierResult modify(Selection<C, NewImageData, D> selection, OdfBackgroundImageModifierData modifierData) {
-        NewBackgroundImageData placeholder = (NewBackgroundImageData) selection.getPlaceholderData();
+    public ModifierResult modify(Selection<C, ImageData, D> selection, OdfBackgroundImageModifierData modifierData) {
+        BackgroundImageData placeholder = (BackgroundImageData) selection.getPlaceholderData();
         DrawShapeElementBase drawShape = placeholder.getDrawShapeElement();
         String newName = modifierData.getFileName();
         StyleStyleElement style = drawShape.getOrCreateUnqiueAutomaticStyle();
         if (style != null) {
             StyleGraphicPropertiesElement graphicProperties = (StyleGraphicPropertiesElement) style.getOrCreatePropertiesElement(OdfStylePropertiesSet.GraphicProperties);
             if (graphicProperties != null) {
-                String path = null;
-                if (modifierData.getResource().getURI().isPresent()) {
-                    path = placeholder.newImage(modifierData.getResource().getURI().get(), selection.getDocContainer().getContentDom());
-                } else {
-                    URI uri = placeholder.createUri(modifierData.getResource(), newName);
-                    path = placeholder.newImage(uri, selection.getDocContainer().getContentDom());
-                }
+                String path = placeholder.store(modifierData.getResource(), selection.getDocContainer().getDocument()).right;
                 graphicProperties.setDrawFillAttribute("bitmap");
                 graphicProperties.setDrawFillImageNameAttribute(removePathPrefix(path));
 
