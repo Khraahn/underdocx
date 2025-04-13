@@ -1150,6 +1150,14 @@ ${EndIf}</code></pre>
               For ODG and ODP files select the page name to import
             </td>
           </tr>
+            <tr>
+                <td>
+                    toPage
+                </td>
+                <td>
+                    Optional: for ODG and ODP files select the target page name to import into
+                </td>
+            </tr>
           <tr>
             <td>
               beginFragmentRegex
@@ -1703,6 +1711,36 @@ ${myDate v:"2024-12-12"}</code></pre>
             <td>optional: name of table or page to insert the cloned element before</td>
           </tr>
         </table>
+
+          <h3>${Create}-Command</h3>
+          Creates a new empty page (ODG, ODP).
+          <table>
+              <tr>
+                  <th>
+                      Attribute
+                  </th>
+                  <th>
+                      Description
+                  </th>
+              </tr>
+              <tr>
+                  <td>name</td>
+                  <td>name of the new page (slide) to create</td>
+              </tr>
+              <tr>
+                  <td>type</td>
+                  <td>type has to be "page"</td>
+              </tr>
+              <tr>
+                  <td>master</td>
+                  <td>master of the page (slide), default is "Default"</td>
+              </tr>
+              <tr>
+                  <td>insertBefore</td>
+                  <td>optional: name of page to insert the created element before</td>
+              </tr>
+          </table>
+
 
         <h3>${PageStyle}-Command</h3>
 
