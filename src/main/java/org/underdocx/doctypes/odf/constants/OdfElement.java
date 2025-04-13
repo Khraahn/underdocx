@@ -49,6 +49,7 @@ public enum OdfElement implements Predicate<Node> {
     FRAME(OdfNameSpace.DRAW, "frame"),
 
     IMAGE(OdfNameSpace.DRAW, "image"),
+    CUSTOM_SHAPE(OdfNameSpace.DRAW, "custom-shape"),
 
     DESC(OdfNameSpace.SVG, "desc"),
 

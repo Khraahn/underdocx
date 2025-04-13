@@ -28,6 +28,8 @@ import org.odftoolkit.odfdom.doc.OdfDocument;
 import org.underdocx.common.types.Pair;
 import org.underdocx.common.types.Resource;
 import org.underdocx.doctypes.odf.AbstractOdfContainer;
+import org.underdocx.doctypes.odf.commands.image.NewImageData;
+import org.underdocx.doctypes.odf.commands.image.NewMainImageData;
 import org.underdocx.doctypes.odf.placeholdersprovider.dollar.image.BasicImagePlaceholderData;
 import org.underdocx.enginelayers.baseengine.ModifierResult;
 import org.underdocx.enginelayers.baseengine.Selection;
@@ -37,11 +39,11 @@ import org.underdocx.environment.UnderdocxEnv;
 import java.net.URI;
 import java.util.Optional;
 
-public class OdfExistingImageModifier<C extends AbstractOdfContainer<D>, P extends BasicImagePlaceholderData, D extends OdfDocument> implements SelectionModifier<Selection<C, P, D>, OdfExistingImageModifierData, ModifierResult> {
+public class OdfExistingImageModifier<C extends AbstractOdfContainer<D>, D extends OdfDocument> implements SelectionModifier<Selection<C, NewImageData, D>, OdfExistingImageModifierData, ModifierResult> {
 
     @Override
-    public ModifierResult modify(Selection<C, P, D> selection, OdfExistingImageModifierData modifierData) {
-        BasicImagePlaceholderData placeholder = selection.getPlaceholderData();
+    public ModifierResult modify(Selection<C, NewImageData, D> selection, OdfExistingImageModifierData modifierData) {
+        NewMainImageData placeholder = (NewMainImageData) selection.getPlaceholderData();
         Pair<Double, Double> importImageWidthHeight;
         String newName = modifierData.getFileName();
         Resource resource = modifierData.getResource();

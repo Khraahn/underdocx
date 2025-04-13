@@ -49,7 +49,7 @@ public class Importer {
         this.importRules = importRules;
     }
 
-    public void importDoc(String sourceResourceName, AbstractOdfContainer<?> source, AbstractOdfContainer<?> target, Node targetRefNodeInsertAfter) {
+    public void importDoc(String sourceResourceName, AbstractOdfContainer<?> source, AbstractOdfContainer<?> target, Node targetRefNode) {
 
         // insert proxy family nodes
         new ProxyFamilyStyleInserter(source).insertProxyStyleNodes();
@@ -76,7 +76,7 @@ public class Importer {
         importRules.getCopyRules().forEach(copyRule -> {
             copyRule.copy(source, target);
         });
-        importRules.getMainCopyExecutor().copy(source, targetRefNodeInsertAfter);
+        importRules.getMainCopyExecutor().copy(source, targetRefNode);
 
         // import images
         importImages(source, target);

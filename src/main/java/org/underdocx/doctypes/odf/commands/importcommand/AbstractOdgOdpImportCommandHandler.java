@@ -22,41 +22,32 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-package org.underdocx.doctypes.odf.odt.commands;
+package org.underdocx.doctypes.odf.commands.importcommand;
 
-import org.odftoolkit.odfdom.doc.OdfTextDocument;
-import org.underdocx.common.types.Resource;
+import org.odftoolkit.odfdom.doc.OdfDocument;
 import org.underdocx.doctypes.modifiers.ModifiersProvider;
-import org.underdocx.doctypes.odf.commands.importcommand.AbstractOdfImportCommandHandler;
-import org.underdocx.doctypes.odf.odt.OdtContainer;
+import org.underdocx.doctypes.odf.AbstractOdfContainer;
+import org.underdocx.doctypes.tools.datapicker.PredefinedDataPicker;
+import org.underdocx.doctypes.tools.datapicker.StringConvertDataPicker;
 import org.underdocx.environment.err.Problems;
 import org.w3c.dom.Node;
 
-import java.io.IOException;
+public abstract class AbstractOdgOdpImportCommandHandler<C extends AbstractOdfContainer<D>, D extends OdfDocument> extends AbstractOdfImportCommandHandler<C, D> {
 
-public class OdtImportCommandHandler extends AbstractOdfImportCommandHandler<OdtContainer, OdfTextDocument> {
+    private static final PredefinedDataPicker<String> toPageNameAttr = new StringConvertDataPicker().asPredefined("toPage");
 
-    public OdtImportCommandHandler(ModifiersProvider modifiers) {
+    public AbstractOdgOdpImportCommandHandler(ModifiersProvider modifiers) {
         super(modifiers);
     }
 
     @Override
-    protected Node getRefNode() {
-        return selection.getNode();
-    }
-
-    @Override
-    protected OdtContainer createContainer(Resource resource) throws IOException {
-        return new OdtContainer(resource);
-    }
-
-    @Override
-    protected OdtContainer createContainer(byte[] data) throws IOException {
-        return new OdtContainer(data);
-    }
-
-    @Override
     protected void checkPageAttr(String page) {
-        Problems.UNEXPECTED_VALUE.check(page == null, PAGE_ATTR, null);
+        Problems.MISSING_VALUE.notNull(page, PAGE_ATTR);
+    }
+
+    @Override
+    protected Node getRefNode() {
+        // TODO find toPage
+        return selection.getNode();
     }
 }

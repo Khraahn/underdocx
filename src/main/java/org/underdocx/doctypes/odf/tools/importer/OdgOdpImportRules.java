@@ -102,9 +102,9 @@ public class OdgOdpImportRules extends AbstractImportRules {
         }
 
         @Override
-        public void copy(AbstractOdfContainer<?> source, Node targetRefInsertAfter) {
-            Document targetOwnerDocument = targetRefInsertAfter.getOwnerDocument();
-            Node page = Nodes.findOldestAncestorNode(targetRefInsertAfter, DRAW_PAGE).get();
+        public void copy(AbstractOdfContainer<?> source, Node refNode) {
+            Document targetOwnerDocument = refNode.getOwnerDocument();
+            Node page = Nodes.findOldestAncestorNode(refNode, DRAW_PAGE).get();
             List<Node> allToCopy = mainCopyRule.findAll(source);
             allToCopy.forEach(toCopy -> {
                 Node clone = targetOwnerDocument.importNode(toCopy, true);

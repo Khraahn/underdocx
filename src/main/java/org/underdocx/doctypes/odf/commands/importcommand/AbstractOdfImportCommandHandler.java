@@ -35,6 +35,7 @@ import org.underdocx.doctypes.odf.modifiers.importmodifier.OdfImportModifierData
 import org.underdocx.doctypes.tools.datapicker.PredefinedDataPicker;
 import org.underdocx.doctypes.tools.datapicker.StringConvertDataPicker;
 import org.underdocx.enginelayers.baseengine.CommandHandlerResult;
+import org.w3c.dom.Node;
 
 /**
  * Implementation of the {{Import uri/data}} command.
@@ -52,10 +53,12 @@ public abstract class AbstractOdfImportCommandHandler<C extends AbstractOdfConta
     protected CommandHandlerResult doImport(String identifier, C importDoc) {
         String pageName = pageNameAttr.pickData(dataAccess, placeholderData.getJson()).optional().orElse(null);
         checkPageAttr(pageName);
-        OdfImportModifierData modifiedData = new OdfImportModifierData.Simple(identifier, importDoc, selection.getDocContainer(), selection.getNode(), true, pageName);
+        OdfImportModifierData modifiedData = new OdfImportModifierData.Simple(identifier, importDoc, selection.getDocContainer(), getRefNode(), true, pageName);
         new OdfImportModifier().modify(modifiedData);
         return CommandHandlerResult.FACTORY.convert(new OdfDeletePlaceholderModifier().modify(selection.getNode(), DeletePlaceholderModifierData.DEFAULT));
     }
+
+    protected abstract Node getRefNode();
 
     protected abstract void checkPageAttr(String page);
 }

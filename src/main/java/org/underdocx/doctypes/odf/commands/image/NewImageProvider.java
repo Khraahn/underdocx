@@ -42,30 +42,27 @@ import org.w3c.dom.Node;
 import java.util.ArrayList;
 import java.util.Optional;
 
-public class ImagePlaceholdersProvider<C extends AbstractOdfContainer<D>, D extends OdfDocument> implements EncapsulatedNodesExtractor, PlaceholdersProvider<C, ImagePlaceholderData, D> {
+public class NewImageProvider<C extends AbstractOdfContainer<D>, D extends OdfDocument> implements EncapsulatedNodesExtractor, PlaceholdersProvider<C, NewImageData, D> {
+    private static TextNodeInterpreter interpreter = OdfTextNodeInterpreter.INSTANCE;
+
     private Node firstValidNode = null;
     private boolean endOfDoc;
 
-    public ImagePlaceholdersProvider() {
-    }
+    private class DescriptionEnumerator extends AbstractPrepareNextEnumerator<Node> {
 
-    private static TextNodeInterpreter interpreter = OdfTextNodeInterpreter.INSTANCE;
+        private final Enumerator<Node> inner;
 
-    private class ExtractEnumerator extends AbstractPrepareNextEnumerator<Node> {
-
-        private Enumerator<Node> inner;
-
-        private ExtractEnumerator(Node tree, Node firstValidNodeOrNull) {
+        public DescriptionEnumerator(Node tree, Node firstValidNodeOrNull) {
             super();
             this.inner = new TreeNodeCollector(tree, tree, firstValidNodeOrNull, new ArrayList<>(),
                     visitState -> visitState != null &&
                             visitState.isValid() &&
                             visitState.isBeginVisit() &&
                             visitState.getNode() != null &&
-                            OdfElement.FRAME.is(visitState.getNode()));
+                            OdfElement.DESC.is(visitState.getNode()));
         }
 
-        private ExtractEnumerator(ExtractEnumerator other) {
+        private DescriptionEnumerator(DescriptionEnumerator other) {
             super(other);
             this.inner = other.inner.cloneEnumerator();
         }
@@ -73,9 +70,9 @@ public class ImagePlaceholdersProvider<C extends AbstractOdfContainer<D>, D exte
         @Override
         protected Node findNext() {
             while (inner.hasNext()) {
-                Node frame = inner.next();
-                if (isEncapsulatedNode(frame)) {
-                    return frame;
+                Node description = inner.next();
+                if (isEncapsulatedNode(description)) {
+                    return description;
                 }
             }
             return null;
@@ -83,18 +80,18 @@ public class ImagePlaceholdersProvider<C extends AbstractOdfContainer<D>, D exte
 
         @Override
         public Enumerator<Node> cloneEnumerator() {
-            return new ExtractEnumerator(this);
+            return new DescriptionEnumerator(this);
         }
     }
 
     @Override
     public Enumerator<Node> extractNodes(Node tree, Node firstValidNodeOrNull) {
-        return new ExtractEnumerator(tree, firstValidNodeOrNull);
+        return new DescriptionEnumerator(tree, firstValidNodeOrNull);
     }
 
     @Override
     public boolean isEncapsulatedNode(Node node) {
-        return ImagePlaceholderData.createPlaceholder(node).isPresent();
+        return NewImageData.create(node).isPresent();
     }
 
     @Override
@@ -105,18 +102,18 @@ public class ImagePlaceholdersProvider<C extends AbstractOdfContainer<D>, D exte
     @Override
     public Enumerator<Node> getPlaceholders(C doc) {
         if (endOfDoc) return Enumerator.empty();
-        //return new ElementByElementEnumerator<>(doc, (p, first) -> this.extractNodes(p, first), firstValidNode, true, DrawFrameElement.class);
         OdfSectionsWalker sections = new OdfSectionsWalker(doc, firstValidNode);
         return new GenericPlaceholderFromSectionsEnumerator(sections, this::extractNodes, firstValidNode);
+
     }
 
     @Override
-    public ImagePlaceholderData getPlaceholderData(Node node) {
-        return ImagePlaceholderData.createPlaceholder(node).get();
+    public NewImageData getPlaceholderData(Node node) {
+        return NewImageData.create(node).get();
     }
 
     @Override
-    public Optional<TextualPlaceholderToolkit<ImagePlaceholderData>> getPlaceholderToolkit() {
+    public Optional<TextualPlaceholderToolkit<NewImageData>> getPlaceholderToolkit() {
         return Optional.empty();
     }
 
@@ -126,13 +123,11 @@ public class ImagePlaceholdersProvider<C extends AbstractOdfContainer<D>, D exte
         this.endOfDoc = endOfDoc;
     }
 
-    public static class ImagePlaceholdersProviderFactory<C extends AbstractOdfContainer<D>, D extends OdfDocument> implements PlaceholdersProvider.Factory<C, ImagePlaceholderData, D> {
+    public static class NewImagePlaceholdersProviderFactory<C extends AbstractOdfContainer<D>, D extends OdfDocument> implements PlaceholdersProvider.Factory<C, NewImageData, D> {
 
         @Override
-        public PlaceholdersProvider<C, ImagePlaceholderData, D> createProvider(C doc) {
-            return new ImagePlaceholdersProvider<>();
+        public PlaceholdersProvider<C, NewImageData, D> createProvider(C doc) {
+            return new NewImageProvider<>();
         }
     }
-
-
 }

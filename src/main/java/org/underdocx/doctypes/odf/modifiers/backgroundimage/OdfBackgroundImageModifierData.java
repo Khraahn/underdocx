@@ -22,41 +22,42 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-package org.underdocx.doctypes.odf.odt.commands;
+package org.underdocx.doctypes.odf.modifiers.backgroundimage;
 
-import org.odftoolkit.odfdom.doc.OdfTextDocument;
 import org.underdocx.common.types.Resource;
-import org.underdocx.doctypes.modifiers.ModifiersProvider;
-import org.underdocx.doctypes.odf.commands.importcommand.AbstractOdfImportCommandHandler;
-import org.underdocx.doctypes.odf.odt.OdtContainer;
-import org.underdocx.environment.err.Problems;
-import org.w3c.dom.Node;
 
-import java.io.IOException;
+public interface OdfBackgroundImageModifierData {
 
-public class OdtImportCommandHandler extends AbstractOdfImportCommandHandler<OdtContainer, OdfTextDocument> {
+    Resource getResource();
 
-    public OdtImportCommandHandler(ModifiersProvider modifiers) {
-        super(modifiers);
-    }
+    String getFileName();
 
-    @Override
-    protected Node getRefNode() {
-        return selection.getNode();
-    }
+    String getNewDesc();
 
-    @Override
-    protected OdtContainer createContainer(Resource resource) throws IOException {
-        return new OdtContainer(resource);
-    }
+    class Simple implements OdfBackgroundImageModifierData {
+        Resource resource;
+        String newName;
+        String newDesc;
 
-    @Override
-    protected OdtContainer createContainer(byte[] data) throws IOException {
-        return new OdtContainer(data);
-    }
+        public Simple(Resource resource, String newName, String newDesc) {
+            this.resource = resource;
+            this.newName = newName;
+            this.newDesc = newDesc;
+        }
 
-    @Override
-    protected void checkPageAttr(String page) {
-        Problems.UNEXPECTED_VALUE.check(page == null, PAGE_ATTR, null);
+        @Override
+        public Resource getResource() {
+            return resource;
+        }
+
+        @Override
+        public String getFileName() {
+            return newName;
+        }
+
+        @Override
+        public String getNewDesc() {
+            return newDesc;
+        }
     }
 }

@@ -30,6 +30,7 @@ import org.odftoolkit.odfdom.dom.element.svg.SvgDescElement;
 import org.underdocx.AbstractOdtTest;
 import org.underdocx.common.tools.TmpFile;
 import org.underdocx.common.tree.Nodes;
+import org.underdocx.common.types.Resource;
 import org.underdocx.doctypes.odf.constants.OdfElement;
 import org.underdocx.doctypes.odf.odt.OdtContainer;
 import org.underdocx.doctypes.odf.odt.OdtEngine;
@@ -65,5 +66,20 @@ public class ImageTest extends AbstractOdtTest {
         SvgDescElement element1 = ((SvgDescElement) descNodes.get(1));
         Assertions.assertThat((element0.getTextContent())).isEqualTo("Smile1.png");
         Assertions.assertThat((element1.getTextContent())).isEqualTo("Smile2.png");
+    }
+
+    @Test
+    public void testShapedImage() {
+        Resource resource = new Resource.ClassResource(ImageTest.class, "smile.png");
+        OdtEngine engine = new OdtEngine();
+        engine.pushVariable("name", new LeafDataNode<>("Smile1.png"));
+        engine.pushLeafVariable("resource", resource);
+        OdtContainer doc = readOdt("ShapeImageTest.odt");
+        engine.run(doc);
+        // show(doc);
+        List<Node> descNodes = Nodes.findDescendantNodes(doc.getContentDom(), OdfElement.DESC.getQualifiedName(), true);
+        Assertions.assertThat(descNodes.size()).isEqualTo(1);
+        SvgDescElement element0 = ((SvgDescElement) descNodes.get(0));
+        Assertions.assertThat((element0.getTextContent())).isEqualTo("Smile1.png");
     }
 }

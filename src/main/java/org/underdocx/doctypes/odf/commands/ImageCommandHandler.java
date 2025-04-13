@@ -25,7 +25,6 @@ SOFTWARE.
 package org.underdocx.doctypes.odf.commands;
 
 import org.odftoolkit.odfdom.doc.OdfDocument;
-import org.underdocx.common.tools.Convenience;
 import org.underdocx.common.types.Resource;
 import org.underdocx.doctypes.commands.ifcondition.ConditionAttributeInterpreter;
 import org.underdocx.doctypes.commands.internal.AbstractCommandHandler;
@@ -33,7 +32,10 @@ import org.underdocx.doctypes.commands.internal.modifiermodule.resource.Resource
 import org.underdocx.doctypes.modifiers.ModifiersProvider;
 import org.underdocx.doctypes.modifiers.ifmodifier.IfModifier;
 import org.underdocx.doctypes.odf.AbstractOdfContainer;
-import org.underdocx.doctypes.odf.commands.image.ImagePlaceholderData;
+import org.underdocx.doctypes.odf.commands.image.NewImageData;
+import org.underdocx.doctypes.odf.commands.image.NewMainImageData;
+import org.underdocx.doctypes.odf.modifiers.backgroundimage.OdfBackgroundImageModifier;
+import org.underdocx.doctypes.odf.modifiers.backgroundimage.OdfBackgroundImageModifierData;
 import org.underdocx.doctypes.odf.modifiers.existingimage.OdfExistingImageModifier;
 import org.underdocx.doctypes.odf.modifiers.existingimage.OdfExistingImageModifierData;
 import org.underdocx.doctypes.tools.datapicker.BooleanDataPicker;
@@ -47,7 +49,7 @@ import org.underdocx.enginelayers.baseengine.CommandHandlerResult;
  * It uses the {@link ConditionAttributeInterpreter} to evaluate the condition
  * It uses the {@link IfModifier} to manipulate the DOM
  */
-public class ImageCommandHandler<C extends AbstractOdfContainer<D>, D extends OdfDocument> extends AbstractCommandHandler<C, ImagePlaceholderData, D> {
+public class ImageCommandHandler<C extends AbstractOdfContainer<D>, D extends OdfDocument> extends AbstractCommandHandler<C, NewImageData, D> {
     public static final String NAME_ATTR = "name";
     public static final String DESC_ATTR = "desc";
     public static final String KEEP_WIDTH_ATTR = "keepWidth";
@@ -62,15 +64,28 @@ public class ImageCommandHandler<C extends AbstractOdfContainer<D>, D extends Od
 
     @Override
     protected CommandHandlerResult tryExecuteCommand() {
-        return Convenience.build(CommandHandlerResult.EXECUTED_PROCEED, result -> {
-            String name = namePicker.expect(dataAccess, placeholderData.getJson());
-            String newDesc = descPicker.pickData(dataAccess, placeholderData.getJson()).optional().orElse(null);
-            Boolean keepWidth = keepWidthPicker.pickData(dataAccess, placeholderData.getJson()).optional().orElse(null);
-            Resource resource = new ResourceCommandModule<C, ImagePlaceholderData, D>(placeholderData.getJson()).execute(selection);
-            OdfExistingImageModifierData modifierData = new OdfExistingImageModifierData.Simple(keepWidth, resource, name, newDesc);
-            new OdfExistingImageModifier<C, ImagePlaceholderData, D>().modify(selection, modifierData);
-        });
+        String name = namePicker.expect(dataAccess, placeholderData.getJson());
+        String newDesc = descPicker.pickData(dataAccess, placeholderData.getJson()).optional().orElse(null);
+        Resource resource = new ResourceCommandModule<C, NewImageData, D>(placeholderData.getJson()).execute(selection);
+        if (placeholderData instanceof NewMainImageData) {
+            handleMainImage(name, newDesc, resource);
+        } else {
+            handleBackgroundImage(name, newDesc, resource);
+        }
+        return CommandHandlerResult.EXECUTED_PROCEED;
     }
 
+
+    private void handleMainImage(String name, String newDesc, Resource resource) {
+        Boolean keepWidth = keepWidthPicker.pickData(dataAccess, placeholderData.getJson()).optional().orElse(null);
+        OdfExistingImageModifierData modifierData = new OdfExistingImageModifierData.Simple(keepWidth, resource, name, newDesc);
+        new OdfExistingImageModifier<C, D>().modify(selection, modifierData);
+    }
+
+
+    private void handleBackgroundImage(String name, String newDesc, Resource resource) {
+        OdfBackgroundImageModifierData modifierData = new OdfBackgroundImageModifierData.Simple(resource, name, newDesc);
+        new OdfBackgroundImageModifier<C, D>().modify(selection, modifierData);
+    }
 
 }
