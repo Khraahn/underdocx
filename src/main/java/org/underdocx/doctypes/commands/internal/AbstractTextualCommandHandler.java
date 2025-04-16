@@ -76,7 +76,6 @@ public abstract class AbstractTextualCommandHandler<C extends DocContainer<D>, D
         }
     }
 
-
     protected abstract CommandHandlerResult tryExecuteTextualCommand();
 
     private static final String DELETE_ON_EOD_ATTR = "deleteOnEod";
@@ -94,8 +93,6 @@ public abstract class AbstractTextualCommandHandler<C extends DocContainer<D>, D
     }
 
     public static void markForEodDeletion(ParametersPlaceholderData data) {
-        ((ObjectNode) data.getJson()).put(DELETE_ON_EOD_ATTR, true);
+        ((ObjectNode) data.getOrCreateJson()).put(DELETE_ON_EOD_ATTR, true);
     }
-
-
 }

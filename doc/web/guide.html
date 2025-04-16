@@ -86,12 +86,12 @@
         <pre class="highlightjs highlight nowrap"><code class="language-xml hljs" data-lang="xml">&lt;dependency&gt;
     &lt;groupId&gt;io.github.winterrifier&lt;/groupId&gt;
     &lt;artifactId&gt;underdocx&lt;/artifactId&gt;
-    &lt;version&gt;0.11.1&lt;/version&gt;
+    &lt;version&gt;0.11.2&lt;/version&gt;
 &lt;/dependency&gt;</code></pre>
 
         When you use Gradle your dependency should look like this
 
-        <pre class="padding"><code>implementation 'io.github.winterrifier:underdocx:0.11.1'</code></pre>
+        <pre class="padding"><code>implementation 'io.github.winterrifier:underdocx:0.11.2'</code></pre>
 
         You can also visit <a href="https://central.sonatype.com/artifact/io.github.winterrifier/underdocx"
           target="_blank">
@@ -1712,6 +1712,28 @@ ${myDate v:"2024-12-12"}</code></pre>
           </tr>
         </table>
 
+        <h3>${Copy}-Command</h3>
+        Copies the content of a page (slide) in ODG/ODP documents into an other
+
+        <table>
+          <tr>
+            <th>
+              Attribute
+            </th>
+            <th>
+              Description
+            </th>
+          </tr>
+          <tr>
+            <td>from</td>
+            <td>name of table or page (slide) to copy from</td>
+          </tr>
+          <tr>
+            <td>to</td>
+            <td>name to target page</td>
+          </tr>
+        </table>        
+
           <h3>${Create}-Command</h3>
           Creates a new empty page (ODG, ODP).
           <table>
@@ -1915,6 +1937,8 @@ ${Calc key:"x", a:2.0, operator:"*", $b:"i"}${$x}</code></pre>
           </tr>
         </table>
 
+        <h3>${Ignore}-Command</h3>
+        Lets the engine ignore all following commands/placeholders until <code-word>${EndIgnore}</code-word> command is reached.
 
         <h3>${Model}-Command</h3>
 
@@ -2000,16 +2024,16 @@ ${Calc key:"x", a:2.0, operator:"*", $b:"i"}${$x}</code></pre>
         <pre class="padding"><code>git clone https://github.com/winterrifier/underdocx.git
 cd underdocx
 mvn clean install -P buildCli</code></pre>
-        After execution there will be a target folder that contains "underdocx-0.11.1-jar-with-dependencies.jar".
+        After execution there will be a target folder that contains "underdocx-0.11.2-jar-with-dependencies.jar".
         You can use this jar file as CLI tool.
 
         <h3>Usage of CLI</h3>
         To call Underdocx by CLI use this syntax:
         <pre
-          class="padding"><code>java -jar underdocx-0.11.1-jar-with-dependencies.jar &lt;engineType&gt; &lt;templateFile&gt; &lt;outFile&gt; &lt;dataJsonFile&gt;</code></pre>
+          class="padding"><code>java -jar underdocx-0.11.2-jar-with-dependencies.jar &lt;engineType&gt; &lt;templateFile&gt; &lt;outFile&gt; &lt;dataJsonFile&gt;</code></pre>
         For example:
         <pre
-          class="padding"><code>java -jar underdocx-0.11.1-jar-with-dependencies.jar ODT template.odt out.odt data.json</code></pre>
+          class="padding"><code>java -jar underdocx-0.11.2-jar-with-dependencies.jar ODT template.odt out.odt data.json</code></pre>
         Note: It is also possible to add custom Placeholder/Command implementations (see section Custom Extensions).
         Implement interface <code-word>EngineProvider</code-word>,
         include your classes to the classpath, execute <code-word>UnderdocxEngineRunder</code-word> as main class and

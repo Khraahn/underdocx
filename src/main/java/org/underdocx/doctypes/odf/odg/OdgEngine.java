@@ -35,6 +35,7 @@ import org.underdocx.doctypes.odf.tools.placeholder.OdfPlaceholderFactory;
 import org.underdocx.doctypes.tools.placeholder.GenericTextualPlaceholderFactory;
 import org.underdocx.enginelayers.modelengine.ModelEngine;
 import org.underdocx.enginelayers.parameterengine.ParametersPlaceholderData;
+import org.underdocx.environment.UnderdocxEnv;
 
 public class OdgEngine extends AbstractOdfEngine<OdgContainer, OdfGraphicsDocument> {
 
@@ -51,6 +52,7 @@ public class OdgEngine extends AbstractOdfEngine<OdgContainer, OdfGraphicsDocume
     }
 
     protected void registerDefaultCommandHandlers() {
+        engine.registerCommandHandler(parameters, new IgnoreCommandHandler<>(modifiers));
         engine.registerCommandHandler(parameters, new ModelCommandHandler<>(modifiers));
         engine.registerCommandHandler(parameters, new StringCommandHandler<OdgContainer, OdfGraphicsDocument>(modifiers));
         engine.registerCommandHandler(parameters, new ShortModelStringCommandHandler<>(modifiers));
@@ -62,7 +64,9 @@ public class OdgEngine extends AbstractOdfEngine<OdgContainer, OdfGraphicsDocume
         engine.registerCommandHandler(parameters, new CounterCommandHandler<>(modifiers));
         engine.registerCommandHandler(parameters, new IfCommandHandler<>(modifiers));
         engine.registerCommandHandler(parameters, new ForRowsCommandHandler<OdgContainer, OdfGraphicsDocument>(modifiers));
-        engine.registerCommandHandler(imagePlaceholdersProvider, new ImageCommandHandler<>(modifiers));
+        if (!UnderdocxEnv.getInstance().disableImagePlaceholderProvider) {
+            engine.registerCommandHandler(imagePlaceholdersProvider, new ImageCommandHandler<>(modifiers));
+        }
         engine.registerCommandHandler(parameters, new ForListCommandHandler<OdgContainer, OdfGraphicsDocument>(modifiers));
         engine.registerCommandHandler(parameters, new PageStyleCommandHandler<>(modifiers));
         engine.registerCommandHandler(parameters, multiCommandHandler);
@@ -76,6 +80,7 @@ public class OdgEngine extends AbstractOdfEngine<OdgContainer, OdfGraphicsDocume
         engine.registerCommandHandler(parameters, new ConcatCommandHandler<>(modifiers));
         engine.registerCommandHandler(parameters, new CalcCommandHandler<>(modifiers));
         engine.registerCommandHandler(parameters, new CreateCommandHandler<>(modifiers));
+        engine.registerCommandHandler(parameters, new CopyCommandHandler<>(modifiers));
     }
 
     @Override

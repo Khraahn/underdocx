@@ -21,7 +21,7 @@ Add Underdocx as dependency to your project, for example in your pom.xml add:
 <dependency>
     <groupId>io.github.winterrifier</groupId>
     <artifactId>underdocx</artifactId>
-    <version>0.11.1</version>
+    <version>0.11.2</version>
 </dependency>
 ```
 

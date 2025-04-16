@@ -34,12 +34,14 @@ import org.underdocx.doctypes.odf.tools.placeholder.OdfPlaceholderFactory;
 import org.underdocx.doctypes.tools.placeholder.GenericTextualPlaceholderFactory;
 import org.underdocx.enginelayers.modelengine.ModelEngine;
 import org.underdocx.enginelayers.parameterengine.ParametersPlaceholderData;
+import org.underdocx.environment.UnderdocxEnv;
 
 public class OdsEngine extends AbstractOdfEngine<OdsContainer, OdfSpreadsheetDocument> {
 
     private final ModelEngine<OdsContainer, OdfSpreadsheetDocument> engine;
 
     protected void registerDefaultCommandHandlers() {
+        engine.registerCommandHandler(parameters, new IgnoreCommandHandler<>(modifiers));
         engine.registerCommandHandler(parameters, new ModelCommandHandler<>(modifiers));
         engine.registerCommandHandler(parameters, new StringCommandHandler<OdsContainer, OdfSpreadsheetDocument>(modifiers));
         engine.registerCommandHandler(parameters, new ShortModelStringCommandHandler<>(modifiers));
@@ -51,7 +53,9 @@ public class OdsEngine extends AbstractOdfEngine<OdsContainer, OdfSpreadsheetDoc
         engine.registerCommandHandler(parameters, new CounterCommandHandler<>(modifiers));
         engine.registerCommandHandler(parameters, new IfCommandHandler<>(modifiers));
         engine.registerCommandHandler(parameters, new ForRowsCommandHandler<>(modifiers));
-        engine.registerCommandHandler(imagePlaceholdersProvider, new ImageCommandHandler<>(modifiers));
+        if (!UnderdocxEnv.getInstance().disableImagePlaceholderProvider) {
+            engine.registerCommandHandler(imagePlaceholdersProvider, new ImageCommandHandler<>(modifiers));
+        }
         engine.registerCommandHandler(parameters, new ForListCommandHandler<>(modifiers));
         engine.registerCommandHandler(parameters, new PageStyleCommandHandler<>(modifiers));
         engine.registerCommandHandler(parameters, multiCommandHandler);

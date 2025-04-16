@@ -35,7 +35,6 @@ import org.underdocx.doctypes.modifiers.deleteplaceholder.DeletePlaceholderModif
 import org.underdocx.doctypes.odf.AbstractOdfContainer;
 import org.underdocx.doctypes.odf.constants.OdfElement;
 import org.underdocx.doctypes.odf.tools.OdfNodes;
-import org.underdocx.doctypes.tools.datapicker.OneOfDataPicker;
 import org.underdocx.doctypes.tools.datapicker.PredefinedDataPicker;
 import org.underdocx.doctypes.tools.datapicker.StringConvertDataPicker;
 import org.underdocx.enginelayers.baseengine.CommandHandlerResult;
@@ -46,7 +45,6 @@ public class CreateCommandHandler<C extends AbstractOdfContainer<D>, D extends O
 
 
     private static final PredefinedDataPicker<String> nameAttr = new StringConvertDataPicker().asPredefined("name");
-    private static final PredefinedDataPicker<String> typeAttr = new OneOfDataPicker<>("page").asPredefined("type");
     private static final PredefinedDataPicker<String> masterAttr = new StringConvertDataPicker().asPredefined("master");
     private static final PredefinedDataPicker<String> beforeAttr = new StringConvertDataPicker().asPredefined("insertBefore");
 

@@ -72,7 +72,7 @@ public class OdfDeleteNamedNodeModifier<C extends AbstractOdfContainer<D>, P, D 
     }
 
     public static ModifierResult modify(Node node, OdfDeleteNamedNodeModifierData modifierData) {
-        Node toRemove = Problems.CANT_FIND_DOM_ELEMENT.get(findNode(node.getOwnerDocument(), modifierData.getName(), modifierData.getNodeType()), "named node");
+        Node toRemove = Problems.CANT_FIND_DOM_ELEMENT.get(findNode(node.getOwnerDocument(), modifierData.getName(), modifierData.getNodeType()), "named node", modifierData.getName());
         DeleteNodeModifier.modify(toRemove);
         return new OdfDeletePlaceholderModifier().modify(node, DeletePlaceholderModifierData.DEFAULT);
     }

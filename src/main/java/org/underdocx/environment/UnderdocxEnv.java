@@ -24,8 +24,8 @@ SOFTWARE.
 
 package org.underdocx.environment;
 
-import org.underdocx.environment.logger.Logger;
 import org.underdocx.common.tools.Convenience;
+import org.underdocx.environment.logger.Logger;
 
 /**
  * Global framework settings as singleton
@@ -55,6 +55,7 @@ public class UnderdocxEnv {
 
     public boolean isDebug = false;
     public boolean appendErrorReport = true;
+    public boolean disableImagePlaceholderProvider = false;
 
     public String libreOfficeExecutable = Convenience.build(path -> {
         path.value = System.getenv("LIBREOFFICE");
