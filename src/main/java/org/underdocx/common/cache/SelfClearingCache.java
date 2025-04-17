@@ -33,17 +33,17 @@ import java.util.function.Supplier;
 public class SelfClearingCache<K, V> {
 
     private final long timeout;
-    private Object lock = new Object();
+    private final Object lock = new Object();
     private boolean running = false;
-    private Map<K, V> cache = new HashMap<>();
-    private Timer timer = new Timer();
+    private final Map<K, V> cache = new HashMap<>();
+    private final Timer timer = new Timer();
 
     public SelfClearingCache(long timeout) {
         this.timeout = timeout;
     }
 
     public V getOrCache(K key, Supplier<V> valueProvider) {
-        V result = null;
+        V result;
         synchronized (lock) {
             if (!running) {
                 running = true;
@@ -55,7 +55,7 @@ public class SelfClearingCache<K, V> {
                             running = false;
                         }
                     }
-                }, timeout, timeout);
+                }, timeout);
             }
             result = cache.get(key);
             if (result == null) {
