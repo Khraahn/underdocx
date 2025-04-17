@@ -32,23 +32,30 @@ import java.util.function.Supplier;
 
 public class SelfClearingCache<K, V> {
 
+    private final long timer;
     private Object lock = new Object();
+    private boolean running = false;
     private Map<K, V> cache = new HashMap<>();
 
     public SelfClearingCache(long timer) {
-        new Timer().scheduleAtFixedRate(new TimerTask() {
-            @Override
-            public void run() {
-                synchronized (lock) {
-                    cache.clear();
-                }
-            }
-        }, timer, timer);
+        this.timer = timer;
     }
 
     public V getOrCache(K key, Supplier<V> valueProvider) {
         V result = null;
         synchronized (lock) {
+            if (!running) {
+                running = true;
+                new Timer().schedule(new TimerTask() {
+                    @Override
+                    public void run() {
+                        synchronized (lock) {
+                            cache.clear();
+                            running = false;
+                        }
+                    }
+                }, timer, timer);
+            }
             result = cache.get(key);
             if (result == null) {
                 result = valueProvider.get();
@@ -57,5 +64,6 @@ public class SelfClearingCache<K, V> {
         }
         return result;
     }
+
 
 }
