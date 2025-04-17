@@ -1,6 +1,7 @@
 - Features
   - später ggf. docx unterstützen
 - Bekannte Probleme:
+  - Bilder-Platzhalter sollten nicht durch den textbasierten Placeholderprovider gefunden werden => Warn-Logs bei Bildern
   - Prüfen ob Vectorgrafiken als Bilder verwendet werden können
 - Optimierungsmöglichkeiten:
   - getPlaceholderData sollte bei allem Handlern gecached werden (StringOutputModule)

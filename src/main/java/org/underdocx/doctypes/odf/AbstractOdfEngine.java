@@ -68,8 +68,4 @@ public abstract class AbstractOdfEngine<C extends AbstractOdfContainer<D>, D ext
     public void registerParametersCommandHandler(MCommandHandler<C, ParametersPlaceholderData, D> commandHandler) {
         this.getEngine().registerCommandHandler(parameters, commandHandler);
     }
-
-    protected void registerCommonOdfHandlers() {
-        
-    }
 }

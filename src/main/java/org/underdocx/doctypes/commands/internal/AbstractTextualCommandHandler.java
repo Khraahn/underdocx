@@ -69,7 +69,9 @@ public abstract class AbstractTextualCommandHandler<C extends DocContainer<D>, D
     protected CommandHandlerResult tryExecuteCommand() {
         this.placeholderToolkit = Problems.MISSING_VALUE.get(selection.getPlaceholderToolkit(), "placeholderToolkit");
         if (allowedKeys == null || allowedKeys.matches(placeholderData.getKey())) {
-            UnderdocxEnv.getInstance().logger.trace("CommandHandler " + this + " received node: " + selection.getNode());
+            if (UnderdocxEnv.getInstance().isDebug) {
+                UnderdocxEnv.getInstance().logger.trace("CommandHandler " + this + " received node: " + selection.getNode());
+            }
             return tryExecuteTextualCommand();
         } else {
             return CommandHandlerResult.IGNORED;
