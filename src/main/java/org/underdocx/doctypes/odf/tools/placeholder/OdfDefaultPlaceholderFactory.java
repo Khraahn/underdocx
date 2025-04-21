@@ -39,7 +39,7 @@ import org.underdocx.enginelayers.parameterengine.ParametersPlaceholderCodec;
 import org.underdocx.enginelayers.parameterengine.ParametersPlaceholderData;
 import org.w3c.dom.Node;
 
-public class OdfPlaceholderFactory<C extends AbstractOdfContainer<D>, D extends OdfDocument> implements GenericTextualPlaceholderFactory<C, ParametersPlaceholderData, D> {
+public class OdfDefaultPlaceholderFactory<C extends AbstractOdfContainer<D>, D extends OdfDocument> implements GenericTextualPlaceholderFactory<C, ParametersPlaceholderData, D> {
     @Override
     public TextNodeInterpreter getTextNodeInterpreter() {
         return OdfTextNodeInterpreter.INSTANCE;

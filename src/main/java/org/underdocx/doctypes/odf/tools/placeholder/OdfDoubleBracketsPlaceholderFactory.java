@@ -22,40 +22,41 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-package org.underdocx.doctypes.txt.placeholders;
+package org.underdocx.doctypes.odf.tools.placeholder;
 
+import org.odftoolkit.odfdom.doc.OdfDocument;
 import org.underdocx.common.codec.Codec;
 import org.underdocx.common.enumerator.Enumerator;
 import org.underdocx.common.placeholder.EncapsulatedNodesExtractor;
 import org.underdocx.common.placeholder.basic.extraction.PartialExtractor;
+import org.underdocx.common.placeholder.basic.textnodeinterpreter.OdfTextNodeInterpreter;
 import org.underdocx.doctypes.TextNodeInterpreter;
+import org.underdocx.doctypes.odf.AbstractOdfContainer;
+import org.underdocx.doctypes.odf.tools.OdfSectionsWalker;
 import org.underdocx.doctypes.tools.placeholder.GenericTextualPlaceholderFactory;
-import org.underdocx.doctypes.txt.TxtContainer;
-import org.underdocx.doctypes.txt.TxtXml;
-import org.underdocx.enginelayers.parameterengine.ParametersDetector;
-import org.underdocx.enginelayers.parameterengine.ParametersPlaceholderCodec;
+import org.underdocx.enginelayers.parameterengine.DoubleBracketsPlaceholderCodec;
+import org.underdocx.enginelayers.parameterengine.DoubleBracketsTextDetector;
 import org.underdocx.enginelayers.parameterengine.ParametersPlaceholderData;
 import org.w3c.dom.Node;
 
-public class TxtParameterizedPlaceholderFactory implements GenericTextualPlaceholderFactory<TxtContainer, ParametersPlaceholderData, TxtXml> {
-
+public class OdfDoubleBracketsPlaceholderFactory<C extends AbstractOdfContainer<D>, D extends OdfDocument> implements GenericTextualPlaceholderFactory<C, ParametersPlaceholderData, D> {
     @Override
     public TextNodeInterpreter getTextNodeInterpreter() {
-        return TxtNodeInterpreter.INSTANCE;
+        return OdfTextNodeInterpreter.INSTANCE;
     }
 
     @Override
-    public Enumerator<Node> createSectionEnumerator(TxtContainer doc, Node firstValid) {
-        return new TxtSectionEnumerator(doc, firstValid);
+    public Enumerator<Node> createSectionEnumerator(C doc, Node firstValidNode) {
+        return new OdfSectionsWalker(doc, firstValidNode);
     }
 
     @Override
     public EncapsulatedNodesExtractor getExtractor() {
-        return new PartialExtractor(ParametersDetector.INSTANCE, getTextNodeInterpreter());
+        return new PartialExtractor(DoubleBracketsTextDetector.INSTANCE, getTextNodeInterpreter());
     }
 
     @Override
     public Codec<ParametersPlaceholderData> getCodec() {
-        return ParametersPlaceholderCodec.INSTANCE;
+        return DoubleBracketsPlaceholderCodec.INSTANCE;
     }
 }

@@ -32,7 +32,7 @@ import org.underdocx.doctypes.modifiers.deleteplaceholder.DeletePlaceholderModif
 import org.underdocx.doctypes.txt.TxtContainer;
 import org.underdocx.doctypes.txt.TxtXml;
 import org.underdocx.doctypes.txt.modifiers.TxtDeletePlaceholderModifier;
-import org.underdocx.doctypes.txt.placeholders.TxtParameterizedPlaceholderFactory;
+import org.underdocx.doctypes.txt.placeholders.TxtDefaultPlaceholderFactory;
 import org.underdocx.enginelayers.baseengine.PlaceholdersProvider;
 import org.underdocx.enginelayers.parameterengine.ParametersPlaceholderData;
 import org.w3c.dom.Node;
@@ -69,7 +69,7 @@ public class TestTxtContainer extends AbstractTxtTest {
                 "C${placeholder2 key:\"value\"}!\n" +
                 " ---");
         PlaceholdersProvider<TxtContainer, ParametersPlaceholderData, TxtXml> placeholderProvider
-                = new TxtParameterizedPlaceholderFactory().createProvider(doc);
+                = new TxtDefaultPlaceholderFactory().createProvider(doc);
         List<ParametersPlaceholderData> allPlaceholders = Convenience.buildList(result ->
                 placeholderProvider.getPlaceholders(doc).forEach(node ->
                         result.add(placeholderProvider.getPlaceholderData(node))));
@@ -85,7 +85,7 @@ public class TestTxtContainer extends AbstractTxtTest {
                 "C${placeholder2 key:\"value\"}!\n" +
                 " ---");
         PlaceholdersProvider<TxtContainer, ParametersPlaceholderData, TxtXml> placeholderProvider
-                = new TxtParameterizedPlaceholderFactory().createProvider(doc);
+                = new TxtDefaultPlaceholderFactory().createProvider(doc);
         List<Node> allPlaceholders = Convenience.buildList(result ->
                 placeholderProvider.getPlaceholders(doc).forEach(node ->
                         result.add(node)));
@@ -106,7 +106,7 @@ public class TestTxtContainer extends AbstractTxtTest {
                 " ${placeholder1} \n" +
                 " ---");
         PlaceholdersProvider<TxtContainer, ParametersPlaceholderData, TxtXml> placeholderProvider
-                = new TxtParameterizedPlaceholderFactory().createProvider(doc);
+                = new TxtDefaultPlaceholderFactory().createProvider(doc);
         List<Node> allPlaceholders = Convenience.buildList(result ->
                 placeholderProvider.getPlaceholders(doc).forEach(node ->
                         result.add(node)));

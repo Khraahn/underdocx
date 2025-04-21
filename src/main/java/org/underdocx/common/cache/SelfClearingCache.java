@@ -42,20 +42,22 @@ public class SelfClearingCache<K, V> {
         this.timeout = timeout;
     }
 
+    private TimerTask timerTask = new TimerTask() {
+        @Override
+        public void run() {
+            synchronized (lock) {
+                cache.clear();
+                running = false;
+            }
+        }
+    };
+
     public V getOrCache(K key, Supplier<V> valueProvider) {
         V result;
         synchronized (lock) {
             if (!running) {
                 running = true;
-                timer.schedule(new TimerTask() {
-                    @Override
-                    public void run() {
-                        synchronized (lock) {
-                            cache.clear();
-                            running = false;
-                        }
-                    }
-                }, timeout);
+                timer.schedule(timerTask, timeout);
             }
             result = cache.get(key);
             if (result == null) {

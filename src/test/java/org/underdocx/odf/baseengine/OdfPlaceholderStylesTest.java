@@ -68,4 +68,16 @@ public class OdfPlaceholderStylesTest extends AbstractOdtTest {
         assertNoPlaceholders(doc);
         assertContains(doc, "Bibi, Tina, Amadeus, Sabrina 2022-02-02");
     }
+
+    @Test
+    public void testDoubleBrackets() {
+        String content = """
+                {{Join value:["Bibi", "Tina", "Amadeus", "Sabrina"]}} {{Date value:"2022-02-02"}}
+                """;
+        OdtContainer doc = new OdtContainer(content);
+        OdtEngine engine = new OdtEngine(new OdfPlaceholderStyle<OdtContainer, OdfTextDocument>().DOUBLE_BRACKETS);
+        engine.run(doc);
+        assertNoPlaceholders(doc);
+        assertContains(doc, "Bibi, Tina, Amadeus, Sabrina 2022-02-02");
+    }
 }

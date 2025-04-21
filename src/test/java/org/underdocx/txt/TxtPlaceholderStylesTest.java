@@ -109,4 +109,16 @@ public class TxtPlaceholderStylesTest extends AbstractTxtTest {
         assertNoPlaceholders(doc);
     }
 
+    @Test
+    void testDoubleBrackets() {
+        String content = """
+                {{Join value:["Bibi", "Tina", "Amadeus", "Sabrina"]}} {{Date value:"2022-02-02"}}
+                """;
+        TxtContainer doc = new TxtContainer(content);
+        TxtEngine engine = new TxtEngine(TxtPlaceholderStyle.DOUBLE_BRACKETS);
+        engine.run(doc);
+        assertNoPlaceholders(doc);
+        assertContains(doc, "Bibi, Tina, Amadeus, Sabrina 2022-02-02");
+    }
+
 }

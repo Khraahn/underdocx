@@ -33,7 +33,7 @@ import org.underdocx.doctypes.odf.commands.forcommand.ForRowsCommandHandler;
 import org.underdocx.doctypes.odf.odt.commands.ExportCommandHandler;
 import org.underdocx.doctypes.odf.odt.commands.OdtImportCommandHandler;
 import org.underdocx.doctypes.odf.odt.commands.UnderdocxCommandHandler;
-import org.underdocx.doctypes.odf.tools.placeholder.OdfPlaceholderFactory;
+import org.underdocx.doctypes.odf.tools.placeholder.OdfDefaultPlaceholderFactory;
 import org.underdocx.doctypes.tools.placeholder.GenericTextualPlaceholderFactory;
 import org.underdocx.enginelayers.modelengine.ModelEngine;
 import org.underdocx.enginelayers.parameterengine.ParametersPlaceholderData;
@@ -77,7 +77,7 @@ public class OdtEngine extends AbstractOdfEngine<OdtContainer, OdfTextDocument> 
     }
 
     public OdtEngine() {
-        this(new OdfPlaceholderFactory<>());
+        this(new OdfDefaultPlaceholderFactory<>());
     }
 
     public OdtEngine(GenericTextualPlaceholderFactory<OdtContainer, ParametersPlaceholderData, OdfTextDocument> parameters) {

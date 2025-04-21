@@ -47,8 +47,8 @@ public class OdfPlaceholderStyle<C extends AbstractOdfContainer<D>, D extends Od
             new OdfPlaceholder("/*!", "!*/", new Regex("\\/\\*!.*?!\\*\\/"));
     public final GenericTextualPlaceholderFactory<C, ParametersPlaceholderData, D> HASH_COMMENT =
             new OdfPlaceholder("#!", "!#", new Regex("#!.*?!#"));
-    public final GenericTextualPlaceholderFactory<C, ParametersPlaceholderData, D> DEFAULT = new OdfPlaceholderFactory<>();
-
+    public final GenericTextualPlaceholderFactory<C, ParametersPlaceholderData, D> DEFAULT = new OdfDefaultPlaceholderFactory<>();
+    public final GenericTextualPlaceholderFactory<C, ParametersPlaceholderData, D> DOUBLE_BRACKETS = new OdfDoubleBracketsPlaceholderFactory<>();
 
     protected class OdfPlaceholder implements GenericTextualPlaceholderFactory<C, ParametersPlaceholderData, D> {
 

@@ -45,8 +45,8 @@ public class TxtPlaceholderStyle {
             new TxtPlaceholder("/*!", "!*/", new Regex("\\/\\*!.*?!\\*\\/"));
     public static final GenericTextualPlaceholderFactory<TxtContainer, ParametersPlaceholderData, TxtXml> HASH_COMMENT =
             new TxtPlaceholder("#!", "!#", new Regex("#!.*?!#"));
-    public static final GenericTextualPlaceholderFactory<TxtContainer, ParametersPlaceholderData, TxtXml> DEFAULT = new TxtParameterizedPlaceholderFactory();
-
+    public static final GenericTextualPlaceholderFactory<TxtContainer, ParametersPlaceholderData, TxtXml> DEFAULT = new TxtDefaultPlaceholderFactory();
+    public static final GenericTextualPlaceholderFactory<TxtContainer, ParametersPlaceholderData, TxtXml> DOUBLE_BRACKETS = new TxtDoubleBracketsParameterizedPlaceholderFactory();
 
     protected static class TxtPlaceholder implements GenericTextualPlaceholderFactory<TxtContainer, ParametersPlaceholderData, TxtXml> {
 

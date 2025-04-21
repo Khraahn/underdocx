@@ -30,7 +30,7 @@ import org.underdocx.doctypes.commands.*;
 import org.underdocx.doctypes.tools.placeholder.GenericTextualPlaceholderFactory;
 import org.underdocx.doctypes.txt.commands.TxtImportCommandHandler;
 import org.underdocx.doctypes.txt.modifiers.TxtModifiersProvider;
-import org.underdocx.doctypes.txt.placeholders.TxtParameterizedPlaceholderFactory;
+import org.underdocx.doctypes.txt.placeholders.TxtDefaultPlaceholderFactory;
 import org.underdocx.enginelayers.modelengine.MCommandHandler;
 import org.underdocx.enginelayers.modelengine.ModelEngine;
 import org.underdocx.enginelayers.parameterengine.ParametersPlaceholderData;
@@ -71,7 +71,7 @@ public class TxtEngine extends AbstractEngine<TxtContainer, TxtXml> {
     }
 
     public TxtEngine() {
-        this(new TxtParameterizedPlaceholderFactory());
+        this(new TxtDefaultPlaceholderFactory());
     }
 
     public TxtEngine(GenericTextualPlaceholderFactory<TxtContainer, ParametersPlaceholderData, TxtXml> parameters) {
