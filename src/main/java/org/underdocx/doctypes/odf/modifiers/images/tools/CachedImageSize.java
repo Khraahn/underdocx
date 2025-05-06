@@ -22,36 +22,31 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-package org.underdocx.doctypes.tools.datapicker;
+package org.underdocx.doctypes.odf.modifiers.images.tools;
 
-import org.underdocx.enginelayers.modelengine.data.DataNode;
+import org.underdocx.common.cache.SelfClearingCache;
+import org.underdocx.common.types.Pair;
+import org.underdocx.common.types.Resource;
+import org.underdocx.environment.err.Problems;
 
-import java.util.HashMap;
-import java.util.Optional;
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
+import java.io.IOException;
 
-/**
- * A {@link ExtendedDataPicker} that tries to resolve a String from the model or variable registry
- */
-public class OneOfDataPicker<T> extends AbstractConvertDataPicker<T> {
+public class CachedImageSize {
 
-    protected HashMap<String, T> enumMap;
-
-    @SafeVarargs
-    public OneOfDataPicker(T... allowedValues) {
-        this.enumMap = new HashMap<>();
-        for (T allowedValue : allowedValues) {
-            this.enumMap.put(allowedValue.toString(), allowedValue);
-        }
+    public static Pair<Double, Double> getDimension(Resource data) {
+        String resourceIdentifier = data.getIdentifier();
+        Pair<Double, Double> result = dimensionCache.getOrCache(resourceIdentifier, () -> {
+            try {
+                BufferedImage bufferedImage = ImageIO.read(data.openStream());
+                return new Pair<>((double) bufferedImage.getWidth(), (double) bufferedImage.getHeight());
+            } catch (IOException e) {
+                return Problems.IO_EXCEPTION.fire(e);
+            }
+        });
+        return result;
     }
 
-
-    @Override
-    protected Optional<T> convert(DataNode<?> node) {
-        String value = node.getValue().toString();
-        if (enumMap.containsKey(value)) {
-            return Optional.of(enumMap.get(value));
-        } else {
-            return Optional.empty();
-        }
-    }
+    private static SelfClearingCache<String, Pair<Double, Double>> dimensionCache = new SelfClearingCache<>(1000);
 }

@@ -1,4 +1,12 @@
 - Features
+  - Import aller pages (ODP/ODG)
+    - optionale Angabe des zu verwendenden masters
+    - Export für ODP/ODG
+  - If mit less:, greater:
+  - Umstellen
+    - AttributeDataPicker
+    - AbstractTextualCommandHandler.getAttr
+    - Modifier statisch anlegen
   - später ggf. docx unterstützen
 - Bekannte Probleme:
   - Bilder-Platzhalter sollten nicht durch den textbasierten Placeholderprovider gefunden werden => Warn-Logs bei Bildern

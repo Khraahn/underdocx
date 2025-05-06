@@ -22,50 +22,35 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-package org.underdocx.doctypes.odf.modifiers.existingimage;
+package org.underdocx.doctypes.odf.commands.image.types;
 
-import org.underdocx.common.types.Resource;
+import org.underdocx.common.tools.Convenience;
 
-public interface OdfExistingImageModifierData {
+import java.util.Optional;
 
-    Resource getResource();
+public enum Anchor {
+    AS_CHAR("as-char"),
+    CHAR("char"),
+    PARAGRAPH("paragraph");
 
-    String getFileName();
+    private final String type;
 
-    Boolean getKeepWidth();
+    Anchor(String type) {
+        this.type = type;
+    }
 
-    String getNewDesc();
+    public static Optional<Anchor> fromString(String string) {
+        return Convenience.buildOptional(result -> {
+            for (Anchor anchor : Anchor.values()) {
+                if (anchor.type.equals(string)) {
+                    result.value = anchor;
+                    break;
+                }
+            }
+        });
+    }
 
-    class Simple implements OdfExistingImageModifierData {
-        Boolean keepWidth;
-        Resource resource;
-        String newName;
-        String newDesc;
-
-        public Simple(Boolean keepWidth, Resource resource, String newName, String newDesc) {
-            this.keepWidth = keepWidth;
-            this.resource = resource;
-            this.newName = newName;
-            this.newDesc = newDesc;
-        }
-
-        @Override
-        public Resource getResource() {
-            return resource;
-        }
-
-        public String getFileName() {
-            return newName;
-        }
-
-        @Override
-        public Boolean getKeepWidth() {
-            return keepWidth;
-        }
-
-        @Override
-        public String getNewDesc() {
-            return newDesc;
-        }
+    public String toString() {
+        return type;
     }
 }

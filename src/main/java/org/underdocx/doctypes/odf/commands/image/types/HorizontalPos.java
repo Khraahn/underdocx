@@ -22,36 +22,40 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-package org.underdocx.doctypes.tools.datapicker;
+package org.underdocx.doctypes.odf.commands.image.types;
 
-import org.underdocx.enginelayers.modelengine.data.DataNode;
+import org.underdocx.common.tools.Convenience;
 
-import java.util.HashMap;
 import java.util.Optional;
 
-/**
- * A {@link ExtendedDataPicker} that tries to resolve a String from the model or variable registry
- */
-public class OneOfDataPicker<T> extends AbstractConvertDataPicker<T> {
 
-    protected HashMap<String, T> enumMap;
+public enum HorizontalPos {
+    CENTER("center"),
+    FROM_INSIDE("from-inside"),
+    FROM_LEFT("from-left"),
+    INSIDE("inside"),
+    LEFT("left"),
+    OUTSIDE("outside"),
+    RIGHT("right");
 
-    @SafeVarargs
-    public OneOfDataPicker(T... allowedValues) {
-        this.enumMap = new HashMap<>();
-        for (T allowedValue : allowedValues) {
-            this.enumMap.put(allowedValue.toString(), allowedValue);
-        }
+    private final String type;
+
+    HorizontalPos(String type) {
+        this.type = type;
     }
 
+    public static Optional<HorizontalPos> fromString(String string) {
+        return Convenience.buildOptional(result -> {
+            for (HorizontalPos VerticalPos : HorizontalPos.values()) {
+                if (VerticalPos.type.equals(string)) {
+                    result.value = VerticalPos;
+                    break;
+                }
+            }
+        });
+    }
 
-    @Override
-    protected Optional<T> convert(DataNode<?> node) {
-        String value = node.getValue().toString();
-        if (enumMap.containsKey(value)) {
-            return Optional.of(enumMap.get(value));
-        } else {
-            return Optional.empty();
-        }
+    public String toString() {
+        return type;
     }
 }

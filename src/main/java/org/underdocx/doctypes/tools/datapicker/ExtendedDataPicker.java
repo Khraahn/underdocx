@@ -59,4 +59,47 @@ public interface ExtendedDataPicker<T> {
         };
     }
 
+    default AttributeDataPicker<T> optionalAttr(String name) {
+        return new OptionalAttribute<>(this, name);
+    }
+
+    default AttributeDataPicker<T> expectedAttr(String name) {
+        return new MandatoryAttribute<>(this, name);
+    }
+
+
+    class MandatoryAttribute<T> implements AttributeDataPicker<T> {
+        private final PredefinedDataPicker<T> predef;
+
+        public MandatoryAttribute(ExtendedDataPicker<T> picker, String name) {
+            this.predef = picker.asPredefined(name);
+        }
+
+        public T get(DataAccess dataAccess, JsonNode jsonNode) {
+            return predef.expect(dataAccess, jsonNode);
+        }
+
+        @Override
+        public Optional<T> optional(DataAccess dataAccess, JsonNode jsonNode) {
+            return Optional.ofNullable(get(dataAccess, jsonNode));
+        }
+    }
+
+    class OptionalAttribute<T> implements AttributeDataPicker<T> {
+        private final PredefinedDataPicker<T> predef;
+
+        public OptionalAttribute(ExtendedDataPicker<T> picker, String name) {
+            this.predef = picker.asPredefined(name);
+        }
+
+        public T get(DataAccess dataAccess, JsonNode jsonNode) {
+            return predef.getDataOrNull(dataAccess, jsonNode);
+        }
+
+        @Override
+        public Optional<T> optional(DataAccess dataAccess, JsonNode jsonNode) {
+            return predef.getData(dataAccess, jsonNode);
+        }
+    }
+
 }

@@ -44,12 +44,20 @@ import java.util.Optional;
 public abstract class ImageData {
 
     protected static Optional<ParametersPlaceholderData> parse(String descr) {
-        return ParametersPlaceholderCodec.INSTANCE.tryParse(descr);
+        if (descr != null) {
+            return ParametersPlaceholderCodec.INSTANCE.tryParse(descr);
+        } else {
+            return Optional.empty();
+        }
     }
 
     protected static String getDescrStatic(Node svgDesc) {
-        String content = svgDesc.getTextContent();
-        return content == null ? "" : content.trim();
+        if (svgDesc != null) {
+            String content = svgDesc.getTextContent();
+            return content == null ? "" : content.trim();
+        } else {
+            return null;
+        }
     }
 
     protected static Optional<Pair<SvgDescElement, ParametersPlaceholderData>> getBaseData(Node node) {
@@ -66,7 +74,7 @@ public abstract class ImageData {
     }
 
     public static Optional<? extends ImageData> create(Node node) {
-        Optional<? extends ImageData> data = MainImageData.createMainImageData(node);
+        Optional<? extends ImageData> data = MainImageData.createExistingMainImageDataFromDesc(node);
         if (data.isPresent()) {
             return data;
         } else {
@@ -116,6 +124,10 @@ public abstract class ImageData {
             result = result.substring(index + 1);
         }
         index = result.lastIndexOf("/");
+        if (index >= 0 && result.length() > index) {
+            result = result.substring(index + 1);
+        }
+        index = result.lastIndexOf(":");
         if (index >= 0 && result.length() > index) {
             result = result.substring(index + 1);
         }

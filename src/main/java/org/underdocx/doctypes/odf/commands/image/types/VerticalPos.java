@@ -22,42 +22,37 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-package org.underdocx.doctypes.odf.modifiers.backgroundimage;
+package org.underdocx.doctypes.odf.commands.image.types;
 
-import org.underdocx.common.types.Resource;
+import org.underdocx.common.tools.Convenience;
 
-public interface OdfBackgroundImageModifierData {
+import java.util.Optional;
 
-    Resource getResource();
+public enum VerticalPos {
+    BELOW("below"),
+    BOTTOM("bottom"),
+    FROM_TOP("from-top"),
+    MIDDLE("middle"),
+    TOP("top");
+    
+    private final String type;
 
-    String getFileName();
+    VerticalPos(String type) {
+        this.type = type;
+    }
 
-    String getNewDesc();
+    public static Optional<VerticalPos> fromString(String string) {
+        return Convenience.buildOptional(result -> {
+            for (VerticalPos VerticalPos : VerticalPos.values()) {
+                if (VerticalPos.type.equals(string)) {
+                    result.value = VerticalPos;
+                    break;
+                }
+            }
+        });
+    }
 
-    class Simple implements OdfBackgroundImageModifierData {
-        Resource resource;
-        String newName;
-        String newDesc;
-
-        public Simple(Resource resource, String newName, String newDesc) {
-            this.resource = resource;
-            this.newName = newName;
-            this.newDesc = newDesc;
-        }
-
-        @Override
-        public Resource getResource() {
-            return resource;
-        }
-
-        @Override
-        public String getFileName() {
-            return newName;
-        }
-
-        @Override
-        public String getNewDesc() {
-            return newDesc;
-        }
+    public String toString() {
+        return type;
     }
 }

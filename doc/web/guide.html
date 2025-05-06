@@ -1343,6 +1343,132 @@ ${EndIf}</code></pre>
         Note that images must contain unique names. Ensure the textual commands are different and
         attribute "title" provides unique names after replacement.
 
+          <h3>${CreateImage}-Command</h3>
+
+          Command <code-word>CreateImage</code-word> enables creation of new images based on textual placeholders instead
+          of existing images (see <code-word>${Image}</code-word>).
+          To layout a new image by attributes is quite complex and can lead to invalid configurations, therefore
+          try to use the <code-word>${Image}</code-word> command to replace an existing image if possible. On the
+          other hand <code-word>CreateImage</code-word> enables dynamic image creation within (dynamic) text and
+          provides more flexibility.
+          <br>
+          The following attributes are derived from ODF specification, see
+          <a href="https://www.oasis-open.org/2021/06/16/opendocument-v1-3-oasis-standard-published">OpenDocument V1.3 OASIS Standard</a>.
+          Allowed values and attribute combinations will not be documented here.
+
+          <table>
+              <tr>
+                  <th>
+                      Attribute
+                  </th>
+                  <th>
+                      Description
+                  </th>
+                  <th>
+                      Link to Spec
+                  </th>
+              </tr>
+              <tr>
+                  <td>uri</td>
+                  <td>Location of the image, alternative to resource/base64/data</td>
+                  <td></td>
+              </tr>
+              <tr>
+                  <td>base64</td>
+                  <td>Base64 encoded data of the image, alternative to resource/uri/data</td>
+                  <td></td>
+              </tr>
+              <tr>
+                  <td>data</td>
+                  <td>Binary data of the image, alternative to resource/uri/base64</td>
+                  <td></td>
+              </tr>
+              <tr>
+                  <td>resource</td>
+                  <td>Image resource object, alternative to uri/base64/data</td>
+                  <td></td>
+              </tr>
+              <tr>
+                  <td>unit</td>
+                  <td>Length unit to use for attribute y, x, width, height</td>
+                  <td></td>
+              </tr>
+              <tr>
+                  <td>name</td>
+                  <td>Image name</td>
+                  <td><a target="_blank" href="https://docs.oasis-open.org/office/OpenDocument/v1.3/os/part3-schema/OpenDocument-v1.3-os-part3-schema.html#__RefHeading__1417130_253892949">draw:name</a></td>
+              </tr>
+              <tr>
+                  <td>desc</td>
+                  <td>Image desc</td>
+                  <td><a target="_blank" href="https://docs.oasis-open.org/office/OpenDocument/v1.3/os/part3-schema/OpenDocument-v1.3-os-part3-schema.html#element-svg_desc">svg:desc</a></td>
+              </tr>
+              <tr>
+                  <td>wrap</td>
+                  <td>specifies how text is displayed around the image</td>
+                  <td><a target="_blank" href="https://docs.oasis-open.org/office/OpenDocument/v1.3/os/part3-schema/OpenDocument-v1.3-os-part3-schema.html#__RefHeading__1420248_253892949">style:wrap</a></td>
+              </tr>
+              <tr>
+                  <td>anchor</td>
+                  <td> specifies how the image is bound to a text document</td>
+                  <td><a target="_blank" href="https://docs.oasis-open.org/office/OpenDocument/v1.3/os/part3-schema/OpenDocument-v1.3-os-part3-schema.html#__RefHeading__1418758_253892949">text:anchor-type</a></td>
+              </tr>
+              <tr>
+                  <td>x</td>
+                  <td>specifies a default horizontal position</td>
+                  <td><a target="_blank" href="https://docs.oasis-open.org/office/OpenDocument/v1.3/os/part3-schema/OpenDocument-v1.3-os-part3-schema.html#__RefHeading__1420288_253892949">svg:x</a></td>
+              </tr>
+              <tr>
+                  <td>y</td>
+                  <td>specifies a default vertical position</td>
+                  <td><a target="_blank" href="https://docs.oasis-open.org/office/OpenDocument/v1.3/os/part3-schema/OpenDocument-v1.3-os-part3-schema.html#__RefHeading__1420292_253892949">svg:y</a></td>
+              </tr>
+              <tr>
+                  <td>width</td>
+                  <td>specifies a default width (optional when height is set)</td>
+                  <td><a target="_blank" href="https://docs.oasis-open.org/office/OpenDocument/v1.3/os/part3-schema/OpenDocument-v1.3-os-part3-schema.html#__RefHeading__1420296_253892949">svg:width</a></td>
+              </tr>
+              <tr>
+                  <td>height</td>
+                  <td>specifies a default height (optional when width is set)</td>
+                  <td><a target="_blank" href="https://docs.oasis-open.org/office/OpenDocument/v1.3/os/part3-schema/OpenDocument-v1.3-os-part3-schema.html#__RefHeading__1420278_253892949">svg:height</a></td>
+              </tr>
+              <tr>
+                  <td>horizontalPos</td>
+                  <td>specifies the horizontal alignment</td>
+                  <td><a target="_blank" href="https://docs.oasis-open.org/office/OpenDocument/v1.3/os/part3-schema/OpenDocument-v1.3-os-part3-schema.html#__RefHeading__1420028_253892949">style:horizontal-pos</a></td>
+              </tr>
+              <tr>
+                  <td>horizontalRel</td>
+                  <td>specifies the area against which the horizontal position of the image is positioned</td>
+                  <td><a target="_blank" href="https://docs.oasis-open.org/office/OpenDocument/v1.3/os/part3-schema/OpenDocument-v1.3-os-part3-schema.html#property-style_horizontal-rel">style:horizontal-rel</a></td>
+              </tr>
+              <tr>
+                  <td>verticalPos</td>
+                  <td>specifies the vertical alignment of an image relative to a specific area</td>
+                  <td><a target="_blank" href="https://docs.oasis-open.org/office/OpenDocument/v1.3/os/part3-schema/OpenDocument-v1.3-os-part3-schema.html#__RefHeading__1420242_253892949">style:vertical-pos</a></td>
+              </tr>
+              <tr>
+                  <td>verticalRel</td>
+                  <td>specifies the area against which the vertical position of the image is positioned</td>
+                  <td><a target="_blank" href="https://docs.oasis-open.org/office/OpenDocument/v1.3/os/part3-schema/OpenDocument-v1.3-os-part3-schema.html#__RefHeading__1420244_253892949">style:vertical-rel</a></td>
+              </tr>
+          </table>
+          Example:
+          <pre class="padding"><code>ABC${CreateImage
+   $resource:"resource",
+   anchor:"as-char",
+   horizontalPos:"from-left",
+   horizontalRel:"page",
+   verticalPos:"middle",
+   verticalRel:"text",
+   width:12,
+   unit:"pt",
+   name:"Image",
+   desc:"Generated Image"
+}DEF</code></pre>
+creates:
+          <div class="imageContainer"><img src="images/guide/createImage.png" /></div>
         <h3>${Date}-Command</h3>
 
         This command simplifies printing dates. It uses the <code-word>value</code-word>-attribute to read

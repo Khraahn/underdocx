@@ -81,6 +81,7 @@ public class OdgEngine extends AbstractOdfEngine<OdgContainer, OdfGraphicsDocume
         engine.registerCommandHandler(parameters, new CalcCommandHandler<>(modifiers));
         engine.registerCommandHandler(parameters, new CreateCommandHandler<>(modifiers));
         engine.registerCommandHandler(parameters, new CopyCommandHandler<>(modifiers));
+        engine.registerCommandHandler(parameters, new CreateImageCommandHandler<>(modifiers));
     }
 
     @Override

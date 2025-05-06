@@ -31,6 +31,7 @@ import org.underdocx.doctypes.DocContainer;
 import org.underdocx.doctypes.modifiers.ModifiersProvider;
 import org.underdocx.doctypes.tools.attrinterpreter.PredefinedAttributesInterpreter;
 import org.underdocx.doctypes.tools.attrinterpreter.single.AttributeInterpreterFactory;
+import org.underdocx.doctypes.tools.datapicker.AttributeDataPicker;
 import org.underdocx.doctypes.tools.datapicker.AttributeNodeDataPicker;
 import org.underdocx.doctypes.tools.datapicker.StringConvertDataPicker;
 import org.underdocx.enginelayers.baseengine.CommandHandlerResult;
@@ -96,5 +97,18 @@ public abstract class AbstractTextualCommandHandler<C extends DocContainer<D>, D
 
     public static void markForEodDeletion(ParametersPlaceholderData data) {
         ((ObjectNode) data.getOrCreateJson()).put(DELETE_ON_EOD_ATTR, true);
+    }
+
+    public <T> T getAttr(AttributeDataPicker<T> picker) {
+        return picker.get(dataAccess, placeholderData.getJson());
+    }
+
+    public <T> T getAttrOrDefault(AttributeDataPicker<T> picker, T defaultValue) {
+        T tmp = picker.get(dataAccess, placeholderData.getJson());
+        return tmp == null ? defaultValue : tmp;
+    }
+
+    public <T> Optional<T> getOptionalAttr(AttributeDataPicker<T> picker) {
+        return picker.optional(dataAccess, placeholderData.getJson());
     }
 }

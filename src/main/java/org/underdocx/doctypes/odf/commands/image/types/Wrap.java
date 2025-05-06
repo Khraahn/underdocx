@@ -22,36 +22,39 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-package org.underdocx.doctypes.tools.datapicker;
+package org.underdocx.doctypes.odf.commands.image.types;
 
-import org.underdocx.enginelayers.modelengine.data.DataNode;
+import org.underdocx.common.tools.Convenience;
 
-import java.util.HashMap;
 import java.util.Optional;
 
-/**
- * A {@link ExtendedDataPicker} that tries to resolve a String from the model or variable registry
- */
-public class OneOfDataPicker<T> extends AbstractConvertDataPicker<T> {
+public enum Wrap {
+    BIGGEST("biggest"),
+    DYNAMIC("dynamic"),
+    LEFT("left"),
+    NONE("none"),
+    PARALLEL("parallel"),
+    RIGHT("right"),
+    RUN_THROUGH("run-through");
 
-    protected HashMap<String, T> enumMap;
+    private final String type;
 
-    @SafeVarargs
-    public OneOfDataPicker(T... allowedValues) {
-        this.enumMap = new HashMap<>();
-        for (T allowedValue : allowedValues) {
-            this.enumMap.put(allowedValue.toString(), allowedValue);
-        }
+    Wrap(String type) {
+        this.type = type;
     }
 
+    public static Optional<Wrap> fromString(String string) {
+        return Convenience.buildOptional(result -> {
+            for (Wrap VerticalPos : Wrap.values()) {
+                if (VerticalPos.type.equals(string)) {
+                    result.value = VerticalPos;
+                    break;
+                }
+            }
+        });
+    }
 
-    @Override
-    protected Optional<T> convert(DataNode<?> node) {
-        String value = node.getValue().toString();
-        if (enumMap.containsKey(value)) {
-            return Optional.of(enumMap.get(value));
-        } else {
-            return Optional.empty();
-        }
+    public String toString() {
+        return type;
     }
 }

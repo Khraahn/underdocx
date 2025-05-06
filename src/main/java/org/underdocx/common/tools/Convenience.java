@@ -57,6 +57,10 @@ public class Convenience {
         return also(new ArrayList<>(), consumer::accept);
     }
 
+    public static <E> E[] buildArray(Consumer<List<E>> consumer) {
+        return (E[]) also(new ArrayList<>(), consumer::accept).toArray();
+    }
+
     public static String buildString(Consumer<StringBuilder> consumer) {
         return also(new StringBuilder(), consumer).toString();
     }
@@ -126,6 +130,18 @@ public class Convenience {
         return also(value, v -> {
             if (filter.test(v)) consumer.accept(v);
         });
+    }
+
+    public static <R, T> R nullCheck(T inValue, Function<T, R> processor, R defaultOnNull) {
+        if (inValue == null) {
+            return defaultOnNull;
+        } else {
+            return processor.apply(inValue);
+        }
+    }
+
+    public static <R, T> R nullCheck(T inValue, Function<T, R> processor) {
+        return nullCheck(inValue, processor, null);
     }
 
     public static <T> boolean all(Collection<T> collection, Predicate<T> predicate) {

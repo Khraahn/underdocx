@@ -22,26 +22,42 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-package org.underdocx.doctypes.tools.datapicker;
+package org.underdocx.doctypes.odf.modifiers.images.backgroundimage;
 
-import java.util.Optional;
+import org.underdocx.common.types.Resource;
 
-/**
- * A {@link DataPicker} is responsible to look up for a value by a given name.
- * There a multiple implementation who this lookup is realized.
- * It returns a {@link DataPickerResult} that contains the resolved value and additional data about
- * the source or problem details
- * <p>
- * Most important is {@link AttributeNodeDataPicker}
- *
- * @param <T>
- */
-public interface DataPicker<T> {
+public interface OdfBackgroundImageModifierData {
 
-    DataPickerResult<T> pickData(String name);
+    Resource getResource();
 
-    default Optional<T> getData(String name) {
-        return pickData(name).optional();
+    String getFileName();
+
+    String getNewDesc();
+
+    class Simple implements OdfBackgroundImageModifierData {
+        Resource resource;
+        String newName;
+        String newDesc;
+
+        public Simple(Resource resource, String newName, String newDesc) {
+            this.resource = resource;
+            this.newName = newName;
+            this.newDesc = newDesc;
+        }
+
+        @Override
+        public Resource getResource() {
+            return resource;
+        }
+
+        @Override
+        public String getFileName() {
+            return newName;
+        }
+
+        @Override
+        public String getNewDesc() {
+            return newDesc;
+        }
     }
-
 }

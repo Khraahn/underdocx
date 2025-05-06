@@ -22,24 +22,20 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-package org.underdocx.doctypes.odf.modifiers.existingimage;
+package org.underdocx.doctypes.odf.modifiers.images.existingimage;
 
 import org.odftoolkit.odfdom.doc.OdfDocument;
-import org.underdocx.common.cache.SelfClearingCache;
 import org.underdocx.common.types.Pair;
 import org.underdocx.common.types.Resource;
 import org.underdocx.doctypes.odf.AbstractOdfContainer;
 import org.underdocx.doctypes.odf.commands.image.ImageData;
 import org.underdocx.doctypes.odf.commands.image.MainImageData;
+import org.underdocx.doctypes.odf.constants.OdfLengthUnit;
+import org.underdocx.doctypes.odf.modifiers.images.tools.CachedImageSize;
 import org.underdocx.enginelayers.baseengine.ModifierResult;
 import org.underdocx.enginelayers.baseengine.Selection;
 import org.underdocx.enginelayers.baseengine.SelectionModifier;
 import org.underdocx.environment.UnderdocxEnv;
-import org.underdocx.environment.err.Problems;
-
-import javax.imageio.ImageIO;
-import java.awt.image.BufferedImage;
-import java.io.IOException;
 
 public class OdfExistingImageModifier<C extends AbstractOdfContainer<D>, D extends OdfDocument> implements SelectionModifier<Selection<C, ImageData, D>, OdfExistingImageModifierData, ModifierResult> {
 
@@ -49,19 +45,19 @@ public class OdfExistingImageModifier<C extends AbstractOdfContainer<D>, D exten
         Pair<Double, Double> importImageWidthHeight;
         String newName = modifierData.getFileName();
         Resource resource = modifierData.getResource();
-        importImageWidthHeight = getDimension(resource);
+        importImageWidthHeight = CachedImageSize.getDimension(resource);
         placeholder.exchangeImage(resource, selection.getDocContainer().getDocument());
 
         UnderdocxEnv.getInstance().logger.trace("new image dimension; " + importImageWidthHeight);
         if (modifierData.getKeepWidth() != null) {
             if (modifierData.getKeepWidth()) {
-                String newHeightUnit = placeholder.getWidthUnit();
+                OdfLengthUnit newHeightUnit = placeholder.getWidthUnit();
                 UnderdocxEnv.getInstance().logger.trace("template image width to keep: " + placeholder.getWidthValue());
                 double height = placeholder.getWidthValue() * importImageWidthHeight.right / importImageWidthHeight.left;
                 UnderdocxEnv.getInstance().logger.trace("calculated height: " + height);
                 placeholder.setHeight(height, newHeightUnit);
             } else {
-                String newWidthUnit = placeholder.getHeightUnit();
+                OdfLengthUnit newWidthUnit = placeholder.getHeightUnit();
                 UnderdocxEnv.getInstance().logger.trace("template image height to keep: " + placeholder.getHeightValue());
                 double width = placeholder.getHeightValue() * importImageWidthHeight.left / importImageWidthHeight.right;
                 UnderdocxEnv.getInstance().logger.trace("calculated width: " + width);
@@ -73,18 +69,5 @@ public class OdfExistingImageModifier<C extends AbstractOdfContainer<D>, D exten
         return ModifierResult.SUCCESS;
     }
 
-    Pair<Double, Double> getDimension(Resource data) {
-        String resourceIdentifier = data.getIdentifier();
-        Pair<Double, Double> result = dimensionCache.getOrCache(resourceIdentifier, () -> {
-            try {
-                BufferedImage bufferedImage = ImageIO.read(data.openStream());
-                return new Pair<>((double) bufferedImage.getWidth(), (double) bufferedImage.getHeight());
-            } catch (IOException e) {
-                return Problems.IO_EXCEPTION.fire(e);
-            }
-        });
-        return result;
-    }
 
-    static SelfClearingCache<String, Pair<Double, Double>> dimensionCache = new SelfClearingCache<>(1000);
 }

@@ -34,7 +34,7 @@ import org.underdocx.enginelayers.modelengine.data.DataNode;
  * It analyses the prefix of the json attribute to find out the
  * source of the value (e.g. "value", "$value", "*value").
  * If source is model or variable registry, the attribute value is used as new name to look up for the value
- * Depending on used prefix this {@link DataPicker} calls {@link AttributeModelDataPicker},
+ * Depending on used prefix this {@link AttributeDataPicker} calls {@link AttributeModelDataPicker},
  * {@link AttributeVarDataPicker} or {@link AttributeValueDataPicker}
  * <p>
  * Examples:

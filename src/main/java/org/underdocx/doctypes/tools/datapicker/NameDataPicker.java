@@ -30,7 +30,7 @@ import org.underdocx.enginelayers.modelengine.data.DataNode;
 
 
 /**
- * A {@link DataPicker} that uses the provided name to lookup in model or variable registry.
+ * A {@link AttributeDataPicker} that uses the provided name to lookup in model or variable registry.
  * The names prefix character is used to determine the {@link AccessType} by using the {@link AccessTypeNameInterpreter}
  * JSON attributes are ignored when "$" or "*" are used as name prefix, when no prefix is used the
  * attribute value of the attribute with the same name is returned, e.g.:

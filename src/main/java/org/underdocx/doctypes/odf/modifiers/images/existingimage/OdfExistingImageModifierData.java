@@ -22,36 +22,50 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-package org.underdocx.doctypes.tools.datapicker;
+package org.underdocx.doctypes.odf.modifiers.images.existingimage;
 
-import org.underdocx.enginelayers.modelengine.data.DataNode;
+import org.underdocx.common.types.Resource;
 
-import java.util.HashMap;
-import java.util.Optional;
+public interface OdfExistingImageModifierData {
 
-/**
- * A {@link ExtendedDataPicker} that tries to resolve a String from the model or variable registry
- */
-public class OneOfDataPicker<T> extends AbstractConvertDataPicker<T> {
+    Resource getResource();
 
-    protected HashMap<String, T> enumMap;
+    String getFileName();
 
-    @SafeVarargs
-    public OneOfDataPicker(T... allowedValues) {
-        this.enumMap = new HashMap<>();
-        for (T allowedValue : allowedValues) {
-            this.enumMap.put(allowedValue.toString(), allowedValue);
+    Boolean getKeepWidth();
+
+    String getNewDesc();
+
+    class Simple implements OdfExistingImageModifierData {
+        Boolean keepWidth;
+        Resource resource;
+        String newName;
+        String newDesc;
+
+        public Simple(Boolean keepWidth, Resource resource, String newName, String newDesc) {
+            this.keepWidth = keepWidth;
+            this.resource = resource;
+            this.newName = newName;
+            this.newDesc = newDesc;
         }
-    }
 
+        @Override
+        public Resource getResource() {
+            return resource;
+        }
 
-    @Override
-    protected Optional<T> convert(DataNode<?> node) {
-        String value = node.getValue().toString();
-        if (enumMap.containsKey(value)) {
-            return Optional.of(enumMap.get(value));
-        } else {
-            return Optional.empty();
+        public String getFileName() {
+            return newName;
+        }
+
+        @Override
+        public Boolean getKeepWidth() {
+            return keepWidth;
+        }
+
+        @Override
+        public String getNewDesc() {
+            return newDesc;
         }
     }
 }

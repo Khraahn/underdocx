@@ -24,34 +24,15 @@ SOFTWARE.
 
 package org.underdocx.doctypes.tools.datapicker;
 
-import org.underdocx.enginelayers.modelengine.data.DataNode;
+import com.fasterxml.jackson.databind.JsonNode;
+import org.underdocx.enginelayers.modelengine.dataaccess.DataAccess;
 
-import java.util.HashMap;
 import java.util.Optional;
 
-/**
- * A {@link ExtendedDataPicker} that tries to resolve a String from the model or variable registry
- */
-public class OneOfDataPicker<T> extends AbstractConvertDataPicker<T> {
+public interface AttributeDataPicker<T> {
 
-    protected HashMap<String, T> enumMap;
+    T get(DataAccess dataAccess, JsonNode jsonNode);
 
-    @SafeVarargs
-    public OneOfDataPicker(T... allowedValues) {
-        this.enumMap = new HashMap<>();
-        for (T allowedValue : allowedValues) {
-            this.enumMap.put(allowedValue.toString(), allowedValue);
-        }
-    }
+    Optional<T> optional(DataAccess dataAccess, JsonNode jsonNode);
 
-
-    @Override
-    protected Optional<T> convert(DataNode<?> node) {
-        String value = node.getValue().toString();
-        if (enumMap.containsKey(value)) {
-            return Optional.of(enumMap.get(value));
-        } else {
-            return Optional.empty();
-        }
-    }
 }
