@@ -1058,7 +1058,15 @@ Item1
 <guide-b>and:[ ... ]</guide-b>
 // condition is only true when at least one of the comma separated condition 
 // elements within [ ] is true, otherwise false
-<guide-b>or:[ ... ]</guide-b></code></pre>
+<guide-b>or:[ ... ]</guide-b>
+// condition is true when variable x is less then y
+<guide-b>less:{$x:y}</guide-b>
+// condition is true when variable x is greater then y
+<guide-b>greater:{$x:y}</guide-b>
+// condition is true when variable x is less or equal y
+<guide-b>lessOrEqual:{$x:y}</guide-b>
+// condition is true when variable x is greater or equal y
+<guide-b>greaterOrEqual:{$x:y}</guide-b></code></pre>
 
         The next example box shows multiple if statements. The <code-word>${Push}</code-word>-command is
         used to define some example variables the if conditions will rely on.
@@ -1066,6 +1074,7 @@ Item1
 
         <pre class="padding"><code>${Push key:"testString", value:"Test"}
 ${Push key:"testTrue", value:true}
+${Push key:"testInt", value:3}
 
 ${If $testString:"Test"} VISIBLE ${EndIf}
 ${If $testString:"xyz"} HIDDEN ${EndIf}
@@ -1086,6 +1095,22 @@ ${If or:[{$testString:"Test"},{$testTrue:false}]}
 ${EndIf}
 
 ${If or:[{$testString:"x"},{$testTrue:false}]}
+  HIDDEN
+${EndIf}
+
+${If less:{$testInt:2}}
+  VISIBLE
+${EndIf}
+
+${If less:{$testInt:3}}
+  HIDDEN
+${EndIf}
+
+${If greater:{$testInt:4}}
+  VISIBLE
+${EndIf}
+
+${If greater:{$testInt:3}}
   HIDDEN
 ${EndIf}</code></pre>
 
