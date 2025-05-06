@@ -50,6 +50,6 @@ public abstract class ConditionElement {
         this.elements.add(conditionElement);
     }
 
-    public abstract boolean eval(Function<Pair<String, Object>, Boolean> valueProvider);
+    public abstract boolean eval(Function<Pair<String, Object>, Integer> comparator);
 
 }

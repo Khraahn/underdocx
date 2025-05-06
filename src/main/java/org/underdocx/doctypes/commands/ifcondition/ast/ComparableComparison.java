@@ -24,24 +24,23 @@ SOFTWARE.
 
 package org.underdocx.doctypes.commands.ifcondition.ast;
 
-import org.underdocx.common.types.Pair;
+import com.fasterxml.jackson.databind.JsonNode;
+import org.underdocx.common.codec.JsonCodec;
 import org.underdocx.environment.err.Problems;
 
-import java.util.function.Function;
+import java.util.Map;
 
-public class Comparison extends ConditionElement {
+public abstract class ComparableComparison extends ConditionElement {
+    protected final String innerKey;
+    protected final Object innerValue;
 
-    private final String path;
-    private final Object value;
-
-    public Comparison(String path, Object value) {
-        this.path = path;
-        this.value = value;
+    public ComparableComparison(JsonNode fieldValue) {
+        Problems.INVALID_IF_CONDITION.check(!fieldValue.isArray() && fieldValue.isContainerNode(), "less", null);
+        Problems.INVALID_IF_CONDITION.check(fieldValue.fields().hasNext(), "less", null);
+        Map.Entry<String, JsonNode> innerKeyValuePair = fieldValue.fields().next();
+        innerKey = innerKeyValuePair.getKey();
+        innerValue = new JsonCodec().getAsObject(innerKeyValuePair.getValue());
     }
 
-    @Override
-    public boolean eval(Function<Pair<String, Object>, Boolean> valueProvider) {
-        Problems.INVALID_IF_CONDITION.check(elements.isEmpty(), path, null);
-        return valueProvider.apply(new Pair<>(path, value));
-    }
+
 }

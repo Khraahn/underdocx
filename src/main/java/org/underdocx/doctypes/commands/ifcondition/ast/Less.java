@@ -24,15 +24,20 @@ SOFTWARE.
 
 package org.underdocx.doctypes.commands.ifcondition.ast;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import org.underdocx.common.types.Pair;
-import org.underdocx.environment.err.Problems;
 
 import java.util.function.Function;
 
-public class Not extends ConditionElement {
+public class Less extends ComparableComparison {
+
+    public Less(JsonNode fieldValue) {
+        super(fieldValue);
+    }
+
     @Override
     public boolean eval(Function<Pair<String, Object>, Integer> valueProvider) {
-        Problems.INVALID_IF_CONDITION.check(elements.size() == 1, "not", null);
-        return !elements.get(0).eval(valueProvider);
+        int comparison = valueProvider.apply(new Pair<>(innerKey, innerValue));
+        return comparison < 0;
     }
 }

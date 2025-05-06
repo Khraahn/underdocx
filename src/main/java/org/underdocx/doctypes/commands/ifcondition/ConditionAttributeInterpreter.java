@@ -35,11 +35,11 @@ import java.util.function.Function;
  * to build an object structure and uses
  * a valueProvider function to evaluate the condition
  */
-public class ConditionAttributeInterpreter implements AttributesInterpreter<Boolean, Function<Pair<String, Object>, Boolean>> {
+public class ConditionAttributeInterpreter implements AttributesInterpreter<Boolean, Function<Pair<String, Object>, Integer>> {
     private ConditionASTAttributeInterpreter astAttributeInterpreter = new ConditionASTAttributeInterpreter();
 
     @Override
-    public Boolean interpretAttributes(JsonNode attributes, Function<Pair<String, Object>, Boolean> valueProvider) {
-        return astAttributeInterpreter.interpretAttributes(attributes, null).eval(valueProvider);
+    public Boolean interpretAttributes(JsonNode attributes, Function<Pair<String, Object>, Integer> comparator) {
+        return astAttributeInterpreter.interpretAttributes(attributes, null).eval(comparator);
     }
 }

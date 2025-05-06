@@ -29,10 +29,19 @@ import org.underdocx.environment.err.Problems;
 
 import java.util.function.Function;
 
-public class Not extends ConditionElement {
+public class BoolComparison extends ConditionElement {
+
+    private final String path;
+    private final Object value;
+
+    public BoolComparison(String path, Object value) {
+        this.path = path;
+        this.value = value;
+    }
+
     @Override
-    public boolean eval(Function<Pair<String, Object>, Integer> valueProvider) {
-        Problems.INVALID_IF_CONDITION.check(elements.size() == 1, "not", null);
-        return !elements.get(0).eval(valueProvider);
+    public boolean eval(Function<Pair<String, Object>, Integer> comparator) {
+        Problems.INVALID_IF_CONDITION.check(elements.isEmpty(), path, null);
+        return comparator.apply(new Pair<>(path, value)) == 0;
     }
 }

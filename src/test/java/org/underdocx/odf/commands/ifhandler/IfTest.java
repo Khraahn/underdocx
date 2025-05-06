@@ -181,4 +181,37 @@ public class IfTest extends AbstractOdtTest {
         assertNoPlaceholders(doc);
     }
 
+    @Test
+    public void testLess() {
+        String documentStr = """
+                ${Push key:"testValue", value:3}
+                ${If less:{$testValue:4}} OK ${EndIf}
+                ${If less:{$testValue:3}} INVALID ${EndIf}
+                """;
+        OdtContainer doc = new OdtContainer(documentStr);
+        OdtEngine engine = new OdtEngine();
+        engine.run(doc);
+        //show(doc);
+        assertContains(doc, "OK");
+        assertNotContains(doc, "INVALID");
+        assertNoPlaceholders(doc);
+    }
+
+    @Test
+    public void testGreater() {
+        String documentStr = """
+                ${Push key:"testValue", value:4}
+                ${If greater:{$testValue:3}} OK ${EndIf}
+                ${If greater:{$testValue:4}} INVALID ${EndIf}
+                """;
+        OdtContainer doc = new OdtContainer(documentStr);
+        OdtEngine engine = new OdtEngine();
+        engine.run(doc);
+        //show(doc);
+        assertContains(doc, "OK");
+        assertNotContains(doc, "INVALID");
+        assertNoPlaceholders(doc);
+    }
+
+
 }

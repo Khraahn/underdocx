@@ -31,7 +31,7 @@ import java.util.function.Function;
 
 public class And extends ConditionElement {
     @Override
-    public boolean eval(Function<Pair<String, Object>, Boolean> valueProvider) {
+    public boolean eval(Function<Pair<String, Object>, Integer> valueProvider) {
         Problems.INVALID_IF_CONDITION.checkNot(elements.isEmpty(), "and", null);
         boolean result = true;
         for (ConditionElement element : elements) {

@@ -82,24 +82,28 @@ public class IfCommandHandler<C extends DocContainer<D>, D> extends AbstractText
         return CommandHandlerResult.FACTORY.convert(modiferResult);
     }
 
-    private boolean compare(DataNode<?> foundNode, Object toCompareWith) {
+    private int compare(DataNode<?> foundNode, Object toCompareWith) {
         // ${if $toCheck:null}
         if (toCompareWith == null) {
-            return foundNode == null || foundNode.isNull();
+            return (foundNode == null || foundNode.isNull()) ? 0 : -1;
         }
         if (foundNode == null || foundNode.isNull()) {
-            return false;
+            return -1;
         }
         // ${if $toCheck:[]}
         if (toCompareWith instanceof Collection<?> collection) {
-            return (collection.size() == 0 && foundNode.getType() == DataNode.DataNodeType.LIST && foundNode.getSize() == 0);
+            return ((collection.size() == 0 && foundNode.getType() == DataNode.DataNodeType.LIST && foundNode.getSize() == 0)) ? 0 : -1;
         }
         if (foundNode.getType() != DataNode.DataNodeType.LEAF) {
-            return false;
+            return -1;
         }
         // ${if $toCheck:2}
         // ${if $toCheck:"unknown"}
         // ${if $toCheck:true}
-        return toCompareWith.equals(foundNode.getValue());
+        Object foundNodeValue = foundNode.getValue();
+        if (foundNodeValue.getClass() == toCompareWith.getClass() && foundNodeValue instanceof Comparable<?>) {
+            return ((Comparable) foundNodeValue).compareTo(toCompareWith);
+        }
+        return toCompareWith.equals(foundNodeValue) ? 0 : -1;
     }
 }

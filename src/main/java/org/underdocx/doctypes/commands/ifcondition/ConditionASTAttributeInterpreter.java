@@ -47,7 +47,9 @@ public class ConditionASTAttributeInterpreter implements AttributesInterpreter<C
             case "not" -> conditionElement = Convenience.also(new Not(), not -> appendChildren(fieldValue, not));
             case "and" -> conditionElement = Convenience.also(new And(), and -> appendChildren(fieldValue, and));
             case "or" -> conditionElement = Convenience.also(new Or(), or -> appendChildren(fieldValue, or));
-            default -> conditionElement = new Comparison(fieldName, new JsonCodec().getAsObject(fieldValue));
+            case "less" -> conditionElement = new Less(fieldValue);
+            case "greater" -> conditionElement = new Greater(fieldValue);
+            default -> conditionElement = new BoolComparison(fieldName, new JsonCodec().getAsObject(fieldValue));
         }
         return conditionElement;
     }
