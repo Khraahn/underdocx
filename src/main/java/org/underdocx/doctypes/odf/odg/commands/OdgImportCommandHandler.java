@@ -34,7 +34,7 @@ import java.io.IOException;
 
 public class OdgImportCommandHandler extends AbstractOdgOdpImportCommandHandler<OdgContainer, OdfGraphicsDocument> {
 
-    public OdgImportCommandHandler(ModifiersProvider modifiers) {
+    public OdgImportCommandHandler(ModifiersProvider<OdgContainer, OdfGraphicsDocument> modifiers) {
         super(modifiers);
     }
 

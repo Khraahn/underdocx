@@ -78,11 +78,11 @@ public class MarkupNodeBuilder {
             case "u" -> newStyle.underline = true;
             case "font" -> {
                 String size = childToCopy.getAttribute("size");
-                if (size != null && !size.isBlank()) {
+                if (!size.isBlank()) {
                     newStyle.fontSize = size.trim();
                 }
                 String name = childToCopy.getAttribute("name");
-                if (name != null && !name.isBlank()) {
+                if (!name.isBlank()) {
                     newStyle.fontName = name.trim();
                 }
             }

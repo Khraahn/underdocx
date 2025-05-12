@@ -24,21 +24,5 @@ SOFTWARE.
 
 package org.underdocx.doctypes.odf.tools.importer.rules;
 
-public class ProviderDescr {
-    private TagPathDescr pathDescr;
-    private AttrDescr providingAttr;
-
-    public ProviderDescr(TagPathDescr pathDescr, AttrDescr providingAttr) {
-        this.pathDescr = pathDescr;
-        this.providingAttr = providingAttr;
-    }
-
-
-    public TagPathDescr getPathDescr() {
-        return pathDescr;
-    }
-
-    public AttrDescr getProvidingAttr() {
-        return providingAttr;
-    }
+public record ProviderDescr(TagPathDescr pathDescr, AttrDescr providingAttr) {
 }

@@ -60,9 +60,9 @@ public class DataPickerResult<T> {
         }
     }
 
-    public T value;
-    public ResultSource source;
-    public ResultType type;
+    public final T value;
+    public final ResultSource source;
+    public final ResultType type;
 
     public boolean isResolved() {
         return type.resolved;

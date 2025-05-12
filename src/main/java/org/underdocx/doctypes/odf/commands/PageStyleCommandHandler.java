@@ -51,12 +51,12 @@ public class PageStyleCommandHandler<C extends DocContainer<D>, D> extends Abstr
     public static final String ATTR_PB_BEFORE = "pageBreakBefore";
     public static final String ATTR_PB_AFTER = "pageBreakAfter";
 
-    private static PredefinedDataPicker<String> masterPagePicker = new StringConvertDataPicker().asPredefined(ATTR_MASTER_PAGE);
-    private static PredefinedDataPicker<Integer> pageNumberPicker = new IntegerDataPicker().asPredefined(ATTR_PAGE_NUMBER);
-    private static PredefinedDataPicker<Boolean> pageBreakAfterPicker = new BooleanDataPicker().asPredefined(ATTR_PB_AFTER);
-    private static PredefinedDataPicker<Boolean> pageBreakBeforePicker = new BooleanDataPicker().asPredefined(ATTR_PB_BEFORE);
+    private static final PredefinedDataPicker<String> masterPagePicker = new StringConvertDataPicker().asPredefined(ATTR_MASTER_PAGE);
+    private static final PredefinedDataPicker<Integer> pageNumberPicker = new IntegerDataPicker().asPredefined(ATTR_PAGE_NUMBER);
+    private static final PredefinedDataPicker<Boolean> pageBreakAfterPicker = new BooleanDataPicker().asPredefined(ATTR_PB_AFTER);
+    private static final PredefinedDataPicker<Boolean> pageBreakBeforePicker = new BooleanDataPicker().asPredefined(ATTR_PB_BEFORE);
 
-    public PageStyleCommandHandler(ModifiersProvider modifiers) {
+    public PageStyleCommandHandler(ModifiersProvider<C, D> modifiers) {
         super(KEYS, modifiers);
     }
 

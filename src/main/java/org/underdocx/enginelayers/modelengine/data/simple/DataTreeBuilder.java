@@ -60,7 +60,7 @@ public class DataTreeBuilder {
      * add methods to add data on the same level.
      */
     public static class DataNodeWrapper {
-        private AbstractDataNode<?> currentNode;
+        private final AbstractDataNode<?> currentNode;
         private DataNodeWrapper parent = null;
 
         protected DataNodeWrapper(AbstractDataNode<?> node) {
@@ -180,7 +180,7 @@ public class DataTreeBuilder {
             }
         }
 
-        public DataNode build() {
+        public DataNode<?> build() {
             if (parent != null) {
                 return parent.build();
             } else {

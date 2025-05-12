@@ -38,14 +38,13 @@ public class OdfDateCommandHandler<C extends DocContainer<D>, D> extends DateCom
 
     private static final PredefinedDataPicker<String> templateCellPicker = new StringConvertDataPicker().asPredefined("templateCell");
 
-    public OdfDateCommandHandler(ModifiersProvider modifiers) {
+    public OdfDateCommandHandler(ModifiersProvider<C, D> modifiers) {
         super(modifiers);
     }
 
     @Override
     protected void handleCell(LocalDate date) {
-        templateCellPicker.pickData(dataAccess, placeholderData.getJson()).optional().ifPresent(templateCell -> {
-            new OdfTableCellModifier<C, D>().modify(selection, new TableCellModifierData.Simple(date, templateCell));
-        });
+        templateCellPicker.pickData(dataAccess, placeholderData.getJson()).optional().ifPresent(templateCell ->
+                new OdfTableCellModifier<C, D>().modify(selection, new TableCellModifierData.Simple(date, templateCell)));
     }
 }

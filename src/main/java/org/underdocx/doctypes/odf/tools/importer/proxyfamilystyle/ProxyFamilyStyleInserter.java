@@ -34,7 +34,7 @@ import java.util.HashSet;
 
 public class ProxyFamilyStyleInserter {
 
-    private AbstractOdfContainer<?> doc;
+    private final AbstractOdfContainer<?> doc;
     private HashSet<Node> proxyNodes;
 
     public ProxyFamilyStyleInserter(AbstractOdfContainer<?> doc) {

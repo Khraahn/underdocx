@@ -145,7 +145,7 @@ public class AbstractOdtTest extends AbstractTest {
      */
 
 
-    protected static TextNodeInterpreter testTextNodeInterpreter = new AbstractOdfTextNodeInterpreter() {
+    protected static final TextNodeInterpreter testTextNodeInterpreter = new AbstractOdfTextNodeInterpreter() {
 
         @Override
         protected String getNodeName(OdfElement name) {
@@ -160,7 +160,7 @@ public class AbstractOdtTest extends AbstractTest {
 
         @Override
         public Node createTextContainer(Node parent) {
-            return Convenience.also(parent.getOwnerDocument().createElement("span"), span -> parent.appendChild(span));
+            return Convenience.also(parent.getOwnerDocument().createElement("span"), parent::appendChild);
         }
 
         @Override

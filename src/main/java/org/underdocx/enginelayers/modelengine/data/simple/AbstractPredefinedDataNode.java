@@ -107,16 +107,16 @@ public abstract class AbstractPredefinedDataNode<T> extends AbstractDataNode<T> 
      * unpacks the {@link DataNode} Tree and creates a new tree of {@link Map}, {@link List} and Leaf objects
      */
     @SuppressWarnings("unchecked")
-    public static Object convert(DataNode node) {
+    public static Object convert(DataNode<?> node) {
         if (node.getValue() == null) {
             return null;
         } else if (node.getType() == DataNodeType.MAP) {
             return Convenience.also(new HashMap<String, Object>(),
-                    map -> ((Map<String, DataNode>) node.getValue()).forEach(
+                    map -> ((Map<String, DataNode<?>>) node.getValue()).forEach(
                             (key, value) -> map.put(key, convert(value))));
         } else if (node.getType() == DataNodeType.LIST) {
             return Convenience.also(new ArrayList<>(),
-                    list -> ((List<DataNode>) node.getValue()).forEach(
+                    list -> ((List<DataNode<?>>) node.getValue()).forEach(
                             value -> list.add(convert(value))));
         } else {
             return node.getValue();

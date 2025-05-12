@@ -75,9 +75,7 @@ public abstract class AbstractOdfContainer<T extends OdfDocument> extends Abstra
     public OdfContentDom getContentDom() {
         try {
             return getDocument().getContentDom();
-        } catch (SAXException e) {
-            return Problems.ODF_FRAMEWORK_OPERARTION_EXCEPTION.fire(e);
-        } catch (IOException e) {
+        } catch (SAXException | IOException e) {
             return Problems.ODF_FRAMEWORK_OPERARTION_EXCEPTION.fire(e);
         }
     }
@@ -85,9 +83,7 @@ public abstract class AbstractOdfContainer<T extends OdfDocument> extends Abstra
     public OdfStylesDom getStylesDom() {
         try {
             return getDocument().getStylesDom();
-        } catch (SAXException e) {
-            return Problems.ODF_FRAMEWORK_OPERARTION_EXCEPTION.fire(e);
-        } catch (IOException e) {
+        } catch (SAXException | IOException e) {
             return Problems.ODF_FRAMEWORK_OPERARTION_EXCEPTION.fire(e);
         }
     }

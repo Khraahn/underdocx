@@ -63,18 +63,16 @@ public class DataPath {
         return codec.getTextContent(this);
     }
 
-    public static Optional<DataNode<?>> interpret(String path, DataNode node) {
+    public static Optional<DataNode<?>> interpret(String path, DataNode<?> node) {
         return new DataPath(path).interpret(node);
     }
 
     public Optional<DataNode<?>> interpret(DataNode<?> rootDataNode) {
-        return Convenience.buildOptional(rootDataNode, w -> {
-            elements.forEach(element -> {
-                if (w.value != null) {
-                    w.value = element.interpret(w.value).orElse(null);
-                }
-            });
-        });
+        return Convenience.buildOptional(rootDataNode, w -> elements.forEach(element -> {
+            if (w.value != null) {
+                w.value = element.interpret(w.value).orElse(null);
+            }
+        }));
     }
 
     public void interpret(String path) {

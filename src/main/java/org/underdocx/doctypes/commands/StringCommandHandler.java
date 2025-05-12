@@ -42,9 +42,9 @@ import java.util.regex.Pattern;
 
 public class StringCommandHandler<C extends DocContainer<D>, D> extends AbstractStringCommandHandler<C, D> {
 
-    PredefinedDataPicker<String> directDataPicker = new StringConvertDataPicker().asPredefined(null);
-    PredefinedDataPicker<String> valueDataPicker = new StringConvertDataPicker().asPredefined("value");
-    Predicate<JsonNode> isDirectAccess = jsonNode ->
+    final PredefinedDataPicker<String> directDataPicker = new StringConvertDataPicker().asPredefined(null);
+    final PredefinedDataPicker<String> valueDataPicker = new StringConvertDataPicker().asPredefined("value");
+    final Predicate<JsonNode> isDirectAccess = jsonNode ->
             (AccessTypeJsonNameInterpreter.DEFAULT.interpretAttributes(jsonNode, "value") == AccessType.MISSING_ACCESS);
 
     public final static Regex KEYS = new Regex(Pattern.quote("String"));
@@ -54,8 +54,8 @@ public class StringCommandHandler<C extends DocContainer<D>, D> extends Abstract
     }
 
     @Override
-    protected StringOutputModuleConfig getConfig() {
-        return new StringOutputModuleConfig() {
+    protected StringOutputModuleConfig<C, D> getConfig() {
+        return new StringOutputModuleConfig<>() {
             @Override
             public PredefinedDataPicker<String> getDataPicker() {
                 return new PredefinedDataPicker<>() {
@@ -74,7 +74,7 @@ public class StringCommandHandler<C extends DocContainer<D>, D> extends Abstract
             }
 
             @Override
-            public ModifiersProvider getModifiers() {
+            public ModifiersProvider<C, D> getModifiers() {
                 return modifiers;
             }
         };

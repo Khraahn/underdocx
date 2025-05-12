@@ -53,7 +53,7 @@ public abstract class AbstractDataNode<T> implements DataNode<T> {
 
     abstract protected AbstractDataNode<?> create(Object object);
 
-    public static <T> AbstractDataNode<T> convertToAbstractDataNode(DataNode<T> node) {
+    public static <T> AbstractDataNode<T> ensureAbstractDataNode(DataNode<T> node) {
         if (node instanceof AbstractDataNode<T> result) {
             return result;
         } else {

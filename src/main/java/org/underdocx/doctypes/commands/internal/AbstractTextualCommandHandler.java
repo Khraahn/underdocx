@@ -45,7 +45,7 @@ import java.util.regex.Pattern;
 
 public abstract class AbstractTextualCommandHandler<C extends DocContainer<D>, D> extends AbstractCommandHandler<C, ParametersPlaceholderData, D> {
 
-    protected Regex allowedKeys;
+    protected final Regex allowedKeys;
     protected TextualPlaceholderToolkit<ParametersPlaceholderData> placeholderToolkit = null;
 
     protected AbstractTextualCommandHandler(Regex keys, ModifiersProvider<C, D> modifiersProvider) {

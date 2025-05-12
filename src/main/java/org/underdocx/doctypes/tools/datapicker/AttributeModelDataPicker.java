@@ -34,7 +34,7 @@ import java.util.Optional;
 
 public class AttributeModelDataPicker extends AbstractDataPicker<DataNode<?>, String> {
 
-    private ModelNameDataPicker nameDataPicker = new ModelNameDataPicker();
+    private final ModelNameDataPicker nameDataPicker = new ModelNameDataPicker();
 
     public AttributeModelDataPicker() {
         this(new AccessTypeJsonNameInterpreter(), AttributeInterpreterFactory.createStringAttributeInterpreter(true));

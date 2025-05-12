@@ -43,7 +43,7 @@ import java.util.function.Predicate;
 public class TagPathDescr {
 
     public boolean isContent = true;
-    public List<NodeFilter> path;
+    public final List<NodeFilter> path;
 
     public TagPathDescr(boolean isContent, List<NodeFilter> path) {
         this.isContent = isContent;
@@ -54,7 +54,7 @@ public class TagPathDescr {
         this(isContent, Arrays.asList(path));
     }
 
-    public List<Node> findAll(AbstractOdfContainer container) {
+    public List<Node> findAll(AbstractOdfContainer<?> container) {
         return Convenience.buildList(result -> {
             if (isContent) {
                 findAll(result, container.getContentDom(), new ArrayList<>(path));
@@ -65,7 +65,7 @@ public class TagPathDescr {
     }
 
     private void findAll(List<Node> resultList, Node currentNode, List<Predicate<Node>> remaining) {
-        if (remaining.size() == 0) {
+        if (remaining.isEmpty()) {
             resultList.add(currentNode);
         } else {
             Predicate<Node> tagDescr = remaining.remove(0);
@@ -81,7 +81,7 @@ public class TagPathDescr {
         return new TagPathDescr(this.isContent, Convenience.also(new ArrayList<>(this.path), list -> list.remove(list.size() - 1)));
     }
 
-    public Optional<Node> findFirst(AbstractOdfContainer container) {
+    public Optional<Node> findFirst(AbstractOdfContainer<?> container) {
         return Convenience.buildOptional(result -> {
             if (isContent) {
                 result.value = findFirst(container.getContentDom(), new ArrayList<>(path));
@@ -92,7 +92,7 @@ public class TagPathDescr {
     }
 
     private Node findFirst(Node currentNode, List<Predicate<Node>> remaining) {
-        if (remaining.size() == 0) {
+        if (remaining.isEmpty()) {
             return currentNode;
         } else {
             Predicate<Node> tagDescr = remaining.remove(0);
@@ -105,7 +105,7 @@ public class TagPathDescr {
         return null;
     }
 
-    public void copy(AbstractOdfContainer source, AbstractOdfContainer target) {
+    public void copy(AbstractOdfContainer<?> source, AbstractOdfContainer<?> target) {
         List<Node> allToCopy = findAll(source);
         getParent().findFirst(target).ifPresent(targetParent -> {
             Document targetOwnerDocument = targetParent.getOwnerDocument();

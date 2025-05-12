@@ -49,12 +49,10 @@ public class AccessTypeNameInterpreter extends AbstractAttributeInterpreter<Acce
             accessType = AccessType.ACCESS_MODEL_BY_NAME;
         } else if (configuration != null && configuration.equals(AccessType.ACCESS_VARIABLE_BY_NAME.rename(configuration))) {
             accessType = AccessType.ACCESS_VARIABLE_BY_NAME;
-        } else if (configuration != null && configuration.equals(configuration)) {
+        } else if (configuration != null) {
             accessType = AccessType.ACCESS_ATTR_VALUE;
-        } else if (configuration == null) {
-            accessType = AccessType.ACCESS_CURRENT_MODEL_NODE;
         } else {
-            accessType = AccessType.MISSING_ACCESS;
+            accessType = AccessType.ACCESS_CURRENT_MODEL_NODE;
         }
         return accessType;
     }

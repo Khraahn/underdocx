@@ -43,9 +43,9 @@ import java.util.ArrayList;
 
 public class StartAtNodeTest extends AbstractOdtTest {
 
-    private class IncVarPlaceholder extends AbstractTextualCommandHandler<OdtContainer, OdfTextDocument> {
+    private static class IncVarPlaceholder extends AbstractTextualCommandHandler<OdtContainer, OdfTextDocument> {
         protected IncVarPlaceholder() {
-            super("IncVar", new OdfModifiersProvider());
+            super("IncVar", new OdfModifiersProvider<>());
         }
 
         @Override
@@ -57,11 +57,11 @@ public class StartAtNodeTest extends AbstractOdtTest {
         }
     }
 
-    private class ReplaceWithIncVarAndProceesAtNextNode extends AbstractTextualCommandHandler<OdtContainer, OdfTextDocument> {
+    private static class ReplaceWithIncVarAndProceesAtNextNode extends AbstractTextualCommandHandler<OdtContainer, OdfTextDocument> {
         private int replaceCounter = 0;
 
         protected ReplaceWithIncVarAndProceesAtNextNode() {
-            super("ReplaceWithIncVar", new OdfModifiersProvider());
+            super("ReplaceWithIncVar", new OdfModifiersProvider<>());
         }
 
         @Override

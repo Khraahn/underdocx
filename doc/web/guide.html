@@ -86,12 +86,12 @@
         <pre class="highlightjs highlight nowrap"><code class="language-xml hljs" data-lang="xml">&lt;dependency&gt;
     &lt;groupId&gt;io.github.winterrifier&lt;/groupId&gt;
     &lt;artifactId&gt;underdocx&lt;/artifactId&gt;
-    &lt;version&gt;0.11.2&lt;/version&gt;
+    &lt;version&gt;0.12.0&lt;/version&gt;
 &lt;/dependency&gt;</code></pre>
 
         When you use Gradle your dependency should look like this
 
-        <pre class="padding"><code>implementation 'io.github.winterrifier:underdocx:0.11.2'</code></pre>
+        <pre class="padding"><code>implementation 'io.github.winterrifier:underdocx:0.12.0'</code></pre>
 
         You can also visit <a href="https://central.sonatype.com/artifact/io.github.winterrifier/underdocx"
           target="_blank">
@@ -335,7 +335,6 @@ engine.setModel(model);</code></pre>
         ODG Graphics documents (LibreOffice Draw).
         These documents consists of pages that contain multiple graphic elements.
         The Engine will process the contained placeholders from first to last page and from background to foreground.
-        It supports all commands except <code-word>${Export}</code-word>
         Tip: Create an initial page that defines some initial useful ${Alias} commands and ${For}-Loops referring tables
         by their names and let this page remove with help of the ${Remove} command.
 
@@ -1172,7 +1171,9 @@ ${EndIf}</code></pre>
               page
             </td>
             <td>
-              For ODG and ODP files select the page name to import
+              Can be used for ODP/ODG templates: select the page name to import. The content of the page
+                will be imported to the page that hold this command. When this attribute is missing all
+                pages are imported.
             </td>
           </tr>
             <tr>
@@ -1235,7 +1236,11 @@ ${EndIf}</code></pre>
         the content of the current document will be appended to the master document.
         ${Export} is currently only available for ODT documents.
 
-        <table>
+        Exported pages in ODP and ODG document will be inserted after last page or after the page marked
+          with <code-word>${ExportTarget}</code-word>. If required target pages have to be removed separately,
+          see command <code-word>Remove</code-word>.
+
+          <table>
           <tr>
             <th>Attribute</th>
             <th>Description</th>
@@ -1803,7 +1808,7 @@ ${myDate of:"yyyy/MM/dd"}
 ${myDate v:"2024-12-12"}</code></pre>
 
         <h3>${Remove}-Command</h3>
-        Removes the paragraph, page or table which contains this placeholder. In ODS, ODG and ODS documents
+        Removes the paragraph, page, text-box or table which contains this placeholder. In ODS, ODG and ODS documents
         you could use this command to create a temporary area with commands that will be removed in the
         final document. In this temporary area you can define ${Alias} commands or ${For} statements
         addressing remote tables. When attribute "name" is used, the table or page that has this name
@@ -1820,7 +1825,7 @@ ${myDate v:"2024-12-12"}</code></pre>
           </tr>
           <tr>
             <td>type</td>
-            <td>type of element that shall be removed, allowed values are page, table and paragraph </td>
+            <td>type of element that shall be removed, allowed values are page, table, box and paragraph </td>
           </tr>
           <tr>
             <td>now</td>
@@ -1831,7 +1836,7 @@ ${myDate v:"2024-12-12"}</code></pre>
           </tr>
             <tr>
                 <td>name</td>
-                <td>Optional: Remove the table or page that has this name. If not set the parent page or table
+                <td>Optional: Remove the table or page that has this name. If not set the parent page, text-box or table
                     will be removed that contains this placeholder
                 </td>
             </tr>
@@ -2175,23 +2180,23 @@ ${Calc key:"x", a:2.0, operator:"*", $b:"i"}${$x}</code></pre>
         <pre class="padding"><code>git clone https://github.com/winterrifier/underdocx.git
 cd underdocx
 mvn clean install -P buildCli</code></pre>
-        After execution there will be a target folder that contains "underdocx-0.11.2-jar-with-dependencies.jar".
+        After execution there will be a target folder that contains "underdocx-0.12.0-jar-with-dependencies.jar".
         You can use this jar file as CLI tool.
 
         <h3>Usage of CLI</h3>
         To call Underdocx by CLI use this syntax:
         <pre
-          class="padding"><code>java -jar underdocx-0.11.2-jar-with-dependencies.jar &lt;engineType&gt; &lt;templateFile&gt; &lt;outFile&gt; &lt;dataJsonFile&gt;</code></pre>
+          class="padding"><code>java -jar underdocx-0.12.0-jar-with-dependencies.jar &lt;engineType&gt; &lt;templateFile&gt; &lt;outFile&gt; [dataJsonFile1] [dataJsonFile2] ...</code></pre>
         For example:
         <pre
-          class="padding"><code>java -jar underdocx-0.11.2-jar-with-dependencies.jar ODT template.odt out.odt data.json</code></pre>
-        Note: It is also possible to add custom Placeholder/Command implementations (see section Custom Extensions).
+          class="padding"><code>java -jar underdocx-0.12.0-jar-with-dependencies.jar ODT template.odt out.odt data.json</code></pre>
+          Note: It is also possible to add custom Placeholder/Command implementations (see section Custom Extensions).
         Implement interface <code-word>EngineProvider</code-word>,
         include your classes to the classpath, execute <code-word>UnderdocxEngineRunder</code-word> as main class and
         use the qualified
         class name of your provider as first argument (instead of ODT)
         <h3>Underdocx Json format</h3>
-        The Json file (last argument) contains all data the Template Engine requires to fill the template document. It
+        The optional Json files (last arguments) contains all data the Template Engine requires to fill the template document. It
         may contain
         the data model, variables, alias definitions and String replacements. The schema is as follows:
         <pre class="padding"><code>{
@@ -2207,7 +2212,8 @@ mvn clean install -P buildCli</code></pre>
     }, ...
   ]
 }</code></pre>
-
+Note: When multiple data files are used, the data of a json file might overwrite data of a previous file,
+          for example if variables have the same name or multiple models are specified.
 
 
         <h2>Custom Extensions</h2>
@@ -2283,15 +2289,13 @@ engine.run(doc);</code></pre>
 
       @Override
       protected CommandHandlerResult tryExecuteTextualCommand() {
-          DataPickerResult&lt;Integer&gt; aValue = new IntegerDataPicker().asPredefined("a").pickData(dataAccess, placeholderData.getJson());
-          DataPickerResult&lt;Integer&gt; bValue = new IntegerDataPicker().asPredefined("b").pickData(dataAccess, placeholderData.getJson());
-          DataPickerResult&lt;String&gt; target = new StringConvertDataPicker().asPredefined("target").pickData(dataAccess, placeholderData.getJson());
-          if (!(aValue.isResolvedNotNull() && bValue.isResolvedNotNull() && target.isResolvedNotNull()))
-              return CommandHandlerResult.IGNORED;
-          int result = aValue.value + bValue.value;
-          dataAccess.pushVariable(target.value, new LeafDataNode&lt;&gt;(result));
-          DeletePlaceholderModifier.modify(selection.getNode());
-          return CommandHandlerResult.EXECUTED;
+          int aValue = getAttr(new IntegerDataPicker().expectedAttr("a"));
+          int bValue = getAttr(new IntegerDataPicker().expectedAttr("b"));
+          String target = getAttr(new StringConvertDataPicker().expectedAttr("target"));
+          int result = aValue + bValue;
+          dataAccess.pushVariable(target, new LeafDataNode&lt;&gt;(result));
+          new OdfDeletePlaceholderModifier().modify(selection.getNode(), DeletePlaceholderModifierData.DEFAULT);
+          return CommandHandlerResult.EXECUTED_PROCEED;
       }
   }
 

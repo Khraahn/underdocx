@@ -33,9 +33,9 @@ public interface OdfImportModifierData {
 
     Node getRefNode();
 
-    AbstractOdfContainer getSourceDoc();
+    AbstractOdfContainer<?> getSourceDoc();
 
-    AbstractOdfContainer getTargetDoc();
+    AbstractOdfContainer<?> getTargetDoc();
 
     boolean filterInitialPageStyle();
 
@@ -43,16 +43,20 @@ public interface OdfImportModifierData {
 
     Optional<String> getSourcePageName();
 
+    ImportType getImportType();
+
     class Simple implements OdfImportModifierData {
 
         private final boolean filterInitialPageStyle;
         private final Node targetRefNodeInsertAfter;
-        private final AbstractOdfContainer target;
-        private final AbstractOdfContainer source;
+        private final AbstractOdfContainer<?> target;
+        private final AbstractOdfContainer<?> source;
         private final String sourceResourceName;
         private final String pageNameOrNull;
+        private final ImportType importType;
 
-        public Simple(String sourceResourceName, AbstractOdfContainer source, AbstractOdfContainer target, Node targetRefNodeInsertAfter, boolean filterInitialPageStyle, String pageNameOrNull) {
+        public Simple(ImportType importType, String sourceResourceName, AbstractOdfContainer<?> source, AbstractOdfContainer<?> target, Node targetRefNodeInsertAfter, boolean filterInitialPageStyle, String pageNameOrNull) {
+            this.importType = importType;
             this.sourceResourceName = sourceResourceName;
             this.source = source;
             this.target = target;
@@ -67,12 +71,12 @@ public interface OdfImportModifierData {
         }
 
         @Override
-        public AbstractOdfContainer getSourceDoc() {
+        public AbstractOdfContainer<?> getSourceDoc() {
             return source;
         }
 
         @Override
-        public AbstractOdfContainer getTargetDoc() {
+        public AbstractOdfContainer<?> getTargetDoc() {
             return target;
         }
 
@@ -90,5 +94,11 @@ public interface OdfImportModifierData {
         public Optional<String> getSourcePageName() {
             return Optional.ofNullable(pageNameOrNull);
         }
+
+        @Override
+        public ImportType getImportType() {
+            return importType;
+        }
     }
+
 }

@@ -42,7 +42,7 @@ public class DateTimeTest extends AbstractOdtTest {
                 A ${Date}
                 B ${Date outputFormat:"dd.MM.yyyy"}
                 C ${Date value:"2022-03-04",  outputFormat:"dd.MM.yyyy"}
-                D ${Date value:"04.03.2022",  inputFormat:"dd.MM.yyyy", outputFormat:"dd.MM.yyyy"}                
+                D ${Date value:"04.03.2022",  inputFormat:"dd.MM.yyyy", outputFormat:"dd.MM.yyyy"}
                 """;
         OdtContainer doc = new OdtContainer(content);
         OdtEngine engine = new OdtEngine();
@@ -63,7 +63,7 @@ public class DateTimeTest extends AbstractOdtTest {
                 A ${Time}
                 B ${Time outputFormat:"HH.mm.ss"}
                 C ${Time value:"2011-12-02 08:42:11", outputFormat:"HH.mm.ss"}
-                D ${Time value:"2011-12-02 08.42.11", inputFormat:"yyyy-MM-dd HH.mm.ss", outputFormat:"HH.mm"}                
+                D ${Time value:"2011-12-02 08.42.11", inputFormat:"yyyy-MM-dd HH.mm.ss", outputFormat:"HH.mm"}
                 """;
         OdtContainer doc = new OdtContainer(content);
         OdtEngine engine = new OdtEngine();
@@ -98,8 +98,6 @@ public class DateTimeTest extends AbstractOdtTest {
     public void testDateTimeFormatter() {
         parseTime("yyyy-MM-dd HH:mm", "1999-12-02 12:30");
         parseTime("yyyy-MM-dd HH:mm:ss", "1999-12-02 12:30:42");
-        // parseTime("HH:mm:ss", "12:30:42");
-        // parseTime("yyyy-MM-dd", "1999-12-02");
 
         testReformat("yyyy-MM-dd HH:mm", "HH:mm", "1999-12-02 12:30", "12:30");
     }

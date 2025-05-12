@@ -62,7 +62,7 @@ public abstract class AbstractEngine<C extends DocContainer<D>, D> implements En
     public abstract void registerParametersCommandHandler(MCommandHandler<C, ParametersPlaceholderData, D> commandHandler);
 
 
-    public void setModel(DataNode tree) {
+    public void setModel(DataNode<?> tree) {
         getEngine().setModelRoot(tree);
     }
 
@@ -75,7 +75,7 @@ public abstract class AbstractEngine<C extends DocContainer<D>, D> implements En
         getEngine().setModelRoot(new ReflectionDataNode(object, resolver));
     }
 
-    public void pushVariable(String name, DataNode tree) {
+    public void pushVariable(String name, DataNode<?> tree) {
         getEngine().pushVariable(name, tree);
     }
 
@@ -108,9 +108,8 @@ public abstract class AbstractEngine<C extends DocContainer<D>, D> implements En
         DataNode<?> variablesNode = mainNode.getProperty(propertyName);
         if (variablesNode != null) {
             Problems.IMPORT_DATA_SCHEMA.checkNot(variablesNode.isNull() || variablesNode.getType() != DataNode.DataNodeType.MAP);
-            variablesNode.getPropertyNames().forEach(key -> {
-                consumer.accept(key, variablesNode.getProperty(key));
-            });
+            variablesNode.getPropertyNames().forEach(key ->
+                    consumer.accept(key, variablesNode.getProperty(key)));
         }
     }
 
@@ -126,9 +125,8 @@ public abstract class AbstractEngine<C extends DocContainer<D>, D> implements En
 
     public void importData(DataNode<?> importData) {
         parseMapWithKeyValueProperties(importData, "variables", this::pushVariable);
-        parseMapWithKeyValueProperties(importData, "stringReplacements", (key, value) -> {
-            registerStringReplacement(key, parseString(value));
-        });
+        parseMapWithKeyValueProperties(importData, "stringReplacements", (key, value) ->
+                registerStringReplacement(key, parseString(value)));
         DataNode<?> model = importData.getProperty("model");
         if (model != null) {
             Problems.IMPORT_DATA_SCHEMA.checkNot(model.isNull() || model.getType() != DataNode.DataNodeType.MAP);
@@ -144,9 +142,8 @@ public abstract class AbstractEngine<C extends DocContainer<D>, D> implements En
                 String newKey = parseString(aliasListItem, "replaceKey");
                 AliasCommandHandler.AliasData aliasData = new AliasCommandHandler.AliasData(key, newKey);
                 parseMapWithKeyValueProperties(aliasListItem, "attributes", aliasData::addAttribute);
-                parseMapWithKeyValueProperties(aliasListItem, "attrReplacements", (propName, propVal) -> {
-                    aliasData.addAttrReplacement(propName, parseString(propVal));
-                });
+                parseMapWithKeyValueProperties(aliasListItem, "attrReplacements", (propName, propVal) ->
+                        aliasData.addAttrReplacement(propName, parseString(propVal)));
                 registerAlias(aliasData);
             }
         }

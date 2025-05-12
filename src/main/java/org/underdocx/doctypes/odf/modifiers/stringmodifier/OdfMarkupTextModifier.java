@@ -42,7 +42,7 @@ import java.util.Map;
 
 public class OdfMarkupTextModifier<C extends DocContainer<D>, D> implements SelectionModifier<Selection<C, ParametersPlaceholderData, D>, String, ModifierResult> {
 
-    private static MarkupXMLDOMParser parser = new MarkupXMLDOMParser();
+    private static final MarkupXMLDOMParser parser = new MarkupXMLDOMParser();
 
     @Override
     public ModifierResult modify(Selection<C, ParametersPlaceholderData, D> selection, String modifierData) {

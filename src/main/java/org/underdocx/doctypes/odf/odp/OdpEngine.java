@@ -30,6 +30,7 @@ import org.underdocx.doctypes.odf.AbstractOdfEngine;
 import org.underdocx.doctypes.odf.commands.*;
 import org.underdocx.doctypes.odf.commands.forcommand.ForListCommandHandler;
 import org.underdocx.doctypes.odf.commands.forcommand.ForRowsCommandHandler;
+import org.underdocx.doctypes.odf.odp.commands.OdpExportCommandHandler;
 import org.underdocx.doctypes.odf.odp.commands.OdpImportCommandHandler;
 import org.underdocx.doctypes.odf.tools.placeholder.OdfDefaultPlaceholderFactory;
 import org.underdocx.doctypes.tools.placeholder.GenericTextualPlaceholderFactory;
@@ -72,6 +73,7 @@ public class OdpEngine extends AbstractOdfEngine<OdpContainer, OdfPresentationDo
         engine.registerCommandHandler(parameters, new CreateCommandHandler<>(modifiers));
         engine.registerCommandHandler(parameters, new CopyCommandHandler<>(modifiers));
         engine.registerCommandHandler(parameters, new CreateImageCommandHandler<>(modifiers));
+        engine.registerCommandHandler(parameters, new OdpExportCommandHandler(modifiers));
     }
 
     public OdpEngine() {

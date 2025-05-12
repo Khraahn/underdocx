@@ -27,7 +27,7 @@ package org.underdocx.doctypes.tools.attrinterpreter.missingdata;
 import java.util.HashMap;
 
 public class MissingDataConfig {
-    private HashMap<MissingDataSzenario, MissingDataStrategy> map = new HashMap<>();
+    private final HashMap<MissingDataSzenario, MissingDataStrategy> map = new HashMap<>();
     public String fallback;
 
     public MissingDataConfig() {

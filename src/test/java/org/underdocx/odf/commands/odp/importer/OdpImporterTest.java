@@ -45,4 +45,17 @@ public class OdpImporterTest extends AbstractOdpTest {
         Assertions.assertThat(findTextNode(graphics, "$")).isFalse();
 
     }
+
+    @Test
+    public void testImportAll() throws IOException {
+        OdpContainer graphics = new OdpContainer(readResource("ImportPagesTest.odp"));
+        OdpEngine engine = new OdpEngine();
+        engine.pushLeafVariable("toImportAll", readResource("ToImportAll.odp"));
+        engine.run(graphics);
+        //show(graphics);
+        Assertions.assertThat(findTextNode(graphics, "Import Page 1")).isTrue();
+        Assertions.assertThat(findTextNode(graphics, "Import Page 2")).isTrue();
+        Assertions.assertThat(findTextNode(graphics, "$")).isFalse();
+
+    }
 }

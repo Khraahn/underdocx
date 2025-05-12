@@ -26,27 +26,10 @@ package org.underdocx.doctypes.modifiers.tablecell;
 
 public interface TableCellModifierData {
 
-    Object getValue();
+    Object value();
 
-    String getStyleCellAddress();
+    String styleCellAddress();
 
-    class Simple implements TableCellModifierData {
-        Object value;
-        String styleCellAddress;
-
-        public Simple(Object value, String styleCellAddress) {
-            this.value = value;
-            this.styleCellAddress = styleCellAddress;
-        }
-
-        @Override
-        public Object getValue() {
-            return value;
-        }
-
-        @Override
-        public String getStyleCellAddress() {
-            return styleCellAddress;
-        }
+    record Simple(Object value, String styleCellAddress) implements TableCellModifierData {
     }
 }

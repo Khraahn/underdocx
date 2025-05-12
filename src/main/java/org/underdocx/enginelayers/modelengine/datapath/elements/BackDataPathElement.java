@@ -41,13 +41,13 @@ public class BackDataPathElement implements DataPathElement {
     }
 
     @Override
-    public Optional<DataNode> interpret(DataNode node) {
+    public Optional<DataNode<?>> interpret(DataNode<?> node) {
         return Optional.ofNullable(node.getParent());
     }
 
     @Override
     public void interpret(List<DataPathElement> elementsWithoutThis) {
-        if (elementsWithoutThis.size() > 0) {
+        if (!elementsWithoutThis.isEmpty()) {
             elementsWithoutThis.remove(elementsWithoutThis.size() - 1);
         }
     }

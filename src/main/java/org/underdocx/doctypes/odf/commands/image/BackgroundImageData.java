@@ -42,15 +42,14 @@ public class BackgroundImageData extends ImageData {
     }
 
     public static Optional<BackgroundImageData> createBackgroundImageData(Node node) {
-        return Convenience.buildOptional(result -> {
-            getBaseData(node).ifPresent(baseData -> {
-                Node parentNode = node.getParentNode();
-                if (parentNode instanceof DrawShapeElementBase) {
-                    DrawShapeElementBase drawCustomShapeElement = (DrawShapeElementBase) parentNode;
-                    result.value = new BackgroundImageData(drawCustomShapeElement, baseData.left, baseData.right);
-                }
-            });
-        });
+        return Convenience.buildOptional(result ->
+                getBaseData(node).ifPresent(baseData -> {
+                    Node parentNode = node.getParentNode();
+                    if (parentNode instanceof DrawShapeElementBase) {
+                        DrawShapeElementBase drawCustomShapeElement = (DrawShapeElementBase) parentNode;
+                        result.value = new BackgroundImageData(drawCustomShapeElement, baseData.left, baseData.right);
+                    }
+                }));
     }
 
     public DrawShapeElementBase getDrawShapeElement() {

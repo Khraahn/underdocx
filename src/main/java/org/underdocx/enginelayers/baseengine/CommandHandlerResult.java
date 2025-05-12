@@ -78,8 +78,8 @@ public interface CommandHandlerResult {
     }
 
     class DefaultResult implements CommandHandlerResult {
-        private Node node;
-        private CommandHandlerResultType type;
+        private final Node node;
+        private final CommandHandlerResultType type;
 
         public DefaultResult(CommandHandlerResultType type) {
             this.node = null;

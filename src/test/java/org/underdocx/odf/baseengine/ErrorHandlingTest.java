@@ -39,9 +39,8 @@ public class ErrorHandlingTest extends AbstractOdtTest {
         String jsonString = """
                 {"a":"Test"}
                 """;
-        String documentStr = "" +
-                "A ${@b onNull:\"fallback\" fallback \"hugo\"} A          \n" + // A hugo A
-                "";
+        // A hugo A
+        String documentStr = "A ${@b onNull:\"fallback\" fallback \"hugo\"} A          \n";
         OdtContainer doc = new OdtContainer(documentStr);
         OdtEngine engine = new OdtEngine();
         engine.setModel(new MapDataNode(jsonString));

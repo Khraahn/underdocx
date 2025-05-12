@@ -40,7 +40,7 @@ public class CalcCommandHandlerTest extends AbstractOdtTest {
                 A ${Calc $a:"i1", $b:"i2", operator:"+", key:"result"}${$result}
                 B ${Calc $a:"i4", $b:"i2", operator:"-", key:"result"}${$result}
                 C ${Calc $a:"i2", $b:"i4", operator:"*", key:"result"}${$result}
-                E ${Calc $a:"i4", $b:"i1", operator:"/", key:"result"}${$result}                
+                E ${Calc $a:"i4", $b:"i1", operator:"/", key:"result"}${$result}
                 """;
         OdtContainer doc = new OdtContainer(content);
         OdtEngine engine = new OdtEngine();
@@ -58,7 +58,7 @@ public class CalcCommandHandlerTest extends AbstractOdtTest {
                 A ${Calc $a:"i1", $b:"i2", operator:"+", key:"result"}${$result}
                 B ${Calc $a:"i4", $b:"i2", operator:"-", key:"result"}${$result}
                 C ${Calc $a:"i2", $b:"i4", operator:"*", key:"result"}${$result}
-                E ${Calc $a:"i4", $b:"i1", operator:"/", key:"result"}${$result}                
+                E ${Calc $a:"i4", $b:"i1", operator:"/", key:"result"}${$result}
                 """;
         OdtContainer doc = new OdtContainer(content);
         OdtEngine engine = new OdtEngine();

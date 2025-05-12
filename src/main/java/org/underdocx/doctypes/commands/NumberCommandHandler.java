@@ -54,10 +54,9 @@ public class NumberCommandHandler<C extends DocContainer<D>, D> extends Abstract
     private static final PredefinedDataPicker<Number> summandPicker = new NumberDataPicker().asPredefined("summand");
     private static final PredefinedDataPicker<Boolean> useModifiedForCellPicker = new BooleanDataPicker().asPredefined("useModified");
 
-    private static final PredefinedDataPicker<String> templateCellPicker = new StringConvertDataPicker().asPredefined("templateCell");
     public static final String DEFAULT_FORMAT = "#,###.##";
 
-    public NumberCommandHandler(ModifiersProvider modifiers) {
+    public NumberCommandHandler(ModifiersProvider<C, D> modifiers) {
         super(KEY, modifiers);
     }
 
@@ -91,7 +90,7 @@ public class NumberCommandHandler<C extends DocContainer<D>, D> extends Abstract
     private class NumberStringPicker extends AbstractConvertDataPicker<String> {
 
         @Override
-        protected Optional<String> convert(DataNode node) {
+        protected Optional<String> convert(DataNode<?> node) {
             return Convenience.buildOptional(result -> new NumberPicker().convert(node).ifPresent(pair -> result.value = pair.left));
         }
     }
@@ -99,7 +98,7 @@ public class NumberCommandHandler<C extends DocContainer<D>, D> extends Abstract
     public class NumberPicker extends AbstractConvertDataPicker<Pair<String, Number>> {
 
         @Override
-        protected Optional<Pair<String, Number>> convert(DataNode node) {
+        protected Optional<Pair<String, Number>> convert(DataNode<?> node) {
             return Convenience.buildOptional(result -> {
                 String format = formatPicker.pickData(dataAccess, placeholderData.getJson()).optional().orElse(null);
                 String langCode = langPicker.pickData(dataAccess, placeholderData.getJson()).optional().orElse(null);

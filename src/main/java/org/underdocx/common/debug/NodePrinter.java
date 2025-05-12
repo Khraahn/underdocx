@@ -25,8 +25,8 @@ SOFTWARE.
 package org.underdocx.common.debug;
 
 
-import org.underdocx.common.tree.Nodes;
 import org.underdocx.common.tools.Convenience;
+import org.underdocx.common.tree.Nodes;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 
@@ -53,9 +53,7 @@ public class NodePrinter {
         if (printParent) {
             List<Node> path = Convenience.reverse(Nodes.getAncestors(node, null));
             path.remove(path.size() - 1);
-            path.forEach(element -> {
-                sb.append("<").append(element.getNodeName()).append(">");
-            });
+            path.forEach(element -> sb.append("<").append(element.getNodeName()).append(">"));
         }
         if (printAttributes) {
             sb.append("<").append(node.getNodeName());

@@ -46,7 +46,7 @@ public class ModelEngine<C extends DocContainer<D>, D> extends BaseEngine<C, D> 
 
     protected DataNode<?> modelRoot = new MapDataNode();
     protected DataPath currentDataPath = new DataPath();
-    protected Map<String, Deque<DataNode<?>>> variableStacks = new HashMap<>();
+    protected final Map<String, Deque<DataNode<?>>> variableStacks = new HashMap<>();
 
 
     public ModelEngine() {
@@ -67,9 +67,9 @@ public class ModelEngine<C extends DocContainer<D>, D> extends BaseEngine<C, D> 
     }
 
     @Override
-    protected Selection createSelection(PlaceholdersProvider provider, Node node, EngineAccess engineAccess) {
-        Selection baseSelection = super.createSelection(provider, node, engineAccess);
-        return new MSelectionWrapper(baseSelection, new ModelEngineDataAccess());
+    protected <P> Selection<C, P, D> createSelection(PlaceholdersProvider<C, P, D> provider, Node node, EngineAccess<C, D> engineAccess) {
+        Selection<C, P, D> baseSelection = super.createSelection(provider, node, engineAccess);
+        return new MSelectionWrapper<>(baseSelection, new ModelEngineDataAccess());
     }
 
     public <X> BaseEngine<C, D> registerCommandHandler(PlaceholdersProvider<C, X, D> provider, MCommandHandler<C, X, D> commandHandler) {
@@ -111,10 +111,10 @@ public class ModelEngine<C extends DocContainer<D>, D> extends BaseEngine<C, D> 
 
         public Optional<DataNode<?>> getVariable(String name) {
             DataPath path = new DataPath(name);
-            DataPathElement first = (path.getElements().size() > 0) ? path.getElements().get(0) : null;
+            DataPathElement first = (!path.getElements().isEmpty()) ? path.getElements().get(0) : null;
             Problems.INVALID_VALUE.checkNot(
                     (first == null || !(first instanceof PropertyDataPathElement)), null, name);
-            Deque<DataNode<?>> stack = variableStacks.get(((PropertyDataPathElement) first).getProperty());
+            Deque<DataNode<?>> stack = variableStacks.get(((PropertyDataPathElement) first).property());
             if (stack != null) {
                 DataNode<?> varValue = stack.peek();
                 if (varValue != null) {

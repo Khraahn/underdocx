@@ -41,7 +41,7 @@ public class ModelVariableTest extends AbstractOdtTest {
                   },
                   "c":{
                     "d":["Test2", "Test3"]
-                  }            
+                  }
                 }
                 """;
         String documentStr = "" +
@@ -66,7 +66,7 @@ public class ModelVariableTest extends AbstractOdtTest {
                   },
                   "c":{
                     "d":["Test2", "Test3"]
-                  }            
+                  }
                 }
                 """;
         String documentStr = "" +
@@ -90,7 +90,7 @@ public class ModelVariableTest extends AbstractOdtTest {
                   },
                   "c":{
                     "d":["Test2", "Test3"]
-                  }            
+                  }
                 }
                 """;
         String documentStr = "" +

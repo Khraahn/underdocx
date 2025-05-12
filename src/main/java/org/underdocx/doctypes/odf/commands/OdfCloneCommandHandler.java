@@ -32,7 +32,7 @@ import org.underdocx.doctypes.odf.AbstractOdfContainer;
 import org.underdocx.doctypes.odf.constants.OdfAttribute;
 import org.underdocx.doctypes.odf.ods.OdsContainer;
 import org.underdocx.doctypes.odf.tools.OdfNodes;
-import org.underdocx.doctypes.tools.datapicker.PredefinedDataPicker;
+import org.underdocx.doctypes.tools.datapicker.AttributeDataPicker;
 import org.underdocx.doctypes.tools.datapicker.StringConvertDataPicker;
 import org.underdocx.enginelayers.baseengine.CommandHandlerResult;
 import org.underdocx.environment.err.Problems;
@@ -42,9 +42,9 @@ import java.util.Optional;
 
 public class OdfCloneCommandHandler<C extends AbstractOdfContainer<D>, D extends OdfDocument> extends AbstractTextualCommandHandler<C, D> {
 
-    private static PredefinedDataPicker<String> nameAttr = new StringConvertDataPicker().asPredefined("name");
-    private static PredefinedDataPicker<String> newNameAttr = new StringConvertDataPicker().asPredefined("newName");
-    private static PredefinedDataPicker<String> beforeAttr = new StringConvertDataPicker().asPredefined("insertBefore");
+    private static final AttributeDataPicker<String> nameAttr = new StringConvertDataPicker().expectedAttr("name");
+    private static final AttributeDataPicker<String> newNameAttr = new StringConvertDataPicker().expectedAttr("newName");
+    private static final AttributeDataPicker<String> beforeAttr = new StringConvertDataPicker().optionalAttr("insertBefore");
 
     public OdfCloneCommandHandler(ModifiersProvider<C, D> modifiersProvider) {
         super("Clone", modifiersProvider);
@@ -62,9 +62,9 @@ public class OdfCloneCommandHandler<C extends AbstractOdfContainer<D>, D extends
 
     @Override
     protected CommandHandlerResult tryExecuteTextualCommand() {
-        String pageNameToClone = Problems.MISSING_VALUE.get(nameAttr.pickData(dataAccess, placeholderData.getJson()).optional(), "name");
-        String newPageName = Problems.MISSING_VALUE.get(newNameAttr.pickData(dataAccess, placeholderData.getJson()).optional(), "newName");
-        String insertBeforeName = beforeAttr.pickData(dataAccess, placeholderData.getJson()).optional().orElse(null);
+        String pageNameToClone = getAttr(nameAttr);
+        String newPageName = getAttr(newNameAttr);
+        String insertBeforeName = getAttr(beforeAttr);
         Node toClone = Problems.CANT_FIND_DOM_ELEMENT.get(findElement(pageNameToClone), "element to clone");
         Node cloned = toClone.cloneNode(true);
         if (selection.getDocContainer() instanceof OdsContainer) {

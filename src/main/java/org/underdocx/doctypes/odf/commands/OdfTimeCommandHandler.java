@@ -37,14 +37,13 @@ import java.time.LocalDateTime;
 public class OdfTimeCommandHandler<C extends DocContainer<D>, D> extends TimeCommandHandler<C, D> {
     private static final PredefinedDataPicker<String> templateCellPicker = new StringConvertDataPicker().asPredefined("templateCell");
 
-    public OdfTimeCommandHandler(ModifiersProvider modifiers) {
+    public OdfTimeCommandHandler(ModifiersProvider<C, D> modifiers) {
         super(modifiers);
     }
 
     @Override
     protected void handleCell(LocalDateTime time) {
-        templateCellPicker.pickData(dataAccess, placeholderData.getJson()).optional().ifPresent(templateCell -> {
-            new OdfTableCellModifier<C, D>().modify(selection, new TableCellModifierData.Simple(time, templateCell));
-        });
+        templateCellPicker.pickData(dataAccess, placeholderData.getJson()).optional().ifPresent(templateCell ->
+                new OdfTableCellModifier<C, D>().modify(selection, new TableCellModifierData.Simple(time, templateCell)));
     }
 }

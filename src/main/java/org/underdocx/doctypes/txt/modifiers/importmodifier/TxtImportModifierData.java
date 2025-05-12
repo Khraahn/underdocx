@@ -29,38 +29,15 @@ import org.underdocx.doctypes.txt.TxtContainer;
 
 public interface TxtImportModifierData {
 
-    TxtContainer getImportDoc();
+    TxtContainer importDoc();
 
-    Regex getBeginFragmentRegex();
+    Regex beginFragmentRegex();
 
-    Regex getEndFragmentRegex();
+    Regex endFragmentRegex();
 
-    class Simple implements TxtImportModifierData {
+    record Simple(TxtContainer importDoc, Regex beginFragmentRegex,
+                  Regex endFragmentRegex) implements TxtImportModifierData {
 
-        private TxtContainer importDoc;
-        private Regex beginFragmentRegex;
-        private Regex endFragmentRegex;
-
-        public Simple(TxtContainer importDoc, Regex beginFragmentRegex, Regex endFragmentRegex) {
-            this.importDoc = importDoc;
-            this.beginFragmentRegex = beginFragmentRegex;
-            this.endFragmentRegex = endFragmentRegex;
-        }
-
-        @Override
-        public TxtContainer getImportDoc() {
-            return importDoc;
-        }
-
-        @Override
-        public Regex getBeginFragmentRegex() {
-            return beginFragmentRegex;
-        }
-
-        @Override
-        public Regex getEndFragmentRegex() {
-            return endFragmentRegex;
-        }
     }
 
 }

@@ -44,7 +44,7 @@ public class ModelCommandHandler<C extends DocContainer<D>, D> extends AbstractT
     public static final String ATTR_PREFIX = "activeModelPathPrefix";
     public static final String ATTR_VALUE = "value";
 
-    public ModelCommandHandler(ModifiersProvider modifiers) {
+    public ModelCommandHandler(ModifiersProvider<C, D> modifiers) {
         super(KEYS, modifiers);
     }
 

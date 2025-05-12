@@ -73,11 +73,11 @@ public class TxtPlaceholderStylesTest extends AbstractTxtTest {
     void testXMLTemplate() {
         String content = """
                 <html><body>
-                  <ul>                    
+                  <ul>
                     <!--${For value:["Hans", "Otto", "Gerda"], $as:"item"}-->
                       <li><!--${$item}--></li>
                     <!--${EndFor}-->
-                  </ul>      
+                  </ul>
                 </body></html>
                 """;
         TxtContainer doc = new TxtContainer(content);

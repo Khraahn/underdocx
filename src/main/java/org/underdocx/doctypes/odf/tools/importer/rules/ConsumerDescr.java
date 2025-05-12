@@ -27,8 +27,8 @@ package org.underdocx.doctypes.odf.tools.importer.rules;
 import org.w3c.dom.Node;
 
 public class ConsumerDescr {
-    private NodeFilter tagDescr;
-    private AttrDescr consumerAttr;
+    private final NodeFilter tagDescr;
+    private final AttrDescr consumerAttr;
 
     public ConsumerDescr(NodeFilter tagDescr, AttrDescr consumerAttr) {
         this.tagDescr = tagDescr;

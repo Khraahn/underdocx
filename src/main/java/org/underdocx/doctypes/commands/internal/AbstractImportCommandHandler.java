@@ -47,11 +47,11 @@ public abstract class AbstractImportCommandHandler<C extends DocContainer<D>, D>
 
     private static final PredefinedDataPicker<Boolean> useCacheAttr = new BooleanDataPicker().asPredefined(CACHE_ATTR);
 
-    public AbstractImportCommandHandler(ModifiersProvider modifiers) {
+    public AbstractImportCommandHandler(ModifiersProvider<C, D> modifiers) {
         super(KEYS, modifiers);
     }
 
-    HashMap<String, byte[]> cache = new HashMap<>();
+    protected final HashMap<String, byte[]> cache = new HashMap<>();
 
     @Override
     protected CommandHandlerResult tryExecuteTextualCommand() {

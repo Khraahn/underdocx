@@ -35,12 +35,12 @@ public class ShortVarStringCommandHandler<C extends DocContainer<D>, D> extends 
 
     public final static Regex KEYS = new Regex("[$]\\S+");
 
-    public ShortVarStringCommandHandler(ModifiersProvider modifiers) {
+    public ShortVarStringCommandHandler(ModifiersProvider<C, D> modifiers) {
         super(KEYS, modifiers);
     }
 
     @Override
-    protected StringOutputModuleConfig getConfig() {
+    protected StringOutputModuleConfig<C, D> getConfig() {
         String pathStr = placeholderData.getKey().substring(1);
         return buildConfig(pathStr, new VarNameDataPicker());
     }

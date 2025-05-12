@@ -73,7 +73,7 @@ public class ActivePrefixDataPath extends DataPath {
         if (prefix != null
                 && subPath.size() > 0
                 && subPath.get(0).getType() == DatalPathElementType.PROPERTY
-                && ((PropertyDataPathElement) subPath.get(0)).getProperty().equals(prefix)) {
+                && ((PropertyDataPathElement) subPath.get(0)).property().equals(prefix)) {
             subPath.remove(0);
         }
         super.interpret(subPath);

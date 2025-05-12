@@ -38,7 +38,7 @@ import org.underdocx.enginelayers.baseengine.CommandHandlerResult;
 public class OdfNumberCommandHandler<C extends DocContainer<D>, D> extends NumberCommandHandler<C, D> {
     private static final PredefinedDataPicker<String> templateCellPicker = new StringConvertDataPicker().asPredefined("templateCell");
 
-    public OdfNumberCommandHandler(ModifiersProvider modifiers) {
+    public OdfNumberCommandHandler(ModifiersProvider<C, D> modifiers) {
         super(modifiers);
     }
 

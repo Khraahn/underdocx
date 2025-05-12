@@ -43,7 +43,7 @@ public class RootDataPathElement implements DataPathElement {
     }
 
     @Override
-    public Optional<DataNode> interpret(DataNode node) {
+    public Optional<DataNode<?>> interpret(DataNode<?> node) {
         return Convenience.buildOptional(node, w -> {
             while (w.value.getParent() != null) {
                 w.value = w.value.getParent();

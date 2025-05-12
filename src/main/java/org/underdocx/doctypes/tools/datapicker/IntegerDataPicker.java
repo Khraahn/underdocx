@@ -34,7 +34,7 @@ import java.util.Optional;
 public class IntegerDataPicker extends AbstractConvertDataPicker<Integer> {
 
     @Override
-    protected Optional<Integer> convert(DataNode node) {
+    protected Optional<Integer> convert(DataNode<?> node) {
         Object value = node.getValue();
         if (value instanceof Integer) {
             return Optional.of((Integer) value);

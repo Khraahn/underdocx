@@ -53,7 +53,7 @@ public class JoinCommandHandler<C extends DocContainer<D>, D> extends AbstractTe
     private static final PredefinedDataPicker<String> truncatedPicker = new StringConvertDataPicker().asPredefined("truncated");
 
 
-    private final MissingDataCommandModule<C, D, DataNode> module = new MissingDataCommandModule<>(new Config());
+    private final MissingDataCommandModule<C, D, DataNode<?>> module = new MissingDataCommandModule<>(new Config());
 
     public JoinCommandHandler(ModifiersProvider<C, D> modifiers) {
         super(KEYS, modifiers);
@@ -61,7 +61,7 @@ public class JoinCommandHandler<C extends DocContainer<D>, D> extends AbstractTe
 
     @Override
     protected CommandHandlerResult tryExecuteTextualCommand() {
-        MissingDataCommandModuleResult<DataNode> moduleResult = module.execute(selection);
+        MissingDataCommandModuleResult<DataNode<?>> moduleResult = module.execute(selection);
         return switch (moduleResult.resultType) {
             case VALUE_RECEIVED ->
                     CommandHandlerResult.FACTORY.convert(modifiers.getReplaceWithTextModifier().modify(selection, getText(moduleResult.value)));
@@ -70,20 +70,20 @@ public class JoinCommandHandler<C extends DocContainer<D>, D> extends AbstractTe
         };
     }
 
-    private String getText(DataNode value) {
+    private String getText(DataNode<?> value) {
         String separator = separatorPicker.pickData(dataAccess, placeholderData.getJson()).optional().orElse(", ");
         String lastSeparator = lastSeparatorPicker.pickData(dataAccess, placeholderData.getJson()).optional().orElse(separator);
         int limit = limitPicker.pickData(dataAccess, placeholderData.getJson()).optional().orElse(-1);
         String truncated = truncatedPicker.pickData(dataAccess, placeholderData.getJson()).optional().orElse("...");
         List<String> stringList = new ArrayList<>();
         for (int i = 0; i < value.getSize(); i++) {
-            DataNode item = value.getProperty(i);
+            DataNode<?> item = value.getProperty(i);
             if (item != null && !item.isNull()) {
                 stringList.add(item.getValue().toString());
             }
         }
 
-        StringBuffer b = new StringBuffer();
+        StringBuilder b = new StringBuilder();
         String delim = "";
         String postfix = "";
         int max = limit > 0 ? Math.min(limit, stringList.size()) : stringList.size();
@@ -103,15 +103,15 @@ public class JoinCommandHandler<C extends DocContainer<D>, D> extends AbstractTe
     }
 
 
-    private class Config implements MissingDataCommandModuleConfig<C, D, DataNode> {
+    private class Config implements MissingDataCommandModuleConfig<C, D, DataNode<?>> {
         @Override
-        public PredefinedDataPicker<DataNode> getDataPicker() {
+        public PredefinedDataPicker<DataNode<?>> getDataPicker() {
             return new ListDataPicker().asPredefined("value");
         }
 
         @Override
-        public Predicate<DataNode> getIsEmptyPredicate() {
-            return (DataNode node) -> node.getSize() == 0;
+        public Predicate<DataNode<?>> getIsEmptyPredicate() {
+            return (DataNode<?> node) -> node.getSize() == 0;
         }
 
         @Override

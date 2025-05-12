@@ -50,10 +50,10 @@ public class BaseEngine<C extends DocContainer<D>, D> {
     protected boolean rescan = true;
     protected boolean initialized = false;
 
-    protected ArrayListValuedHashMap<PlaceholdersProvider<C, ?, D>, CommandHandler<C, ?, D>> registry = new ArrayListValuedHashMap<>();
-    protected HashMap<Class<?>, PlaceholdersProvider<C, ?, D>> reverseRegistry = new HashMap<>();
-    protected IdentityHashMap<PlaceholdersProvider.Factory<C, ?, D>, PlaceholdersProvider<C, ?, D>> factoryProviderMap = new IdentityHashMap<>();
-    protected LinkedHashSet<EngineListener<C, D>> listeners = new LinkedHashSet<>();
+    protected final ArrayListValuedHashMap<PlaceholdersProvider<C, ?, D>, CommandHandler<C, ?, D>> registry = new ArrayListValuedHashMap<>();
+    protected final HashMap<Class<?>, PlaceholdersProvider<C, ?, D>> reverseRegistry = new HashMap<>();
+    protected final IdentityHashMap<PlaceholdersProvider.Factory<C, ?, D>, PlaceholdersProvider<C, ?, D>> factoryProviderMap = new IdentityHashMap<>();
+    protected final LinkedHashSet<EngineListener<C, D>> listeners = new LinkedHashSet<>();
     protected Enumerator<Pair<PlaceholdersProvider<C, ?, D>, Node>> placeholderEnumerator;
 
     public BaseEngine() {
@@ -108,7 +108,7 @@ public class BaseEngine<C extends DocContainer<D>, D> {
         });
     }
 
-    protected Selection<C, ?, D> createSelection(PlaceholdersProvider<C, ?, D> provider, Node node, EngineAccess<C, D> engineAccess) {
+    protected <P> Selection<C, P, D> createSelection(PlaceholdersProvider<C, P, D> provider, Node node, EngineAccess<C, D> engineAccess) {
         return new SelectionImpl<>(doc, node, provider, engineAccess);
     }
 
@@ -158,23 +158,17 @@ public class BaseEngine<C extends DocContainer<D>, D> {
             case EXECUTED_PROCEED -> stepExecuted(selection);
             case EXECUTED_FULL_RESCAN -> {
                 stepExecuted(selection);
-                registry.keySet().forEach(provider -> {
-                    provider.restartAt(null, false);
-                });
+                registry.keySet().forEach(provider -> provider.restartAt(null, false));
                 rescan = true;
             }
             case EXECUTED_RESTART_AT_NODE -> {
                 stepExecuted(selection);
-                registry.keySet().forEach(provider -> {
-                    provider.restartAt(executionResult.getRestartNode(), false);
-                });
+                registry.keySet().forEach(provider -> provider.restartAt(executionResult.getRestartNode(), false));
                 placeholderEnumerator = createPlaceholdersEnumerator();
             }
             case EXECUTED_END_OF_DOC -> {
                 stepExecuted(selection);
-                registry.keySet().forEach(provider -> {
-                    provider.restartAt(null, true);
-                });
+                registry.keySet().forEach(provider -> provider.restartAt(null, true));
                 placeholderEnumerator = createPlaceholdersEnumerator();
             }
             default -> Problems.UNEXPECTED_TYPE_DETECTED.fireValue(executionResult.getResultType().name());
@@ -188,9 +182,7 @@ public class BaseEngine<C extends DocContainer<D>, D> {
             rescan = false;
             EngineAccess<C, D> engineAccess = new EngineAccessImpl<>(listeners, () -> rescan = true, () -> placeholderEnumerator, () -> visited, reverseRegistry);
             if (initialized) {
-                listeners.forEach(listener -> {
-                    listener.rescan(doc, engineAccess);
-                });
+                listeners.forEach(listener -> listener.rescan(doc, engineAccess));
             }
             if (!initialized) {
                 registry.values().forEach(handler -> handler.init(doc, engineAccess));

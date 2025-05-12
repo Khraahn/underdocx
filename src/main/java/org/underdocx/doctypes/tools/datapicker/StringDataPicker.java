@@ -29,9 +29,9 @@ import org.underdocx.enginelayers.modelengine.data.DataNode;
 import org.underdocx.enginelayers.modelengine.data.simple.LeafDataNode;
 import org.underdocx.enginelayers.modelengine.dataaccess.DataAccess;
 
-public class StringDataPicker implements ExtendedDataPicker<DataNode> {
+public class StringDataPicker implements ExtendedDataPicker<DataNode<?>> {
 
-    public DataPickerResult<DataNode> pickData(String name) {
+    public DataPickerResult<DataNode<?>> pickData(String name) {
         if (name == null) {
             return DataPickerResult.unresolvedMissingValue(DataPickerResult.ResultSource.UNKNOWN);
         } else {
@@ -40,7 +40,7 @@ public class StringDataPicker implements ExtendedDataPicker<DataNode> {
     }
 
     @Override
-    public DataPickerResult<DataNode> pickData(String name, DataAccess dataAccess, JsonNode jsonNode) {
+    public DataPickerResult<DataNode<?>> pickData(String name, DataAccess dataAccess, JsonNode jsonNode) {
         return pickData(name);
     }
 

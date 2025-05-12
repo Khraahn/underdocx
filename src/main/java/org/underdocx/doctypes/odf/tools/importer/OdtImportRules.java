@@ -46,7 +46,7 @@ public class OdtImportRules extends AbstractImportRules {
     private static final TagDescr OFFICE_AUTOMATIC_STYLES = t("office:automatic-styles");
     private static final TagDescr OFFICE_TEXT = t("office:text");
 
-    public static OdtImportRules DEFAULT = OdtImportRules.createRules(NodeFilter.ACCEPT_ALL);
+    public static final OdtImportRules DEFAULT = OdtImportRules.createRules(NodeFilter.ACCEPT_ALL);
 
     private NodeFilter copyContentNodeFilter;
 
@@ -73,7 +73,7 @@ public class OdtImportRules extends AbstractImportRules {
         copyRules.add(new TagPathDescr(false, DOCUMENT_STYLES, OFFICE_AUTOMATIC_STYLES, NodeFilter.ACCEPT_ALL));
         copyRules.add(new TagPathDescr(true, DOCUMENT_CONTENT, OFFICE_AUTOMATIC_STYLES, NodeFilter.ACCEPT_ALL));
 
-        mainCopyRule = new TagPathDescr(true, DOCUMENT_CONTENT, OFFICE_BODY, OFFICE_TEXT, copyContentNodeFilter);
+        TagPathDescr mainCopyRule = new TagPathDescr(true, DOCUMENT_CONTENT, OFFICE_BODY, OFFICE_TEXT, copyContentNodeFilter);
         mainCopyExecutor = new OdtCopyExecutor(mainCopyRule);
     }
 

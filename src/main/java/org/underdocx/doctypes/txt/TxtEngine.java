@@ -27,6 +27,7 @@ package org.underdocx.doctypes.txt;
 import org.underdocx.common.types.Pair;
 import org.underdocx.doctypes.AbstractEngine;
 import org.underdocx.doctypes.commands.*;
+import org.underdocx.doctypes.modifiers.ModifiersProvider;
 import org.underdocx.doctypes.tools.placeholder.GenericTextualPlaceholderFactory;
 import org.underdocx.doctypes.txt.commands.TxtImportCommandHandler;
 import org.underdocx.doctypes.txt.modifiers.TxtModifiersProvider;
@@ -41,7 +42,7 @@ public class TxtEngine extends AbstractEngine<TxtContainer, TxtXml> {
     private final ModelEngine<TxtContainer, TxtXml> engine;
 
     protected final TxtModifiersProvider modifiers = new TxtModifiersProvider();
-    protected GenericTextualPlaceholderFactory<TxtContainer, ParametersPlaceholderData, TxtXml> parameters;
+    protected final GenericTextualPlaceholderFactory<TxtContainer, ParametersPlaceholderData, TxtXml> parameters;
     protected final MultiCommandHandler<TxtContainer, TxtXml> multiCommandHandler = new MultiCommandHandler<>(modifiers);
     protected final AliasCommandHandler<TxtContainer, TxtXml> aliasCommandHandler = new AliasCommandHandler<>(modifiers);
 
@@ -104,5 +105,9 @@ public class TxtEngine extends AbstractEngine<TxtContainer, TxtXml> {
 
     public void registerParametersCommandHandler(MCommandHandler<TxtContainer, ParametersPlaceholderData, TxtXml> commandHandler) {
         this.getEngine().registerCommandHandler(parameters, commandHandler);
+    }
+
+    public ModifiersProvider<TxtContainer, TxtXml> getModifiers() {
+        return modifiers;
     }
 }

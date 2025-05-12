@@ -91,10 +91,11 @@ public class ReflectionDataNode extends AbstractDataNode<Object> implements Data
     @Override
     public DataNode<?> getProperty(String name) {
         if (resolver != null) {
-            Optional<AbstractDataNode> resolved = resolver.resolve(containedValue, name);
-            if (resolved.isPresent()) {
-                resolved.get().setParent(this);
-                return resolved.get();
+            Optional<DataNode<?>> resolvedOpt = resolver.resolve(containedValue, name);
+            if (resolvedOpt.isPresent()) {
+                AbstractDataNode<?> resolved = AbstractDataNode.ensureAbstractDataNode(resolvedOpt.get());
+                resolved.setParent(this);
+                return resolved;
             }
         }
         if (getType() != DataNodeType.MAP) {
@@ -194,25 +195,24 @@ public class ReflectionDataNode extends AbstractDataNode<Object> implements Data
 
 
     protected List<String> findGetMethodNames() {
-        return Convenience.buildList(result -> {
-            Arrays.asList(containedValue.getClass().getMethods()).forEach(method -> {
-                boolean returnFits = method.getReturnType() != Void.class;
-                boolean parametersFits = method.getParameterTypes().length == 0;
-                if (returnFits && parametersFits) {
-                    String name = method.getName();
-                    if (name.length() > 3 && name.startsWith("get") && Character.isUpperCase(Character.valueOf(name.charAt(3)))) {
-                        name = Character.valueOf(name.charAt(3)).toString().toLowerCase() + name.substring(4);
-                    } else if (name.length() > 4 && name.startsWith("get_")) {
-                        name = name.substring(4);
-                    } else if (name.length() > 2 && name.startsWith("is") && Character.isUpperCase(Character.valueOf(name.charAt(2)))) {
-                        name = Character.valueOf(name.charAt(2)).toString().toLowerCase() + name.substring(3);
-                    } else if (name.length() > 3 && name.startsWith("is_")) {
-                        name = name.substring(3);
+        return Convenience.buildList(result ->
+                Arrays.asList(containedValue.getClass().getMethods()).forEach(method -> {
+                    boolean returnFits = method.getReturnType() != Void.class;
+                    boolean parametersFits = method.getParameterTypes().length == 0;
+                    if (returnFits && parametersFits) {
+                        String name = method.getName();
+                        if (name.length() > 3 && name.startsWith("get") && Character.isUpperCase(Character.valueOf(name.charAt(3)))) {
+                            name = Character.valueOf(name.charAt(3)).toString().toLowerCase() + name.substring(4);
+                        } else if (name.length() > 4 && name.startsWith("get_")) {
+                            name = name.substring(4);
+                        } else if (name.length() > 2 && name.startsWith("is") && Character.isUpperCase(Character.valueOf(name.charAt(2)))) {
+                            name = Character.valueOf(name.charAt(2)).toString().toLowerCase() + name.substring(3);
+                        } else if (name.length() > 3 && name.startsWith("is_")) {
+                            name = name.substring(3);
+                        }
+                        result.add(name);
                     }
-                    result.add(name);
-                }
-            });
-        });
+                }));
     }
 
     protected Optional<ReflectionDataNode> readField(Field field) {
@@ -246,7 +246,7 @@ public class ReflectionDataNode extends AbstractDataNode<Object> implements Data
     }
 
     public interface Resolver {
-        Optional<AbstractDataNode> resolve(Object reflectionObject, String requestedProperty);
+        Optional<DataNode<?>> resolve(Object reflectionObject, String requestedProperty);
     }
 
     @Override

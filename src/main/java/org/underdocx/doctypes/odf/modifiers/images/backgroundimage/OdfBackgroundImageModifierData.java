@@ -35,9 +35,9 @@ public interface OdfBackgroundImageModifierData {
     String getNewDesc();
 
     class Simple implements OdfBackgroundImageModifierData {
-        Resource resource;
-        String newName;
-        String newDesc;
+        final Resource resource;
+        final String newName;
+        final String newDesc;
 
         public Simple(Resource resource, String newName, String newDesc) {
             this.resource = resource;

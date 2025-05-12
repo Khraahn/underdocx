@@ -36,7 +36,7 @@ public class ConcatCommandHandlerTest extends AbstractOdtTest {
         String content = """
                 ${Push key:"i", value:2}
                 ${Concat a:"A[", $b:"i", c:"]", type:"string", key:"result"}
-                ${$result}                
+                ${$result}
                 """;
         OdtContainer doc = new OdtContainer(content);
         OdtEngine engine = new OdtEngine();
@@ -51,7 +51,7 @@ public class ConcatCommandHandlerTest extends AbstractOdtTest {
         String content = """
                 ${Push key:"i", value:2}
                 ${Concat a:"A", $b:"i", c:"B", type:"list", key:"result"}
-                ${Join $value:"result"}          
+                ${Join $value:"result"}
                 """;
         OdtContainer doc = new OdtContainer(content);
         OdtEngine engine = new OdtEngine();

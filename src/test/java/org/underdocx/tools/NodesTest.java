@@ -1,9 +1,9 @@
 package org.underdocx.tools;
 
-import org.underdocx.AbstractTest;
-import org.underdocx.common.tree.Nodes;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.underdocx.AbstractTest;
+import org.underdocx.common.tree.Nodes;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 
@@ -14,7 +14,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class NodesTest extends AbstractTest {
 
-    private String xmlStr = "<root><a><b><c></c><d></d><e></e></b><f></f></a></root>";
+    private static final String xmlStr = "<root><a><b><c></c><d></d><e></e></b><f></f></a></root>";
 
     private Document xml1 = null;
     private Document xml2 = null;

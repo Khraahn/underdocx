@@ -35,8 +35,8 @@ public abstract class AbstractDataPicker<T, N> implements ExtendedDataPicker<T> 
 
     protected JsonNode attributes;
     protected DataAccess model;
-    protected AttributesInterpreter<Optional<N>, String> attributeInterpreter;
-    protected AttributesInterpreter<AccessType, String> typeInterpreter;
+    protected final AttributesInterpreter<Optional<N>, String> attributeInterpreter;
+    protected final AttributesInterpreter<AccessType, String> typeInterpreter;
 
     protected AbstractDataPicker(
             AttributesInterpreter<AccessType, String> typeInterpreter,

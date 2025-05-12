@@ -35,7 +35,7 @@ public class CustomPlaceholderExampleTest extends AbstractOdtTest {
 
     @Test
     public void testMain() throws IOException {
-        File tmpFile = CustomPlaceholderExample.main();
+        File tmpFile = CustomPlaceholderExample.doMain();
         OdtContainer doc = new OdtContainer(tmpFile);
         assertNoPlaceholders(doc);
         assertContains(doc, "Hello NAME");

@@ -37,8 +37,8 @@ public interface OdfDeleteNamedNodeModifierData {
 
     class Simple implements OdfDeleteNamedNodeModifierData {
 
-        private String name;
-        private Type type;
+        private final String name;
+        private final Type type;
 
 
         public Simple(String name, Type type) {

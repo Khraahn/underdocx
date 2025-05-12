@@ -34,7 +34,7 @@ import java.util.Optional;
 public class BooleanDataPicker extends AbstractConvertDataPicker<Boolean> {
 
     @Override
-    protected Optional<Boolean> convert(DataNode node) {
+    protected Optional<Boolean> convert(DataNode<?> node) {
         Object value = node.getValue();
         if (value instanceof Boolean) {
             return Optional.of((Boolean) value);

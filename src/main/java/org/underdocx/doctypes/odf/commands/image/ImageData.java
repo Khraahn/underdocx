@@ -63,7 +63,7 @@ public abstract class ImageData {
     protected static Optional<Pair<SvgDescElement, ParametersPlaceholderData>> getBaseData(Node node) {
         if (OdfElement.DESC.is(node)) {
             String content = getDescrStatic(node);
-            if (content != null && content.length() > 0) {
+            if (content != null && !content.isEmpty()) {
                 Optional<ParametersPlaceholderData> paramPlaceholderData = parse(content);
                 if (paramPlaceholderData.isPresent()) {
                     return Optional.of(new Pair<>((SvgDescElement) node, paramPlaceholderData.get()));
@@ -110,7 +110,7 @@ public abstract class ImageData {
 
     private String getExtension(String filename) {
         int index = filename.lastIndexOf(".");
-        if (index >= 0 && filename.length() > index) {
+        if (index >= 0 && index != filename.length() - 1) {
             return filename.substring(index + 1).toLowerCase();
         } else {
             return filename.toLowerCase();
@@ -120,15 +120,15 @@ public abstract class ImageData {
     private String getFile(String path) {
         String result = path;
         int index = result.lastIndexOf("\\");
-        if (index >= 0 && result.length() > index) {
+        if (index >= 0 && index != result.length() - 1) {
             result = result.substring(index + 1);
         }
         index = result.lastIndexOf("/");
-        if (index >= 0 && result.length() > index) {
+        if (index >= 0 && result.length() - 1 > index) {
             result = result.substring(index + 1);
         }
         index = result.lastIndexOf(":");
-        if (index >= 0 && result.length() > index) {
+        if (index >= 0 && result.length() - 1 > index) {
             result = result.substring(index + 1);
         }
         return result;

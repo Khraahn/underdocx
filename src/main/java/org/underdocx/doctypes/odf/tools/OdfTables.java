@@ -48,7 +48,7 @@ public class OdfTables {
 
     public static Optional<Node> findTable(Node tree, String name) {
         return Convenience.buildOptional(result -> {
-            Predicate<Node> predicate = (node) -> (OdfElement.TABLE.is(node));
+            Predicate<Node> predicate = OdfElement.TABLE::is;
             List<Node> tables = Nodes.findDescendantNodes(tree, predicate, true);
             for (Node table : tables) {
                 if (name.equals(OdfAttribute.TABLE_NAME.getAttributeNS((Element) table))) {
@@ -89,10 +89,9 @@ public class OdfTables {
         return Convenience.build(new Pair<>(), result -> {
             getDefaultColumnStyleNode(table, x).ifPresent(defaultStyleNode ->
                     result.value.left = defaultStyleNode);
-            getRow(table, y).ifPresent(row -> {
-                getCellStyleNode(row, x).ifPresent(styleNode ->
-                        result.value.right = styleNode);
-            });
+            getRow(table, y).ifPresent(row ->
+                    getCellStyleNode(row, x).ifPresent(styleNode ->
+                            result.value.right = styleNode));
         });
     }
 

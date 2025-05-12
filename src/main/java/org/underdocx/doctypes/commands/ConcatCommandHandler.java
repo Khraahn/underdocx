@@ -69,7 +69,7 @@ public class ConcatCommandHandler<C extends DocContainer<D>, D> extends Abstract
         String type = typeDataPicker.pickData(dataAccess, placeholderData.getJson()).optional().orElse("list");
         if (type.equals("list")) {
             DataTreeBuilder.DataNodeWrapper list = DataTreeBuilder.beginList();
-            collectedNodes.forEach(listElement -> list.addNode(AbstractDataNode.convertToAbstractDataNode(listElement)));
+            collectedNodes.forEach(listElement -> list.addNode(AbstractDataNode.ensureAbstractDataNode(listElement)));
             dataAccess.pushVariable(keyName, list.end().build());
         } else {
             StringBuilder b = new StringBuilder();

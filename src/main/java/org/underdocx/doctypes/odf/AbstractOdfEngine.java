@@ -29,6 +29,7 @@ import org.underdocx.doctypes.AbstractEngine;
 import org.underdocx.doctypes.EngineAPI;
 import org.underdocx.doctypes.commands.AliasCommandHandler;
 import org.underdocx.doctypes.commands.MultiCommandHandler;
+import org.underdocx.doctypes.modifiers.ModifiersProvider;
 import org.underdocx.doctypes.odf.commands.image.ImageProvider;
 import org.underdocx.doctypes.odf.modifiers.OdfModifiersProvider;
 import org.underdocx.doctypes.tools.placeholder.GenericTextualPlaceholderFactory;
@@ -41,7 +42,7 @@ public abstract class AbstractOdfEngine<C extends AbstractOdfContainer<D>, D ext
     protected final OdfModifiersProvider<C, D> modifiers = new OdfModifiersProvider<>();
 
 
-    protected GenericTextualPlaceholderFactory<C, ParametersPlaceholderData, D> parameters;
+    protected final GenericTextualPlaceholderFactory<C, ParametersPlaceholderData, D> parameters;
     protected final ImageProvider.NewImagePlaceholdersProviderFactory<C, D> imagePlaceholdersProvider
             = new ImageProvider.NewImagePlaceholdersProviderFactory<>();
 
@@ -67,5 +68,9 @@ public abstract class AbstractOdfEngine<C extends AbstractOdfContainer<D>, D ext
 
     public void registerParametersCommandHandler(MCommandHandler<C, ParametersPlaceholderData, D> commandHandler) {
         this.getEngine().registerCommandHandler(parameters, commandHandler);
+    }
+
+    public ModifiersProvider<C, D> getModifiers() {
+        return modifiers;
     }
 }

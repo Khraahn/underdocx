@@ -60,9 +60,9 @@ public class TreeSplitterTest extends AbstractOdtTest {
                         <span>
                             also don't change this
                         </span>
-                    </p> 
+                    </p>
                 </root>
-                    """;
+                """;
 
         String expectationXMLStr = """
                 <root>
@@ -86,7 +86,7 @@ public class TreeSplitterTest extends AbstractOdtTest {
                         <span>
                             also don't change this
                         </span>
-                    </p> 
+                    </p>
                 </root>
                 """;
         Document initialXML = readXML(xmlStr);

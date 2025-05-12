@@ -50,13 +50,14 @@ public class RemoveCommandHandler<C extends DocContainer<D>, D> extends Abstract
     public static final String PAGE = "page";
     public static final String TABLE = "table";
     public static final String PARAGRAPH = "paragraph";
-    public static PredefinedDataPicker<String> typeAttrPicker = new OneOfDataPicker<>(TABLE, PAGE, PARAGRAPH).asPredefined("type");
-    public static PredefinedDataPicker<String> nameAttrPicker = new StringConvertDataPicker().asPredefined("name");
-    public static PredefinedDataPicker<Boolean> nowAttrPicker = new BooleanDataPicker().asPredefined("now");
+    public static final String BOX = "box";
+    public static final PredefinedDataPicker<String> typeAttrPicker = new OneOfDataPicker<>(TABLE, PAGE, PARAGRAPH, BOX).asPredefined("type");
+    public static final PredefinedDataPicker<String> nameAttrPicker = new StringConvertDataPicker().asPredefined("name");
+    public static final PredefinedDataPicker<Boolean> nowAttrPicker = new BooleanDataPicker().asPredefined("now");
 
-    private Set<Tripple<Node, String, String>> toRemoveLater = new HashSet<>();
+    private final Set<Tripple<Node, String, String>> toRemoveLater = new HashSet<>();
 
-    public RemoveCommandHandler(ModifiersProvider modifiers) {
+    public RemoveCommandHandler(ModifiersProvider<C, D> modifiers) {
         super("Remove", modifiers);
     }
 
@@ -85,6 +86,7 @@ public class RemoveCommandHandler<C extends DocContainer<D>, D> extends Abstract
                 case PAGE -> OdfDeleteParentModifierData.ODF_PAGE;
                 case TABLE -> OdfDeleteParentModifierData.ODF_TABLE;
                 case PARAGRAPH -> OdfDeleteParentModifierData.ODF_PARAGRAPH;
+                case BOX -> OdfDeleteParentModifierData.ODF_TEXT_BOX;
                 default -> throw new IllegalStateException("Unexpected value: " + type);
             };
             return CommandHandlerResult.FACTORY.convert(OdfDeleteParentNodeModifier.modify(node, new OdfDeleteParentModifierData.Simple(filter)));
@@ -102,9 +104,7 @@ public class RemoveCommandHandler<C extends DocContainer<D>, D> extends Abstract
 
         @Override
         public void eodReached(C doc, EngineAccess<C, D> engineAccess) {
-            toRemoveLater.forEach(tripple -> {
-                exec(tripple.middle, tripple.left, tripple.right);
-            });
+            toRemoveLater.forEach(tripple -> exec(tripple.middle, tripple.left, tripple.right));
         }
 
         @Override

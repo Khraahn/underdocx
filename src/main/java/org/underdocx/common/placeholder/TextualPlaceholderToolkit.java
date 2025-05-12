@@ -110,19 +110,7 @@ public class TextualPlaceholderToolkit<P> {
             }
         });
     }
-
-    /*
-    public List<Node> findPlaceholders(Node tree, Predicate<P> filter) {
-        return filter(extractPlaceholders(tree), node -> filter.test(parsePlaceholder(node)));
-    }
-
-    public Optional<Node> findFirstPlaceholder(Node tree, Predicate<P> filter) {
-        List<Node> list = findPlaceholders(tree, filter);
-        return list.isEmpty() ? Optional.empty() : Optional.of(first(list));
-    }
-
-
-     */
+    
     public TextNodeInterpreter getTextNodeInterpreter() {
         return extractor.getTextNodeInterpreter();
     }

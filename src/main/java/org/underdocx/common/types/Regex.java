@@ -55,9 +55,8 @@ public class Regex {
 
     public Optional<String> findFirstAsString(String text) {
         if (text == null) return Optional.empty();
-        return Convenience.buildOptional(w -> {
-            findFirst(text).ifPresent(r -> w.value = text.substring(r.left, r.right + 1));
-        });
+        return Convenience.buildOptional(w ->
+                findFirst(text).ifPresent(r -> w.value = text.substring(r.left, r.right + 1)));
     }
 
     public boolean contains(String text) {

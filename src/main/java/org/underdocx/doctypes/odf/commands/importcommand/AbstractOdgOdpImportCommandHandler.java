@@ -27,6 +27,7 @@ package org.underdocx.doctypes.odf.commands.importcommand;
 import org.odftoolkit.odfdom.doc.OdfDocument;
 import org.underdocx.doctypes.modifiers.ModifiersProvider;
 import org.underdocx.doctypes.odf.AbstractOdfContainer;
+import org.underdocx.doctypes.odf.modifiers.importmodifier.ImportType;
 import org.underdocx.doctypes.odf.tools.OdfNodes;
 import org.underdocx.doctypes.tools.datapicker.PredefinedDataPicker;
 import org.underdocx.doctypes.tools.datapicker.StringConvertDataPicker;
@@ -36,14 +37,10 @@ import org.w3c.dom.Node;
 public abstract class AbstractOdgOdpImportCommandHandler<C extends AbstractOdfContainer<D>, D extends OdfDocument> extends AbstractOdfImportCommandHandler<C, D> {
 
     private static final PredefinedDataPicker<String> toPageNameAttr = new StringConvertDataPicker().asPredefined("toPage");
+    private static final PredefinedDataPicker<String> pageNameAttr = new StringConvertDataPicker().asPredefined("page");
 
-    public AbstractOdgOdpImportCommandHandler(ModifiersProvider modifiers) {
+    public AbstractOdgOdpImportCommandHandler(ModifiersProvider<C, D> modifiers) {
         super(modifiers);
-    }
-
-    @Override
-    protected void checkPageAttr(String page) {
-        Problems.MISSING_VALUE.notNull(page, PAGE_ATTR);
     }
 
     @Override
@@ -54,5 +51,15 @@ public abstract class AbstractOdgOdpImportCommandHandler<C extends AbstractOdfCo
         } else {
             return selection.getNode();
         }
+    }
+
+    @Override
+    protected String getPageName() {
+        return pageNameAttr.pickData(dataAccess, placeholderData.getJson()).optional().orElse(null);
+    }
+
+    @Override
+    protected ImportType getImportType() {
+        return getPageName() == null ? ImportType.COPY_PAGES : ImportType.COPY_PAGE;
     }
 }

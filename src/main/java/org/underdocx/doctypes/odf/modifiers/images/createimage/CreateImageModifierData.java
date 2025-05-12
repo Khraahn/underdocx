@@ -30,136 +30,36 @@ import org.underdocx.doctypes.odf.constants.OdfLengthUnit;
 
 public interface CreateImageModifierData {
 
-    String getName();
+    String name();
 
-    String getDescr();
+    String descr();
 
-    Wrap getWrap();
+    Wrap wrap();
 
-    Anchor getAnchor();
+    Anchor anchor();
 
-    HorizontalPos getHorizontalPos();
+    HorizontalPos horizontalPos();
 
-    HorizontalRel getHorizontalRel();
+    HorizontalRel horizontalRel();
 
-    VerticalPos getVerticalPos();
+    VerticalPos verticalPos();
 
-    VerticalRel getVerticalRel();
+    VerticalRel verticalRel();
 
-    OdfLengthUnit getUnit();
+    OdfLengthUnit unit();
 
-    Integer getX();
+    Integer x();
 
-    Integer getY();
+    Integer y();
 
-    Integer getWidth();
+    Integer width();
 
-    Integer getHeight();
+    Integer height();
 
-    Resource getResource();
+    Resource resource();
 
-    class Simple implements CreateImageModifierData {
-        private Resource resource;
-        private String name;
-        private String descr;
-        private Wrap wrap;
-        private Anchor anchor;
-        private HorizontalPos horizontalPos;
-        private HorizontalRel horizontalRel;
-        private VerticalPos verticalPos;
-        private VerticalRel verticalRel;
-        private OdfLengthUnit unit;
-        private Integer x;
-        private Integer y;
-        private Integer width;
-        private Integer height;
-
-        public Simple(
-                Resource resource,
-                String name,
-                String descr,
-                Wrap wrap,
-                Anchor anchor,
-                HorizontalPos horizontalPos,
-                HorizontalRel horizontalRel,
-                VerticalPos verticalPos,
-                VerticalRel verticalRel,
-                OdfLengthUnit unit,
-                Integer x,
-                Integer y,
-                Integer width,
-                Integer height) {
-            this.resource = resource;
-            this.name = name;
-            this.descr = descr;
-            this.wrap = wrap;
-            this.anchor = anchor;
-            this.horizontalPos = horizontalPos;
-            this.horizontalRel = horizontalRel;
-            this.verticalPos = verticalPos;
-            this.verticalRel = verticalRel;
-            this.unit = unit;
-            this.x = x;
-            this.y = y;
-            this.width = width;
-            this.height = height;
-        }
-
-        public String getName() {
-            return name;
-        }
-
-        public String getDescr() {
-            return descr;
-        }
-
-        public Wrap getWrap() {
-            return wrap;
-        }
-
-        public Anchor getAnchor() {
-            return anchor;
-        }
-
-        public HorizontalPos getHorizontalPos() {
-            return horizontalPos;
-        }
-
-        public HorizontalRel getHorizontalRel() {
-            return horizontalRel;
-        }
-
-        public VerticalPos getVerticalPos() {
-            return verticalPos;
-        }
-
-        public VerticalRel getVerticalRel() {
-            return verticalRel;
-        }
-
-        public OdfLengthUnit getUnit() {
-            return unit;
-        }
-
-        public Integer getX() {
-            return x;
-        }
-
-        public Integer getY() {
-            return y;
-        }
-
-        public Integer getWidth() {
-            return width;
-        }
-
-        public Integer getHeight() {
-            return height;
-        }
-
-        @Override
-        public Resource getResource() {
-            return resource;
-        }
+    record Simple(Resource resource, String name, String descr, Wrap wrap, Anchor anchor, HorizontalPos horizontalPos,
+                  HorizontalRel horizontalRel, VerticalPos verticalPos, VerticalRel verticalRel, OdfLengthUnit unit,
+                  Integer x, Integer y, Integer width, Integer height) implements CreateImageModifierData {
     }
 }

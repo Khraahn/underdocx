@@ -100,17 +100,12 @@ public class Nodes {
         return toList(node.getChildNodes());
     }
 
-    @Deprecated
-    public static Map<String, String> attributes(Node node) {
+    public static String getAttr(Node node, String attrName, String defaultValue) {
         NamedNodeMap mapToConvert = node.getAttributes();
-        if (mapToConvert == null) return new HashMap<>();
-        Map<String, String> result = new LinkedHashMap<>();
-        for (int i = 0; i < mapToConvert.getLength(); i++) {
-            result.put(mapToConvert.item(i).getNodeName(), mapToConvert.item(i).getNodeValue());
-        }
-        return result;
+        Attr attr = (Attr) mapToConvert.getNamedItem(attrName);
+        String result = attr.getNodeValue();
+        return result == null ? defaultValue : result;
     }
-
 
     /*
 
@@ -162,9 +157,9 @@ public class Nodes {
 
     public static Optional<Node> findOldestAncestorNode(Node start, Predicate<Node> filter) {
         List<Node> ancestors = Convenience.reverse(getAncestors(start, null));
-        for (int i = 0; i < ancestors.size(); i++) {
-            if (filter == null || filter.test(ancestors.get(i))) {
-                return Optional.of(ancestors.get(i));
+        for (Node ancestor : ancestors) {
+            if (filter == null || filter.test(ancestor)) {
+                return Optional.of(ancestor);
             }
         }
         return Optional.empty();

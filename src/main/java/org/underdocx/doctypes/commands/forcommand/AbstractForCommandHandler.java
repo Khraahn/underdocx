@@ -72,7 +72,7 @@ public abstract class AbstractForCommandHandler<C extends DocContainer<D>, D> ex
     protected static final PredefinedAttributesInterpreter<Optional<JsonNode>> getValueJsonAttr = AttributeInterpreterFactory.createJsonAttributeInterpreter(VALUE_ATTR);
     protected static final PredefinedAttributesInterpreter<Optional<String>> getAsStrAttr = AttributeInterpreterFactory.createStringAttributeInterpreter(AS_ATTR);
 
-    protected static final PredefinedDataPicker<DataNode> listPicker = new ListDataPicker().asPredefined(VALUE_ATTR);
+    protected static final PredefinedDataPicker<DataNode<?>> listPicker = new ListDataPicker().asPredefined(VALUE_ATTR);
 
     public static final String INDEX = "index";
 
@@ -83,7 +83,7 @@ public abstract class AbstractForCommandHandler<C extends DocContainer<D>, D> ex
     protected AccessType asAttributeType;
     protected String asAttrValue;
 
-    protected DataNode listNode;
+    protected DataNode<?> listNode;
     protected DataPickerResult.ResultSource source;
 
     protected JsonNode attributes;
@@ -92,7 +92,7 @@ public abstract class AbstractForCommandHandler<C extends DocContainer<D>, D> ex
 
     // ---------------------------------------
 
-    protected AbstractForCommandHandler(ModifiersProvider modifiers) {
+    protected AbstractForCommandHandler(ModifiersProvider<C, D> modifiers) {
         super(KEYS, modifiers);
     }
 
@@ -106,7 +106,7 @@ public abstract class AbstractForCommandHandler<C extends DocContainer<D>, D> ex
         Optional<Pair<SelectedNode<ParametersPlaceholderData>, SelectedNode<ParametersPlaceholderData>>> area =
                 AreaTools.findArea(selection.getEngineAccess().lookAhead(null), selection, END_KEY);
         endNode = Problems.INVALID_PLACEHOLDER_STRUCTURE.get(area, "EndFor").right.getNode();
-        DataPickerResult<DataNode> listNodeLookup = listPicker.pickData(dataAccess, attributes);
+        DataPickerResult<DataNode<?>> listNodeLookup = listPicker.pickData(dataAccess, attributes);
         source = listNodeLookup.source;
         if (listNodeLookup.isResolvedNotNull()) {
             listNode = listNodeLookup.value;
@@ -198,12 +198,10 @@ public abstract class AbstractForCommandHandler<C extends DocContainer<D>, D> ex
             placeholder.addStringAttribute(VariableCommandHandler.KEY_ATTR, INDEX);
             placeholder.addIntAttribute(VariableCommandHandler.VALUE_ATTR, index);
         }));
-        replaceData.right.add(also(new ParametersPlaceholderData.Simple(VariableCommandHandler.KEY_POP), placeholder -> {
-            placeholder.addStringAttribute(VariableCommandHandler.KEY_ATTR, asAttrValue);
-        }));
-        replaceData.right.add(also(new ParametersPlaceholderData.Simple(VariableCommandHandler.KEY_POP), placeholder -> {
-            placeholder.addStringAttribute(VariableCommandHandler.KEY_ATTR, INDEX);
-        }));
+        replaceData.right.add(also(new ParametersPlaceholderData.Simple(VariableCommandHandler.KEY_POP), placeholder ->
+                placeholder.addStringAttribute(VariableCommandHandler.KEY_ATTR, asAttrValue)));
+        replaceData.right.add(also(new ParametersPlaceholderData.Simple(VariableCommandHandler.KEY_POP), placeholder ->
+                placeholder.addStringAttribute(VariableCommandHandler.KEY_ATTR, INDEX)));
     }
 
     /*
@@ -276,12 +274,10 @@ public abstract class AbstractForCommandHandler<C extends DocContainer<D>, D> ex
             placeholder.addStringAttribute(VariableCommandHandler.KEY_ATTR, INDEX);
             placeholder.addIntAttribute(VariableCommandHandler.VALUE_ATTR, index);
         }));
-        replaceData.right.add(also(new ParametersPlaceholderData.Simple(VariableCommandHandler.KEY_POP), placeholder -> {
-            placeholder.addStringAttribute(VariableCommandHandler.KEY_ATTR, asAttrValue);
-        }));
-        replaceData.right.add(also(new ParametersPlaceholderData.Simple(VariableCommandHandler.KEY_POP), placeholder -> {
-            placeholder.addStringAttribute(VariableCommandHandler.KEY_ATTR, INDEX);
-        }));
+        replaceData.right.add(also(new ParametersPlaceholderData.Simple(VariableCommandHandler.KEY_POP), placeholder ->
+                placeholder.addStringAttribute(VariableCommandHandler.KEY_ATTR, asAttrValue)));
+        replaceData.right.add(also(new ParametersPlaceholderData.Simple(VariableCommandHandler.KEY_POP), placeholder ->
+                placeholder.addStringAttribute(VariableCommandHandler.KEY_ATTR, INDEX)));
     }
 
     /*

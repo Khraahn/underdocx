@@ -30,10 +30,10 @@ import java.util.Optional;
 /**
  * A {@link ExtendedDataPicker} that checks if provided node represents a list
  */
-public class ListDataPicker extends AbstractConvertDataPicker<DataNode> {
+public class ListDataPicker extends AbstractConvertDataPicker<DataNode<?>> {
 
     @Override
-    protected Optional<DataNode> convert(DataNode node) {
+    protected Optional<DataNode<?>> convert(DataNode<?> node) {
         if (node.getType() == DataNode.DataNodeType.LIST) {
             return Optional.of(node);
         } else {

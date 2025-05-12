@@ -39,16 +39,15 @@ import java.util.Locale;
 public class TimeCommandHandler<C extends DocContainer<D>, D> extends AbstractTextualCommandHandler<C, D> {
 
 
-    private static String DEFAULT_IN_FORMAT_TIME = "yyyy-MM-dd HH:mm:ss";
-    private static String DEFAULT_OUT_FORMAT_TIME = "HH:mm:ss";
+    private static final String DEFAULT_IN_FORMAT_TIME = "yyyy-MM-dd HH:mm:ss";
+    private static final String DEFAULT_OUT_FORMAT_TIME = "HH:mm:ss";
 
-    private static PredefinedDataPicker<String> valueDataPicker = new StringConvertDataPicker().asPredefined("value");
-    private static PredefinedDataPicker<String> outputFormatDataPicker = new StringConvertDataPicker().asPredefined("outputFormat");
-    private static PredefinedDataPicker<String> inputFormatDataPicker = new StringConvertDataPicker().asPredefined("inputFormat");
+    private static final PredefinedDataPicker<String> valueDataPicker = new StringConvertDataPicker().asPredefined("value");
+    private static final PredefinedDataPicker<String> outputFormatDataPicker = new StringConvertDataPicker().asPredefined("outputFormat");
+    private static final PredefinedDataPicker<String> inputFormatDataPicker = new StringConvertDataPicker().asPredefined("inputFormat");
     private static final PredefinedDataPicker<String> langPicker = new StringConvertDataPicker().asPredefined("lang");
-    private static final PredefinedDataPicker<String> templateCellPicker = new StringConvertDataPicker().asPredefined("templateCell");
 
-    public TimeCommandHandler(ModifiersProvider modifiers) {
+    public TimeCommandHandler(ModifiersProvider<C, D> modifiers) {
         super(new Regex("Time"), modifiers);
     }
 

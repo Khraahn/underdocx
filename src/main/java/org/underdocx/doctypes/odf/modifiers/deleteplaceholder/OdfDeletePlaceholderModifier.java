@@ -53,26 +53,25 @@ public class OdfDeletePlaceholderModifier implements SelectionModifier<Node, Del
     }
 
     private static ModifierNodeResult modifyStatic(Node placeholderNode, DeletePlaceholderModifierData modifierData) {
-        return Convenience.build(ModifierResult.IGNORED, result -> {
-            OdfNodes.findAscendantParagraph(placeholderNode, false).ifPresent(p -> {
-                result.value = ModifierNodeResult.FACTORY.success(placeholderNode, true);
-                TextualPlaceholderToolkit.deletePlaceholder(placeholderNode);
-                if (modifierData.getDeleteStrategy() != DeletePlaceholderModifierData.Strategy.KEEP_PARAGRAPH) {
-                    if (modifierData.getDeleteStrategy() == DeletePlaceholderModifierData.Strategy.DELETE_PARAGRAPH) {
-                        removeParagraph(result, p, modifierData.copyPageStyle());
-                    } else {
-                        List<Node> paragraphNodes = new TreeNodeCollector(p, p, null, new ArrayList<>()).collect();
-                        TextNodePath path = new TextNodePath(paragraphNodes, OdfTextNodeInterpreter.INSTANCE);
-                        if (path.isTextRealtedOnly()) {
-                            String textContent = path.fetchTextContent();
-                            if (textContent.isEmpty() || (textContent.isBlank() && modifierData.getDeleteStrategy() == DeletePlaceholderModifierData.Strategy.DELETE_BLANK_PARAGRAPH)) {
-                                removeParagraph(result, p, modifierData.copyPageStyle());
+        return Convenience.build(ModifierResult.IGNORED, result ->
+                OdfNodes.findAscendantParagraph(placeholderNode, false).ifPresent(p -> {
+                    result.value = ModifierNodeResult.FACTORY.success(placeholderNode, true);
+                    TextualPlaceholderToolkit.deletePlaceholder(placeholderNode);
+                    if (modifierData.getDeleteStrategy() != DeletePlaceholderModifierData.Strategy.KEEP_PARAGRAPH) {
+                        if (modifierData.getDeleteStrategy() == DeletePlaceholderModifierData.Strategy.DELETE_PARAGRAPH) {
+                            removeParagraph(result, p, modifierData.copyPageStyle());
+                        } else {
+                            List<Node> paragraphNodes = new TreeNodeCollector(p, p, null, new ArrayList<>()).collect();
+                            TextNodePath path = new TextNodePath(paragraphNodes, OdfTextNodeInterpreter.INSTANCE);
+                            if (path.isTextRealtedOnly()) {
+                                String textContent = path.fetchTextContent();
+                                if (textContent.isEmpty() || (textContent.isBlank() && modifierData.getDeleteStrategy() == DeletePlaceholderModifierData.Strategy.DELETE_BLANK_PARAGRAPH)) {
+                                    removeParagraph(result, p, modifierData.copyPageStyle());
+                                }
                             }
                         }
                     }
-                }
-            });
-        });
+                }));
     }
 
     private static void removeParagraph(Wrapper<ModifierNodeResult> result, Node p, boolean copyStyle) {

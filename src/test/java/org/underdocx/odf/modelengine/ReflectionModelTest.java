@@ -43,7 +43,7 @@ public class ReflectionModelTest extends AbstractOdtTest {
 
     @Test
     public void testReflectionModel() {
-        DataNode node = new ReflectionDataNode(new TestClassA());
+        DataNode<?> node = new ReflectionDataNode(new TestClassA());
         assertThat(node.getProperty("a").getValue()).isEqualTo("Hallo");
         assertThat(node.getProperty("b").getProperty("c").getProperty(0).getValue()).isEqualTo("Item1");
         assertThat(node.getProperty("b").getProperty("c").getProperty(1).getValue()).isEqualTo("Item2");
@@ -51,12 +51,12 @@ public class ReflectionModelTest extends AbstractOdtTest {
         assertThat(node.getProperty("b").getProperty("getNull").getValue()).isNull();
     }
 
-    private class TestClassA {
+    private static class TestClassA {
         public String a = "Hallo";
         public TestClassB b = new TestClassB();
     }
 
-    private class TestClassB {
+    private static class TestClassB {
         public List<String> getC() {
             return Arrays.asList("Item1", "Item2");
         }
@@ -80,14 +80,15 @@ public class ReflectionModelTest extends AbstractOdtTest {
 
     @Test
     public void testResolve() {
-        OdtContainer doc = new OdtContainer("" +
-                "${String *value:\"b.x\"}      \n" +
-                "${String *value:\"b.c[0]\"}   \n" +
-                "${String *value:\"b.c[0]\"}   \n");
+        OdtContainer doc = new OdtContainer("""
+                ${String *value:"b.x"}
+                ${String *value:"b.c[0]"}
+                ${String *value:"b.c[0]"}
+                """);
         OdtEngine engine = new OdtEngine();
         engine.setModel(new TestClassA(),
                 (object, name) -> name.equals("x")
-                        ? java.util.Optional.of(new LeafDataNode("42"))
+                        ? java.util.Optional.of(new LeafDataNode<>("42"))
                         : Optional.empty());
         engine.run(doc);
         assertContains(doc, "Item1");
@@ -116,13 +117,14 @@ public class ReflectionModelTest extends AbstractOdtTest {
 
     @Test
     public void testInterceptor() {
-        OdtContainer doc = new OdtContainer("" +
-                "${*a}      \n" +
-                "${*c}      \n");
+        OdtContainer doc = new OdtContainer("""
+                ${*a}
+                ${*c}
+                """);
         OdtEngine engine = new OdtEngine();
         engine.setModel(new TestClassA());
         ReflectionInterceptorRegistry.DEFAULT.register(TestClassA.class, "c",
-                (reflectionObject, requestedProperty) -> Optional.of(new LeafDataNode("Hugo")));
+                (reflectionObject, requestedProperty) -> Optional.of(new LeafDataNode<>("Hugo")));
         engine.run(doc);
         assertContains(doc, "Hallo");
         assertContains(doc, "Hugo");

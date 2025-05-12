@@ -38,18 +38,17 @@ import java.util.Locale;
 
 public class DateCommandHandler<C extends DocContainer<D>, D> extends AbstractTextualCommandHandler<C, D> {
 
-    private static String DEFAULT_FORMAT_DATE = "yyyy-MM-dd";
-
-    private static PredefinedDataPicker<String> valueDataPicker = new StringConvertDataPicker().asPredefined("value");
-    private static PredefinedDataPicker<String> outputFormatDataPicker = new StringConvertDataPicker().asPredefined("outputFormat");
-    private static PredefinedDataPicker<String> inputFormatDataPicker = new StringConvertDataPicker().asPredefined("inputFormat");
+    private static final PredefinedDataPicker<String> valueDataPicker = new StringConvertDataPicker().asPredefined("value");
+    private static final PredefinedDataPicker<String> outputFormatDataPicker = new StringConvertDataPicker().asPredefined("outputFormat");
+    private static final PredefinedDataPicker<String> inputFormatDataPicker = new StringConvertDataPicker().asPredefined("inputFormat");
     private static final PredefinedDataPicker<String> langPicker = new StringConvertDataPicker().asPredefined("lang");
 
-    public DateCommandHandler(ModifiersProvider modifiers) {
+    public DateCommandHandler(ModifiersProvider<C, D> modifiers) {
         super(new Regex("Date"), modifiers);
     }
 
     private String getFormat(PredefinedDataPicker<String> picker) {
+        String DEFAULT_FORMAT_DATE = "yyyy-MM-dd";
         return picker.pickData(dataAccess, placeholderData.getJson()).optional().orElse(DEFAULT_FORMAT_DATE);
     }
 

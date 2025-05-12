@@ -58,20 +58,20 @@ public class AliasCommandHandler<C extends DocContainer<D>, D> extends AbstractC
     private static final PredefinedDataPicker<Map<String, String>> attrReplacementsPocker = new AliasAttrReplacePicker().asPredefined("attrReplacements");
 
     public static class AttrKeyValue {
-        protected String attrKey;
-        protected DataNode attrValue;
+        protected final String attrKey;
+        protected final DataNode<?> attrValue;
 
-        public AttrKeyValue(String attrKey, DataNode attrValue) {
+        public AttrKeyValue(String attrKey, DataNode<?> attrValue) {
             this.attrKey = attrKey;
             this.attrValue = attrValue;
         }
     }
 
     public static class AliasData {
-        protected String aliasKey;
-        protected String replaceKey;
-        protected Set<AttrKeyValue> attributes = new HashSet<>();
-        protected Map<String, String> attrReplacements = new HashMap<>();
+        protected final String aliasKey;
+        protected final String replaceKey;
+        protected final Set<AttrKeyValue> attributes = new HashSet<>();
+        protected final Map<String, String> attrReplacements = new HashMap<>();
 
         public AliasData(String aliasKey, String replaceKey) {
             this.aliasKey = aliasKey;
@@ -91,7 +91,7 @@ public class AliasCommandHandler<C extends DocContainer<D>, D> extends AbstractC
             this.attrReplacements.putAll(attrReplacements);
         }
 
-        public AliasData addAttribute(String attrName, DataNode value) {
+        public AliasData addAttribute(String attrName, DataNode<?> value) {
             attributes.add(new AttrKeyValue(attrName, value));
             return this;
         }
@@ -117,9 +117,8 @@ public class AliasCommandHandler<C extends DocContainer<D>, D> extends AbstractC
                     return;
                 }
                 if (attributesNode != null) {
-                    attributesNode.getPropertyNames().forEach(propertyName -> {
-                        result.value.add(new AttrKeyValue(propertyName, attributesNode.getProperty(propertyName)));
-                    });
+                    attributesNode.getPropertyNames().forEach(propertyName ->
+                            result.value.add(new AttrKeyValue(propertyName, attributesNode.getProperty(propertyName))));
                 }
             });
         }
@@ -136,7 +135,7 @@ public class AliasCommandHandler<C extends DocContainer<D>, D> extends AbstractC
                 }
                 if (attrReplacements != null) {
                     attrReplacements.getPropertyNames().forEach(propertyName -> {
-                        DataNode value = attrReplacements.getProperty(propertyName);
+                        DataNode<?> value = attrReplacements.getProperty(propertyName);
                         if (value.getValue() != null && value.getValue() instanceof String) {
                             result.value.put(propertyName, attrReplacements.getProperty(propertyName).getValue().toString());
                         }
@@ -193,13 +192,11 @@ public class AliasCommandHandler<C extends DocContainer<D>, D> extends AbstractC
             String attrKey = entry.getKey();
             JsonNode jsonValue = entry.getValue();
             Object obj = new JsonCodec().getAsObject(jsonValue);
-            DataNode node = AbstractPredefinedDataNode.createRootNode(obj);
+            DataNode<?> node = AbstractPredefinedDataNode.createRootNode(obj);
             AttrKeyValue attr = new AttrKeyValue(attrKey, node);
             data.attributes.add(attr);
         });
-        Arrays.stream(attrReplacements).forEach(pair -> {
-            data.attrReplacements.put(pair.left, pair.right);
-        });
+        Arrays.stream(attrReplacements).forEach(pair -> data.attrReplacements.put(pair.left, pair.right));
         registerAlias(data);
     }
 

@@ -59,65 +59,65 @@ public class CreateImageModifier<C extends AbstractOdfContainer<D>, D extends Od
         Node placeholderAncestor = Problems.CANT_FIND_DOM_ELEMENT.get(Nodes.findAncestorChild(placeholder, commonAncestor), "placeholder ancestor node");
         MainImageData imageData = MainImageData.createNewImage(commonAncestor, placeholderData);
 
-        Problems.MISSING_VALUE.check(modifierData.getHeight() != null || modifierData.getWidth() != null, "height", null);
-        Problems.MISSING_VALUE.notNull(modifierData.getResource(), "resource");
-        OdfLengthUnit unit = modifierData.getUnit();
+        Problems.MISSING_VALUE.check(modifierData.height() != null || modifierData.width() != null, "height", null);
+        Problems.MISSING_VALUE.notNull(modifierData.resource(), "resource");
+        OdfLengthUnit unit = modifierData.unit();
         if (unit == null) {
-            if (modifierData.getHeight() != null) {
+            if (modifierData.height() != null) {
                 unit = imageData.getHeightUnit();
             } else {
                 unit = imageData.getWidthUnit();
             }
         }
 
-        if (modifierData.getHeight() != null && modifierData.getWidth() != null) {
-            imageData.setHeight(modifierData.getHeight(), unit);
-            imageData.setWidth(modifierData.getWidth(), unit);
+        if (modifierData.height() != null && modifierData.width() != null) {
+            imageData.setHeight(modifierData.height(), unit);
+            imageData.setWidth(modifierData.width(), unit);
         } else {
-            Pair<Double, Double> dimension = CachedImageSize.getDimension(modifierData.getResource());
-            if (modifierData.getWidth() != null) {
-                double height = modifierData.getWidth() * dimension.right / dimension.left;
+            Pair<Double, Double> dimension = CachedImageSize.getDimension(modifierData.resource());
+            if (modifierData.width() != null) {
+                double height = modifierData.width() * dimension.right / dimension.left;
                 imageData.setHeight(height, unit);
-                imageData.setWidth(modifierData.getWidth(), unit);
+                imageData.setWidth(modifierData.width(), unit);
             } else {
-                double width = modifierData.getHeight() * dimension.left / dimension.right;
+                double width = modifierData.height() * dimension.left / dimension.right;
                 imageData.setWidth(width, unit);
-                imageData.setHeight(modifierData.getHeight(), unit);
+                imageData.setHeight(modifierData.height(), unit);
             }
         }
 
-        if (modifierData.getAnchor() != null) {
-            imageData.setAnchor(modifierData.getAnchor());
+        if (modifierData.anchor() != null) {
+            imageData.setAnchor(modifierData.anchor());
         }
-        if (modifierData.getX() != null) {
-            imageData.setX(modifierData.getX(), unit);
+        if (modifierData.x() != null) {
+            imageData.setX(modifierData.x(), unit);
         }
-        if (modifierData.getY() != null) {
-            imageData.setY(modifierData.getY(), unit);
+        if (modifierData.y() != null) {
+            imageData.setY(modifierData.y(), unit);
         }
-        if (modifierData.getName() != null) {
-            imageData.setName(modifierData.getName());
+        if (modifierData.name() != null) {
+            imageData.setName(modifierData.name());
         }
-        if (modifierData.getHorizontalRel() != null) {
-            imageData.setHorizontalRel(modifierData.getHorizontalRel());
+        if (modifierData.horizontalRel() != null) {
+            imageData.setHorizontalRel(modifierData.horizontalRel());
         }
-        if (modifierData.getHorizontalPos() != null) {
-            imageData.setHorizontalPos(modifierData.getHorizontalPos());
+        if (modifierData.horizontalPos() != null) {
+            imageData.setHorizontalPos(modifierData.horizontalPos());
         }
-        if (modifierData.getVerticalRel() != null) {
-            imageData.setVerticalRel(modifierData.getVerticalRel());
+        if (modifierData.verticalRel() != null) {
+            imageData.setVerticalRel(modifierData.verticalRel());
         }
-        if (modifierData.getVerticalPos() != null) {
-            imageData.setVerticalPos(modifierData.getVerticalPos());
+        if (modifierData.verticalPos() != null) {
+            imageData.setVerticalPos(modifierData.verticalPos());
         }
-        if (modifierData.getWrap() != null) {
-            imageData.setWrap(modifierData.getWrap());
+        if (modifierData.wrap() != null) {
+            imageData.setWrap(modifierData.wrap());
         }
 
-        imageData.exchangeImage(modifierData.getResource(), selection.getDocContainer().getDocument());
+        imageData.exchangeImage(modifierData.resource(), selection.getDocContainer().getDocument());
 
-        if (modifierData.getDescr() != null) {
-            imageData.setDesc(modifierData.getDescr());
+        if (modifierData.descr() != null) {
+            imageData.setDesc(modifierData.descr());
         }
 
         Nodes.insertAfter(placeholderAncestor, imageData.getMainNode());

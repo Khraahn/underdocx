@@ -34,9 +34,9 @@ public class SelectionImpl<C extends DocContainer<D>, P, D> extends SelectedNode
 
     private final C doc;
 
-    private final EngineAccess engineAccess;
+    private final EngineAccess<C, D> engineAccess;
 
-    public SelectionImpl(C doc, Node node, PlaceholdersProvider<C, P, D> provider, EngineAccess engineAccess) {
+    public SelectionImpl(C doc, Node node, PlaceholdersProvider<C, P, D> provider, EngineAccess<C, D> engineAccess) {
         super(node, provider);
         this.doc = doc;
         this.engineAccess = engineAccess;
@@ -48,7 +48,7 @@ public class SelectionImpl<C extends DocContainer<D>, P, D> extends SelectedNode
     }
 
     @Override
-    public EngineAccess getEngineAccess() {
+    public EngineAccess<C, D> getEngineAccess() {
         return engineAccess;
     }
 

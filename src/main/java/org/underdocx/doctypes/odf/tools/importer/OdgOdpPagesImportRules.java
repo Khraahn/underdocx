@@ -24,6 +24,8 @@ SOFTWARE.
 
 package org.underdocx.doctypes.odf.tools.importer;
 
+import org.odftoolkit.odfdom.dom.element.draw.DrawPageElement;
+import org.underdocx.common.tools.Convenience;
 import org.underdocx.common.tree.Nodes;
 import org.underdocx.doctypes.odf.AbstractOdfContainer;
 import org.underdocx.doctypes.odf.tools.importer.rules.*;
@@ -36,7 +38,7 @@ import java.util.List;
 /**
  * Default Rules which nodes have to be copied and which attribute values have to be renamed
  */
-public class OdgOdpImportRules extends AbstractImportRules {
+public class OdgOdpPagesImportRules extends AbstractImportRules {
     private static final TagDescr DOCUMENT_STYLES = t("office:document-styles");
     private static final TagDescr DOCUMENT_CONTENT = t("office:document-content");
     private static final TagDescr OFFICE_BODY = t("office:body");
@@ -52,16 +54,15 @@ public class OdgOdpImportRules extends AbstractImportRules {
             (node -> OFFICE_DRAWING.test(node) || OFFICE_PRESENTATION.test(node));
 
 
-    private final String pageName;
-    private NodeFilter copyContentNodeFilter = NodeFilter.ACCEPT_ALL;
+    private final String newMasterPageName;
 
-    private OdgOdpImportRules(String pageName) {
-        this.pageName = pageName;
+
+    private OdgOdpPagesImportRules(String newMasterPageName) {
+        this.newMasterPageName = newMasterPageName;
     }
 
-    public static OdgOdpImportRules createRules(String pageName, NodeFilter copyContentNodeFilter) {
-        OdgOdpImportRules result = new OdgOdpImportRules(pageName);
-        result.copyContentNodeFilter = copyContentNodeFilter;
+    public static OdgOdpPagesImportRules createRules(String newMasterPageName) {
+        OdgOdpPagesImportRules result = new OdgOdpPagesImportRules(newMasterPageName);
         result.init();
         return result;
     }
@@ -86,29 +87,28 @@ public class OdgOdpImportRules extends AbstractImportRules {
         copyRules.add(new TagPathDescr(false, DOCUMENT_STYLES, OFFICE_AUTOMATIC_STYLES, NodeFilter.ACCEPT_ALL));
         copyRules.add(new TagPathDescr(true, DOCUMENT_CONTENT, OFFICE_AUTOMATIC_STYLES, NodeFilter.ACCEPT_ALL));
 
-        mainCopyRule = new TagPathDescr(true, DOCUMENT_CONTENT, OFFICE_BODY, DrawingOrPresentation, getPageWithName(pageName), copyContentNodeFilter);
-        mainCopyExecutor = new OdgOdpCopyExecutor(mainCopyRule);
+
+        mainCopyExecutor = new OdgOdpCopyExecutor(newMasterPageName);
     }
 
-    private NodeFilter getPageWithName(String name) {
-        return node -> DRAW_PAGE.test(node) && name.equals(DRAW_PAGE_NAME.getValue(node).orElse(null));
-    }
 
     public static class OdgOdpCopyExecutor implements MainCopyExecutor {
-        private final TagPathDescr mainCopyRule;
+        private final String newMasterPageName;
 
-        public OdgOdpCopyExecutor(TagPathDescr mainCopyRule) {
-            this.mainCopyRule = mainCopyRule;
+        public OdgOdpCopyExecutor(String newMasterPageName) {
+            this.newMasterPageName = newMasterPageName;
         }
 
         @Override
         public void copy(AbstractOdfContainer<?> source, Node refNode) {
+            TagPathDescr mainCopyRule = new TagPathDescr(true, DOCUMENT_CONTENT, OFFICE_BODY, DrawingOrPresentation, DRAW_PAGE);
             Document targetOwnerDocument = refNode.getOwnerDocument();
-            Node page = Nodes.findOldestAncestorNode(refNode, DRAW_PAGE).get();
-            List<Node> allToCopy = mainCopyRule.findAll(source);
+            DrawPageElement page = (DrawPageElement) Nodes.findOldestAncestorNode(refNode, DRAW_PAGE).get();
+            List<Node> allToCopy = Convenience.reverse(mainCopyRule.findAll(source));
             allToCopy.forEach(toCopy -> {
-                Node clone = targetOwnerDocument.importNode(toCopy, true);
-                page.appendChild(clone);
+                DrawPageElement clone = (DrawPageElement) targetOwnerDocument.importNode(toCopy, true);
+                clone.setDrawMasterPageNameAttribute(newMasterPageName);
+                Nodes.insertAfter(page, clone);
             });
         }
     }

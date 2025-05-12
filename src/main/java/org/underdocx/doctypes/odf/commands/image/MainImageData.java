@@ -88,18 +88,17 @@ public class MainImageData extends ImageData {
     }
 
     public static Optional<MainImageData> createExistingMainImageDataFromDesc(Node node) {
-        return Convenience.buildOptional(result -> {
-            getBaseData(node).ifPresent(baseData -> {
-                Node parentNode = node.getParentNode();
-                if (OdfElement.FRAME.is(parentNode)) {
-                    DrawFrameElement drawFrameElement = (DrawFrameElement) parentNode;
-                    Nodes.getChildren(drawFrameElement, OdfElement.IMAGE).tryNext().ifPresent(imageNode -> {
-                        DrawImageElement drawImageElement = (DrawImageElement) imageNode;
-                        result.value = new MainImageData(baseData.left, drawFrameElement, drawImageElement, baseData.right);
-                    });
-                }
-            });
-        });
+        return Convenience.buildOptional(result ->
+                getBaseData(node).ifPresent(baseData -> {
+                    Node parentNode = node.getParentNode();
+                    if (OdfElement.FRAME.is(parentNode)) {
+                        DrawFrameElement drawFrameElement = (DrawFrameElement) parentNode;
+                        Nodes.getChildren(drawFrameElement, OdfElement.IMAGE).tryNext().ifPresent(imageNode -> {
+                            DrawImageElement drawImageElement = (DrawImageElement) imageNode;
+                            result.value = new MainImageData(baseData.left, drawFrameElement, drawImageElement, baseData.right);
+                        });
+                    }
+                }));
     }
 
     public static Optional<MainImageData> createExistingMainImageDataFromFrame(Node node) {

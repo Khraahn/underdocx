@@ -164,19 +164,4 @@ public interface Problematic {
         void run() throws Exception;
     }
 
-    class SimpleProblematic implements Problematic {
-        public String key;
-        public String description;
-
-        public SimpleProblematic(String key, String description) {
-            this.key = key;
-            this.description = description;
-        }
-
-        @Override
-        public Problem toProblem() {
-            return new Problem(key, description);
-        }
-    }
-
 }

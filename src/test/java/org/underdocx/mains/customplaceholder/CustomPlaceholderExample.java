@@ -72,7 +72,7 @@ public class CustomPlaceholderExample {
         }
     }
 
-    public static File main() throws IOException {
+    public static File doMain() throws IOException {
         String content = "Hello <name>";
         OdtContainer doc = new OdtContainer(content);
         OdtEngine engine = new OdtEngine();
@@ -84,6 +84,6 @@ public class CustomPlaceholderExample {
     }
 
     public static void main(String[] args) throws IOException {
-        main();
+        doMain();
     }
 }

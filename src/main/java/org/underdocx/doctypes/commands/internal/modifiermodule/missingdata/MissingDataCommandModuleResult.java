@@ -38,7 +38,7 @@ public class MissingDataCommandModuleResult<M> {
     public M value = null;
     public DataPickerResult.ResultSource source;
 
-    public MissingDataCommandModuleResultType resultType;
+    public final MissingDataCommandModuleResultType resultType;
 
     public MissingDataCommandModuleResult(M value, DataPickerResult.ResultSource source) {
         this.value = value;

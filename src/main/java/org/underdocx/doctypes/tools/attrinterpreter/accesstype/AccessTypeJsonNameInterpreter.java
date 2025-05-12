@@ -40,7 +40,7 @@ import org.underdocx.doctypes.tools.attrinterpreter.AbstractAttributeInterpreter
  */
 public class AccessTypeJsonNameInterpreter extends AbstractAttributeInterpreter<AccessType, String> {
 
-    public static AccessTypeJsonNameInterpreter DEFAULT = new AccessTypeJsonNameInterpreter();
+    public static final AccessTypeJsonNameInterpreter DEFAULT = new AccessTypeJsonNameInterpreter();
 
     @Override
     protected AccessType interpretAttributes() {

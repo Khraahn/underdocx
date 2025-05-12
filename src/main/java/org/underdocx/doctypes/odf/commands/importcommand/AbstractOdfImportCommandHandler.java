@@ -30,10 +30,9 @@ import org.underdocx.doctypes.modifiers.ModifiersProvider;
 import org.underdocx.doctypes.modifiers.deleteplaceholder.DeletePlaceholderModifierData;
 import org.underdocx.doctypes.odf.AbstractOdfContainer;
 import org.underdocx.doctypes.odf.modifiers.deleteplaceholder.OdfDeletePlaceholderModifier;
+import org.underdocx.doctypes.odf.modifiers.importmodifier.ImportType;
 import org.underdocx.doctypes.odf.modifiers.importmodifier.OdfImportModifier;
 import org.underdocx.doctypes.odf.modifiers.importmodifier.OdfImportModifierData;
-import org.underdocx.doctypes.tools.datapicker.PredefinedDataPicker;
-import org.underdocx.doctypes.tools.datapicker.StringConvertDataPicker;
 import org.underdocx.enginelayers.baseengine.CommandHandlerResult;
 import org.w3c.dom.Node;
 
@@ -41,24 +40,24 @@ import org.w3c.dom.Node;
  * Implementation of the {{Import uri/data}} command.
  */
 public abstract class AbstractOdfImportCommandHandler<C extends AbstractOdfContainer<D>, D extends OdfDocument> extends AbstractImportCommandHandler<C, D> {
-    public static final String PAGE_ATTR = "page";
 
-    private static final PredefinedDataPicker<String> pageNameAttr = new StringConvertDataPicker().asPredefined(PAGE_ATTR);
 
-    public AbstractOdfImportCommandHandler(ModifiersProvider modifiers) {
+    public AbstractOdfImportCommandHandler(ModifiersProvider<C, D> modifiers) {
         super(modifiers);
     }
 
     @Override
     protected CommandHandlerResult doImport(String identifier, C importDoc) {
-        String pageName = pageNameAttr.pickData(dataAccess, placeholderData.getJson()).optional().orElse(null);
-        checkPageAttr(pageName);
-        OdfImportModifierData modifiedData = new OdfImportModifierData.Simple(identifier, importDoc, selection.getDocContainer(), getRefNode(), true, pageName);
+        OdfImportModifierData modifiedData = new OdfImportModifierData.Simple(getImportType(), identifier, importDoc, selection.getDocContainer(), getRefNode(), true, getPageName());
         new OdfImportModifier().modify(modifiedData);
         return CommandHandlerResult.FACTORY.convert(new OdfDeletePlaceholderModifier().modify(selection.getNode(), DeletePlaceholderModifierData.DEFAULT));
     }
 
+    protected abstract ImportType getImportType();
+
+    protected abstract String getPageName();
+
     protected abstract Node getRefNode();
 
-    protected abstract void checkPageAttr(String page);
+
 }

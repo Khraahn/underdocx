@@ -43,11 +43,11 @@ import java.util.regex.Pattern;
 
 public class MultiCommandHandler<C extends DocContainer<D>, D> extends AbstractCommandHandler<C, ParametersPlaceholderData, D> {
 
-    public MultiCommandHandler(ModifiersProvider modifiers) {
+    public MultiCommandHandler(ModifiersProvider<C, D> modifiers) {
         super(modifiers);
     }
 
-    private List<MCommandHandler<C, ParametersPlaceholderData, D>> subCommandHandlerRegistry = new ArrayList<>();
+    private final List<MCommandHandler<C, ParametersPlaceholderData, D>> subCommandHandlerRegistry = new ArrayList<>();
 
     private void registerSubCommandHandler(MCommandHandler<C, ParametersPlaceholderData, D> handler) {
         subCommandHandlerRegistry.add(handler);
@@ -73,7 +73,7 @@ public class MultiCommandHandler<C extends DocContainer<D>, D> extends AbstractC
     }
 
 
-    protected CommandHandlerResult trySelection(MSelection selection) {
+    protected CommandHandlerResult trySelection(MSelection<C, ParametersPlaceholderData, D> selection) {
         for (MCommandHandler<C, ParametersPlaceholderData, D> handler : subCommandHandlerRegistry) {
             CommandHandlerResult result = handler.tryExecuteCommand(selection);
             if (result != CommandHandlerResult.IGNORED) {
@@ -87,16 +87,15 @@ public class MultiCommandHandler<C extends DocContainer<D>, D> extends AbstractC
 
         private final String replacement;
 
-        protected SimpleKey2StringCommandHandler(Regex keys, String replacement, ModifiersProvider modifiers) {
+        protected SimpleKey2StringCommandHandler(Regex keys, String replacement, ModifiersProvider<C, D> modifiers) {
             super(keys, modifiers);
             this.replacement = replacement;
         }
 
         @Override
         protected CommandHandlerResult tryExecuteTextualCommand() {
-            selection.getPlaceholderToolkit().ifPresent(toolkit -> {
-                toolkit.replacePlaceholderWithText(selection.getNode(), replacement);
-            });
+            selection.getPlaceholderToolkit().ifPresent(toolkit ->
+                    toolkit.replacePlaceholderWithText(selection.getNode(), replacement));
             return CommandHandlerResult.FACTORY.startAtNode(selection.getNode());
         }
     }

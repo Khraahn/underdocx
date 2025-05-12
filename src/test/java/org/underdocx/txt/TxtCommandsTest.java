@@ -43,10 +43,11 @@ public class TxtCommandsTest extends AbstractTxtTest {
                 {
                 }
                 """;
-        String documentStr = "" +
-                "${For value:[\"A\", \"B\", \"C\"], $as:\"element\"}     \n" +
-                "${$index} ${$element}                                    \n" +
-                "${EndFor}                                               \n";
+        String documentStr = """
+                ${For value:["A", "B", "C"], $as:"element"}
+                ${$index} ${$element}
+                ${EndFor}
+                """;
         TxtContainer doc = new TxtContainer(documentStr);
         TxtEngine engine = new TxtEngine();
         engine.setModel(new MapDataNode(jsonString));
@@ -66,7 +67,7 @@ public class TxtCommandsTest extends AbstractTxtTest {
                 A ${Date}
                 B ${Date outputFormat:"dd.MM.yyyy"}
                 C ${Date value:"2022-03-04",  outputFormat:"dd.MM.yyyy"}
-                D ${Date value:"04.03.2022",  inputFormat:"dd.MM.yyyy", outputFormat:"dd.MM.yyyy"}                
+                D ${Date value:"04.03.2022",  inputFormat:"dd.MM.yyyy", outputFormat:"dd.MM.yyyy"}
                 """;
         TxtContainer doc = new TxtContainer(content);
         TxtEngine engine = new TxtEngine();
@@ -87,7 +88,7 @@ public class TxtCommandsTest extends AbstractTxtTest {
                 A ${Time}
                 B ${Time outputFormat:"HH.mm.ss"}
                 C ${Time value:"2011-12-02 08:42:11", outputFormat:"HH.mm.ss"}
-                D ${Time value:"2011-12-02 08.42.11", inputFormat:"yyyy-MM-dd HH.mm.ss", outputFormat:"HH.mm"}                
+                D ${Time value:"2011-12-02 08.42.11", inputFormat:"yyyy-MM-dd HH.mm.ss", outputFormat:"HH.mm"}
                 """;
         TxtContainer doc = new TxtContainer(content);
         TxtEngine engine = new TxtEngine();
@@ -179,10 +180,11 @@ public class TxtCommandsTest extends AbstractTxtTest {
                 {
                 }
                 """;
-        String documentStr = "" +
-                "${Begin}                 \n" +
-                "${$index} ${$element}    \n" +
-                "${End}                   \n";
+        String documentStr = """
+                ${Begin}
+                ${$index} ${$element}
+                ${End}
+                """;
         TxtContainer doc = new TxtContainer(documentStr);
         TxtEngine engine = new TxtEngine();
         engine.registerStringReplacement("Begin", "${For value:[\"A\", \"B\", \"C\"], $as:\"element\"}");

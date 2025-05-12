@@ -43,7 +43,7 @@ import java.util.ArrayList;
 import java.util.Optional;
 
 public class ImageProvider<C extends AbstractOdfContainer<D>, D extends OdfDocument> implements EncapsulatedNodesExtractor, PlaceholdersProvider<C, ImageData, D> {
-    private static TextNodeInterpreter interpreter = OdfTextNodeInterpreter.INSTANCE;
+    private static final TextNodeInterpreter interpreter = OdfTextNodeInterpreter.INSTANCE;
 
     private Node firstValidNode = null;
     private boolean endOfDoc;

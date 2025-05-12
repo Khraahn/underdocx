@@ -44,9 +44,8 @@ public class TreePaths extends AbstractPrepareNextEnumerator<Node> {
         while (filterIndex < pathFilters.length) {
             List<Node> nextFitting = new ArrayList<>();
             Predicate<Node> currentFilter = pathFilters[filterIndex];
-            fittingNodes.forEach(currentNode -> {
-                nextFitting.addAll(Nodes.getChildren(currentNode, currentFilter).collect());
-            });
+            fittingNodes.forEach(currentNode ->
+                    nextFitting.addAll(Nodes.getChildren(currentNode, currentFilter).collect()));
             filterIndex++;
             fittingNodes = nextFitting;
         }

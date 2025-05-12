@@ -37,10 +37,10 @@ public interface OdfExistingImageModifierData {
     String getNewDesc();
 
     class Simple implements OdfExistingImageModifierData {
-        Boolean keepWidth;
-        Resource resource;
-        String newName;
-        String newDesc;
+        final Boolean keepWidth;
+        final Resource resource;
+        final String newName;
+        final String newDesc;
 
         public Simple(Boolean keepWidth, Resource resource, String newName, String newDesc) {
             this.keepWidth = keepWidth;

@@ -38,17 +38,14 @@ import java.util.*;
  */
 public class ProviderScanner implements Renameable {
 
-    private final List<ProviderDescr> providerDescriptions;
     private Map<String, Pair<Node, AttrDescr>> cache = new HashMap<>();
 
     public ProviderScanner(AbstractOdfContainer<?> doc, List<ProviderDescr> providerDescr) {
-        this.providerDescriptions = providerDescr;
         providerDescr.forEach(pd ->
-                pd.getPathDescr().findAll(doc).forEach(node -> {
-                    AttrDescr providingAttr = pd.getProvidingAttr();
-                    providingAttr.getValue(node).ifPresent(value -> {
-                        cache.put(value, new Pair<>(node, providingAttr));
-                    });
+                pd.pathDescr().findAll(doc).forEach(node -> {
+                    AttrDescr providingAttr = pd.providingAttr();
+                    providingAttr.getValue(node).ifPresent(value ->
+                            cache.put(value, new Pair<>(node, providingAttr)));
                 }));
         cache = Collections.unmodifiableMap(cache);
     }
@@ -65,12 +62,12 @@ public class ProviderScanner implements Renameable {
     @Override
     public void rename(String resource) {
         Map<String, Pair<Node, AttrDescr>> newCache = new HashMap<>();
-        getProviderEntries().entrySet().forEach(entry -> {
-            Optional<String> oNewValue = entry.getValue().right.modifyValue(resource, entry.getValue().left);
+        getProviderEntries().forEach((key, value) -> {
+            Optional<String> oNewValue = value.right.modifyValue(resource, value.left);
             if (oNewValue.isPresent()) {
-                newCache.put(oNewValue.get(), new Pair<>(entry.getValue().left, entry.getValue().right));
+                newCache.put(oNewValue.get(), new Pair<>(value.left, value.right));
             } else {
-                newCache.put(entry.getKey(), new Pair<>(entry.getValue().left, entry.getValue().right));
+                newCache.put(key, new Pair<>(value.left, value.right));
             }
         });
         cache = Collections.unmodifiableMap(newCache);

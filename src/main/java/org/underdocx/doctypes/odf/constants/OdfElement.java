@@ -61,7 +61,9 @@ public enum OdfElement implements Predicate<Node> {
     LIST(OdfNameSpace.TEXT, "list"),
     LIST_ITEM(OdfNameSpace.TEXT, "list-item"),
 
-    PAGE(OdfNameSpace.DRAW, "page");
+    PAGE(OdfNameSpace.DRAW, "page"),
+
+    TEXT_BOX(OdfNameSpace.DRAW, "text-box");
 
     private final String pureName;
     private final OdfNameSpace ns;
@@ -90,7 +92,7 @@ public enum OdfElement implements Predicate<Node> {
     }
 
     public Predicate<Node> createFilter() {
-        return node -> is(node);
+        return this::is;
     }
 
     @Override

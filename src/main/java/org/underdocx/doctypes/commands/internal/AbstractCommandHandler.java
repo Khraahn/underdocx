@@ -36,7 +36,7 @@ import org.underdocx.environment.err.Problems;
 
 public abstract class AbstractCommandHandler<C extends DocContainer<D>, P, D> implements MCommandHandler<C, P, D> {
 
-    protected ModifiersProvider<C, D> modifiers;
+    protected final ModifiersProvider<C, D> modifiers;
     protected MSelection<C, P, D> selection = null;
     protected DataAccess dataAccess = null;
     protected EngineAccess<C, D> engineAccess = null;
@@ -62,5 +62,5 @@ public abstract class AbstractCommandHandler<C extends DocContainer<D>, P, D> im
     public String toString() {
         return this.getClass().getSimpleName();
     }
-    
+
 }

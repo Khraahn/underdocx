@@ -46,10 +46,10 @@ public class ResourceCommandModule<C extends DocContainer<D>, P, D> extends Abst
     public static final String RESOURCE_ATTR = "resource";
     public static final String B64_ATTR = "base64";
 
-    private static PredefinedDataPicker<String> uriPicker = new StringConvertDataPicker().asPredefined(URI_ATTR);
-    private static PredefinedDataPicker<Resource> resourcePicker = new ResourceDataPicker().asPredefined(RESOURCE_ATTR);
-    private static PredefinedDataPicker<byte[]> binaryPicker = new BinaryDataPicker().asPredefined(DATA_ATTR);
-    private static PredefinedDataPicker<String> b64Picker = new StringConvertDataPicker().asPredefined(B64_ATTR);
+    private static final PredefinedDataPicker<String> uriPicker = new StringConvertDataPicker().asPredefined(URI_ATTR);
+    private static final PredefinedDataPicker<Resource> resourcePicker = new ResourceDataPicker().asPredefined(RESOURCE_ATTR);
+    private static final PredefinedDataPicker<byte[]> binaryPicker = new BinaryDataPicker().asPredefined(DATA_ATTR);
+    private static final PredefinedDataPicker<String> b64Picker = new StringConvertDataPicker().asPredefined(B64_ATTR);
 
     public ResourceCommandModule(JsonNode json) {
         super(json);

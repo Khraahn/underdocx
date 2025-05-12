@@ -73,7 +73,7 @@ public abstract class AbstractOdfTextNodeInterpreter implements TextNodeInterpre
 
     private int getC(Node node) {
         try {
-            return Integer.parseInt(Nodes.attributes(node).getOrDefault(cAttributeName, "0"));
+            return Integer.parseInt(Nodes.getAttr(node, cAttributeName, "0"));
         } catch (Exception e) {
             return 0;
         }

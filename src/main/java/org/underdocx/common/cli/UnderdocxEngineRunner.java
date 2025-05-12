@@ -38,13 +38,14 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
 public class UnderdocxEngineRunner {
 
-    private static Map<String, EngineProvider<?, ?>> predefinedProviders;
+    private static final Map<String, EngineProvider<?, ?>> predefinedProviders;
 
     static {
         predefinedProviders = new HashMap<>();
@@ -55,7 +56,7 @@ public class UnderdocxEngineRunner {
     }
 
     public static void main(String[] args) {
-        int result = new Runner(args).run();
+        int result = new Runner<>(args).run();
         if (result < 0) {
             System.err.println("Sorry, execution failed!");
             System.exit(result);
@@ -67,28 +68,57 @@ public class UnderdocxEngineRunner {
     public static class Runner<C extends AbstractDocContainer<D>, D> {
 
         private EngineProvider<C, D> engineProvider;
-        private EngineAPI engine;
+        private EngineAPI<C, D> engine;
         private C doc;
-        private final String[] args;
+        String engineProviderArg;
+        String inputFileArg;
+        String outputFileArg;
+        String[] dataFilesArgs;
+
+        public static String getArg(String[] args, int index) {
+            if (index >= args.length) {
+                return null;
+            }
+            return args[index];
+        }
+
+        public static String[] copyOfRange(String[] args, int from) {
+            if (from >= args.length) {
+                return new String[]{};
+            }
+            String[] subArray = Arrays.copyOfRange(args, from, args.length);
+            return subArray;
+        }
 
         public Runner(String[] args) {
-            this.args = args;
+            this(getArg(args, 0), getArg(args, 1), getArg(args, 2), copyOfRange(args, 3));
+        }
+
+        public Runner(String engineProviderArg, String inputFileArg, String outputFileArg, String... dataFilesArgs) {
+            if (engineProviderArg == null || inputFileArg == null || outputFileArg == null) {
+                System.err.println("engineProvider: " + engineProviderArg);
+                System.err.println("inputFile: " + inputFileArg);
+                System.err.println("outputFile: " + outputFileArg);
+                throw new RuntimeException("UnderdocxEngineRunner <EngineProviderClassName|PredefinedType> <DocInputFile> <DocOutputFile> [DataJsonFile]");
+            }
+            this.engineProviderArg = engineProviderArg;
+            this.inputFileArg = inputFileArg;
+            this.outputFileArg = outputFileArg;
+            this.dataFilesArgs = dataFilesArgs;
         }
 
         public int run() {
             return Convenience.build(-1, result -> {
                 try {
-                    if (args.length != 3 && args.length != 4) {
-                        throw new RuntimeException("UnderdocxEngineRunner <EngineProviderClassName|PredefinedType> <DocInputFile> <DocOutputFile> [DataJsonFile]");
-                    }
-                    engineProvider = createEngineProvider(args[0]);
-                    doc = loadDocFile(engineProvider, args[1]);
+
+                    engineProvider = createEngineProvider(engineProviderArg);
+                    doc = loadDocFile(engineProvider, inputFileArg);
                     engine = engineProvider.createEngine();
-                    if (args.length == 4) {
-                        loadData(args[3]);
+                    for (String dataFile : dataFilesArgs) {
+                        loadData(dataFile);
                     }
                     Optional<Problem> egnineResult = engine.run(doc);
-                    saveData(args[2]);
+                    saveData(outputFileArg);
                     if (egnineResult.isPresent()) {
                         String problem = egnineResult.get().toString();
                         throw new RuntimeException(problem);
@@ -109,15 +139,12 @@ public class UnderdocxEngineRunner {
             }
         }
 
-        private boolean loadData(String file) {
-            return Convenience.build(false, result -> {
-                try {
-                    engine.importData(new FileInputStream(file));
-                    result.value = true;
-                } catch (IOException e) {
-                    throw new RuntimeException("Can't load json data file", e);
-                }
-            });
+        private void loadData(String file) {
+            try {
+                engine.importData(new FileInputStream(file));
+            } catch (IOException e) {
+                throw new RuntimeException("Can't load json data file", e);
+            }
         }
 
         private C loadDocFile(EngineProvider<C, D> engineProvider, String file) {

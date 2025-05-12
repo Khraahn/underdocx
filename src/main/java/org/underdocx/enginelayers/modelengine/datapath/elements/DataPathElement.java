@@ -33,7 +33,7 @@ public interface DataPathElement {
 
     DatalPathElementType getType();
 
-    Optional<DataNode> interpret(DataNode node);
+    Optional<DataNode<?>> interpret(DataNode<?> node);
 
     void interpret(List<DataPathElement> elementsWithoutThis);
 

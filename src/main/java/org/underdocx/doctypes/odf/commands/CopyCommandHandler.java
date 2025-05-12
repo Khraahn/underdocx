@@ -31,7 +31,7 @@ import org.underdocx.doctypes.modifiers.ModifiersProvider;
 import org.underdocx.doctypes.modifiers.deleteplaceholder.DeletePlaceholderModifierData;
 import org.underdocx.doctypes.odf.AbstractOdfContainer;
 import org.underdocx.doctypes.odf.tools.OdfNodes;
-import org.underdocx.doctypes.tools.datapicker.PredefinedDataPicker;
+import org.underdocx.doctypes.tools.datapicker.AttributeDataPicker;
 import org.underdocx.doctypes.tools.datapicker.StringConvertDataPicker;
 import org.underdocx.enginelayers.baseengine.CommandHandlerResult;
 import org.underdocx.environment.err.Problems;
@@ -40,8 +40,8 @@ import org.w3c.dom.Node;
 public class CopyCommandHandler<C extends AbstractOdfContainer<D>, D extends OdfDocument> extends AbstractTextualCommandHandler<C, D> {
 
 
-    private static final PredefinedDataPicker<String> fromAttr = new StringConvertDataPicker().asPredefined("from");
-    private static final PredefinedDataPicker<String> toAttr = new StringConvertDataPicker().asPredefined("to");
+    private static final AttributeDataPicker<String> fromAttr = new StringConvertDataPicker().expectedAttr("from");
+    private static final AttributeDataPicker<String> toAttr = new StringConvertDataPicker().expectedAttr("to");
 
 
     public CopyCommandHandler(ModifiersProvider<C, D> modifiersProvider) {
@@ -50,8 +50,8 @@ public class CopyCommandHandler<C extends AbstractOdfContainer<D>, D extends Odf
 
     @Override
     protected CommandHandlerResult tryExecuteTextualCommand() {
-        String from = fromAttr.expect(dataAccess, placeholderData.getJson());
-        String to = toAttr.expect(dataAccess, placeholderData.getJson());
+        String from = getAttr(fromAttr);
+        String to = getAttr(toAttr);
         Node toCopy = Problems.CANT_FIND_DOM_ELEMENT.get(OdfNodes.findMainPage(selection.getDocContainer(), from), "element to copy from");
         Node target = Problems.CANT_FIND_DOM_ELEMENT.get(OdfNodes.findMainPage(selection.getDocContainer(), to), "element to copy into");
         Nodes.getChildren(toCopy).forEach(child -> {

@@ -29,13 +29,12 @@ import org.underdocx.common.types.Resource;
 import org.underdocx.doctypes.modifiers.ModifiersProvider;
 import org.underdocx.doctypes.odf.commands.importcommand.AbstractOdgOdpImportCommandHandler;
 import org.underdocx.doctypes.odf.odp.OdpContainer;
-import org.underdocx.environment.err.Problems;
 
 import java.io.IOException;
 
 public class OdpImportCommandHandler extends AbstractOdgOdpImportCommandHandler<OdpContainer, OdfPresentationDocument> {
 
-    public OdpImportCommandHandler(ModifiersProvider modifiers) {
+    public OdpImportCommandHandler(ModifiersProvider<OdpContainer, OdfPresentationDocument> modifiers) {
         super(modifiers);
     }
 
@@ -49,8 +48,4 @@ public class OdpImportCommandHandler extends AbstractOdgOdpImportCommandHandler<
         return new OdpContainer(data);
     }
 
-    @Override
-    protected void checkPageAttr(String page) {
-        Problems.MISSING_VALUE.notNull(page, PAGE_ATTR);
-    }
 }

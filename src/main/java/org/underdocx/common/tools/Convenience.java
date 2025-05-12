@@ -88,6 +88,20 @@ public class Convenience {
         return newlist;
     }
 
+    public static <E> Optional<E> last(List<E> list) {
+        if (!list.isEmpty()) {
+            return Optional.of(list.get(list.size() - 1));
+        }
+        return Optional.empty();
+    }
+
+    public static <E> Optional<E> first(List<E> list) {
+        if (!list.isEmpty()) {
+            return Optional.of(list.get(0));
+        }
+        return Optional.empty();
+    }
+
     public static <T> List<T> filter(Collection<T> collection, Predicate<T> predicate) {
         return collection.stream().filter(predicate).collect(Collectors.toList());
     }
@@ -121,7 +135,7 @@ public class Convenience {
     }
 
     public static <T> T ifNotNull(T value, Consumer<T> consumer) {
-        return ifIs(value, v -> v != null, v -> {
+        return ifIs(value, Objects::nonNull, v -> {
             if (v != null) consumer.accept(v);
         });
     }

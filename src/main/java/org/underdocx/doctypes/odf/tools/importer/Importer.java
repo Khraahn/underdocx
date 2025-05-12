@@ -73,9 +73,7 @@ public class Importer {
         consumers.rename(sourceResourceName);
 
         // copy nodes
-        importRules.getCopyRules().forEach(copyRule -> {
-            copyRule.copy(source, target);
-        });
+        importRules.getCopyRules().forEach(copyRule -> copyRule.copy(source, target));
         importRules.getMainCopyExecutor().copy(source, targetRefNode);
 
         // import images

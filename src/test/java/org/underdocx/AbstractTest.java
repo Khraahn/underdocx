@@ -162,7 +162,7 @@ public abstract class AbstractTest {
         TreeWalker walker1 = new TreeWalker(tree1, tree1);
         TreeWalker walker2 = new TreeWalker(tree2, tree2);
         while (walker1.hasNext()) {
-            assertThat(walker2.hasNext());
+            assertThat(walker2.hasNext()).isTrue();
             TreeWalker.VisitState state1 = walker1.next();
             TreeWalker.VisitState state2 = walker2.next();
             assertThat(state1.getNode().getNodeName()).isEqualTo(state2.getNode().getNodeName());

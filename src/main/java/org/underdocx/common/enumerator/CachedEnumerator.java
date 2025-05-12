@@ -77,7 +77,7 @@ public class CachedEnumerator<T> implements Enumerator<T> {
         }
 
         private CachedEnumerator<T> createFirstClient() {
-            CachedEnumerator<T> result = new CachedEnumerator<T>(this);
+            CachedEnumerator<T> result = new CachedEnumerator<>(this);
             clients.put(result, 0);
             return result;
         }

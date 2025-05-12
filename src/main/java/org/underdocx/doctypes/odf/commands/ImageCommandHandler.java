@@ -38,8 +38,8 @@ import org.underdocx.doctypes.odf.modifiers.images.backgroundimage.OdfBackground
 import org.underdocx.doctypes.odf.modifiers.images.backgroundimage.OdfBackgroundImageModifierData;
 import org.underdocx.doctypes.odf.modifiers.images.existingimage.OdfExistingImageModifier;
 import org.underdocx.doctypes.odf.modifiers.images.existingimage.OdfExistingImageModifierData;
+import org.underdocx.doctypes.tools.datapicker.AttributeDataPicker;
 import org.underdocx.doctypes.tools.datapicker.BooleanDataPicker;
-import org.underdocx.doctypes.tools.datapicker.PredefinedDataPicker;
 import org.underdocx.doctypes.tools.datapicker.StringConvertDataPicker;
 import org.underdocx.enginelayers.baseengine.CommandHandlerResult;
 
@@ -54,18 +54,21 @@ public class ImageCommandHandler<C extends AbstractOdfContainer<D>, D extends Od
     public static final String DESC_ATTR = "desc";
     public static final String KEEP_WIDTH_ATTR = "keepWidth";
 
-    private static final PredefinedDataPicker<String> namePicker = new StringConvertDataPicker().asPredefined(NAME_ATTR);
-    private static final PredefinedDataPicker<String> descPicker = new StringConvertDataPicker().asPredefined(DESC_ATTR);
-    private static final PredefinedDataPicker<Boolean> keepWidthPicker = new BooleanDataPicker().asPredefined(KEEP_WIDTH_ATTR);
+    private static final AttributeDataPicker<String> namePicker = new StringConvertDataPicker().expectedAttr(NAME_ATTR);
+    private static final AttributeDataPicker<String> descPicker = new StringConvertDataPicker().optionalAttr(DESC_ATTR);
+    private static final AttributeDataPicker<Boolean> keepWidthPicker = new BooleanDataPicker().optionalAttr(KEEP_WIDTH_ATTR);
 
-    public ImageCommandHandler(ModifiersProvider modifiers) {
+    private final OdfExistingImageModifier<C, D> existingImageModifier = new OdfExistingImageModifier<>();
+    private final OdfBackgroundImageModifier<C, D> backgroundImageModifier = new OdfBackgroundImageModifier<>();
+
+    public ImageCommandHandler(ModifiersProvider<C, D> modifiers) {
         super(modifiers);
     }
 
     @Override
     protected CommandHandlerResult tryExecuteCommand() {
-        String name = namePicker.expect(dataAccess, placeholderData.getJson());
-        String newDesc = descPicker.pickData(dataAccess, placeholderData.getJson()).optional().orElse(null);
+        String name = namePicker.get(dataAccess, placeholderData.getJson());
+        String newDesc = descPicker.get(dataAccess, placeholderData.getJson());
         Resource resource = new ResourceCommandModule<C, ImageData, D>(placeholderData.getJson()).execute(selection);
         if (placeholderData instanceof MainImageData) {
             handleMainImage(name, newDesc, resource);
@@ -77,15 +80,15 @@ public class ImageCommandHandler<C extends AbstractOdfContainer<D>, D extends Od
 
 
     private void handleMainImage(String name, String newDesc, Resource resource) {
-        Boolean keepWidth = keepWidthPicker.pickData(dataAccess, placeholderData.getJson()).optional().orElse(null);
+        Boolean keepWidth = keepWidthPicker.get(dataAccess, placeholderData.getJson());
         OdfExistingImageModifierData modifierData = new OdfExistingImageModifierData.Simple(keepWidth, resource, name, newDesc);
-        new OdfExistingImageModifier<C, D>().modify(selection, modifierData);
+        existingImageModifier.modify(selection, modifierData);
     }
 
 
     private void handleBackgroundImage(String name, String newDesc, Resource resource) {
         OdfBackgroundImageModifierData modifierData = new OdfBackgroundImageModifierData.Simple(resource, name, newDesc);
-        new OdfBackgroundImageModifier<C, D>().modify(selection, modifierData);
+        backgroundImageModifier.modify(selection, modifierData);
     }
 
 }

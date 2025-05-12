@@ -76,7 +76,7 @@ public class SimpleTreeWalkerTest extends AbstractOdtTest {
         List<Node> nodes;
         Node start;
 
-        start = Nodes.findFirstDescendantNode(doc, node -> node.getNodeName().equals("span") && ("" + node.getTextContent()).contains("E")).get();
+        start = Nodes.findFirstDescendantNode(doc, node -> node.getNodeName().equals("span") && (node.getTextContent()).contains("E")).get();
         walker = new SimpleTreeWalker(doc, doc, start, SimpleTreeWalker.buildFilter(node -> node.getNodeName().equals("p")), true);
         nodes = walker.collect();
         Assertions.assertThat(nodes.size()).isEqualTo(1);
@@ -104,7 +104,7 @@ public class SimpleTreeWalkerTest extends AbstractOdtTest {
         List<Node> nodes;
         Node start;
 
-        start = Nodes.findFirstDescendantNode(doc, node -> node.getNodeName().equals("span") && ("" + node.getTextContent()).equals("F")).get();
+        start = Nodes.findFirstDescendantNode(doc, node -> node.getNodeName().equals("span") && (node.getTextContent()).equals("F")).get();
         walker = new SimpleTreeWalker(doc, doc, start, SimpleTreeWalker.buildFilter(node -> node.getNodeName().equals("p")), true);
         nodes = walker.collect();
         Assertions.assertThat(nodes.size()).isEqualTo(1);
@@ -133,8 +133,8 @@ public class SimpleTreeWalkerTest extends AbstractOdtTest {
         Node start;
         Node limit;
 
-        start = Nodes.findFirstDescendantNode(doc, node -> node.getNodeName().equals("span") && ("" + node.getTextContent()).equals("C")).get();
-        limit = Nodes.findFirstDescendantNode(doc, node -> node.getNodeName().equals("p") && ("" + node.getTextContent()).contains("A")).get();
+        start = Nodes.findFirstDescendantNode(doc, node -> node.getNodeName().equals("span") && (node.getTextContent()).equals("C")).get();
+        limit = Nodes.findFirstDescendantNode(doc, node -> node.getNodeName().equals("p") && (node.getTextContent()).contains("A")).get();
 
         walker = new SimpleTreeWalker(doc, limit, start, SimpleTreeWalker.buildFilter(node -> node.getNodeName().equals("span")), false);
         nodes = walker.collect();

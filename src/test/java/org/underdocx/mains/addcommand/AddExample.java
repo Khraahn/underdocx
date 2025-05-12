@@ -8,7 +8,6 @@ import org.underdocx.doctypes.odf.modifiers.OdfModifiersProvider;
 import org.underdocx.doctypes.odf.modifiers.deleteplaceholder.OdfDeletePlaceholderModifier;
 import org.underdocx.doctypes.odf.odt.OdtContainer;
 import org.underdocx.doctypes.odf.odt.OdtEngine;
-import org.underdocx.doctypes.tools.datapicker.DataPickerResult;
 import org.underdocx.doctypes.tools.datapicker.IntegerDataPicker;
 import org.underdocx.doctypes.tools.datapicker.StringConvertDataPicker;
 import org.underdocx.enginelayers.baseengine.CommandHandlerResult;
@@ -21,24 +20,23 @@ public class AddExample {
 
     private static class AddCommandHandler extends AbstractTextualCommandHandler<OdtContainer, OdfTextDocument> {
         protected AddCommandHandler() {
-            super(new Regex("Add"), new OdfModifiersProvider());
+            super(new Regex("Add"), new OdfModifiersProvider<>());
         }
+
 
         @Override
         protected CommandHandlerResult tryExecuteTextualCommand() {
-            DataPickerResult<Integer> aValue = new IntegerDataPicker().asPredefined("a").pickData(dataAccess, placeholderData.getJson());
-            DataPickerResult<Integer> bValue = new IntegerDataPicker().asPredefined("b").pickData(dataAccess, placeholderData.getJson());
-            DataPickerResult<String> target = new StringConvertDataPicker().asPredefined("target").pickData(dataAccess, placeholderData.getJson());
-            if (!(aValue.isResolvedNotNull() && bValue.isResolvedNotNull() && target.isResolvedNotNull()))
-                return CommandHandlerResult.IGNORED;
-            int result = aValue.value + bValue.value;
-            dataAccess.pushVariable(target.value, new LeafDataNode<>(result));
+            int aValue = getAttr(new IntegerDataPicker().expectedAttr("a"));
+            int bValue = getAttr(new IntegerDataPicker().expectedAttr("b"));
+            String target = getAttr(new StringConvertDataPicker().expectedAttr("target"));
+            int result = aValue + bValue;
+            dataAccess.pushVariable(target, new LeafDataNode<>(result));
             new OdfDeletePlaceholderModifier().modify(selection.getNode(), DeletePlaceholderModifierData.DEFAULT);
             return CommandHandlerResult.EXECUTED_PROCEED;
         }
     }
 
-    public static File main() throws IOException {
+    public static File doMain() throws IOException {
         String content = """
                 ${Add a:2, b:3, target:"sum"}
                 ${$sum}
@@ -54,6 +52,6 @@ public class AddExample {
     }
 
     public static void main(String[] args) throws IOException {
-        main();
+        doMain();
     }
 }

@@ -37,7 +37,7 @@ public interface ModifierResult {
     class DefaultModifierResult implements ModifierNodeResult {
 
         private Node endNode = null;
-        protected boolean success;
+        protected final boolean success;
         protected boolean isEndOfDoc;
 
         public DefaultModifierResult() {

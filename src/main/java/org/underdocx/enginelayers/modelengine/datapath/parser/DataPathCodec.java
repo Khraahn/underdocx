@@ -32,6 +32,7 @@ import org.underdocx.enginelayers.modelengine.datapath.elements.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.StringTokenizer;
 
 public class DataPathCodec implements Codec<DataPath> {
@@ -58,7 +59,7 @@ public class DataPathCodec implements Codec<DataPath> {
         private enum State {
             NORMAL,
             INDEX_STARTED,
-            INDEX_ENDED;
+            INDEX_ENDED
         }
 
         private final String toParse;
@@ -145,12 +146,11 @@ public class DataPathCodec implements Codec<DataPath> {
         }
 
         private void parseEndIndex() throws DataPathParseException {
-            switch (state) {
-                case INDEX_STARTED -> {
-                    storeIndex();
-                    state = State.INDEX_ENDED;
-                }
-                default -> throw new DataPathParseException("Unexpected index end");
+            if (Objects.requireNonNull(state) == State.INDEX_STARTED) {
+                storeIndex();
+                state = State.INDEX_ENDED;
+            } else {
+                throw new DataPathParseException("Unexpected index end");
             }
         }
 

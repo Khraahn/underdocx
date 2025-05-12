@@ -35,7 +35,7 @@ public class AddExampleTest extends AbstractOdtTest {
 
     @Test
     public void testMain() throws IOException {
-        File tmpFile = AddExample.main();
+        File tmpFile = AddExample.doMain();
         OdtContainer doc = new OdtContainer(tmpFile);
         assertNoPlaceholders(doc);
         assertContains(doc, "5");

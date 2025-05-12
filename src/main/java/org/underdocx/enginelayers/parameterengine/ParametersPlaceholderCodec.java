@@ -26,7 +26,7 @@ package org.underdocx.enginelayers.parameterengine;
 
 public class ParametersPlaceholderCodec extends GenericParametersPlaceholderCodec {
 
-    public static ParametersPlaceholderCodec INSTANCE = new ParametersPlaceholderCodec();
+    public static final ParametersPlaceholderCodec INSTANCE = new ParametersPlaceholderCodec();
 
     public ParametersPlaceholderCodec() {
         super("${", "}");

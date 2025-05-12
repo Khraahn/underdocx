@@ -54,8 +54,7 @@ public class ImportTest extends AbstractOdtTest {
         OdtContainer source = readOdt("Source.odt");
         File tmpFile = source.createTmpFile("test_", true, 20000L);
         String uri = tmpFile.toURI().toString();
-        OdtContainer doc = new OdtContainer("" +
-                "Begin                        \n" +
+        OdtContainer doc = new OdtContainer("Begin                        \n" +
                 "${Import uri:\"" + uri + "\"}  \n" +
                 "End");
         OdtEngine engine = new OdtEngine();

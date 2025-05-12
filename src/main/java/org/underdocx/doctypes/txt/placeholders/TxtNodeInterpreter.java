@@ -31,7 +31,7 @@ import org.w3c.dom.Node;
 
 public class TxtNodeInterpreter implements TextNodeInterpreter {
 
-    public static TextNodeInterpreter INSTANCE = new TxtNodeInterpreter();
+    public static final TextNodeInterpreter INSTANCE = new TxtNodeInterpreter();
 
     protected boolean is(Node node, String name) {
         return name.equals(node.getNodeName());
@@ -72,7 +72,7 @@ public class TxtNodeInterpreter implements TextNodeInterpreter {
 
     @Override
     public Node createTextContainer(Node parent) {
-        return Convenience.also(parent.getOwnerDocument().createElement("span"), span -> parent.appendChild(span));
+        return Convenience.also(parent.getOwnerDocument().createElement("span"), parent::appendChild);
     }
 
     @Override

@@ -57,7 +57,7 @@ public class UnderdocxEnv {
     public boolean appendErrorReport = true;
     public boolean disableImagePlaceholderProvider = false;
 
-    public String libreOfficeExecutable = Convenience.build(path -> {
+    public final String libreOfficeExecutable = Convenience.build(path -> {
         path.value = System.getenv("LIBREOFFICE");
         if (path.value == null || path.value.isBlank()) {
             path.value = System.getProperty("libreoffice");
@@ -67,7 +67,7 @@ public class UnderdocxEnv {
         }
     });
 
-    public String libreOfficeHomePath = Convenience.build(path -> {
+    public final String libreOfficeHomePath = Convenience.build(path -> {
         path.value = System.getenv("LIBREOFFICEHOME");
         if (path.value == null || path.value.isBlank()) {
             path.value = System.getProperty("libreofficehome");

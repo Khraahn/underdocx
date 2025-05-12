@@ -33,6 +33,7 @@ import org.underdocx.doctypes.commands.internal.AbstractTextualCommandHandler;
 import org.underdocx.doctypes.modifiers.ModifiersProvider;
 import org.underdocx.doctypes.modifiers.deleteplaceholder.DeletePlaceholderModifierData;
 import org.underdocx.doctypes.odf.modifiers.deleteplaceholder.OdfDeletePlaceholderModifier;
+import org.underdocx.doctypes.odf.modifiers.importmodifier.ImportType;
 import org.underdocx.doctypes.odf.modifiers.importmodifier.OdfImportModifier;
 import org.underdocx.doctypes.odf.modifiers.importmodifier.OdfImportModifierData;
 import org.underdocx.doctypes.odf.odt.OdtContainer;
@@ -50,12 +51,12 @@ public class UnderdocxCommandHandler extends AbstractTextualCommandHandler<OdtCo
     private final static Regex KEYS = new Regex("underdocx|Underdocx");
     private final static Resource resource = new Resource.ClassResource(UnderdocxCommandHandler.class, "underdocx.odt");
 
-    public UnderdocxCommandHandler(ModifiersProvider modifiers) {
+    public UnderdocxCommandHandler(ModifiersProvider<OdtContainer, OdfTextDocument> modifiers) {
         super(KEYS, modifiers);
     }
 
     @Override
-    public void init(OdtContainer container, EngineAccess engineAccess) {
+    public void init(OdtContainer container, EngineAccess<OdtContainer, OdfTextDocument> engineAccess) {
         engineAccess.addListener(new Listener());
     }
 
@@ -73,16 +74,14 @@ public class UnderdocxCommandHandler extends AbstractTextualCommandHandler<OdtCo
                 engineAccess.lookBack(node -> {
                     Optional<ParametersPlaceholderData> placeholderData = toolkit.examineNode(node);
                     return placeholderData.filter(parametersPlaceholderData -> KEYS.matches(parametersPlaceholderData.getKey())).isPresent();
-                }).forEach(node -> {
-                    modify(doc, node);
-                });
+                }).forEach(node -> modify(doc, node));
             });
         }
     }
 
     private void modify(OdtContainer doc, Node node) {
         OdtContainer importDoc = Problems.IO_EXCEPTION.exec(() -> new OdtContainer(resource));
-        OdfImportModifierData modifiedData = new OdfImportModifierData.Simple(resource.getIdentifier(), importDoc, doc, node, true, null);
+        OdfImportModifierData modifiedData = new OdfImportModifierData.Simple(ImportType.COPY_ODT_CONTENT, resource.getIdentifier(), importDoc, doc, node, true, null);
         new OdfImportModifier().modify(modifiedData);
         new OdfDeletePlaceholderModifier().modify(node, DeletePlaceholderModifierData.DEFAULT);
     }

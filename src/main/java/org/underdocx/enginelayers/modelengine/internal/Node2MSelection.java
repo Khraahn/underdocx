@@ -37,7 +37,7 @@ import java.util.Optional;
 public class Node2MSelection {
 
     public static <C extends DocContainer<D>, P, D> MSelection<C, P, D> createMSelection(MSelection<C, P, D> origin, SelectedNode<P> newNode) {
-        return new MSelection<C, P, D>() {
+        return new MSelection<>() {
             @Override
             public Optional<DataAccess> getDataAccess() {
                 return origin.getDataAccess();

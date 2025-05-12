@@ -36,12 +36,12 @@ public class ShortModelStringCommandHandler<C extends DocContainer<D>, D> extend
 
     public final static Regex KEYS = new Regex("\\*\\S*");
 
-    public ShortModelStringCommandHandler(ModifiersProvider modifiers) {
+    public ShortModelStringCommandHandler(ModifiersProvider<C, D> modifiers) {
         super(KEYS, modifiers);
     }
 
     @Override
-    protected StringOutputModuleConfig getConfig() {
+    protected StringOutputModuleConfig<C, D> getConfig() {
         String pathStr = placeholderData.getKey().substring(1);
         return buildConfig(pathStr, new ModelNameDataPicker());
     }

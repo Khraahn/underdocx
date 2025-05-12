@@ -30,7 +30,7 @@ import org.underdocx.doctypes.odf.AbstractOdfEngine;
 import org.underdocx.doctypes.odf.commands.*;
 import org.underdocx.doctypes.odf.commands.forcommand.ForListCommandHandler;
 import org.underdocx.doctypes.odf.commands.forcommand.ForRowsCommandHandler;
-import org.underdocx.doctypes.odf.odt.commands.ExportCommandHandler;
+import org.underdocx.doctypes.odf.odt.commands.OdtExportCommandHandler;
 import org.underdocx.doctypes.odf.odt.commands.OdtImportCommandHandler;
 import org.underdocx.doctypes.odf.odt.commands.UnderdocxCommandHandler;
 import org.underdocx.doctypes.odf.tools.placeholder.OdfDefaultPlaceholderFactory;
@@ -63,7 +63,7 @@ public class OdtEngine extends AbstractOdfEngine<OdtContainer, OdfTextDocument> 
         }
         engine.registerCommandHandler(parameters, new ForListCommandHandler<>(modifiers));
         engine.registerCommandHandler(parameters, new PageStyleCommandHandler<>(modifiers));
-        engine.registerCommandHandler(parameters, new ExportCommandHandler(modifiers));
+        engine.registerCommandHandler(parameters, new OdtExportCommandHandler(modifiers));
         engine.registerCommandHandler(parameters, multiCommandHandler);
         engine.registerCommandHandler(parameters, new JoinCommandHandler<>(modifiers));
         engine.registerCommandHandler(parameters, new DeleteNodesEodHandler<>(modifiers));

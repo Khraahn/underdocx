@@ -63,9 +63,8 @@ public class StringOutputCommandModule<C extends DocContainer<D>, D> extends Abs
                 } else {
                     String output = handlePadding(moduleResult.value);
                     configuration.getModifiers().getReplaceWithTextModifier().modify(selection, output);
-                    templateCellPicker.pickData(dataAccess, placeholderData.getJson()).optional().ifPresent(templacecell -> {
-                        configuration.getModifiers().getTableCellModifier().modify(selection, new TableCellModifierData.Simple(output, templacecell));
-                    });
+                    templateCellPicker.pickData(dataAccess, placeholderData.getJson()).optional().ifPresent(templacecell ->
+                            configuration.getModifiers().getTableCellModifier().modify(selection, new TableCellModifierData.Simple(output, templacecell)));
                 }
                 yield shouldRescan
                         ? new Pair<>(CommandHandlerResult.FACTORY.startAtNode(selection.getNode()), moduleResult.resultType)

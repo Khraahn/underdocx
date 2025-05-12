@@ -44,9 +44,9 @@ public class SimpleModelTest extends AbstractTest {
                   "c": {
                     "d": "Jon Doe"
                   }
-                }                
+                }
                 """;
-        DataNode model = new MapDataNode(jsonString);
+        DataNode<?> model = new MapDataNode(jsonString);
         String newJsonString = model.toString();
         Convenience.also(new JsonCodec(), codec -> {
             JsonNode parsed = codec.tryParse(newJsonString).get();

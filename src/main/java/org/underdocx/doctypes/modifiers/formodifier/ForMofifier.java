@@ -77,7 +77,7 @@ public class ForMofifier<C extends DocContainer<D>, D> extends AbstractAreaModif
             Nodes.deleteNode(node);
         } else {
             List<Node> nodes = TextualPlaceholderToolkit.clonePlaceholder(node, replacements.size());
-            if (nodes.size() > 0 && modifierResult == null) {
+            if (!nodes.isEmpty() && modifierResult == null) {
                 modifierResult = ModifierNodeResult.FACTORY.success(nodes.get(0), false);
             }
             for (int i = 0; i < replacements.size(); i++) {
@@ -91,19 +91,16 @@ public class ForMofifier<C extends DocContainer<D>, D> extends AbstractAreaModif
     private List<Pair<Node, Node>> createAreas() {
         return Convenience.also(new ArrayList<>(), result -> {
             int max = modifierData.getRepeats();
-            switch (max) {
-                case 0 -> {
-                    modifierResult = ModifierNodeResult.FACTORY.success(areaNodes.get(areaNodes.size() - 1), true);
-                    Nodes.deleteNodes(areaNodes);
-                }
-                default -> {
-                    result.add(area);
-                    Node last = area.right;
-                    for (int i = 1; i < max; i++) {
-                        Pair<Node, Node> clonedNodes = cloneArea(last);
-                        result.add(clonedNodes);
-                        last = clonedNodes.right;
-                    }
+            if (max == 0) {
+                modifierResult = ModifierNodeResult.FACTORY.success(areaNodes.get(areaNodes.size() - 1), true);
+                Nodes.deleteNodes(areaNodes);
+            } else {
+                result.add(area);
+                Node last = area.right;
+                for (int i = 1; i < max; i++) {
+                    Pair<Node, Node> clonedNodes = cloneArea(last);
+                    result.add(clonedNodes);
+                    last = clonedNodes.right;
                 }
             }
         });

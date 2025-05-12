@@ -30,16 +30,7 @@ import org.underdocx.enginelayers.modelengine.data.DataNode;
 import java.util.List;
 import java.util.Optional;
 
-public class IndexDataPathElement implements DataPathElement {
-    private final int index;
-
-    public int getIndex() {
-        return index;
-    }
-
-    public IndexDataPathElement(int index) {
-        this.index = index;
-    }
+public record IndexDataPathElement(int index) implements DataPathElement {
 
     public String toString() {
         return "[" + index + "]";
@@ -51,7 +42,7 @@ public class IndexDataPathElement implements DataPathElement {
     }
 
     @Override
-    public Optional<DataNode> interpret(DataNode node) {
+    public Optional<DataNode<?>> interpret(DataNode<?> node) {
         return Convenience.buildOptional(w -> w.value = node.hasProperty(index) ? node.getProperty(index) : null);
     }
 

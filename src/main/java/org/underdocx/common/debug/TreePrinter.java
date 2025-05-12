@@ -70,7 +70,7 @@ public class TreePrinter {
                         checkMarker(builder, state);
                     } else {
                         if (!noHash) {
-                            builder.append("<").append(state.getNode().getNodeName() + "@" + state.getNode().hashCode()).append(">");
+                            builder.append("<").append(state.getNode().getNodeName()).append("@").append(state.getNode().hashCode()).append(">");
                         } else {
                             builder.append("<").append(state.getNode().getNodeName()).append(">");
                         }
@@ -110,7 +110,7 @@ public class TreePrinter {
     }
 
     public static String getNodeString(Node node) {
-        return "" + node.getNodeName() + "@" + node.hashCode() + " content: " + node.getTextContent();
+        return node.getNodeName() + "@" + node.hashCode() + " content: " + node.getTextContent();
     }
 
 }

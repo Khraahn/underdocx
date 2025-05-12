@@ -44,7 +44,7 @@ public class VariableCommandHandler<C extends DocContainer<D>, D> extends Abstra
     public static final String KEY_ATTR = "key";
     public static final String VALUE_ATTR = "value";
 
-    public VariableCommandHandler(ModifiersProvider modifiers) {
+    public VariableCommandHandler(ModifiersProvider<C, D> modifiers) {
         super(KEYS, modifiers);
     }
 

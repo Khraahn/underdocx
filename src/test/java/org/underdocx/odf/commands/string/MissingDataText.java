@@ -37,6 +37,7 @@ public class MissingDataText extends AbstractOdtTest {
         String jsonString = """
                 {"a":"Test"}
                 """;
+        // -
         String documentStr = "" +
                 "A ${*b onNull:\"fallback\", fallback:\"hugo\"} A          \n" + // A hugo A
                 "B ${*b onNull:\"empty\"}B                                 \n" + // B B
@@ -44,8 +45,7 @@ public class MissingDataText extends AbstractOdtTest {
                 "D ${*b onNull:\"deletePlaceholderDeleteEmptyParagraph\"}D \n" + // D D
                 "E ${*b onNull:\"deletePlaceholderDeleteParagraph\"}E      \n" + // -
                 "F ${*b onNull:\"keepPlaceholder\"}F                       \n" + // F ${*b onNull:"keepPlaceholder"}F
-                "  ${*b onNull:\"deletePlaceholderDeleteEmptyParagraph\"}  \n" + // -
-                "";
+                "  ${*b onNull:\"deletePlaceholderDeleteEmptyParagraph\"}  \n";
         OdtContainer doc = new OdtContainer(documentStr);
         OdtEngine engine = new OdtEngine();
         engine.setModel(new MapDataNode(jsonString));

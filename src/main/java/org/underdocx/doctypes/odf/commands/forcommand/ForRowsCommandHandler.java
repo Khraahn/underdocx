@@ -42,11 +42,11 @@ import java.util.Optional;
 
 public class ForRowsCommandHandler<C extends DocContainer<D>, D> extends AbstractForCommandHandler<C, D> {
 
-    public ForRowsCommandHandler(ModifiersProvider modifiers) {
+    public ForRowsCommandHandler(ModifiersProvider<C, D> modifiers) {
         super(modifiers);
     }
 
-    public static String ROWGROUPSIZE_ATTR = "rowGroupSize";
+    public static final String ROWGROUPSIZE_ATTR = "rowGroupSize";
     public static final String INLIST_ATTR = "parentTable";
     public static final String TABLE_NAME = "tableName";
 

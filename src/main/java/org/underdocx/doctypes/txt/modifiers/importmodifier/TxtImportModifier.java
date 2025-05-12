@@ -48,16 +48,15 @@ public class TxtImportModifier extends AbstractModifier<TxtContainer, TxtXml> im
     public ModifierNodeResult modify(Node selection, TxtImportModifierData modifierData) {
         Wrapper<Node> first = new Wrapper<>();
         Nodes.findAscendantNode(selection, "p").ifPresent(p -> {
-            Nodes.findFirstDescendantNode(modifierData.getImportDoc().getDocument().getDoc(), "root").ifPresent(root -> {
-                Nodes.getChildren(root, new FragmentFilter(modifierData.getBeginFragmentRegex(), modifierData.getEndFragmentRegex())).forEach(nodeToClone -> {
-                    Node clone = nodeToClone.cloneNode(true);
-                    clone = p.getOwnerDocument().adoptNode(clone);
-                    if (first.value == null) {
-                        first.value = clone;
-                    }
-                    p.getParentNode().insertBefore(clone, p);
-                });
-            });
+            Nodes.findFirstDescendantNode(modifierData.importDoc().getDocument().getDoc(), "root").ifPresent(root ->
+                    Nodes.getChildren(root, new FragmentFilter(modifierData.beginFragmentRegex(), modifierData.endFragmentRegex())).forEach(nodeToClone -> {
+                        Node clone = nodeToClone.cloneNode(true);
+                        clone = p.getOwnerDocument().adoptNode(clone);
+                        if (first.value == null) {
+                            first.value = clone;
+                        }
+                        p.getParentNode().insertBefore(clone, p);
+                    }));
             modifiers.getDeletePlaceholderModifier().modify(selection, DeletePlaceholderModifierData.DEFAULT);
         });
         if (first.value == null) {

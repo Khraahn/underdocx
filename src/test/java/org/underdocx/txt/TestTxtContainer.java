@@ -45,6 +45,7 @@ public class TestTxtContainer extends AbstractTxtTest {
 
     @Test
     public void readConvertAndWriteBack2() throws IOException {
+        // keep white spaces for test
         TxtContainer doc = new TxtContainer("" +
                 "A B CDE<>   F\n" +
                 "G   HIJ!  \n" +
@@ -64,10 +65,10 @@ public class TestTxtContainer extends AbstractTxtTest {
 
     @Test
     public void testPlaceholderProvider() {
-        TxtContainer doc = new TxtContainer("" +
-                "A${placeholder1}B\n" +
-                "C${placeholder2 key:\"value\"}!\n" +
-                " ---");
+        TxtContainer doc = new TxtContainer("""
+                A${placeholder1}B
+                C${placeholder2 key:"value"}!
+                 ---""");
         PlaceholdersProvider<TxtContainer, ParametersPlaceholderData, TxtXml> placeholderProvider
                 = new TxtDefaultPlaceholderFactory().createProvider(doc);
         List<ParametersPlaceholderData> allPlaceholders = Convenience.buildList(result ->
@@ -80,15 +81,14 @@ public class TestTxtContainer extends AbstractTxtTest {
 
     @Test
     public void testRemovePlaceholderModifier() {
-        TxtContainer doc = new TxtContainer("" +
-                "A${placeholder1}B\n" +
-                "C${placeholder2 key:\"value\"}!\n" +
-                " ---");
+        TxtContainer doc = new TxtContainer("""
+                A${placeholder1}B
+                C${placeholder2 key:"value"}!
+                 ---""");
         PlaceholdersProvider<TxtContainer, ParametersPlaceholderData, TxtXml> placeholderProvider
                 = new TxtDefaultPlaceholderFactory().createProvider(doc);
         List<Node> allPlaceholders = Convenience.buildList(result ->
-                placeholderProvider.getPlaceholders(doc).forEach(node ->
-                        result.add(node)));
+                placeholderProvider.getPlaceholders(doc).forEach(result::add));
 
         Assertions.assertThat(allPlaceholders.size()).isEqualTo(2);
         assertParagraphsCount(doc, 3);
@@ -102,14 +102,12 @@ public class TestTxtContainer extends AbstractTxtTest {
 
     @Test
     public void testRemovePlaceholderModifierBlank() {
-        TxtContainer doc = new TxtContainer("" +
-                " ${placeholder1} \n" +
+        TxtContainer doc = new TxtContainer(" ${placeholder1} \n" +
                 " ---");
         PlaceholdersProvider<TxtContainer, ParametersPlaceholderData, TxtXml> placeholderProvider
                 = new TxtDefaultPlaceholderFactory().createProvider(doc);
         List<Node> allPlaceholders = Convenience.buildList(result ->
-                placeholderProvider.getPlaceholders(doc).forEach(node ->
-                        result.add(node)));
+                placeholderProvider.getPlaceholders(doc).forEach(result::add));
 
         Assertions.assertThat(allPlaceholders.size()).isEqualTo(1);
         assertParagraphsCount(doc, 2);

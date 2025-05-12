@@ -28,16 +28,26 @@ import org.odftoolkit.odfdom.doc.OdfTextDocument;
 import org.underdocx.common.types.Resource;
 import org.underdocx.doctypes.modifiers.ModifiersProvider;
 import org.underdocx.doctypes.odf.commands.importcommand.AbstractOdfImportCommandHandler;
+import org.underdocx.doctypes.odf.modifiers.importmodifier.ImportType;
 import org.underdocx.doctypes.odf.odt.OdtContainer;
-import org.underdocx.environment.err.Problems;
 import org.w3c.dom.Node;
 
 import java.io.IOException;
 
 public class OdtImportCommandHandler extends AbstractOdfImportCommandHandler<OdtContainer, OdfTextDocument> {
 
-    public OdtImportCommandHandler(ModifiersProvider modifiers) {
+    public OdtImportCommandHandler(ModifiersProvider<OdtContainer, OdfTextDocument> modifiers) {
         super(modifiers);
+    }
+
+    @Override
+    protected ImportType getImportType() {
+        return ImportType.COPY_ODT_CONTENT;
+    }
+
+    @Override
+    protected String getPageName() {
+        return null;
     }
 
     @Override
@@ -53,10 +63,5 @@ public class OdtImportCommandHandler extends AbstractOdfImportCommandHandler<Odt
     @Override
     protected OdtContainer createContainer(byte[] data) throws IOException {
         return new OdtContainer(data);
-    }
-
-    @Override
-    protected void checkPageAttr(String page) {
-        Problems.UNEXPECTED_VALUE.check(page == null, PAGE_ATTR, null);
     }
 }

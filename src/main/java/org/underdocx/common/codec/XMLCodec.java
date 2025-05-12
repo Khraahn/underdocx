@@ -40,7 +40,7 @@ import java.io.StringWriter;
 
 public class XMLCodec implements Codec<Document> {
 
-    public static XMLCodec DEFAULT = new XMLCodec();
+    public static final XMLCodec DEFAULT = new XMLCodec();
 
     private static final DocumentBuilder builder;
 

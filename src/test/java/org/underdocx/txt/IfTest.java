@@ -66,7 +66,7 @@ public class IfTest extends AbstractTxtTest {
                 C ${If $testFalse:false}C${EndIf} C
                 D ${If $testNull:null}D${EndIf} D
                 E ${If $testNumber:42}E${EndIf} E
-                F ${If $testEmpty:[]}F${EndIf} F                
+                F ${If $testEmpty:[]}F${EndIf} F
                 H ${If not:{$testString:"x"}}H${EndIf} H
                 I ${If not:{$testTrue:false}}I${EndIf} I
                 J ${If not:{$testFalse:true}}J${EndIf} J
@@ -75,11 +75,11 @@ public class IfTest extends AbstractTxtTest {
                 M ${If *model:"model"}M${EndIf} M
                 O ${If $testString:"x"} INVALID ${EndIf}O
                 P ${If $testTrue:false} INVALID ${EndIf}P
-                Q ${If $testFalse:true} INVALID ${EndIf}Q 
+                Q ${If $testFalse:true} INVALID ${EndIf}Q
                 R ${If $testNull:"test"} INVALID ${EndIf}R
                 S ${If $testNumber:0} INVALID ${EndIf}S
                 T ${If $testEmpty:[1]} INVALID ${EndIf}T
-                U ${If *model:"x"} INVALID ${EndIf}U        
+                U ${If *model:"x"} INVALID ${EndIf}U
                 """;
         TxtContainer doc = new TxtContainer(documentStr);
         TxtEngine engine = new TxtEngine();
@@ -114,11 +114,11 @@ public class IfTest extends AbstractTxtTest {
     public void testIfParagraph() {
         String documentStr = """
                 ${Push key:"testTrue", value:true}
-                A 
-                ${If $testTrue:false}  
-                X   
-                ${EndIf}    
-                B           
+                A
+                ${If $testTrue:false}
+                X
+                ${EndIf}
+                B
                 """;
         TxtContainer doc = new TxtContainer(documentStr);
         TxtEngine engine = new TxtEngine();

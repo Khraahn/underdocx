@@ -81,8 +81,8 @@ public class DemoTest extends AbstractOdtTest {
         assertNoPlaceholders(doc);
     }
 
-    private DataNode createPersonsData() throws IOException {
-        DataNode data = DataTreeBuilder
+    private DataNode<?> createPersonsData() throws IOException {
+        return DataTreeBuilder
                 /*  */.beginList()
 
                 /*    */.beginMap()
@@ -114,8 +114,5 @@ public class DemoTest extends AbstractOdtTest {
 
                 /*  */.end()
                 /*  */.build();
-
-        return data;
     }
-
 }

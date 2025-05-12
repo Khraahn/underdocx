@@ -44,12 +44,13 @@ public class StringTest extends AbstractOdtTest {
                   }
                 }
                 """;
-        String documentStr = "" +
-                "A ${String *value:\"a.b[0]\"} A       \n" +
-                "${Model value:\"a.b[0]\"}             \n" +
-                "B ${String} B                         \n" +
-                "C ${String *value:\"^c.d[1]\"} C      \n" +
-                "D ${String *value:\"^no\"} D          \n";
+        String documentStr = """
+                A ${String *value:"a.b[0]"} A
+                ${Model value:"a.b[0]"}
+                B ${String} B 
+                C ${String *value:"^c.d[1]"} C
+                D ${String *value:"^no"} D
+                """;
         OdtContainer doc = new OdtContainer(documentStr);
         OdtEngine engine = new OdtEngine();
         engine.setModel(new MapDataNode(jsonString));
@@ -71,7 +72,7 @@ public class StringTest extends AbstractOdtTest {
                   "c":{
                     "d":["Test2", "Test3"]
                   },
-                  varName: "y"              
+                  varName: "y"
                 }
                 """;
         String documentStr = "" +

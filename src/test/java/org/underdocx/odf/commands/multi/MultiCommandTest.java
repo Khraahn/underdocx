@@ -38,10 +38,11 @@ public class MultiCommandTest extends AbstractOdtTest {
                 {
                 }
                 """;
-        String documentStr = "" +
-                "${Begin}                 \n" +
-                "${$index} ${$element}    \n" +
-                "${End}                   \n";
+        String documentStr = """
+                ${Begin}
+                ${$index} ${$element}
+                ${End}
+                """;
         OdtContainer doc = new OdtContainer(documentStr);
         OdtEngine engine = new OdtEngine();
         engine.registerStringReplacement("Begin", "${For value:[\"A\", \"B\", \"C\"], $as:\"element\"} ");

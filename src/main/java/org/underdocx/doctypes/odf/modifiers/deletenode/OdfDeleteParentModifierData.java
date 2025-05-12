@@ -34,6 +34,7 @@ public interface OdfDeleteParentModifierData {
     Predicate<Node> ODF_TABLE = OdfElement.TABLE;
     Predicate<Node> ODF_PARAGRAPH = OdfElement.PARAGRAPH;
     Predicate<Node> ODF_PAGE = OdfElement.PAGE;
+    Predicate<Node> ODF_TEXT_BOX = OdfElement.TEXT_BOX;
 
 
     Predicate<Node> getParentFilter();

@@ -24,15 +24,19 @@ SOFTWARE.
 
 package org.underdocx.doctypes.odf.modifiers.importmodifier;
 
+import org.odftoolkit.odfdom.dom.element.draw.DrawPageElement;
+import org.underdocx.common.tree.Nodes;
 import org.underdocx.common.types.Wrapper;
 import org.underdocx.doctypes.odf.AbstractOdfContainer;
 import org.underdocx.doctypes.odf.tools.OdfNodes;
 import org.underdocx.doctypes.odf.tools.importer.Importer;
-import org.underdocx.doctypes.odf.tools.importer.OdgOdpImportRules;
+import org.underdocx.doctypes.odf.tools.importer.OdgOdpPagesImportRules;
+import org.underdocx.doctypes.odf.tools.importer.OdgOdpSinglePageImportRules;
 import org.underdocx.doctypes.odf.tools.importer.OdtImportRules;
 import org.underdocx.doctypes.odf.tools.importer.rules.NodeFilter;
 import org.underdocx.doctypes.odf.tools.pagestyle.PageStyle;
 import org.underdocx.doctypes.odf.tools.pagestyle.PageStyleWriter;
+import org.underdocx.environment.err.Problems;
 import org.w3c.dom.Node;
 
 import java.util.Optional;
@@ -44,13 +48,26 @@ public class OdfImportModifier {
             filterInitialPageStyle(data.getSourceDoc());
         }
         Optional<String> pageName = data.getSourcePageName();
-        if (pageName.isPresent()) {
-            new Importer(OdgOdpImportRules.createRules(pageName.get(), NodeFilter.ACCEPT_ALL))
+        switch (data.getImportType()) {
+            case COPY_ODT_CONTENT -> new Importer(OdtImportRules.DEFAULT)
                     .importDoc(data.getSourceIdentifier(), data.getSourceDoc(), data.getTargetDoc(), data.getRefNode());
-        } else {
-            new Importer(OdtImportRules.DEFAULT)
-                    .importDoc(data.getSourceIdentifier(), data.getSourceDoc(), data.getTargetDoc(), data.getRefNode());
+            case COPY_PAGE ->
+                    new Importer(OdgOdpSinglePageImportRules.createRules(pageName.get(), NodeFilter.ACCEPT_ALL))
+                            .importDoc(data.getSourceIdentifier(), data.getSourceDoc(), data.getTargetDoc(), data.getRefNode());
+            case COPY_PAGES -> {
+                String currentMasterPageName = getCurrentMasterPageName(data.getRefNode());
+                new Importer(OdgOdpPagesImportRules.createRules(currentMasterPageName))
+                        .importDoc(data.getSourceIdentifier(), data.getSourceDoc(), data.getTargetDoc(), data.getRefNode());
+            }
         }
+    }
+
+    private String getCurrentMasterPageName(Node refNode) {
+        if (refNode instanceof DrawPageElement drawPageElement) {
+            return drawPageElement.getDrawMasterPageNameAttribute();
+        }
+        DrawPageElement page = (DrawPageElement) Problems.CANT_FIND_DOM_ELEMENT.get(Nodes.findAscendantNode(refNode, node -> node instanceof DrawPageElement), "parent page");
+        return page.getDrawMasterPageNameAttribute();
     }
 
     private void filterInitialPageStyle(AbstractOdfContainer<?> sourceDoc) {

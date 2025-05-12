@@ -26,7 +26,7 @@ package org.underdocx.enginelayers.parameterengine;
 
 public class DoubleBracketsPlaceholderCodec extends GenericParametersPlaceholderCodec {
 
-    public static DoubleBracketsPlaceholderCodec INSTANCE = new DoubleBracketsPlaceholderCodec();
+    public static final DoubleBracketsPlaceholderCodec INSTANCE = new DoubleBracketsPlaceholderCodec();
 
     public DoubleBracketsPlaceholderCodec() {
         super("{{", "}}");

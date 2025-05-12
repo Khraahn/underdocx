@@ -42,7 +42,7 @@ public class PlaceholdersEnumerator<C extends DocContainer<D>, D> extends Abstra
     private final Map<PlaceholdersProvider<C, ?, D>, Enumerator<Node>> currentEnumerators = new HashMap<>();
     private final Map<PlaceholdersProvider<C, ?, D>, Node> currentNodes = new HashMap<>();
 
-    private C doc;
+    private final C doc;
 
     public PlaceholdersEnumerator(C doc, Set<PlaceholdersProvider<C, ?, D>> providers) {
         this.doc = doc;

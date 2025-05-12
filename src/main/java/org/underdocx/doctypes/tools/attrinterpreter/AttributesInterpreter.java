@@ -31,6 +31,7 @@ import org.underdocx.enginelayers.modelengine.data.simple.AbstractPredefinedData
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 import static org.underdocx.common.tools.Convenience.*;
@@ -54,7 +55,7 @@ public interface AttributesInterpreter<R, C> {
 
     static Optional<JsonNode> getComplexAttribute(JsonNode attributes, String property) {
         return buildOptional(w -> ifNotNull(attributes,
-                json -> ifIs(json.get(property), jp -> jp != null, jp -> w.value = jp)));
+                json -> ifIs(json.get(property), Objects::nonNull, jp -> w.value = jp)));
     }
 
     static Optional<DataNode<?>> getModelNodeAttribute(JsonNode attributes, String property) {

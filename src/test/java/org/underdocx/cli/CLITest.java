@@ -37,7 +37,7 @@ import java.io.File;
 
 public class CLITest extends AbstractOdtTest {
 
-    private static String importData = """
+    private static final String importData = """
             {
                 variables: {
                     "age": "49"
@@ -50,8 +50,8 @@ public class CLITest extends AbstractOdtTest {
                 },
                 alias: [
                     {
-                        key: "myDate", 
-                        replaceKey: "Date", 
+                        key: "myDate",
+                        replaceKey: "Date",
                         attributes: {
                             outputFormat: "dd.MM.yyyy"
                         },
@@ -61,10 +61,10 @@ public class CLITest extends AbstractOdtTest {
                         }
                     }
                 ]
-            }   
+            }
             """;
 
-    private static String docContent = """
+    private static final String docContent = """
             ${*title}
             My Name is ${name}
             Today is ${myDate v:"2022-05-14"}

@@ -34,10 +34,11 @@ public class ForNoDataTest extends AbstractOdtTest {
 
     @Test
     public void testV2V() {
-        String documentStr = "" +
-                "${For $value:\"aList\", $as:\"element\"}     \n" +
-                "${$index} ${$element}                                    \n" +
-                "${EndFor}                                               \n";
+        String documentStr = """
+                ${For $value:"aList", $as:"element"}
+                ${$index} ${$element}
+                ${EndFor}
+                """;
         OdtContainer doc = new OdtContainer(documentStr);
         OdtEngine engine = new OdtEngine();
         engine.run(doc);

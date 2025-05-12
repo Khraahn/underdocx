@@ -187,7 +187,7 @@ public class Problem {
 
     public String getSingleLineReport() {
         List<String> elements = new ArrayList<>();
-        Convenience.ifNotNull(description, description -> elements.add(description));
+        Convenience.ifNotNull(description, elements::add);
         Convenience.ifNotNull(getString(command), command -> elements.add("handler: " + command));
         Convenience.ifNotNull(property, property -> elements.add("property: " + property));
         Convenience.ifNotNull(value, value -> elements.add("value: " + value));

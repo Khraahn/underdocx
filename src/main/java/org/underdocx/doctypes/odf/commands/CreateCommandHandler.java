@@ -35,7 +35,7 @@ import org.underdocx.doctypes.modifiers.deleteplaceholder.DeletePlaceholderModif
 import org.underdocx.doctypes.odf.AbstractOdfContainer;
 import org.underdocx.doctypes.odf.constants.OdfElement;
 import org.underdocx.doctypes.odf.tools.OdfNodes;
-import org.underdocx.doctypes.tools.datapicker.PredefinedDataPicker;
+import org.underdocx.doctypes.tools.datapicker.AttributeDataPicker;
 import org.underdocx.doctypes.tools.datapicker.StringConvertDataPicker;
 import org.underdocx.enginelayers.baseengine.CommandHandlerResult;
 import org.underdocx.environment.err.Problems;
@@ -44,9 +44,9 @@ import org.w3c.dom.Node;
 public class CreateCommandHandler<C extends AbstractOdfContainer<D>, D extends OdfDocument> extends AbstractTextualCommandHandler<C, D> {
 
 
-    private static final PredefinedDataPicker<String> nameAttr = new StringConvertDataPicker().asPredefined("name");
-    private static final PredefinedDataPicker<String> masterAttr = new StringConvertDataPicker().asPredefined("master");
-    private static final PredefinedDataPicker<String> beforeAttr = new StringConvertDataPicker().asPredefined("insertBefore");
+    private static final AttributeDataPicker<String> nameAttr = new StringConvertDataPicker().expectedAttr("name");
+    private static final AttributeDataPicker<String> masterAttr = new StringConvertDataPicker().expectedAttr("master");
+    private static final AttributeDataPicker<String> beforeAttr = new StringConvertDataPicker().optionalAttr("insertBefore");
 
     public CreateCommandHandler(ModifiersProvider<C, D> modifiersProvider) {
         super("Create", modifiersProvider);
@@ -54,9 +54,9 @@ public class CreateCommandHandler<C extends AbstractOdfContainer<D>, D extends O
 
     @Override
     protected CommandHandlerResult tryExecuteTextualCommand() {
-        String newName = nameAttr.expect(dataAccess, placeholderData.getJson());
-        String master = masterAttr.expect(dataAccess, placeholderData.getJson());
-        String insertBefore = beforeAttr.getDataOrNull(dataAccess, placeholderData.getJson());
+        String newName = getAttr(nameAttr);
+        String master = getAttr(masterAttr);
+        String insertBefore = getAttr(beforeAttr);
         DrawPageElement myPage = (DrawPageElement) Problems.CANT_FIND_DOM_ELEMENT.get(Nodes.findOldestAncestorNode(selection.getNode(), OdfElement.PAGE), "parent page");
         String styleName = myPage.getStyleName();
         Node parent = myPage.getParentNode();

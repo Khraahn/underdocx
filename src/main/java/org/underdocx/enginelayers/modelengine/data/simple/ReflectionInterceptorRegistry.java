@@ -25,6 +25,7 @@ SOFTWARE.
 package org.underdocx.enginelayers.modelengine.data.simple;
 
 import org.underdocx.common.types.Pair;
+import org.underdocx.enginelayers.modelengine.data.DataNode;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -33,9 +34,9 @@ import java.util.Optional;
 
 public class ReflectionInterceptorRegistry implements ReflectionDataNode.Resolver {
 
-    public static ReflectionInterceptorRegistry DEFAULT = new ReflectionInterceptorRegistry();
+    public static final ReflectionInterceptorRegistry DEFAULT = new ReflectionInterceptorRegistry();
 
-    private Map<Pair<String, String>, ReflectionDataNode.Resolver> interceptors = new HashMap<>();
+    private final Map<Pair<String, String>, ReflectionDataNode.Resolver> interceptors = new HashMap<>();
 
     public void register(Class<?> clazz, String property, ReflectionDataNode.Resolver interceptor) {
         interceptors.put(new Pair<>(getClassName(clazz), property), interceptor);
@@ -50,8 +51,8 @@ public class ReflectionInterceptorRegistry implements ReflectionDataNode.Resolve
     }
 
     @Override
-    public Optional<AbstractDataNode> resolve(Object reflectionObject, String requestedProperty) {
-        ReflectionDataNode.Resolver interceptor = interceptors.get(new Pair(getClassName(reflectionObject.getClass()), requestedProperty));
+    public Optional<DataNode<?>> resolve(Object reflectionObject, String requestedProperty) {
+        ReflectionDataNode.Resolver interceptor = interceptors.get(new Pair<>(getClassName(reflectionObject.getClass()), requestedProperty));
         if (interceptor != null) {
             return interceptor.resolve(reflectionObject, requestedProperty);
         }

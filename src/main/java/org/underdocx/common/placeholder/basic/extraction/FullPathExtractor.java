@@ -91,7 +91,7 @@ public class FullPathExtractor extends AbstractExtractor {
     private class ExtractNodeEnumerator extends AbstractPrepareNextEnumerator<Node> {
 
         private final Node tree;
-        private Node firstValidNode;
+        private final Node firstValidNode;
         private Node start;
 
         private ExtractNodeEnumerator(Node tree, Node firstValidNodeOrNull) {

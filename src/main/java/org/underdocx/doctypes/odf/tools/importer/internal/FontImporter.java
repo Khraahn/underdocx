@@ -29,7 +29,6 @@ import org.odftoolkit.odfdom.dom.element.style.StyleFontFaceElement;
 import org.underdocx.common.tools.Convenience;
 import org.underdocx.common.tree.Nodes;
 import org.underdocx.doctypes.odf.AbstractOdfContainer;
-import org.underdocx.doctypes.odf.odt.OdtContainer;
 import org.underdocx.environment.err.Problems;
 import org.w3c.dom.Node;
 
@@ -88,10 +87,4 @@ public class FontImporter {
             return (OfficeFontFaceDeclsElement) ofd.get();
         else return null;
     }
-
-    private static void copyDecl(OdtContainer target, OdtContainer src) {
-
-    }
-
-
 }

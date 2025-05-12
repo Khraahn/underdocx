@@ -22,23 +22,24 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-package org.underdocx.doctypes.odf.odt.commands;
+package org.underdocx.doctypes.odf.commands.exportcommand;
 
-import org.odftoolkit.odfdom.doc.OdfTextDocument;
+import org.odftoolkit.odfdom.doc.OdfDocument;
 import org.underdocx.common.enumerator.Enumerator;
+import org.underdocx.common.types.Pair;
 import org.underdocx.common.types.Regex;
 import org.underdocx.common.types.Resource;
 import org.underdocx.doctypes.commands.internal.AbstractTextualCommandHandler;
 import org.underdocx.doctypes.commands.internal.modifiermodule.resource.ResourceCommandModule;
 import org.underdocx.doctypes.modifiers.ModifiersProvider;
 import org.underdocx.doctypes.modifiers.deleteplaceholder.DeletePlaceholderModifierData;
+import org.underdocx.doctypes.odf.AbstractOdfContainer;
 import org.underdocx.doctypes.odf.modifiers.deleteplaceholder.OdfDeletePlaceholderModifier;
+import org.underdocx.doctypes.odf.modifiers.importmodifier.ImportType;
 import org.underdocx.doctypes.odf.modifiers.importmodifier.OdfImportModifier;
 import org.underdocx.doctypes.odf.modifiers.importmodifier.OdfImportModifierData;
-import org.underdocx.doctypes.odf.odt.OdtContainer;
 import org.underdocx.doctypes.tools.attrinterpreter.PredefinedAttributesInterpreter;
 import org.underdocx.doctypes.tools.attrinterpreter.single.AttributeInterpreterFactory;
-import org.underdocx.doctypes.tools.datapicker.BinaryDataPicker;
 import org.underdocx.doctypes.tools.datapicker.PredefinedDataPicker;
 import org.underdocx.doctypes.tools.datapicker.StringConvertDataPicker;
 import org.underdocx.enginelayers.baseengine.CommandHandlerResult;
@@ -46,55 +47,53 @@ import org.underdocx.enginelayers.parameterengine.ParametersPlaceholderData;
 import org.underdocx.environment.err.Problems;
 import org.w3c.dom.Node;
 
+import java.io.IOException;
 import java.util.Optional;
 
-public class ExportCommandHandler extends AbstractTextualCommandHandler<OdtContainer, OdfTextDocument> {
+public abstract class AbstractExportCommandHandler<C extends AbstractOdfContainer<D>, D extends OdfDocument> extends AbstractTextualCommandHandler<C, D> {
 
     public static final String EXPORT_KEY = "Export";
     public static final Regex KEYS = new Regex(EXPORT_KEY);
 
     public static final String EXPORT_NAME_ATTR = "name";
-    public static final String EXPORT_URI_ATTR = "uri";
-    public static final String EXPORT_DATA_ATTR = "data";
     public static final String EXPORT_TARGET_NAME_ATTR = "name";
     public static final String EXPORT_TARGET_KEY = "ExportTarget";
 
-    private static PredefinedDataPicker<String> namePicker = new StringConvertDataPicker().asPredefined(EXPORT_NAME_ATTR);
-    private static PredefinedDataPicker<String> uriPicker = new StringConvertDataPicker().asPredefined(EXPORT_URI_ATTR);
-    private static PredefinedDataPicker<byte[]> binaryPicker = new BinaryDataPicker().asPredefined(EXPORT_DATA_ATTR);
+    private static final PredefinedDataPicker<String> namePicker = new StringConvertDataPicker().asPredefined(EXPORT_NAME_ATTR);
 
-    private static PredefinedAttributesInterpreter<Optional<String>> targetNameInterpreter =
+    protected static final PredefinedAttributesInterpreter<Optional<String>> targetNameInterpreter =
             AttributeInterpreterFactory.createStringAttributeInterpreter(false).asPredefined(EXPORT_TARGET_NAME_ATTR);
 
-    public ExportCommandHandler(ModifiersProvider modifiers) {
+    public AbstractExportCommandHandler(ModifiersProvider<C, D> modifiers) {
         super(KEYS, modifiers);
     }
 
     @Override
     protected CommandHandlerResult tryExecuteTextualCommand() {
-        OdtContainer targetDoc = getTargetDoc();
+        C targetDoc = getTargetDoc();
         String targetName = namePicker.pickData(dataAccess, placeholderData.getJson()).optional().orElse(null);
-        Node refNode = findRefNode(targetDoc, targetName);
+        Pair<Node, Boolean> refNodeAndDeleteFlag = findRefNode(targetDoc, targetName);
         new OdfDeletePlaceholderModifier().modify(selection.getNode(), DeletePlaceholderModifierData.DEFAULT);
-        OdfImportModifierData modifiedData = new OdfImportModifierData.Simple(randomStr(), selection.getDocContainer(), targetDoc, refNode, true, null);
+        OdfImportModifierData modifiedData = new OdfImportModifierData.Simple(getType(), randomStr(), selection.getDocContainer(), targetDoc, refNodeAndDeleteFlag.left, true, null);
         new OdfImportModifier().modify(modifiedData);
         selection.getDocContainer().setDocument(targetDoc.getDocument());
-        new OdfDeletePlaceholderModifier().modify(refNode, DeletePlaceholderModifierData.DEFAULT);
+        cleanUpRefNode(refNodeAndDeleteFlag.left);
         return CommandHandlerResult.EXECUTED_FULL_RESCAN;
     }
 
     private String randomStr() {
-        return "" + (int) Math.random() * 1000000;
+        return "" + (int) (Math.random() * 1000000);
     }
 
-    private OdtContainer getTargetDoc() {
-        Resource resource = new ResourceCommandModule<OdtContainer, ParametersPlaceholderData, OdfTextDocument>(placeholderData.getJson()).execute(selection);
-        return Problems.ODF_FRAMEWORK_OPERARTION_EXCEPTION.exec(() -> new OdtContainer(resource));
+    private C getTargetDoc() {
+        Resource resource = new ResourceCommandModule<C, ParametersPlaceholderData, D>(placeholderData.getJson()).execute(selection);
+        return Problems.ODF_FRAMEWORK_OPERARTION_EXCEPTION.exec(() -> createDoc(resource));
     }
 
-    private Node findRefNode(OdtContainer targetDoc, String nameOrNull) {
+
+    protected Pair<Node, Boolean> findRefNode(C targetDoc, String nameOrNull) {
         if (nameOrNull == null) {
-            return Problems.ODF_FRAMEWORK_OPERARTION_EXCEPTION.exec(() -> targetDoc.getDocument().newParagraph("remove me"));
+            return getUnnamedRefNode(targetDoc);
         } else {
             Enumerator<Node> allPlaceholders = Problems.ODF_FRAMEWORK_OPERARTION_EXCEPTION.exec(() -> placeholderToolkit.extractPlaceholders(targetDoc.getDocument().getContentRoot(), null));
             for (Node node : allPlaceholders) {
@@ -102,11 +101,20 @@ public class ExportCommandHandler extends AbstractTextualCommandHandler<OdtConta
                 if (currentPlaceholderData.getKey().equals(EXPORT_TARGET_KEY)) {
                     Optional<String> optionalName = targetNameInterpreter.interpretAttributes(currentPlaceholderData.getJson());
                     if (optionalName.isPresent() && optionalName.get().equals(nameOrNull)) {
-                        return node;
+                        return new Pair<>(node, true);
                     }
                 }
             }
         }
         return Problems.EXPECTED_PLACEHOLDER_MISSING.toProblem().property(EXPORT_TARGET_KEY).fire();
     }
+
+    protected abstract Pair<Node, Boolean> getUnnamedRefNode(C targetRefNode);
+
+
+    protected abstract C createDoc(Resource resource) throws IOException;
+
+    protected abstract ImportType getType();
+
+    protected abstract void cleanUpRefNode(Node refNode);
 }

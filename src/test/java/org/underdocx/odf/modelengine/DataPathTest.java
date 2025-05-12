@@ -52,7 +52,7 @@ public class DataPathTest extends AbstractOdtTest {
                   "g": "h"
                 }
                 """;
-        DataNode model = new MapDataNode(jsonStr);
+        DataNode<?> model = new MapDataNode(jsonStr);
         String path = "a.b[1][0]";
         assertThat(DataPath.interpret(path, model).get().getValue()).isEqualTo("e");
     }
@@ -71,7 +71,7 @@ public class DataPathTest extends AbstractOdtTest {
                   "g": "h"
                 }
                 """;
-        DataNode model = new MapDataNode(jsonStr);
+        DataNode<?> model = new MapDataNode(jsonStr);
         String path = "a.b[1][0]<<<x";
         assertThat(DataPath.interpret(path, model).get().getValue()).isEqualTo("Test");
     }
@@ -90,7 +90,7 @@ public class DataPathTest extends AbstractOdtTest {
                   "g": "h"
                 }
                 """;
-        DataNode model = new MapDataNode(jsonStr);
+        DataNode<?> model = new MapDataNode(jsonStr);
         String path = "a.b[1][0]^g";
         assertThat(DataPath.interpret(path, model).get().getValue()).isEqualTo("h");
     }
@@ -122,9 +122,10 @@ public class DataPathTest extends AbstractOdtTest {
                   aList:["A", "B", "C"]
                 }
                 """;
-        String documentStr = "" +
-                "${Model value:\"aList\", activeModelPathPrefix:\"element\" } \n" +
-                "${String *value:\"element[1]\"}                              \n";
+        String documentStr = """
+                ${Model value:"aList", activeModelPathPrefix:"element" }
+                ${String *value:"element[1]"}
+                """;
         OdtContainer doc = new OdtContainer(documentStr);
         OdtEngine engine = new OdtEngine();
         engine.setModel(new MapDataNode(jsonString));

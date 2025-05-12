@@ -46,7 +46,7 @@ public class JsonCodec implements Codec<JsonNode> {
     private final boolean isSimplifiedSyntaxAllowed;
     private final boolean pretty;
     private final boolean exchangeQuotes;
-    private ObjectMapper mapper;
+    private final ObjectMapper mapper;
 
     public JsonCodec() {
         this(false, false, false);

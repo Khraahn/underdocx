@@ -40,11 +40,11 @@ import java.util.Optional;
 
 public class ForListCommandHandler<C extends DocContainer<D>, D> extends AbstractForCommandHandler<C, D> {
 
-    public ForListCommandHandler(ModifiersProvider modifiers) {
+    public ForListCommandHandler(ModifiersProvider<C, D> modifiers) {
         super(modifiers);
     }
 
-    private static PredefinedAttributesInterpreter<Optional<Integer>> indexInterpreter =
+    private static final PredefinedAttributesInterpreter<Optional<Integer>> indexInterpreter =
             AttributeInterpreterFactory.createIntegerAttributeInterpreter(LISTITEM_ATTR);
 
     @Override

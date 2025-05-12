@@ -36,7 +36,7 @@ import java.util.Optional;
 public class AttrDescr extends NodeDescr<AttrDescr> {
 
     private static final int MAX_CACHE = 5;
-    private static Map<String, String> hashCache = new HashMap<>();
+    private static final Map<String, String> hashCache = new HashMap<>();
 
 
     public AttrDescr(String ns, String tagName) {
@@ -92,15 +92,14 @@ public class AttrDescr extends NodeDescr<AttrDescr> {
     }
 
     public Optional<String> modifyValue(String resourceDescr, Node node) {
-        return Convenience.buildOptional(result -> {
-            getValue(node).ifPresent(value -> {
-                //UnderdocxEnv.getInstance().logger.trace("attr before rename: " + new NodePrinter(node));
-                String hash = getHash(resourceDescr);
-                String newValue = hash + "_" + value;
-                setValue(node, newValue);
-                result.value = newValue;
-                //UnderdocxEnv.getInstance().logger.trace("attr after rename : " + new NodePrinter(node));
-            });
-        });
+        return Convenience.buildOptional(result ->
+                getValue(node).ifPresent(value -> {
+                    //UnderdocxEnv.getInstance().logger.trace("attr before rename: " + new NodePrinter(node));
+                    String hash = getHash(resourceDescr);
+                    String newValue = hash + "_" + value;
+                    setValue(node, newValue);
+                    result.value = newValue;
+                    //UnderdocxEnv.getInstance().logger.trace("attr after rename : " + new NodePrinter(node));
+                }));
     }
 }

@@ -32,7 +32,7 @@ import java.util.List;
 import java.util.function.Function;
 
 public abstract class ConditionElement {
-    public List<ConditionElement> elements;
+    public final List<ConditionElement> elements;
 
     public ConditionElement(ConditionElement conditionElement) {
         this.elements = Convenience.buildList(result -> result.add(conditionElement));

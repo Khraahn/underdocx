@@ -48,9 +48,11 @@ public class IgnoreCommandHandler<C extends DocContainer<D>, D> extends Abstract
     protected CommandHandlerResult tryExecuteTextualCommand() {
         String key = selection.getPlaceholderData().getKey();
         if (key.equals("Ignore")) {
-            ignoring = true;
-            markForEodDeletion();
-            return CommandHandlerResult.EXECUTED_PROCEED;
+            if (!ignoring) {
+                ignoring = true;
+                markForEodDeletion();
+                return CommandHandlerResult.EXECUTED_PROCEED;
+            }
         } else if (key.equals("EndIgnore")) {
             ignoring = false;
             markForEodDeletion();

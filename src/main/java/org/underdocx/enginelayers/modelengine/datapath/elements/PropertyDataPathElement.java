@@ -30,16 +30,7 @@ import org.underdocx.enginelayers.modelengine.data.DataNode;
 import java.util.List;
 import java.util.Optional;
 
-public class PropertyDataPathElement implements DataPathElement {
-    private final String property;
-
-    public String getProperty() {
-        return property;
-    }
-
-    public PropertyDataPathElement(String property) {
-        this.property = property;
-    }
+public record PropertyDataPathElement(String property) implements DataPathElement {
 
     public String toString() {
         return property;
@@ -52,7 +43,7 @@ public class PropertyDataPathElement implements DataPathElement {
     }
 
     @Override
-    public Optional<DataNode> interpret(DataNode node) {
+    public Optional<DataNode<?>> interpret(DataNode<?> node) {
         return Convenience.buildOptional(w -> w.value = node.hasProperty(property) ? node.getProperty(property) : null);
     }
 

@@ -49,7 +49,7 @@ public class ReferredDataNode<T> extends AbstractDataNode<T> {
 
     @Override
     protected ReferredDataNode<T> create(Object object) {
-        return Convenience.also(new ReferredDataNode<T>(() -> (DataNode<T>) object), referredDataNode -> referredDataNode.setParent(this));
+        return Convenience.also(new ReferredDataNode<>(() -> (DataNode<T>) object), referredDataNode -> referredDataNode.setParent(this));
     }
 
     private ReferredDataNode<?> wrap(DataNode<?> node) {

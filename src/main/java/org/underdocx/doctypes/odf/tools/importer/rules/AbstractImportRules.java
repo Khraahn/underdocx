@@ -38,7 +38,6 @@ public abstract class AbstractImportRules {
     protected List<ProviderDescr> providerDescrs;
     protected List<ConsumerDescr> consumerDescrs;
     protected List<TagPathDescr> copyRules;
-    protected TagPathDescr mainCopyRule;
     protected MainCopyExecutor mainCopyExecutor;
     protected boolean initialized = false;
 
@@ -57,9 +56,6 @@ public abstract class AbstractImportRules {
         return copyRules;
     }
 
-    public TagPathDescr getMainCopyRule() {
-        return mainCopyRule;
-    }
 
     public MainCopyExecutor getMainCopyExecutor() {
         return mainCopyExecutor;

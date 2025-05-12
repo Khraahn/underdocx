@@ -39,8 +39,8 @@ public class ReferredDataNodeTest extends AbstractOdtTest {
         ListDataNode aList = new ListDataNode();
 
         MapDataNode root = new MapDataNode();
-        root.add("listA", new ReferredDataNode(() -> aList));
-        root.add("listB", new ReferredDataNode(() -> aList));
+        root.add("listA", new ReferredDataNode<>(() -> aList));
+        root.add("listB", new ReferredDataNode<>(() -> aList));
 
         aList.add(new LeafDataNode<>("Paul"));
         aList.add(new LeafDataNode<>("Sam"));

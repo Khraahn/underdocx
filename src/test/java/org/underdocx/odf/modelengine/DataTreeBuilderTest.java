@@ -29,13 +29,12 @@ import org.junit.jupiter.api.Test;
 import org.underdocx.AbstractTest;
 import org.underdocx.enginelayers.modelengine.data.DataNode;
 import org.underdocx.enginelayers.modelengine.data.simple.DataTreeBuilder;
-import org.underdocx.enginelayers.modelengine.data.simple.MapDataNode;
 
 public class DataTreeBuilderTest extends AbstractTest {
 
     @Test
     public void testBuilder() {
-        DataNode data = DataTreeBuilder
+        DataNode<?> data = DataTreeBuilder
                 /*  */.beginMap() //
                 /*    */.add("projectName", "Project") //
                 /*    */.beginList("members") //
@@ -50,16 +49,6 @@ public class DataTreeBuilderTest extends AbstractTest {
                 /*    */.end() //
                 /*  */.end() //
                 /*  */.build();
-
-        MapDataNode node = new MapDataNode("""
-                {
-                    persons: [
-                        {birthday: "1975-05-14"},
-                        {birthday: "2021-03-07"}
-                    ]
-                }
-                """);
-
 
         Assertions.assertThat(data.getProperty("projectName").getValue()).isEqualTo("Project");
         Assertions.assertThat(data.getProperty("members").getSize()).isEqualTo(2);

@@ -42,7 +42,7 @@ public class IgnoreCommandTest extends AbstractOdtTest {
                 ${Ignore}
                 ${String $value:"x"}
                 ${EndIgnore}
-                ${String value:"Welt"}              
+                ${String value:"Welt"}
                 """;
         OdtContainer doc = new OdtContainer(content);
         OdtEngine engine = new OdtEngine();

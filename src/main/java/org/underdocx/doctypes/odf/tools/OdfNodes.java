@@ -57,12 +57,11 @@ public class OdfNodes {
     }
 
 
-    public static Optional<Node> findFirstParagraphOrTableChild(AbstractOdfContainer doc) {
-        return Convenience.buildOptional(result -> {
-            Nodes.findFirstDescendantNode(doc.getContentRoot(), "office:text").ifPresent(node ->
-                    findFirstParagraphOrTableChild((OfficeTextElement) node).ifPresent(found ->
-                            result.value = found));
-        });
+    public static Optional<Node> findFirstParagraphOrTableChild(AbstractOdfContainer<?> doc) {
+        return Convenience.buildOptional(result ->
+                Nodes.findFirstDescendantNode(doc.getContentRoot(), "office:text").ifPresent(node ->
+                        findFirstParagraphOrTableChild((OfficeTextElement) node).ifPresent(found ->
+                                result.value = found)));
     }
 
     private static Optional<Node> findFirstParagraphOrTableChild(OfficeTextElement content) {

@@ -33,7 +33,7 @@ import org.w3c.dom.Node;
  */
 public abstract class NodeDescr<T extends NodeDescr<T>> implements NodeFilter {
     private String nameSpace = null;
-    private String singleNodeName;
+    private final String singleNodeName;
 
     public NodeDescr(String ns, String singleNodeName) {
         this.singleNodeName = singleNodeName;
@@ -61,7 +61,7 @@ public abstract class NodeDescr<T extends NodeDescr<T>> implements NodeFilter {
 
     protected abstract T createInstance(String name);
 
-    public boolean matches(NodeDescr other) {
+    public boolean matches(NodeDescr<?> other) {
         if (this.nameSpace != null && !this.nameSpace.equals(other.nameSpace)) return false;
         return this.singleNodeName.equals(other.singleNodeName) && this.getClass().getName().equals(other.getClass().getName());
     }

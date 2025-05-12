@@ -51,7 +51,7 @@ public abstract class AbstractConvertDataPicker<T> implements ExtendedDataPicker
         if (!tmpResult.isResolved()) {
             return DataPickerResult.convert(null, tmpResult);
         } else {
-            if (tmpResult == null || tmpResult.value.isNull()) {
+            if (tmpResult.value.isNull()) {
                 return new DataPickerResult<>(tmpResult.type, tmpResult.source, null);
             }
             return Convenience.build(result ->

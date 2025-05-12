@@ -41,7 +41,6 @@ public interface Resource {
 
     /**
      * @return A new created {@link InputStream} of a resource
-     * @throws IOException
      */
     InputStream openStream() throws IOException;
 
@@ -125,10 +124,10 @@ public interface Resource {
 
     class ClassResource implements Resource {
 
-        private Class clazz;
-        private String resourceName;
+        private final Class<?> clazz;
+        private final String resourceName;
 
-        public ClassResource(Class clazz, String resourceName) {
+        public ClassResource(Class<?> clazz, String resourceName) {
             this.clazz = clazz;
             this.resourceName = resourceName;
         }

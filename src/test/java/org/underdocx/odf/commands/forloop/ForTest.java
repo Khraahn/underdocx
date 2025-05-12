@@ -65,10 +65,11 @@ public class ForTest extends AbstractOdtTest {
                 {
                 }
                 """;
-        String documentStr = "" +
-                "${For value:[\"A\", \"B\", \"C\"], $as:\"element\"}     \n" +
-                "${$index} ${$element}                                    \n" +
-                "${EndFor}                                               \n";
+        String documentStr = """
+                ${For value:["A", "B", "C"], $as:"element"}
+                ${$index} ${$element}
+                ${EndFor}
+                """;
         OdtContainer doc = new OdtContainer(documentStr);
         OdtEngine engine = new OdtEngine();
         engine.setModel(new MapDataNode(jsonString));
@@ -113,10 +114,11 @@ public class ForTest extends AbstractOdtTest {
                 {
                 }
                 """;
-        String documentStr = "" +
-                "${For $value:\"aList\", $as:\"element\"}     \n" +
-                "${$index} ${$element}                                    \n" +
-                "${EndFor}                                               \n";
+        String documentStr = """
+                ${For $value:"aList", $as:"element"}
+                ${$index} ${$element}
+                ${EndFor}
+                """;
         OdtContainer doc = new OdtContainer(documentStr);
         OdtEngine engine = new OdtEngine();
         engine.setModel(new MapDataNode(jsonString));
@@ -163,10 +165,11 @@ public class ForTest extends AbstractOdtTest {
                   aList:["A", "B", "C"]
                 }
                 """;
-        String documentStr = "" +
-                "${For *value:\"aList\", $as:\"element\"}     \n" +
-                "${$index} ${$element}                                    \n" +
-                "${EndFor}                                               \n";
+        String documentStr = """
+                ${For *value:"aList", $as:"element"}
+                ${$index} ${$element}
+                ${EndFor}
+                """;
         OdtContainer doc = new OdtContainer(documentStr);
         OdtEngine engine = new OdtEngine();
         engine.setModel(new MapDataNode(jsonString));
@@ -210,10 +213,11 @@ public class ForTest extends AbstractOdtTest {
                   aList:["A", "B", "C"]
                 }
                 """;
-        String documentStr = "" +
-                "${For *value:\"aList\", *as:\"element\"}     \n" +
-                "${$index} ${*element}                                    \n" +
-                "${EndFor}                                               \n";
+        String documentStr = """
+                ${For *value:"aList", *as:"element"}
+                ${$index} ${*element}
+                ${EndFor}
+                """;
         OdtContainer doc = new OdtContainer(documentStr);
         OdtEngine engine = new OdtEngine();
         engine.setModel(new MapDataNode(jsonString));
@@ -257,10 +261,11 @@ public class ForTest extends AbstractOdtTest {
                   aList:["A", "B", "C"]
                 }
                 """;
-        String documentStr = "" +
-                "${For *value:\"aList\"}     \n" +
-                "${$index} ${*}                                    \n" +
-                "${EndFor}                                               \n";
+        String documentStr = """
+                ${For *value:"aList"}
+                ${$index} ${*}
+                ${EndFor}
+                """;
         OdtContainer doc = new OdtContainer(documentStr);
         OdtEngine engine = new OdtEngine();
         engine.setModel(new MapDataNode(jsonString));

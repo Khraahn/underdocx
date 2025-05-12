@@ -36,7 +36,7 @@ import java.util.function.Function;
  * a valueProvider function to evaluate the condition
  */
 public class ConditionAttributeInterpreter implements AttributesInterpreter<Boolean, Function<Pair<String, Object>, Integer>> {
-    private ConditionASTAttributeInterpreter astAttributeInterpreter = new ConditionASTAttributeInterpreter();
+    private final ConditionASTAttributeInterpreter astAttributeInterpreter = new ConditionASTAttributeInterpreter();
 
     @Override
     public Boolean interpretAttributes(JsonNode attributes, Function<Pair<String, Object>, Integer> comparator) {

@@ -48,5 +48,5 @@ public class CachedImageSize {
         return result;
     }
 
-    private static SelfClearingCache<String, Pair<Double, Double>> dimensionCache = new SelfClearingCache<>(1000);
+    private static final SelfClearingCache<String, Pair<Double, Double>> dimensionCache = new SelfClearingCache<>(1000);
 }

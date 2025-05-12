@@ -40,7 +40,7 @@ public class CounterCommandHandler<C extends DocContainer<D>, D> extends Abstrac
 
     @Override
     protected CommandHandlerResult tryExecuteTextualCommand() {
-        DataNode indexNode = new VarNameDataPicker().pickData(
+        DataNode<?> indexNode = new VarNameDataPicker().pickData(
                 "index", dataAccess, placeholderData.getJson()).optional().orElse(null);
         if (indexNode != null && !indexNode.isNull() && indexNode.getType() == DataNode.DataNodeType.LEAF && indexNode.getValue() instanceof Integer) {
             int counter = ((Integer) indexNode.getValue()) + 1;

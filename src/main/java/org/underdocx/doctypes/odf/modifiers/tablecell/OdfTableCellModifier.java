@@ -51,12 +51,11 @@ public class OdfTableCellModifier<C extends DocContainer<D>, D> implements Selec
     @Override
     public ModifierResult modify(MSelection<C, ParametersPlaceholderData, D> selection, TableCellModifierData modifierData) {
         return Convenience.build((ModifierResult) ModifierResult.IGNORED, result ->
-                OdfTables.parseCellReference(modifierData.getStyleCellAddress()).ifPresent(address ->
+                OdfTables.parseCellReference(modifierData.styleCellAddress()).ifPresent(address ->
                         findTable(selection, address).ifPresent(table -> {
                             Pair<Node, Node> pair = OdfTables.getStyleNodes(table, address.middle, address.right);
-                            findParentCell(selection).ifPresent(cell -> {
-                                result.value = setValue(cell, pair, modifierData.getValue());
-                            });
+                            findParentCell(selection).ifPresent(cell ->
+                                    result.value = setValue(cell, pair, modifierData.value()));
                         })));
     }
 

@@ -26,7 +26,7 @@ package org.underdocx.doctypes.modifiers.deleteplaceholder;
 
 public interface DeletePlaceholderModifierData {
 
-    static DeletePlaceholderModifierData DEFAULT = new Simple(Strategy.DELETE_BLANK_PARAGRAPH, true);
+    DeletePlaceholderModifierData DEFAULT = new Simple(Strategy.DELETE_BLANK_PARAGRAPH, true);
 
     enum Strategy {
         KEEP_PARAGRAPH,
@@ -50,8 +50,8 @@ public interface DeletePlaceholderModifierData {
             this(strategy, true);
         }
 
-        private Strategy strategy;
-        private boolean copyPageStyle;
+        private final Strategy strategy;
+        private final boolean copyPageStyle;
 
         @Override
         public Strategy getDeleteStrategy() {

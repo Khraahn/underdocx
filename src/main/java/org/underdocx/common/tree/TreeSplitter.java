@@ -36,13 +36,11 @@ import java.util.List;
 public class TreeSplitter {
 
     private final TextNodeInterpreter textNodeInterpreter;
-    private Node commonAncestor;
-    private Node nodeToSeparate;
-    private Node middleTree;
+    private final Node commonAncestor;
     private Node leftTree;
-    private Node leftNode;
+    private final Node leftNode;
     private Node rightTree;
-    private Node rightNode;
+    private final Node rightNode;
     private Node next;
     private Node previous;
 
@@ -53,11 +51,10 @@ public class TreeSplitter {
 
     private TreeSplitter(Node nodeToSeparate, Node commonAncestor, TextNodeInterpreter textNodeInterpreter) {
         this.textNodeInterpreter = textNodeInterpreter;
-        this.nodeToSeparate = nodeToSeparate;
         this.commonAncestor = commonAncestor;
 
         List<Node> pathToCommonAncestor = Nodes.getAncestors(nodeToSeparate, commonAncestor);
-        middleTree = pathToCommonAncestor.get(pathToCommonAncestor.size() - 2);
+        Node middleTree = pathToCommonAncestor.get(pathToCommonAncestor.size() - 2);
 
         leftTree = TextualPlaceholderToolkit.clonePlaceholder(nodeToSeparate, true);
         Nodes.insertNode(middleTree, leftTree, true);
