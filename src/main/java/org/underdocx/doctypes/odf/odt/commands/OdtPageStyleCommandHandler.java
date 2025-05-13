@@ -22,7 +22,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-package org.underdocx.doctypes.odf.commands;
+package org.underdocx.doctypes.odf.odt.commands;
 
 import org.underdocx.common.tools.Convenience;
 import org.underdocx.common.types.Regex;
@@ -42,7 +42,7 @@ import org.underdocx.enginelayers.baseengine.CommandHandlerResult;
 
 import java.util.regex.Pattern;
 
-public class PageStyleCommandHandler<C extends DocContainer<D>, D> extends AbstractTextualCommandHandler<C, D> {
+public class OdtPageStyleCommandHandler<C extends DocContainer<D>, D> extends AbstractTextualCommandHandler<C, D> {
 
     public static final String KEY = "Page";
     public static final Regex KEYS = new Regex(Pattern.quote(KEY));
@@ -56,7 +56,7 @@ public class PageStyleCommandHandler<C extends DocContainer<D>, D> extends Abstr
     private static final PredefinedDataPicker<Boolean> pageBreakAfterPicker = new BooleanDataPicker().asPredefined(ATTR_PB_AFTER);
     private static final PredefinedDataPicker<Boolean> pageBreakBeforePicker = new BooleanDataPicker().asPredefined(ATTR_PB_BEFORE);
 
-    public PageStyleCommandHandler(ModifiersProvider<C, D> modifiers) {
+    public OdtPageStyleCommandHandler(ModifiersProvider<C, D> modifiers) {
         super(KEYS, modifiers);
     }
 

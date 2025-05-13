@@ -1922,7 +1922,7 @@ ${myDate v:"2024-12-12"}</code></pre>
 
         <h3>${PageStyle}-Command</h3>
 
-        PageBreaks, Page-Orientation-Changes and new page numbers can be forced with
+        In ODT document, page breaks, page-orientation-changes and new page numbers can be forced with
         the <code-word>${PageStyle}</code-word>-command. To understand this command it is important to understand how
         ODT handles pages breaks with page style changes. First of all there are to types of page break
         - "Before": The page break will be inserted before this paragraph/placeholder begins (default)
@@ -1952,22 +1952,22 @@ ${myDate v:"2024-12-12"}</code></pre>
             <th>Description</th>
           </tr>
           <tr>
-            <td>pageBreakAfter</td>
+            <td>pageBreakAfter (ODT only)</td>
             <td>true/false</td>
             <td>if true, a page break is inserted after this paragraph </td>
           </tr>
           <tr>
-            <td>pageBreakBefore</td>
+            <td>pageBreakBefore (ODT only)</td>
             <td>true/false</td>
             <td>if true, a page break is inserted before this paragraph (recommended)</td>
           </tr>
           <tr>
-            <td>masterPage</td>
+            <td>masterPage (ODT/ODP/ODG)</td>
             <td>String</td>
             <td>only allowed when pageBreakBefore is true, sets the new page style for the page after the break</td>
           </tr>
           <tr>
-            <td>pageNumber</td>
+            <td>pageNumbe (ODT only)r</td>
             <td>Integer</td>
             <td>only allowed when masterPage is set, reset the page number for the page after the break </td>
           </tr>
@@ -1976,7 +1976,12 @@ ${myDate v:"2024-12-12"}</code></pre>
         When the <code-word>${PageStyle}</code-word>-command is used in a document that will be exported
         to a master document by the <code-word>${Export}</code-word>-command, ensure attribute
         <code-word>masterPage</code-word> uses
-        a style name that is defined in the master document.
+        a style name that is defined in the master document.<br>
+        <br>
+          Command <code-word>${PageStyle}</code-word> can also be used for presentations and graphics (ODP/ODG),
+          but only attribute <code-word>masterPage</code-word> is supported.
+
+
 
         <h3>&#x24;&#x7B;Push&#x7D;-Command / &#x24;&#x7B;Pop&#x7D;-Command</h3>
 
