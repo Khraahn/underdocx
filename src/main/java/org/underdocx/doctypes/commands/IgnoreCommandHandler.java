@@ -24,8 +24,11 @@ SOFTWARE.
 
 package org.underdocx.doctypes.commands;
 
+import org.underdocx.common.types.Pair;
 import org.underdocx.common.types.Regex;
 import org.underdocx.doctypes.DocContainer;
+import org.underdocx.doctypes.commands.ignore.IgnoreInstruction;
+import org.underdocx.doctypes.commands.ignore.IgnoreStateHandler;
 import org.underdocx.doctypes.commands.internal.AbstractTextualCommandHandler;
 import org.underdocx.doctypes.modifiers.ModifiersProvider;
 import org.underdocx.enginelayers.baseengine.CommandHandlerResult;
@@ -33,11 +36,11 @@ import org.underdocx.enginelayers.baseengine.EngineAccess;
 
 public class IgnoreCommandHandler<C extends DocContainer<D>, D> extends AbstractTextualCommandHandler<C, D> {
 
-    private boolean ignoring = false;
+    private IgnoreStateHandler ignoreStateHandler = new IgnoreStateHandler();
 
     @Override
     public void init(C container, EngineAccess<C, D> engineAccess) {
-        ignoring = false;
+        ignoreStateHandler.setIgnoring(false);
     }
 
     public IgnoreCommandHandler(ModifiersProvider<C, D> modifiersProvider) {
@@ -46,18 +49,13 @@ public class IgnoreCommandHandler<C extends DocContainer<D>, D> extends Abstract
 
     @Override
     protected CommandHandlerResult tryExecuteTextualCommand() {
-        String key = selection.getPlaceholderData().getKey();
-        if (key.equals("Ignore")) {
-            if (!ignoring) {
-                ignoring = true;
-                markForEodDeletion();
-                return CommandHandlerResult.EXECUTED_PROCEED;
-            }
-        } else if (key.equals("EndIgnore")) {
-            ignoring = false;
+        Pair<Boolean, IgnoreInstruction> shallExecute = ignoreStateHandler.interpretAndCheckExecution(selection.getPlaceholderData());
+        if (shallExecute.left && shallExecute.right != IgnoreInstruction.UNKNOWN) {
             markForEodDeletion();
             return CommandHandlerResult.EXECUTED_PROCEED;
         }
-        return ignoring ? CommandHandlerResult.EXECUTED_PROCEED : CommandHandlerResult.IGNORED;
+        return ignoreStateHandler.isIgnoring() ? CommandHandlerResult.EXECUTED_PROCEED : CommandHandlerResult.IGNORED;
+
     }
+
 }

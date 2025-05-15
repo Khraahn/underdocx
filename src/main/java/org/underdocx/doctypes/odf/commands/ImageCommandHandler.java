@@ -54,7 +54,7 @@ public class ImageCommandHandler<C extends AbstractOdfContainer<D>, D extends Od
     public static final String DESC_ATTR = "desc";
     public static final String KEEP_WIDTH_ATTR = "keepWidth";
 
-    private static final AttributeDataPicker<String> namePicker = new StringConvertDataPicker().expectedAttr(NAME_ATTR);
+    private static final AttributeDataPicker<String> namePicker = new StringConvertDataPicker().optionalAttr(NAME_ATTR);
     private static final AttributeDataPicker<String> descPicker = new StringConvertDataPicker().optionalAttr(DESC_ATTR);
     private static final AttributeDataPicker<Boolean> keepWidthPicker = new BooleanDataPicker().optionalAttr(KEEP_WIDTH_ATTR);
 

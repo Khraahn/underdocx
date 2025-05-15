@@ -27,6 +27,7 @@ package org.underdocx.doctypes.commands;
 import org.underdocx.common.enumerator.Enumerator;
 import org.underdocx.common.types.Regex;
 import org.underdocx.doctypes.DocContainer;
+import org.underdocx.doctypes.commands.ignore.IgnoreStateHandler;
 import org.underdocx.doctypes.commands.internal.AbstractCommandHandler;
 import org.underdocx.doctypes.commands.internal.AbstractTextualCommandHandler;
 import org.underdocx.doctypes.modifiers.ModifiersProvider;
@@ -60,12 +61,17 @@ public class MultiCommandHandler<C extends DocContainer<D>, D> extends AbstractC
     @Override
     protected CommandHandlerResult tryExecuteCommand() {
         CommandHandlerResult result = trySelection(selection);
+
+        // Replace future placeholder (if not ignored)
         if (result != CommandHandlerResult.IGNORED) {
+            IgnoreStateHandler ignoreState = new IgnoreStateHandler();
             Enumerator<SelectedNode<?>> allWaiting = selection.getEngineAccess().lookAhead(null);
             for (SelectedNode<?> waiting : allWaiting) {
-                if (waiting.getPlaceholderData() instanceof ParametersPlaceholderData) {
-                    MSelection<C, ParametersPlaceholderData, D> newSelection = Node2MSelection.createMSelection(selection, (SelectedNode<ParametersPlaceholderData>) waiting);
-                    trySelection(newSelection);
+                if (waiting.getPlaceholderData() instanceof ParametersPlaceholderData placeholder) {
+                    if (ignoreState.interpretAndCheckExecution(placeholder).left) {
+                        MSelection<C, ParametersPlaceholderData, D> newSelection = Node2MSelection.createMSelection(selection, (SelectedNode<ParametersPlaceholderData>) waiting);
+                        trySelection(newSelection);
+                    }
                 }
             }
         }
