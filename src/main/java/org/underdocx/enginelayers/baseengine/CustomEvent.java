@@ -24,28 +24,21 @@ SOFTWARE.
 
 package org.underdocx.enginelayers.baseengine;
 
-import org.underdocx.common.enumerator.Enumerator;
-import org.underdocx.common.placeholder.TextualPlaceholderToolkit;
-import org.underdocx.doctypes.DocContainer;
-import org.w3c.dom.Node;
+public class CustomEvent {
 
-import java.util.List;
-import java.util.Optional;
-import java.util.function.Predicate;
+    private final String key;
+    private final Object data;
 
-public interface EngineAccess<C extends DocContainer<D>, D> {
+    public CustomEvent(String key, Object data) {
+        this.key = key;
+        this.data = data;
+    }
 
-    void addListener(EngineListener<C, D> listener);
+    public String getKey() {
+        return key;
+    }
 
-    void removeListener(EngineListener<C, D> listener);
-
-    void forceRescan();
-
-    Enumerator<SelectedNode<?>> lookAhead(Predicate<SelectedNode<?>> filter);
-
-    List<Node> lookBack(Predicate<Node> filter);
-
-    <H extends CommandHandler<C, ?, D>> Optional<? extends TextualPlaceholderToolkit<?>> getToolkit(Class<H> commandHandler);
-
-    void sendCustomEvent(CustomEvent event);
+    public Object getData() {
+        return data;
+    }
 }

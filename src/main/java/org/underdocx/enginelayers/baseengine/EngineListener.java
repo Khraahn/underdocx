@@ -28,9 +28,13 @@ import org.underdocx.doctypes.DocContainer;
 
 public interface EngineListener<C extends DocContainer<D>, D> {
 
-    void eodReached(C doc, EngineAccess<C, D> engineAccess);
+    default void eodReached(C doc, EngineAccess<C, D> engineAccess) {
+    }
 
     default void rescan(C doc, EngineAccess<C, D> engineAccess) {
+    }
+
+    default void onCustomEvemt(CustomEvent event) {
     }
 
 }

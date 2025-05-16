@@ -74,6 +74,7 @@ public class OdpEngine extends AbstractOdfEngine<OdpContainer, OdfPresentationDo
         engine.registerCommandHandler(parameters, new CopyCommandHandler<>(modifiers));
         engine.registerCommandHandler(parameters, new CreateImageCommandHandler<>(modifiers));
         engine.registerCommandHandler(parameters, new OdpExportCommandHandler(modifiers));
+        engine.registerCommandHandler(parameters, new ReplaceCommandHandler<>(modifiers));
     }
 
     public OdpEngine() {

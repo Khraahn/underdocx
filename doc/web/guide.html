@@ -831,7 +831,7 @@ Item1
             <td>you can use the attribute tableName to address the target table</td>
           </tr>
           <tr>
-            <td>tableParent</td>
+            <td>parentTable</td>
             <td>you can use this attribte to clarify that this loop is inside of the table that contains rows to repeat
             </td>
           </tr>
@@ -970,7 +970,7 @@ Item1
 
         When the table can not be placed between <code-word>${For}</code-word> and <code-word>${EndFor}</code-word>
         (for example in Spreadsheets), you can use the attribute <code-word>tableName</code-word> to address the
-        target table, or you can use <code-word>tableParent:true</code-word> to address the table in which the
+        target table, or you can use <code-word>parentTable:true</code-word> to address the table in which the
         command is located in. In both cases ensure the <code-word>${EndFor}</code-word> command directly follows
         the <code-word>${For}</code-word> command.
 
@@ -1807,7 +1807,43 @@ ${myDate of:"yyyy/MM/dd"}
 // prints: 12.12.2024
 ${myDate v:"2024-12-12"}</code></pre>
 
-        <h3>${Remove}-Command</h3>
+       <h3>${Replace}-Command</h3>
+          This command is similar to <code-word>${Alias}</code-word> command, but will replace all
+          placeholders with a certain key by a provided text. All parameters of the replaced placeholder
+          will be ignored.<br>
+          <br>
+          You can use this command to replace single short commands by a sequence of other more complex commands
+
+          <table>
+              <tr>
+                  <th>
+                      Attribute
+                  </th>
+                  <th>
+                      Description
+                  </th>
+              </tr>
+              <tr>
+                  <td>key</td>
+                  <td>key of placeholders to replace</td>
+              </tr>
+              <tr>
+                  <td>value</td>
+                  <td>text to use for replacements. Don't forget escape sequences when replacing with other placeholders
+                  </td>
+              </tr>
+          </table>
+
+          <pre class="padding"><code>// replacement definition
+${Replace
+  key:"x",
+  value:"${String value:\"Hallo\"} ${String value:\"Welt\"}"
+}
+
+// prints: Hallo Welt
+${x}</code></pre>
+
+          <h3>${Remove}-Command</h3>
         Removes the paragraph, page, text-box or table which contains this placeholder. In ODS, ODG and ODS documents
         you could use this command to create a temporary area with commands that will be removed in the
         final document. In this temporary area you can define ${Alias} commands or ${For} statements

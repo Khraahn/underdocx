@@ -25,14 +25,14 @@ SOFTWARE.
 package org.underdocx.doctypes.commands;
 
 import org.underdocx.common.enumerator.Enumerator;
+import org.underdocx.common.types.Pair;
 import org.underdocx.common.types.Regex;
 import org.underdocx.doctypes.DocContainer;
 import org.underdocx.doctypes.commands.ignore.IgnoreStateHandler;
 import org.underdocx.doctypes.commands.internal.AbstractCommandHandler;
 import org.underdocx.doctypes.commands.internal.AbstractTextualCommandHandler;
 import org.underdocx.doctypes.modifiers.ModifiersProvider;
-import org.underdocx.enginelayers.baseengine.CommandHandlerResult;
-import org.underdocx.enginelayers.baseengine.SelectedNode;
+import org.underdocx.enginelayers.baseengine.*;
 import org.underdocx.enginelayers.modelengine.MCommandHandler;
 import org.underdocx.enginelayers.modelengine.MSelection;
 import org.underdocx.enginelayers.modelengine.internal.Node2MSelection;
@@ -44,8 +44,23 @@ import java.util.regex.Pattern;
 
 public class MultiCommandHandler<C extends DocContainer<D>, D> extends AbstractCommandHandler<C, ParametersPlaceholderData, D> {
 
+    public static String EVENT_KEY_REGISTER_STRING_REPLACEMENT = "registerStringReplacement";
+
     public MultiCommandHandler(ModifiersProvider<C, D> modifiers) {
         super(modifiers);
+    }
+
+    @Override
+    public void init(C container, EngineAccess<C, D> engineAccess) {
+        engineAccess.addListener(new EngineListener<C, D>() {
+            @Override
+            public void onCustomEvemt(CustomEvent event) {
+                if (event.getKey().equals(EVENT_KEY_REGISTER_STRING_REPLACEMENT)) {
+                    Pair<String, String> registrationData = (Pair<String, String>) event.getData();
+                    registerStringReplacement(registrationData.left, registrationData.right);
+                }
+            }
+        });
     }
 
     private final List<MCommandHandler<C, ParametersPlaceholderData, D>> subCommandHandlerRegistry = new ArrayList<>();

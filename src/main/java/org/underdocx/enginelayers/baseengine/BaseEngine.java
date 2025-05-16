@@ -176,11 +176,12 @@ public class BaseEngine<C extends DocContainer<D>, D> {
     }
 
     protected void runUncatched() {
+        List<Node> visited = new ArrayList<>();
+        EngineAccess<C, D> engineAccess = new EngineAccessImpl<>(listeners, () -> rescan = true, () -> placeholderEnumerator, () -> visited, reverseRegistry);
         while (rescan) {
             placeholderEnumerator = createPlaceholdersEnumerator();
-            List<Node> visited = new ArrayList<>();
+            visited.clear();
             rescan = false;
-            EngineAccess<C, D> engineAccess = new EngineAccessImpl<>(listeners, () -> rescan = true, () -> placeholderEnumerator, () -> visited, reverseRegistry);
             if (initialized) {
                 listeners.forEach(listener -> listener.rescan(doc, engineAccess));
             }

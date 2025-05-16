@@ -124,4 +124,9 @@ public class EngineAccessImpl<C extends DocContainer<D>, D> implements EngineAcc
             return provider.getPlaceholderToolkit();
         } else return Optional.empty();
     }
+
+    @Override
+    public void sendCustomEvent(CustomEvent event) {
+        listeners.forEach(l -> l.onCustomEvemt(event));
+    }
 }

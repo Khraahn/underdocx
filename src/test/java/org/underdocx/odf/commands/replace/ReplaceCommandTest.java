@@ -22,30 +22,23 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-package org.underdocx.enginelayers.baseengine;
+package org.underdocx.odf.commands.replace;
 
-import org.underdocx.common.enumerator.Enumerator;
-import org.underdocx.common.placeholder.TextualPlaceholderToolkit;
-import org.underdocx.doctypes.DocContainer;
-import org.w3c.dom.Node;
+import org.junit.jupiter.api.Test;
+import org.underdocx.AbstractOdtTest;
+import org.underdocx.doctypes.odf.odt.OdtContainer;
+import org.underdocx.doctypes.odf.odt.OdtEngine;
 
-import java.util.List;
-import java.util.Optional;
-import java.util.function.Predicate;
+public class ReplaceCommandTest extends AbstractOdtTest {
 
-public interface EngineAccess<C extends DocContainer<D>, D> {
-
-    void addListener(EngineListener<C, D> listener);
-
-    void removeListener(EngineListener<C, D> listener);
-
-    void forceRescan();
-
-    Enumerator<SelectedNode<?>> lookAhead(Predicate<SelectedNode<?>> filter);
-
-    List<Node> lookBack(Predicate<Node> filter);
-
-    <H extends CommandHandler<C, ?, D>> Optional<? extends TextualPlaceholderToolkit<?>> getToolkit(Class<H> commandHandler);
-
-    void sendCustomEvent(CustomEvent event);
+    @Test
+    public void testReplace() {
+        OdtContainer doc = new OdtContainer("""
+                ${Replace key:"x", value:"${String value:\\"Hallo\\"} ${String value:\\"Welt\\"}" }
+                ${x}
+                """);
+        new OdtEngine().run(doc);
+        assertNoPlaceholders(doc);
+        assertContains(doc, "Hallo Welt");
+    }
 }

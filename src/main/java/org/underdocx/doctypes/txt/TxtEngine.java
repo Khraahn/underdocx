@@ -69,6 +69,7 @@ public class TxtEngine extends AbstractEngine<TxtContainer, TxtXml> {
         engine.registerCommandHandler(parameters, new TxtImportCommandHandler(modifiers));
         engine.registerCommandHandler(parameters, new ConcatCommandHandler<>(modifiers));
         engine.registerCommandHandler(parameters, new CalcCommandHandler<>(modifiers));
+        engine.registerCommandHandler(parameters, new ReplaceCommandHandler<>(modifiers));
     }
 
     public TxtEngine() {
