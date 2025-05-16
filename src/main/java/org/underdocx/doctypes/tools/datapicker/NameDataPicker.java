@@ -40,8 +40,15 @@ import org.underdocx.enginelayers.modelengine.data.DataNode;
  */
 public class NameDataPicker extends AbstractDataPicker<DataNode<?>, String> {
 
+    private final boolean returnNameAsValueInstreafOfAttributeValue;
+
     public NameDataPicker() {
+        this(false);
+    }
+
+    public NameDataPicker(boolean returnNameAsValueInstreafOfAttributeValue) {
         super(new AccessTypeNameInterpreter(), null);
+        this.returnNameAsValueInstreafOfAttributeValue = returnNameAsValueInstreafOfAttributeValue;
     }
 
     @Override
@@ -51,7 +58,13 @@ public class NameDataPicker extends AbstractDataPicker<DataNode<?>, String> {
         return switch (accessType) {
             case ACCESS_CURRENT_MODEL_NODE, ACCESS_MODEL_BY_NAME ->
                     new ModelNameDataPicker().pickData(pureName, model, attributes);
-            case ACCESS_ATTR_VALUE -> new AttributeValueDataPicker(typeInterpreter).pickData(name, model, attributes);
+            case ACCESS_ATTR_VALUE -> {
+                if (returnNameAsValueInstreafOfAttributeValue) {
+                    yield new NameDataPicker().pickData(pureName, model, attributes);
+                } else {
+                    yield new AttributeValueDataPicker(typeInterpreter).pickData(name, model, attributes);
+                }
+            }
             case ACCESS_VARIABLE_BY_NAME -> new VarNameDataPicker().pickData(pureName, model, attributes);
             case ACCESS_VAR_CONTAINS_NAME_OF_VAR -> new Var2VarNameDataPicker().pickData(pureName, model, attributes);
             case MISSING_ACCESS -> DataPickerResult.unresolvedMissingAttr(DataPickerResult.ResultSource.UNKNOWN);

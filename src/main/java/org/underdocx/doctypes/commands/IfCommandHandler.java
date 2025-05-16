@@ -34,6 +34,9 @@ import org.underdocx.doctypes.commands.internal.AreaTools;
 import org.underdocx.doctypes.modifiers.ModifiersProvider;
 import org.underdocx.doctypes.modifiers.ifmodifier.IfModifier;
 import org.underdocx.doctypes.modifiers.ifmodifier.IfModifierData;
+import org.underdocx.doctypes.tools.attrinterpreter.accesstype.AccessType;
+import org.underdocx.doctypes.tools.attrinterpreter.accesstype.AccessTypeNameInterpreter;
+import org.underdocx.doctypes.tools.datapicker.DataPickerResult;
 import org.underdocx.doctypes.tools.datapicker.ExtendedDataPicker;
 import org.underdocx.doctypes.tools.datapicker.NameDataPicker;
 import org.underdocx.enginelayers.baseengine.CommandHandlerResult;
@@ -55,7 +58,7 @@ public class IfCommandHandler<C extends DocContainer<D>, D> extends AbstractText
     public static final String END_KEY = "EndIf";
     public static final Regex KEYS = new Regex(BEGIN_KEY + "|" + END_KEY);
 
-    private static final ExtendedDataPicker<DataNode<?>> dataPicker = new NameDataPicker();
+    private static final ExtendedDataPicker<DataNode<?>> dataPicker = new NameDataPicker(true);
     private static final ConditionAttributeInterpreter conditionInterpreter = new ConditionAttributeInterpreter();
 
     public IfCommandHandler(ModifiersProvider<C, D> modifiers) {
@@ -73,6 +76,13 @@ public class IfCommandHandler<C extends DocContainer<D>, D> extends AbstractText
             String property = valueResolver.left;
             DataNode<?> foundNode = dataPicker.pickData(property, dataAccess, attributes).optional().orElse(null);
             Object toCompareWith = valueResolver.right;
+            // if toCompareWith seems to be a reference ('$x'), lookup up referred value
+            if (toCompareWith instanceof String str && AccessTypeNameInterpreter.DEFAULT.interpretAttributes(attributes, str) != AccessType.ACCESS_ATTR_VALUE) {
+                DataPickerResult<DataNode<?>> pickResult = dataPicker.pickData(str, dataAccess, attributes);
+                if (pickResult.isResolved()) {
+                    toCompareWith = pickResult.value.getValue();
+                }
+            }
             return compare(foundNode, toCompareWith);
         });
         ModifierNodeResult modiferResult = new IfModifier<>(modifiers).modify(selection,

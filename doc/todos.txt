@@ -1,4 +1,5 @@
 - Features
+  - für Number ein zusätzlicher optionaler Formatstring für Integers einführen der ggf. bevorzugt wird
   - später ggf. docx unterstützen
 - Bekannte Probleme:
   - Bilder-Platzhalter sollten nicht durch den textbasierten Placeholderprovider gefunden werden => Warn-Logs bei Bildern

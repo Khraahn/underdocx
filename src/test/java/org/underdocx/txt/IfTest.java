@@ -182,4 +182,26 @@ public class IfTest extends AbstractTxtTest {
         assertNoPlaceholders(doc);
     }
 
+    @Test
+    void testTwoReferences() {
+        TxtContainer content = new TxtContainer("""
+                ${Push key:"varTrue1", value:true}
+                ${Push key:"varTrue2", value:true}
+                ${Push key:"varFalse", value:false}
+                ${Push key:"varX1", value:"X"}
+                ${Push key:"varX2", value:"X"}
+                ${Push key:"varY", value:"Y"}
+                                
+                ${If "$varX1":"$varY"} INVALID ${EndIf}
+                ${If "$varTrue1":"$varFalse"} INVALID ${EndIf}
+                ${If "$varX1":"$varX2"} Hello ${EndIf}
+                ${If "$varTrue1":"$varTrue2"} World ${EndIf}
+                """);
+        new TxtEngine().run(content);
+        show(content);
+        assertNoPlaceholders(content);
+        assertNotContains(content, "INVALID");
+        assertContains(content, "Hello");
+        assertContains(content, "World");
+    }
 }
