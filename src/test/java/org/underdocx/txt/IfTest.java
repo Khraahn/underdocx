@@ -198,7 +198,7 @@ public class IfTest extends AbstractTxtTest {
                 ${If "$varTrue1":"$varTrue2"} World ${EndIf}
                 """);
         new TxtEngine().run(content);
-        show(content);
+        // show(content);
         assertNoPlaceholders(content);
         assertNotContains(content, "INVALID");
         assertContains(content, "Hello");

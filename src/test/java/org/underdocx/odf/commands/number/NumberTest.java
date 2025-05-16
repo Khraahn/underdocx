@@ -61,4 +61,18 @@ public class NumberTest extends AbstractOdtTest {
         assertNoPlaceholders(doc);
         assertOrder(doc, "A: !!-12345678,90€", "B: !!-12345670€", "C: !!12345670,00€");
     }
+
+    @Test
+    public void testIntFormat() {
+        String content = """
+                A: ${Number value:1.89, format:"#.000", intFormat:"#", lang:"en-US"}!
+                B: ${Number value:22, format:"#.000", intFormat:"#", lang:"en-US"}!
+                 """;
+        OdtContainer doc = new OdtContainer(content);
+        OdtEngine engine = new OdtEngine();
+        engine.run(doc);
+        //show(doc);
+        assertNoPlaceholders(doc);
+        assertOrder(doc, "A: 1.890!", "B: 22!");
+    }
 }

@@ -46,6 +46,7 @@ public class NumberCommandHandler<C extends DocContainer<D>, D> extends Abstract
     public static final String KEY = "Number";
 
     private static final PredefinedDataPicker<String> formatPicker = new StringConvertDataPicker().asPredefined("format");
+    private static final PredefinedDataPicker<String> intFormatPicker = new StringConvertDataPicker().asPredefined("intFormat");
     private static final PredefinedDataPicker<String> langPicker = new StringConvertDataPicker().asPredefined("lang");
 
     private static final PredefinedDataPicker<String> prefixPicker = new StringConvertDataPicker().asPredefined("prefix");
@@ -101,6 +102,7 @@ public class NumberCommandHandler<C extends DocContainer<D>, D> extends Abstract
         protected Optional<Pair<String, Number>> convert(DataNode<?> node) {
             return Convenience.buildOptional(result -> {
                 String format = formatPicker.pickData(dataAccess, placeholderData.getJson()).optional().orElse(null);
+                String intFormat = intFormatPicker.pickData(dataAccess, placeholderData.getJson()).optional().orElse(null);
                 String langCode = langPicker.pickData(dataAccess, placeholderData.getJson()).optional().orElse(null);
                 Number multiplier = multiplierPicker.pickData(dataAccess, placeholderData.getJson()).optional().orElse(null);
                 Number summand = summandPicker.pickData(dataAccess, placeholderData.getJson()).optional().orElse(null);
@@ -145,6 +147,9 @@ public class NumberCommandHandler<C extends DocContainer<D>, D> extends Abstract
                 }
 
                 String formatToUse = format == null ? DEFAULT_FORMAT : format;
+                if (!(numberValue instanceof Double) && intFormat != null) {
+                    formatToUse = intFormat;
+                }
                 Locale local = langCode == null ? Locale.getDefault() : Locale.forLanguageTag(langCode);
                 DecimalFormat df = new DecimalFormat(formatToUse, new DecimalFormatSymbols(local));
                 if (useModified) {
