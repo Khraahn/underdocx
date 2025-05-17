@@ -31,6 +31,7 @@ import org.underdocx.common.enumerator.Enumerator;
 import org.underdocx.common.tools.Convenience;
 import org.underdocx.common.types.Pair;
 import org.underdocx.doctypes.DocContainer;
+import org.underdocx.doctypes.commands.ignore.IgnoreStateHandler;
 import org.underdocx.doctypes.commands.internal.AbstractCommandHandler;
 import org.underdocx.doctypes.modifiers.ModifiersProvider;
 import org.underdocx.doctypes.modifiers.deleteplaceholder.DeletePlaceholderModifierData;
@@ -213,10 +214,13 @@ public class AliasCommandHandler<C extends DocContainer<D>, D> extends AbstractC
         if (tryAliasExchange(currentData)) {
             selection.getPlaceholderToolkit().get().setPlaceholder(selection.getNode(), currentData);
             result = CommandHandlerResult.FACTORY.startAtNode(selection.getNode());
+
+            // Replace future placeholder (if not ignored)
+            IgnoreStateHandler ignoreState = new IgnoreStateHandler();
             Enumerator<SelectedNode<?>> allWaiting = selection.getEngineAccess().lookAhead(selectedNode -> selectedNode.getPlaceholderData() instanceof ParametersPlaceholderData);
             for (SelectedNode<?> waiting : allWaiting) {
                 ParametersPlaceholderData placeholderData = (ParametersPlaceholderData) waiting.getPlaceholderData();
-                if (tryAliasExchange(placeholderData)) {
+                if (ignoreState.interpretAndCheckExecution(placeholderData).left && tryAliasExchange(placeholderData)) {
                     selection.getPlaceholderToolkit().get().setPlaceholder(waiting.getNode(), placeholderData);
                 }
             }
