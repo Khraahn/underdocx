@@ -34,29 +34,29 @@ import org.underdocx.common.types.Regex;
 import org.underdocx.doctypes.TextNodeInterpreter;
 import org.underdocx.doctypes.odf.AbstractOdfContainer;
 import org.underdocx.doctypes.odf.tools.OdfSectionsWalker;
-import org.underdocx.doctypes.tools.placeholder.GenericTextualPlaceholderFactory;
+import org.underdocx.doctypes.tools.placeholder.GenericTextualPlaceholdersProviderFactory;
 import org.underdocx.enginelayers.parameterengine.GenericParametersPlaceholderCodec;
 import org.underdocx.enginelayers.parameterengine.ParametersPlaceholderData;
 import org.w3c.dom.Node;
 
 public class OdfPlaceholderStyle<C extends AbstractOdfContainer<D>, D extends OdfDocument> {
 
-    public final GenericTextualPlaceholderFactory<C, ParametersPlaceholderData, D> XML_COMMENT =
-            new OdfPlaceholder("<!--${", "}-->", new Regex("<!--\\$\\{.*?\\}-->"));
-    public final GenericTextualPlaceholderFactory<C, ParametersPlaceholderData, D> CODE_COMMENT =
-            new OdfPlaceholder("/*!", "!*/", new Regex("\\/\\*!.*?!\\*\\/"));
-    public final GenericTextualPlaceholderFactory<C, ParametersPlaceholderData, D> HASH_COMMENT =
-            new OdfPlaceholder("#!", "!#", new Regex("#!.*?!#"));
-    public final GenericTextualPlaceholderFactory<C, ParametersPlaceholderData, D> DEFAULT = new OdfDefaultPlaceholderFactory<>();
-    public final GenericTextualPlaceholderFactory<C, ParametersPlaceholderData, D> DOUBLE_BRACKETS = new OdfDoubleBracketsPlaceholderFactory<>();
+    public final GenericTextualPlaceholdersProviderFactory<C, ParametersPlaceholderData, D> XML_COMMENT =
+            new OdfPlaceholdersProvider("<!--${", "}-->", new Regex("<!--\\$\\{.*?\\}-->"));
+    public final GenericTextualPlaceholdersProviderFactory<C, ParametersPlaceholderData, D> CODE_COMMENT =
+            new OdfPlaceholdersProvider("/*!", "!*/", new Regex("\\/\\*!.*?!\\*\\/"));
+    public final GenericTextualPlaceholdersProviderFactory<C, ParametersPlaceholderData, D> HASH_COMMENT =
+            new OdfPlaceholdersProvider("#!", "!#", new Regex("#!.*?!#"));
+    public final GenericTextualPlaceholdersProviderFactory<C, ParametersPlaceholderData, D> DEFAULT = new OdfDefaultPlaceholdersProviderFactory<>();
+    public final GenericTextualPlaceholdersProviderFactory<C, ParametersPlaceholderData, D> DOUBLE_BRACKETS = new OdfDoubleBracketsPlaceholdersProviderFactory<>();
 
-    protected class OdfPlaceholder implements GenericTextualPlaceholderFactory<C, ParametersPlaceholderData, D> {
+    protected class OdfPlaceholdersProvider implements GenericTextualPlaceholdersProviderFactory<C, ParametersPlaceholderData, D> {
 
         private final Regex regex;
         private final String suffix;
         private final String prefix;
 
-        protected OdfPlaceholder(String prefix, String suffix, Regex regex) {
+        protected OdfPlaceholdersProvider(String prefix, String suffix, Regex regex) {
             this.prefix = prefix;
             this.suffix = suffix;
             this.regex = regex;

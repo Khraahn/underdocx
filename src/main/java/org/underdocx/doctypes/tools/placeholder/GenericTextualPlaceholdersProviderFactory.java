@@ -22,40 +22,34 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-package org.underdocx.doctypes.txt.placeholders;
+package org.underdocx.doctypes.tools.placeholder;
 
 import org.underdocx.common.codec.Codec;
 import org.underdocx.common.enumerator.Enumerator;
 import org.underdocx.common.placeholder.EncapsulatedNodesExtractor;
-import org.underdocx.common.placeholder.basic.extraction.PartialExtractor;
+import org.underdocx.common.placeholder.TextualPlaceholderToolkit;
+import org.underdocx.doctypes.DocContainer;
 import org.underdocx.doctypes.TextNodeInterpreter;
-import org.underdocx.doctypes.tools.placeholder.GenericTextualPlaceholderFactory;
-import org.underdocx.doctypes.txt.TxtContainer;
-import org.underdocx.doctypes.txt.TxtXml;
-import org.underdocx.enginelayers.parameterengine.DoubleBracketsPlaceholderCodec;
-import org.underdocx.enginelayers.parameterengine.DoubleBracketsTextDetector;
-import org.underdocx.enginelayers.parameterengine.ParametersPlaceholderData;
+import org.underdocx.enginelayers.baseengine.PlaceholdersProvider;
 import org.w3c.dom.Node;
 
-public class TxtDoubleBracketsParameterizedPlaceholderFactory implements GenericTextualPlaceholderFactory<TxtContainer, ParametersPlaceholderData, TxtXml> {
+public interface GenericTextualPlaceholdersProviderFactory<C extends DocContainer<D>, P, D> extends PlaceholdersProvider.Factory<C, P, D> {
 
-    @Override
-    public TextNodeInterpreter getTextNodeInterpreter() {
-        return TxtNodeInterpreter.INSTANCE;
+    TextNodeInterpreter getTextNodeInterpreter();
+
+    Enumerator<Node> createSectionEnumerator(C doc, Node firstValidNode);
+
+    EncapsulatedNodesExtractor getExtractor();
+
+    Codec<P> getCodec();
+
+    default TextualPlaceholderToolkit<P> createToolkit() {
+        return new TextualPlaceholderToolkit<>(getExtractor(), getCodec());
     }
 
-    @Override
-    public Enumerator<Node> createSectionEnumerator(TxtContainer doc, Node firstValid) {
-        return new TxtSectionEnumerator(doc, firstValid);
+    default PlaceholdersProvider<C, P, D> createProvider(C doc) {
+        return new GenericTextualPlaceholdersProvider<>(this);
     }
 
-    @Override
-    public EncapsulatedNodesExtractor getExtractor() {
-        return new PartialExtractor(DoubleBracketsTextDetector.INSTANCE, getTextNodeInterpreter());
-    }
 
-    @Override
-    public Codec<ParametersPlaceholderData> getCodec() {
-        return DoubleBracketsPlaceholderCodec.INSTANCE;
-    }
 }

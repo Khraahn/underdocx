@@ -11,7 +11,7 @@ import org.underdocx.doctypes.TextNodeInterpreter;
 import org.underdocx.doctypes.odf.odt.OdtContainer;
 import org.underdocx.doctypes.odf.odt.OdtEngine;
 import org.underdocx.doctypes.odf.tools.OdfSectionsWalker;
-import org.underdocx.doctypes.tools.placeholder.GenericTextualPlaceholderFactory;
+import org.underdocx.doctypes.tools.placeholder.GenericTextualPlaceholdersProviderFactory;
 import org.underdocx.enginelayers.baseengine.CommandHandler;
 import org.underdocx.enginelayers.baseengine.CommandHandlerResult;
 import org.underdocx.enginelayers.baseengine.Selection;
@@ -22,7 +22,7 @@ import java.io.IOException;
 
 public class CustomPlaceholderExample {
 
-    private static class MyPlaceholdersProvider implements GenericTextualPlaceholderFactory<OdtContainer, String, OdfTextDocument> {
+    private static class MyPlaceholdersProvider implements GenericTextualPlaceholdersProviderFactory<OdtContainer, String, OdfTextDocument> {
 
         private static final Regex regex = new Regex("\\<\\w+\\>");
 

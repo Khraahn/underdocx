@@ -36,11 +36,11 @@ public class GenericTextualPlaceholdersProvider<C extends DocContainer<D>, P, D>
 
     private final TextualPlaceholderToolkit<P> toolkit;
 
-    private final GenericTextualPlaceholderFactory<C, P, D> info;
+    private final GenericTextualPlaceholdersProviderFactory<C, P, D> info;
     private Node startNode = null;
     private boolean endOfDoc = false;
 
-    protected GenericTextualPlaceholdersProvider(GenericTextualPlaceholderFactory<C, P, D> info) {
+    protected GenericTextualPlaceholdersProvider(GenericTextualPlaceholdersProviderFactory<C, P, D> info) {
         this.info = info;
         this.toolkit = info.createToolkit();
 

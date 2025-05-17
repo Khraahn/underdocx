@@ -32,7 +32,7 @@ import org.underdocx.doctypes.commands.MultiCommandHandler;
 import org.underdocx.doctypes.modifiers.ModifiersProvider;
 import org.underdocx.doctypes.odf.commands.image.ImageProvider;
 import org.underdocx.doctypes.odf.modifiers.OdfModifiersProvider;
-import org.underdocx.doctypes.tools.placeholder.GenericTextualPlaceholderFactory;
+import org.underdocx.doctypes.tools.placeholder.GenericTextualPlaceholdersProviderFactory;
 import org.underdocx.enginelayers.modelengine.MCommandHandler;
 import org.underdocx.enginelayers.modelengine.ModelEngine;
 import org.underdocx.enginelayers.parameterengine.ParametersPlaceholderData;
@@ -42,7 +42,7 @@ public abstract class AbstractOdfEngine<C extends AbstractOdfContainer<D>, D ext
     protected final OdfModifiersProvider<C, D> modifiers = new OdfModifiersProvider<>();
 
 
-    protected final GenericTextualPlaceholderFactory<C, ParametersPlaceholderData, D> parameters;
+    protected final GenericTextualPlaceholdersProviderFactory<C, ParametersPlaceholderData, D> parameters;
     protected final ImageProvider.NewImagePlaceholdersProviderFactory<C, D> imagePlaceholdersProvider
             = new ImageProvider.NewImagePlaceholdersProviderFactory<>();
 
@@ -52,7 +52,7 @@ public abstract class AbstractOdfEngine<C extends AbstractOdfContainer<D>, D ext
     abstract protected ModelEngine<C, D> getEngine();
 
 
-    public AbstractOdfEngine(GenericTextualPlaceholderFactory<C, ParametersPlaceholderData, D> parameters) {
+    public AbstractOdfEngine(GenericTextualPlaceholdersProviderFactory<C, ParametersPlaceholderData, D> parameters) {
         this.parameters = parameters;
     }
 

@@ -24,20 +24,19 @@ SOFTWARE.
 
 package org.underdocx.mains.helloword;
 
-import org.underdocx.doctypes.odf.odt.OdtContainer;
-import org.underdocx.doctypes.odf.odt.OdtEngine;
+import org.underdocx.doctypes.txt.TxtContainer;
+import org.underdocx.doctypes.txt.TxtEngine;
 
-import java.io.File;
 import java.io.IOException;
 
 public class HelloWorld {
     public static void main(String[] args) throws IOException {
-        OdtContainer doc = new OdtContainer("Hello ${$name}");
-        OdtEngine engine = new OdtEngine();
-        engine.pushVariable("name", "World");
+        TxtContainer doc = new TxtContainer("Hello ${name}");
+        TxtEngine engine = new TxtEngine();
+        engine.registerStringReplacement("name", "World");
         engine.run(doc);
-        File tmpFile = File.createTempFile("Test_", ".odt");
-        doc.save(tmpFile);
-        System.out.println("Document created: %s".formatted(tmpFile));
+
+        // Prints: Hello World
+        System.out.println(doc.getPlainText());
     }
 }

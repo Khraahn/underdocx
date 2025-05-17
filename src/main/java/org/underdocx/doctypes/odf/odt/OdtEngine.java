@@ -34,8 +34,8 @@ import org.underdocx.doctypes.odf.odt.commands.OdtExportCommandHandler;
 import org.underdocx.doctypes.odf.odt.commands.OdtImportCommandHandler;
 import org.underdocx.doctypes.odf.odt.commands.OdtPageStyleCommandHandler;
 import org.underdocx.doctypes.odf.odt.commands.UnderdocxCommandHandler;
-import org.underdocx.doctypes.odf.tools.placeholder.OdfDefaultPlaceholderFactory;
-import org.underdocx.doctypes.tools.placeholder.GenericTextualPlaceholderFactory;
+import org.underdocx.doctypes.odf.tools.placeholder.OdfDefaultPlaceholdersProviderFactory;
+import org.underdocx.doctypes.tools.placeholder.GenericTextualPlaceholdersProviderFactory;
 import org.underdocx.enginelayers.modelengine.ModelEngine;
 import org.underdocx.enginelayers.parameterengine.ParametersPlaceholderData;
 import org.underdocx.environment.UnderdocxEnv;
@@ -80,10 +80,10 @@ public class OdtEngine extends AbstractOdfEngine<OdtContainer, OdfTextDocument> 
     }
 
     public OdtEngine() {
-        this(new OdfDefaultPlaceholderFactory<>());
+        this(new OdfDefaultPlaceholdersProviderFactory<>());
     }
 
-    public OdtEngine(GenericTextualPlaceholderFactory<OdtContainer, ParametersPlaceholderData, OdfTextDocument> parameters) {
+    public OdtEngine(GenericTextualPlaceholdersProviderFactory<OdtContainer, ParametersPlaceholderData, OdfTextDocument> parameters) {
         super(parameters);
         this.engine = new ModelEngine<>();
         registerDefaultCommandHandlers();

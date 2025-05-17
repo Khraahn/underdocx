@@ -30,7 +30,7 @@ import org.underdocx.common.placeholder.EncapsulatedNodesExtractor;
 import org.underdocx.common.placeholder.basic.extraction.RegexExtractor;
 import org.underdocx.common.types.Regex;
 import org.underdocx.doctypes.TextNodeInterpreter;
-import org.underdocx.doctypes.tools.placeholder.GenericTextualPlaceholderFactory;
+import org.underdocx.doctypes.tools.placeholder.GenericTextualPlaceholdersProviderFactory;
 import org.underdocx.doctypes.txt.TxtContainer;
 import org.underdocx.doctypes.txt.TxtXml;
 import org.underdocx.enginelayers.parameterengine.GenericParametersPlaceholderCodec;
@@ -39,22 +39,22 @@ import org.w3c.dom.Node;
 
 public class TxtPlaceholderStyle {
 
-    public static final GenericTextualPlaceholderFactory<TxtContainer, ParametersPlaceholderData, TxtXml> XML_COMMENT =
-            new TxtPlaceholder("<!--${", "}-->", new Regex("<!--\\$\\{.*?\\}-->"));
-    public static final GenericTextualPlaceholderFactory<TxtContainer, ParametersPlaceholderData, TxtXml> CODE_COMMENT =
-            new TxtPlaceholder("/*!", "!*/", new Regex("\\/\\*!.*?!\\*\\/"));
-    public static final GenericTextualPlaceholderFactory<TxtContainer, ParametersPlaceholderData, TxtXml> HASH_COMMENT =
-            new TxtPlaceholder("#!", "!#", new Regex("#!.*?!#"));
-    public static final GenericTextualPlaceholderFactory<TxtContainer, ParametersPlaceholderData, TxtXml> DEFAULT = new TxtDefaultPlaceholderFactory();
-    public static final GenericTextualPlaceholderFactory<TxtContainer, ParametersPlaceholderData, TxtXml> DOUBLE_BRACKETS = new TxtDoubleBracketsParameterizedPlaceholderFactory();
+    public static final GenericTextualPlaceholdersProviderFactory<TxtContainer, ParametersPlaceholderData, TxtXml> XML_COMMENT =
+            new TxtPlaceholdersProvider("<!--${", "}-->", new Regex("<!--\\$\\{.*?\\}-->"));
+    public static final GenericTextualPlaceholdersProviderFactory<TxtContainer, ParametersPlaceholderData, TxtXml> CODE_COMMENT =
+            new TxtPlaceholdersProvider("/*!", "!*/", new Regex("\\/\\*!.*?!\\*\\/"));
+    public static final GenericTextualPlaceholdersProviderFactory<TxtContainer, ParametersPlaceholderData, TxtXml> HASH_COMMENT =
+            new TxtPlaceholdersProvider("#!", "!#", new Regex("#!.*?!#"));
+    public static final GenericTextualPlaceholdersProviderFactory<TxtContainer, ParametersPlaceholderData, TxtXml> DEFAULT = new TxtDefaultPlaceholdersProviderFactory();
+    public static final GenericTextualPlaceholdersProviderFactory<TxtContainer, ParametersPlaceholderData, TxtXml> DOUBLE_BRACKETS = new TxtDoubleBracketsParameterizedPlaceholdersProviderFactory();
 
-    protected static class TxtPlaceholder implements GenericTextualPlaceholderFactory<TxtContainer, ParametersPlaceholderData, TxtXml> {
+    protected static class TxtPlaceholdersProvider implements GenericTextualPlaceholdersProviderFactory<TxtContainer, ParametersPlaceholderData, TxtXml> {
 
         private final Regex regex;
         private final String suffix;
         private final String prefix;
 
-        protected TxtPlaceholder(String prefix, String suffix, Regex regex) {
+        protected TxtPlaceholdersProvider(String prefix, String suffix, Regex regex) {
             this.prefix = prefix;
             this.suffix = suffix;
             this.regex = regex;

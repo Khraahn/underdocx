@@ -22,32 +22,31 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-package org.underdocx.doctypes.odf.tools.placeholder;
+package org.underdocx.doctypes.txt.placeholders;
 
-import org.odftoolkit.odfdom.doc.OdfDocument;
 import org.underdocx.common.codec.Codec;
 import org.underdocx.common.enumerator.Enumerator;
 import org.underdocx.common.placeholder.EncapsulatedNodesExtractor;
 import org.underdocx.common.placeholder.basic.extraction.PartialExtractor;
-import org.underdocx.common.placeholder.basic.textnodeinterpreter.OdfTextNodeInterpreter;
 import org.underdocx.doctypes.TextNodeInterpreter;
-import org.underdocx.doctypes.odf.AbstractOdfContainer;
-import org.underdocx.doctypes.odf.tools.OdfSectionsWalker;
-import org.underdocx.doctypes.tools.placeholder.GenericTextualPlaceholderFactory;
+import org.underdocx.doctypes.tools.placeholder.GenericTextualPlaceholdersProviderFactory;
+import org.underdocx.doctypes.txt.TxtContainer;
+import org.underdocx.doctypes.txt.TxtXml;
 import org.underdocx.enginelayers.parameterengine.ParametersDetector;
 import org.underdocx.enginelayers.parameterengine.ParametersPlaceholderCodec;
 import org.underdocx.enginelayers.parameterengine.ParametersPlaceholderData;
 import org.w3c.dom.Node;
 
-public class OdfDefaultPlaceholderFactory<C extends AbstractOdfContainer<D>, D extends OdfDocument> implements GenericTextualPlaceholderFactory<C, ParametersPlaceholderData, D> {
+public class TxtDefaultPlaceholdersProviderFactory implements GenericTextualPlaceholdersProviderFactory<TxtContainer, ParametersPlaceholderData, TxtXml> {
+
     @Override
     public TextNodeInterpreter getTextNodeInterpreter() {
-        return OdfTextNodeInterpreter.INSTANCE;
+        return TxtNodeInterpreter.INSTANCE;
     }
 
     @Override
-    public Enumerator<Node> createSectionEnumerator(C doc, Node firstValidNode) {
-        return new OdfSectionsWalker(doc, firstValidNode);
+    public Enumerator<Node> createSectionEnumerator(TxtContainer doc, Node firstValid) {
+        return new TxtSectionEnumerator(doc, firstValid);
     }
 
     @Override

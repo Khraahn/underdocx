@@ -2382,7 +2382,7 @@ engine.run(doc);</code></pre>
         There are some base classes you can reuse as done in the example below. For example
         the <code-word>RegexExtractor</code-word> finds text sequences in the document by passing a
         regular expression, the <code-word>TextualPlaceholderToolkit</code-word> simplifies
-        placeholder node handling, and the <code-word>AbstractOdfPlaceholderFactory</code-word>
+        placeholder node handling, and the <code-word>AbstractOdfPlaceholdersProviderFactory</code-word>
         uses these helpers to create the <code-word>PlaceholdersProvider</code-word>.<br>
         <br>
 
@@ -2398,7 +2398,7 @@ engine.run(doc);</code></pre>
           NAME</code-word>.
         <pre class="highlightjs highlight nowrap"><code class="language-java hljs" data-lang="java">public class CustomPlaceholderExample {
 
-  private static class MyPlaceholdersProvider extends AbstractOdfPlaceholderFactory&lt;OdtContainer, String, OdfTextDocument&gt; {
+  private static class MyPlaceholdersProvider extends AbstractOdfPlaceholdersProviderFactory&lt;OdtContainer, String, OdfTextDocument&gt; {
 
       private static final Regex regex = new Regex("\\&lt;\\w+\\&gt;");
       

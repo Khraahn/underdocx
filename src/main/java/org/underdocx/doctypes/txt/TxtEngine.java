@@ -28,10 +28,10 @@ import org.underdocx.common.types.Pair;
 import org.underdocx.doctypes.AbstractEngine;
 import org.underdocx.doctypes.commands.*;
 import org.underdocx.doctypes.modifiers.ModifiersProvider;
-import org.underdocx.doctypes.tools.placeholder.GenericTextualPlaceholderFactory;
+import org.underdocx.doctypes.tools.placeholder.GenericTextualPlaceholdersProviderFactory;
 import org.underdocx.doctypes.txt.commands.TxtImportCommandHandler;
 import org.underdocx.doctypes.txt.modifiers.TxtModifiersProvider;
-import org.underdocx.doctypes.txt.placeholders.TxtDefaultPlaceholderFactory;
+import org.underdocx.doctypes.txt.placeholders.TxtDefaultPlaceholdersProviderFactory;
 import org.underdocx.enginelayers.modelengine.MCommandHandler;
 import org.underdocx.enginelayers.modelengine.ModelEngine;
 import org.underdocx.enginelayers.parameterengine.ParametersPlaceholderData;
@@ -42,7 +42,7 @@ public class TxtEngine extends AbstractEngine<TxtContainer, TxtXml> {
     private final ModelEngine<TxtContainer, TxtXml> engine;
 
     protected final TxtModifiersProvider modifiers = new TxtModifiersProvider();
-    protected final GenericTextualPlaceholderFactory<TxtContainer, ParametersPlaceholderData, TxtXml> parameters;
+    protected final GenericTextualPlaceholdersProviderFactory<TxtContainer, ParametersPlaceholderData, TxtXml> parameters;
     protected final MultiCommandHandler<TxtContainer, TxtXml> multiCommandHandler = new MultiCommandHandler<>(modifiers);
     protected final AliasCommandHandler<TxtContainer, TxtXml> aliasCommandHandler = new AliasCommandHandler<>(modifiers);
 
@@ -73,10 +73,10 @@ public class TxtEngine extends AbstractEngine<TxtContainer, TxtXml> {
     }
 
     public TxtEngine() {
-        this(new TxtDefaultPlaceholderFactory());
+        this(new TxtDefaultPlaceholdersProviderFactory());
     }
 
-    public TxtEngine(GenericTextualPlaceholderFactory<TxtContainer, ParametersPlaceholderData, TxtXml> parameters) {
+    public TxtEngine(GenericTextualPlaceholdersProviderFactory<TxtContainer, ParametersPlaceholderData, TxtXml> parameters) {
         this.parameters = parameters;
         this.engine = new ModelEngine<>();
         registerDefaultCommandHandlers();

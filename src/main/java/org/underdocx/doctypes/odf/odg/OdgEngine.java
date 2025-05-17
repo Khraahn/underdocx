@@ -32,8 +32,8 @@ import org.underdocx.doctypes.odf.commands.forcommand.ForListCommandHandler;
 import org.underdocx.doctypes.odf.commands.forcommand.ForRowsCommandHandler;
 import org.underdocx.doctypes.odf.odg.commands.OdgExportCommandHandler;
 import org.underdocx.doctypes.odf.odg.commands.OdgImportCommandHandler;
-import org.underdocx.doctypes.odf.tools.placeholder.OdfDefaultPlaceholderFactory;
-import org.underdocx.doctypes.tools.placeholder.GenericTextualPlaceholderFactory;
+import org.underdocx.doctypes.odf.tools.placeholder.OdfDefaultPlaceholdersProviderFactory;
+import org.underdocx.doctypes.tools.placeholder.GenericTextualPlaceholdersProviderFactory;
 import org.underdocx.enginelayers.modelengine.ModelEngine;
 import org.underdocx.enginelayers.parameterengine.ParametersPlaceholderData;
 import org.underdocx.environment.UnderdocxEnv;
@@ -43,10 +43,10 @@ public class OdgEngine extends AbstractOdfEngine<OdgContainer, OdfGraphicsDocume
     private final ModelEngine<OdgContainer, OdfGraphicsDocument> engine;
 
     public OdgEngine() {
-        this(new OdfDefaultPlaceholderFactory<>());
+        this(new OdfDefaultPlaceholdersProviderFactory<>());
     }
 
-    public OdgEngine(GenericTextualPlaceholderFactory<OdgContainer, ParametersPlaceholderData, OdfGraphicsDocument> parameters) {
+    public OdgEngine(GenericTextualPlaceholdersProviderFactory<OdgContainer, ParametersPlaceholderData, OdfGraphicsDocument> parameters) {
         super(parameters);
         this.engine = new ModelEngine<>();
         registerDefaultCommandHandlers();
