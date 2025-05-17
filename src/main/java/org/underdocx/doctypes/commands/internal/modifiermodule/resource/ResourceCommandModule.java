@@ -25,14 +25,12 @@ SOFTWARE.
 package org.underdocx.doctypes.commands.internal.modifiermodule.resource;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import org.underdocx.common.types.MimeType;
 import org.underdocx.common.types.Resource;
 import org.underdocx.doctypes.DocContainer;
 import org.underdocx.doctypes.commands.internal.modifiermodule.AbstractCommandModule;
 import org.underdocx.doctypes.tools.attrinterpreter.accesstype.AccessTypeJsonNameInterpreter;
-import org.underdocx.doctypes.tools.datapicker.BinaryDataPicker;
-import org.underdocx.doctypes.tools.datapicker.PredefinedDataPicker;
-import org.underdocx.doctypes.tools.datapicker.ResourceDataPicker;
-import org.underdocx.doctypes.tools.datapicker.StringConvertDataPicker;
+import org.underdocx.doctypes.tools.datapicker.*;
 import org.underdocx.enginelayers.modelengine.dataaccess.DataAccess;
 import org.underdocx.environment.err.Problems;
 
@@ -45,11 +43,13 @@ public class ResourceCommandModule<C extends DocContainer<D>, P, D> extends Abst
     public static final String DATA_ATTR = "data";
     public static final String RESOURCE_ATTR = "resource";
     public static final String B64_ATTR = "base64";
+    public static final String MIME_ATTR = "mimeType";
 
     private static final PredefinedDataPicker<String> uriPicker = new StringConvertDataPicker().asPredefined(URI_ATTR);
     private static final PredefinedDataPicker<Resource> resourcePicker = new ResourceDataPicker().asPredefined(RESOURCE_ATTR);
     private static final PredefinedDataPicker<byte[]> binaryPicker = new BinaryDataPicker().asPredefined(DATA_ATTR);
     private static final PredefinedDataPicker<String> b64Picker = new StringConvertDataPicker().asPredefined(B64_ATTR);
+    private static final AttributeDataPicker<String> mimeTypePicker = new StringConvertDataPicker().optionalAttr(MIME_ATTR);
 
     public ResourceCommandModule(JsonNode json) {
         super(json);
@@ -58,12 +58,14 @@ public class ResourceCommandModule<C extends DocContainer<D>, P, D> extends Abst
     @Override
     protected Resource execute() {
         DataAccess dataAccess = selection.getDataAccess().get();
+        String mimeType = MimeType.tryConvertExtensionToMimeType(mimeTypePicker.get(dataAccess, configuration));
         if (AccessTypeJsonNameInterpreter.attributeExists(configuration, URI_ATTR)) {
             return Problems.IO_EXCEPTION.exec(() -> new Resource.UriResource(uriPicker.pickData(dataAccess, configuration).getOrThrow(URI_ATTR)));
         } else if (AccessTypeJsonNameInterpreter.attributeExists(configuration, DATA_ATTR)) {
-            return Problems.IO_EXCEPTION.exec(() -> new Resource.DataResource(binaryPicker.pickData(dataAccess, configuration).getOrThrow(DATA_ATTR)));
+            return Problems.IO_EXCEPTION.exec(() -> new Resource.DataResource(mimeType, binaryPicker.pickData(dataAccess, configuration).getOrThrow(DATA_ATTR)));
         } else if (AccessTypeJsonNameInterpreter.attributeExists(configuration, B64_ATTR)) {
-            return Problems.IO_EXCEPTION.exec(() -> new Resource.Base64Resource(b64Picker.pickData(dataAccess, configuration).getOrThrow(B64_ATTR)));
+            String b64 = b64Picker.pickData(dataAccess, configuration).getOrThrow(B64_ATTR);
+            return Problems.IO_EXCEPTION.exec(() -> new Resource.Base64Resource(mimeType, b64, b64));
         } else {
             return Problems.IO_EXCEPTION.exec(() -> resourcePicker.pickData(dataAccess, configuration).getOrThrow(RESOURCE_ATTR));
         }

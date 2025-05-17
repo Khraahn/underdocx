@@ -1343,6 +1343,14 @@ ${EndIf}</code></pre>
             </td>
           </tr>
 
+            <tr>
+                <td>mimeType</td>
+                <td>required if data or base64 has been used</td>
+                <td>
+                    file extension or MIME type of image
+                </td>
+            </tr>
+
           <tr>
             <td>name</td>
             <td>yes</td>
@@ -1417,6 +1425,12 @@ ${EndIf}</code></pre>
                   <td>resource</td>
                   <td>Image resource object, alternative to uri/base64/data</td>
                   <td></td>
+              </tr>
+              <tr>
+                  <td>mimeType</td>
+                  <td>file extension or MIME type of image, required if data or base64 has been used</td>
+                  <td>
+                  </td>
               </tr>
               <tr>
                   <td>unit</td>

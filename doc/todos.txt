@@ -1,5 +1,4 @@
 - Features
-  - Tests für durch Alias/Replace zu ersetzende Platzhalter hinter einem Ignore
   - später ggf. docx unterstützen
 - Bekannte Probleme:
   - Bilder-Platzhalter sollten nicht durch den textbasierten Placeholderprovider gefunden werden => Warn-Logs bei Bildern

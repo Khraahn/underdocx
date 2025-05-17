@@ -42,6 +42,7 @@ import org.underdocx.doctypes.odf.constants.OdfElement;
 import org.underdocx.doctypes.odf.constants.OdfLengthUnit;
 import org.underdocx.doctypes.odf.constants.OdfNameSpace;
 import org.underdocx.enginelayers.parameterengine.ParametersPlaceholderData;
+import org.underdocx.environment.err.Problems;
 import org.w3c.dom.Node;
 
 import java.util.Optional;
@@ -288,7 +289,7 @@ public class MainImageData extends ImageData {
 
     public void exchangeImage(Resource resource, OdfDocument doc) {
         Pair<String, String> fileNameAndPath = store(resource, doc);
-        String mimeType = getMimeType(fileNameAndPath.left);
+        String mimeType = Problems.RESOURCE_WITHOUT_REQUIRED_MIMETYPE.get(resource.getMimeType(), "MIME Type");
         drawImageElement.setXlinkHrefAttribute(fileNameAndPath.right);
         drawImageElement.setAttributeNS(OdfNameSpace.DRAW.getUri(), "draw:mime-type", mimeType);
         String currentName = drawFrameElement.getDrawNameAttribute();

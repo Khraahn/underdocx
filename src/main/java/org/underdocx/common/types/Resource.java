@@ -46,20 +46,30 @@ public interface Resource {
 
     String getIdentifier();
 
-    byte[] getData() throws IOException;
+    Optional<String> getMimeType();
 
-    Optional<URI> getURI();
+    byte[] getData() throws IOException;
 
     class FileResource implements Resource {
 
         private final File file;
+        private final String mimeType;
 
         public FileResource(File file) {
-            this.file = file;
+            this(file, null);
         }
 
         public FileResource(String file) {
-            this.file = new File(file);
+            this(new File(file), null);
+        }
+
+        public FileResource(File file, String mimeType) {
+            this.file = file;
+            this.mimeType = mimeType == null ? MimeType.tryResolveMimeType(file.getName()) : mimeType;
+        }
+
+        public FileResource(String file, String mimeType) {
+            this(new File(file), mimeType);
         }
 
         @Override
@@ -73,8 +83,8 @@ public interface Resource {
         }
 
         @Override
-        public Optional<URI> getURI() {
-            return Optional.of(file.toURI());
+        public Optional<String> getMimeType() {
+            return Optional.ofNullable(mimeType);
         }
 
         @Override
@@ -88,14 +98,30 @@ public interface Resource {
         protected String cachedIdentifier = null;
 
         protected final byte[] data;
+        protected final String mimeType;
 
         public DataResource(byte[] data) {
             this.data = data;
+            mimeType = null;
         }
 
         public DataResource(byte[] data, String identifier) {
             this.data = data;
             this.cachedIdentifier = identifier;
+            this.mimeType = MimeType.tryResolveMimeType(identifier);
+        }
+
+
+        public DataResource(String mimeType, byte[] data, String identifier) {
+            this.data = data;
+            this.cachedIdentifier = identifier;
+            this.mimeType = mimeType;
+        }
+
+        public DataResource(String mimeType, byte[] data) {
+            this.data = data;
+            this.cachedIdentifier = null;
+            this.mimeType = mimeType;
         }
 
         @Override
@@ -112,8 +138,8 @@ public interface Resource {
         }
 
         @Override
-        public Optional<URI> getURI() {
-            return Optional.empty();
+        public Optional<String> getMimeType() {
+            return Optional.ofNullable(mimeType);
         }
 
         @Override
@@ -126,10 +152,18 @@ public interface Resource {
 
         private final Class<?> clazz;
         private final String resourceName;
+        private final String mimeType;
 
         public ClassResource(Class<?> clazz, String resourceName) {
             this.clazz = clazz;
             this.resourceName = resourceName;
+            this.mimeType = MimeType.tryResolveMimeType(resourceName);
+        }
+
+        public ClassResource(Class<?> clazz, String resourceName, String mimeType) {
+            this.clazz = clazz;
+            this.resourceName = resourceName;
+            this.mimeType = mimeType;
         }
 
         @Override
@@ -143,26 +177,40 @@ public interface Resource {
         }
 
         @Override
+        public Optional<String> getMimeType() {
+            return Optional.ofNullable(mimeType);
+        }
+
+        @Override
         public byte[] getData() throws IOException {
             return IOUtils.toByteArray(openStream());
         }
 
-        @Override
-        public Optional<URI> getURI() {
-            return Optional.empty();
-        }
     }
 
     class UriResource implements Resource {
 
         private final URI uri;
+        private final String mimeType;
 
         public UriResource(URI uri) {
             this.uri = uri;
+            this.mimeType = MimeType.tryResolveMimeType(uri.toString());
         }
 
         public UriResource(String uri) throws URISyntaxException {
             this.uri = new URI(uri);
+            this.mimeType = MimeType.tryResolveMimeType(uri.toString());
+        }
+
+        public UriResource(URI uri, String mimeType) {
+            this.uri = uri;
+            this.mimeType = mimeType;
+        }
+
+        public UriResource(String uri, String mimeType) throws URISyntaxException {
+            this.uri = new URI(uri);
+            this.mimeType = mimeType;
         }
 
         @Override
@@ -176,26 +224,26 @@ public interface Resource {
         }
 
         @Override
-        public byte[] getData() throws IOException {
-            return IOUtils.toByteArray(uri);
+        public Optional<String> getMimeType() {
+            return Optional.ofNullable(mimeType);
         }
 
         @Override
-        public Optional<URI> getURI() {
-            return Optional.of(uri);
+        public byte[] getData() throws IOException {
+            return IOUtils.toByteArray(uri);
         }
     }
 
     class Base64Resource implements Resource {
 
-        DataResource innerResource = null;
+        private final DataResource innerResource;
 
         public Base64Resource(String base64) {
             innerResource = new DataResource(Base64.getDecoder().decode(base64), base64);
         }
 
-        public Base64Resource(String base64, String identifier) {
-            innerResource = new DataResource(Base64.getDecoder().decode(base64), identifier);
+        public Base64Resource(String mimeType, String base64, String identifier) {
+            innerResource = new DataResource(mimeType, Base64.getDecoder().decode(base64), identifier);
         }
 
 
@@ -210,13 +258,13 @@ public interface Resource {
         }
 
         @Override
-        public byte[] getData() throws IOException {
-            return innerResource.getData();
+        public Optional<String> getMimeType() {
+            return innerResource.getMimeType();
         }
 
         @Override
-        public Optional<URI> getURI() {
-            return innerResource.getURI();
+        public byte[] getData() throws IOException {
+            return innerResource.getData();
         }
     }
 

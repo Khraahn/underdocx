@@ -53,4 +53,38 @@ public class IgnoreCommandTest extends AbstractOdtTest {
         assertContains(doc, "$value:\"x\"");
         assertOrder(doc, "Hallo", "Welt");
     }
+
+    @Test
+    public void testAliasAfterIgnore() {
+        String content = """
+                ${Alias key:"x", replaceKey:"Date"}
+                ${Alias key:"y", replaceKey:"Date"}
+                ${Ignore}
+                ${x}
+                ${EndIgnore}
+                ${y}
+                """;
+        OdtContainer doc = new OdtContainer(content);
+        OdtEngine engine = new OdtEngine();
+        engine.run(doc);
+        assertContains(doc, "${x}");
+        assertNotContains(doc, "${y}");
+    }
+
+    @Test
+    public void testReplaceAfterIgnore() {
+        String content = """
+                ${Replace key:"x", value:"${Date}"}
+                ${Replace key:"y", value:"${Date}"}
+                ${Ignore}
+                ${x}
+                ${EndIgnore}
+                ${y}
+                """;
+        OdtContainer doc = new OdtContainer(content);
+        OdtEngine engine = new OdtEngine();
+        engine.run(doc);
+        assertContains(doc, "${x}");
+        assertNotContains(doc, "${y}");
+    }
 }

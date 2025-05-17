@@ -38,7 +38,6 @@ import org.underdocx.environment.err.Problems;
 import org.w3c.dom.Node;
 
 import java.io.InputStream;
-import java.util.Base64;
 import java.util.Optional;
 
 public abstract class ImageData {
@@ -108,15 +107,6 @@ public abstract class ImageData {
         svgDesc.setTextContent(name);
     }
 
-    private String getExtension(String filename) {
-        int index = filename.lastIndexOf(".");
-        if (index >= 0 && index != filename.length() - 1) {
-            return filename.substring(index + 1).toLowerCase();
-        } else {
-            return filename.toLowerCase();
-        }
-    }
-
     private String getFile(String path) {
         String result = path;
         int index = result.lastIndexOf("\\");
@@ -134,27 +124,10 @@ public abstract class ImageData {
         return result;
     }
 
-    public String getMimeType(String imageName) {
-        String extension = getExtension(imageName);
-        return switch (extension) {
-            case "png" -> "image/png";
-            case "jpeg", "jpg" -> "image/jpeg";
-            case "svg" -> "image/svg+xml";
-            case "tif", "tiff" -> "image/tiff";
-            case "webp" -> "image/webp";
-            case "gif" -> "image/gif";
-            default -> "image/bmp";
-        };
-    }
-
-    public String getSafeIdentifier(Resource resource) {
-        return Base64.getEncoder().encodeToString(resource.getIdentifier().getBytes());
-    }
-
     public Pair<String, String> store(Resource resource, OdfDocument doc) {
         String fileName = getFile(resource.getIdentifier());
         String packageName = "Pictures/" + fileName;
-        String mimeType = getMimeType(fileName);
+        String mimeType = Problems.RESOURCE_WITHOUT_REQUIRED_MIMETYPE.get(resource.getMimeType(), "MIME Type");
         InputStream data = Problems.IO_EXCEPTION.exec(resource::openStream);
         OdfPackage pack = doc.getPackage();
         if (pack.contains(packageName)) {

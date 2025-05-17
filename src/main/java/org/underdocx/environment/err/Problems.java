@@ -47,7 +47,8 @@ public enum Problems implements Problematic {
     PLACEHOLDER_TOOLKIT_MISSING("placeholder toolkit instance is missing"),
     EXPECTED_PLACEHOLDER_MISSING("A mandatory placeholder can not be found"),
     IMPORT_DATA_SCHEMA("The structure/schema of the import data is invalid"),
-    UNEXPECTED_VALUE("This value is not allowed here");
+    UNEXPECTED_VALUE("This value is not allowed here"),
+    RESOURCE_WITHOUT_REQUIRED_MIMETYPE("a Resource object can't provide required MIME-Type");
 
     private String description = null;
 

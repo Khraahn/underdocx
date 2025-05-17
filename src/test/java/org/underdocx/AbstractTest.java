@@ -146,8 +146,7 @@ public abstract class AbstractTest {
     }
 
     protected Resource readResource(String filename) throws IOException {
-        InputStream is = getInputStream(filename);
-        return readResource(is);
+        return new Resource.ClassResource(this.getClass(), filename);
     }
 
     protected List<String> namesOf(Collection<Node> nodes) {
