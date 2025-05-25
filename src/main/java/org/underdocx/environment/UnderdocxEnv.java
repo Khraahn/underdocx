@@ -56,6 +56,7 @@ public class UnderdocxEnv {
     public boolean isDebug = false;
     public boolean appendErrorReport = true;
     public boolean disableImagePlaceholderProvider = false;
+    public boolean tryNotToScanIgnoredNodes = false;
 
     public final String libreOfficeExecutable = Convenience.build(path -> {
         path.value = System.getenv("LIBREOFFICE");

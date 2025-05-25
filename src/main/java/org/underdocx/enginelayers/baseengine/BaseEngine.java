@@ -151,7 +151,7 @@ public class BaseEngine<C extends DocContainer<D>, D> {
         return Optional.ofNullable(detectedError);
     }
 
-    protected void reactOnExecutionResult(CommandHandlerResult executionResult, Selection<C, ?, D> selection) {
+    protected boolean reactOnExecutionResult(CommandHandlerResult executionResult, Selection<C, ?, D> selection) {
         switch (executionResult.getResultType()) {
             case IGNORED ->
                     UnderdocxEnv.getInstance().logger.warn("No Command handler found four " + selection.getNode(), null);
@@ -171,8 +171,13 @@ public class BaseEngine<C extends DocContainer<D>, D> {
                 registry.keySet().forEach(provider -> provider.restartAt(null, true));
                 placeholderEnumerator = createPlaceholdersEnumerator();
             }
+            case EXIT -> {
+                stepExecuted(selection);
+                return false;
+            }
             default -> Problems.UNEXPECTED_TYPE_DETECTED.fireValue(executionResult.getResultType().name());
         }
+        return true;
     }
 
     protected void runUncatched() {
@@ -197,8 +202,11 @@ public class BaseEngine<C extends DocContainer<D>, D> {
                 }
                 Selection<C, ?, D> selection = createSelection(placeholder.left, placeholder.right, engineAccess);
                 CommandHandlerResult executionResult = findAndExecCommandHandler(placeholder.left, selection);
-                reactOnExecutionResult(executionResult, selection);
                 visited.add(selection.getNode());
+                if (!reactOnExecutionResult(executionResult, selection)) {
+                    UnderdocxEnv.getInstance().logger.trace("Exiting engine execution by exit command");
+                    break;
+                }
             }
 
             listeners.forEach(listener -> {

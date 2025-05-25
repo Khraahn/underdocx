@@ -24,44 +24,64 @@ SOFTWARE.
 
 package org.underdocx.doctypes.commands.ignore;
 
-import org.underdocx.common.types.Pair;
 import org.underdocx.enginelayers.parameterengine.ParametersPlaceholderData;
 
 public class IgnoreStateHandler {
+    private static final String EXIT = "Exit";
+    private static final String IGNORE = "Ignore";
+    private static final String END_IGNORE = "EndIgnore";
+
+    private final boolean ignoreScanEnabled;
     private boolean ignoring = false;
 
-    public Pair<Boolean, IgnoreInstruction> interpretAndCheckExecution(ParametersPlaceholderData placeholderData) {
-        IgnoreInstruction instruction = interpret(placeholderData);
-        if (!ignoring) {
-            if (instruction == IgnoreInstruction.START_IGNORE) {
-                ignoring = true;
+    public IgnoreStateHandler(boolean ignoreScanEnabled) {
+        this.ignoreScanEnabled = ignoreScanEnabled;
+    }
+
+    public IgnoreStateHandler() {
+        this(true);
+    }
+
+    public IgnoreState interpretAndCheckExecution(ParametersPlaceholderData placeholderData) {
+        if (ignoreScanEnabled)
+            return handleIgnoreState(placeholderData);
+        else
+            return IgnoreState.NORMAL;
+    }
+
+    private IgnoreState handleIgnoreState(ParametersPlaceholderData placeholderData) {
+        String key = placeholderData.getKey();
+        return switch (key) {
+            case EXIT -> {
+                if (!ignoring) {
+                    ignoring = true;
+                    yield IgnoreState.EXIT;
+                } else {
+                    yield IgnoreState.IGNORING;
+                }
             }
-            return new Pair<>(true, instruction);
-        } else {
-            if (instruction == IgnoreInstruction.END_IGNORE) {
+            case IGNORE -> {
+                if (!ignoring) {
+                    ignoring = true;
+                    yield IgnoreState.START_IGNORE;
+                } else {
+                    yield IgnoreState.IGNORING;
+                }
+            }
+            case END_IGNORE -> {
                 ignoring = false;
-                return new Pair<>(true, instruction);
+                yield IgnoreState.END_IGNORE;
             }
-            return new Pair<>(false, instruction);
-        }
+            default -> {
+                if (ignoring) {
+                    yield IgnoreState.IGNORING;
+                }
+                yield IgnoreState.NORMAL;
+            }
+        };
     }
 
-    public void setIgnoring(boolean state) {
-        this.ignoring = state;
+    public void setIgnoring(boolean ignoring) {
+        this.ignoring = ignoring;
     }
-
-    public boolean isIgnoring() {
-        return ignoring;
-    }
-
-    public static IgnoreInstruction interpret(ParametersPlaceholderData data) {
-        String key = data.getKey();
-        if (key.equals("Ignore")) {
-            return IgnoreInstruction.START_IGNORE;
-        } else if (key.equals("EndIgnore")) {
-            return IgnoreInstruction.END_IGNORE;
-        } else return IgnoreInstruction.UNKNOWN;
-    }
-
-
 }

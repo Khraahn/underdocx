@@ -31,6 +31,7 @@ import org.underdocx.common.enumerator.Enumerator;
 import org.underdocx.common.tools.Convenience;
 import org.underdocx.common.types.Pair;
 import org.underdocx.doctypes.DocContainer;
+import org.underdocx.doctypes.commands.ignore.IgnoreState;
 import org.underdocx.doctypes.commands.ignore.IgnoreStateHandler;
 import org.underdocx.doctypes.commands.internal.AbstractCommandHandler;
 import org.underdocx.doctypes.modifiers.ModifiersProvider;
@@ -47,6 +48,7 @@ import org.underdocx.enginelayers.modelengine.data.DataNode;
 import org.underdocx.enginelayers.modelengine.data.simple.AbstractPredefinedDataNode;
 import org.underdocx.enginelayers.modelengine.data.simple.LeafDataNode;
 import org.underdocx.enginelayers.parameterengine.ParametersPlaceholderData;
+import org.underdocx.environment.UnderdocxEnv;
 import org.underdocx.environment.err.Problems;
 
 import java.util.*;
@@ -216,11 +218,15 @@ public class AliasCommandHandler<C extends DocContainer<D>, D> extends AbstractC
             result = CommandHandlerResult.FACTORY.startAtNode(selection.getNode());
 
             // Replace future placeholder (if not ignored)
-            IgnoreStateHandler ignoreState = new IgnoreStateHandler();
+            IgnoreStateHandler ignoreStateHandler = new IgnoreStateHandler(UnderdocxEnv.getInstance().tryNotToScanIgnoredNodes);
             Enumerator<SelectedNode<?>> allWaiting = selection.getEngineAccess().lookAhead(selectedNode -> selectedNode.getPlaceholderData() instanceof ParametersPlaceholderData);
             for (SelectedNode<?> waiting : allWaiting) {
                 ParametersPlaceholderData placeholderData = (ParametersPlaceholderData) waiting.getPlaceholderData();
-                if (ignoreState.interpretAndCheckExecution(placeholderData).left && tryAliasExchange(placeholderData)) {
+                IgnoreState ignoreState = ignoreStateHandler.interpretAndCheckExecution(placeholderData);
+                if (ignoreState.shouldExit()) {
+                    break;
+                }
+                if (ignoreState.shouldProcessCommand() && tryAliasExchange(placeholderData)) {
                     selection.getPlaceholderToolkit().get().setPlaceholder(waiting.getNode(), placeholderData);
                 }
             }

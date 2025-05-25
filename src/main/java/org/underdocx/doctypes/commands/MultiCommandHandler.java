@@ -28,6 +28,7 @@ import org.underdocx.common.enumerator.Enumerator;
 import org.underdocx.common.types.Pair;
 import org.underdocx.common.types.Regex;
 import org.underdocx.doctypes.DocContainer;
+import org.underdocx.doctypes.commands.ignore.IgnoreState;
 import org.underdocx.doctypes.commands.ignore.IgnoreStateHandler;
 import org.underdocx.doctypes.commands.internal.AbstractCommandHandler;
 import org.underdocx.doctypes.commands.internal.AbstractTextualCommandHandler;
@@ -37,6 +38,7 @@ import org.underdocx.enginelayers.modelengine.MCommandHandler;
 import org.underdocx.enginelayers.modelengine.MSelection;
 import org.underdocx.enginelayers.modelengine.internal.Node2MSelection;
 import org.underdocx.enginelayers.parameterengine.ParametersPlaceholderData;
+import org.underdocx.environment.UnderdocxEnv;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -79,11 +81,15 @@ public class MultiCommandHandler<C extends DocContainer<D>, D> extends AbstractC
 
         // Replace future placeholder (if not ignored)
         if (result != CommandHandlerResult.IGNORED) {
-            IgnoreStateHandler ignoreState = new IgnoreStateHandler();
+            IgnoreStateHandler ignoreStateHandler = new IgnoreStateHandler(UnderdocxEnv.getInstance().tryNotToScanIgnoredNodes);
             Enumerator<SelectedNode<?>> allWaiting = selection.getEngineAccess().lookAhead(null);
             for (SelectedNode<?> waiting : allWaiting) {
                 if (waiting.getPlaceholderData() instanceof ParametersPlaceholderData placeholder) {
-                    if (ignoreState.interpretAndCheckExecution(placeholder).left) {
+                    IgnoreState ignoreState = ignoreStateHandler.interpretAndCheckExecution(placeholder);
+                    if (ignoreState.shouldExit()) {
+                        break;
+                    }
+                    if (ignoreState.shouldProcessCommand()) {
                         MSelection<C, ParametersPlaceholderData, D> newSelection = Node2MSelection.createMSelection(selection, (SelectedNode<ParametersPlaceholderData>) waiting);
                         trySelection(newSelection);
                     }

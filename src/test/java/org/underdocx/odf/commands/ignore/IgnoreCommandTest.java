@@ -51,6 +51,28 @@ public class IgnoreCommandTest extends AbstractOdtTest {
         //show(doc);
         Assertions.assertThat(problems).isEmpty();
         assertContains(doc, "$value:\"x\"");
+        assertNotContains(doc, "$value:\"Welt\"");
+        assertOrder(doc, "Hallo", "Welt");
+    }
+
+    @Test
+    public void testExit() {
+        String content = """
+                ${String value: "Hallo"}
+                ${Exit}
+                ${String $value:"x"}
+                ${EndIgnore}
+                ${String value:"Welt"}
+                """;
+        OdtContainer doc = new OdtContainer(content);
+        OdtEngine engine = new OdtEngine();
+        engine.pushVariable("x", "INVALID");
+        Optional<Problem> problems = engine.run(doc);
+        //show(doc);
+        Assertions.assertThat(problems).isEmpty();
+        assertContains(doc, "$value:\"x\"");
+        assertContains(doc, "value:\"Welt\"");
+        assertNotContains(doc, "Exit");
         assertOrder(doc, "Hallo", "Welt");
     }
 
@@ -67,6 +89,7 @@ public class IgnoreCommandTest extends AbstractOdtTest {
         OdtContainer doc = new OdtContainer(content);
         OdtEngine engine = new OdtEngine();
         engine.run(doc);
+        //show(doc);
         assertContains(doc, "${x}");
         assertNotContains(doc, "${y}");
     }

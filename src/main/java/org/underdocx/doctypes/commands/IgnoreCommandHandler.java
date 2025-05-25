@@ -24,10 +24,9 @@ SOFTWARE.
 
 package org.underdocx.doctypes.commands;
 
-import org.underdocx.common.types.Pair;
 import org.underdocx.common.types.Regex;
 import org.underdocx.doctypes.DocContainer;
-import org.underdocx.doctypes.commands.ignore.IgnoreInstruction;
+import org.underdocx.doctypes.commands.ignore.IgnoreState;
 import org.underdocx.doctypes.commands.ignore.IgnoreStateHandler;
 import org.underdocx.doctypes.commands.internal.AbstractTextualCommandHandler;
 import org.underdocx.doctypes.modifiers.ModifiersProvider;
@@ -49,13 +48,24 @@ public class IgnoreCommandHandler<C extends DocContainer<D>, D> extends Abstract
 
     @Override
     protected CommandHandlerResult tryExecuteTextualCommand() {
-        Pair<Boolean, IgnoreInstruction> shallExecute = ignoreStateHandler.interpretAndCheckExecution(selection.getPlaceholderData());
-        if (shallExecute.left && shallExecute.right != IgnoreInstruction.UNKNOWN) {
-            markForEodDeletion();
-            return CommandHandlerResult.EXECUTED_PROCEED;
-        }
-        return ignoreStateHandler.isIgnoring() ? CommandHandlerResult.EXECUTED_PROCEED : CommandHandlerResult.IGNORED;
+        IgnoreState ignoreState = ignoreStateHandler.interpretAndCheckExecution(selection.getPlaceholderData());
 
+        if (ignoreState.isIgnoring()) {
+            if (ignoreState.isIgnoreRelatedCommand() && ignoreState.shouldProcessCommand()) {
+                markForEodDeletion();
+            }
+            if (ignoreState.shouldExit()) {
+                return CommandHandlerResult.EXIT;
+            }
+            return CommandHandlerResult.EXECUTED_PROCEED; // consume this placeholder
+        } else {
+            if (ignoreState.isIgnoreRelatedCommand()) {
+                markForEodDeletion();
+                return CommandHandlerResult.EXECUTED_PROCEED;
+            } else {
+                return CommandHandlerResult.IGNORED;
+            }
+        }
     }
 
 }

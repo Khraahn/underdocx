@@ -24,8 +24,41 @@ SOFTWARE.
 
 package org.underdocx.doctypes.commands.ignore;
 
-public enum IgnoreInstruction {
-    START_IGNORE,
-    END_IGNORE,
-    UNKNOWN
+public enum IgnoreState {
+
+    EXIT(true, true, true, true),
+    START_IGNORE(false, true, true, true),
+    IGNORING(false, false, true, false),
+    END_IGNORE(false, true, false, true),
+    NORMAL(false, true, false, false);
+
+    private final boolean exit;
+    private final boolean process;
+    private final boolean ignoring;
+    private final boolean ignoreRelated;
+
+    IgnoreState(boolean exit, boolean process, boolean ignoring, boolean ignoreRelated) {
+        this.exit = exit;
+        this.process = process;
+        this.ignoring = ignoring;
+        this.ignoreRelated = ignoreRelated;
+    }
+
+    public boolean shouldExit() {
+        return this.exit;
+    }
+
+    public boolean shouldProcessCommand() {
+        return this.process;
+    }
+
+    public boolean isIgnoring() {
+        return this.ignoring;
+    }
+
+    public boolean isIgnoreRelatedCommand() {
+        return this.ignoreRelated;
+    }
+
+
 }

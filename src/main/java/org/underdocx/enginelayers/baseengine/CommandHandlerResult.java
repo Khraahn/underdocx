@@ -33,6 +33,7 @@ public interface CommandHandlerResult {
     CommandHandlerResult EXECUTED_PROCEED = new DefaultResult(CommandHandlerResultType.EXECUTED_PROCEED);
     CommandHandlerResult EXECUTED_FULL_RESCAN = new DefaultResult(CommandHandlerResultType.EXECUTED_FULL_RESCAN);
     CommandHandlerResult EXECUTED_END_OF_DOC = new DefaultResult(CommandHandlerResultType.EXECUTED_END_OF_DOC);
+    CommandHandlerResult EXIT = new DefaultResult(CommandHandlerResultType.EXIT);
 
     Factory FACTORY = new Factory();
 
@@ -41,7 +42,8 @@ public interface CommandHandlerResult {
         EXECUTED_PROCEED,
         EXECUTED_FULL_RESCAN,
         EXECUTED_RESTART_AT_NODE,
-        EXECUTED_END_OF_DOC
+        EXECUTED_END_OF_DOC,
+        EXIT
     }
 
     CommandHandlerResultType getResultType();
