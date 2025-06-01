@@ -1290,7 +1290,7 @@ ${EndIf}</code></pre>
 
         This command is a special placeholder, because it is not a plain textual command. Images placeholder are real
         images that are placed during template creation. An image becomes a placeholder image by adding
-        the <code-word>${Image}</code-word> as image name. This textual part of the placeholder is located
+        the <code-word>${Image}</code-word> as description. This textual part of the placeholder is located
         in the "Description" field of the "Options"-tab of the "Properties..."-window of the image, which is selectable
         when you right-click the image.
 
@@ -1353,33 +1353,31 @@ ${EndIf}</code></pre>
 
           <tr>
             <td>name</td>
-            <td>yes</td>
+            <td>optional</td>
             <td>
-              Name of the image file. It must contain the file extension, for example "image.png"
-            </td>
-          </tr>
-
-          <tr>
-            <td>title</td>
-            <td>no</td>
-            <td>
-              Will be the new name of the image after replacement
+              Name of the image to set
             </td>
           </tr>
 
           <tr>
             <td>keepWidth</td>
-            <td>no</td>
+            <td>optional</td>
             <td>
               when true, replaced image will have same width as this template image and height will be recalculated.
               When false, replaced image will have same height as this template image and width will be recalculated.
                 When not set the origin size of the image won't change.
+                This property is ignored for shapes
             </td>
           </tr>
         </table>
 
-        Note that images must contain unique names. Ensure the textual commands are different and
-        attribute "title" provides unique names after replacement.
+          Note that images must contain unique names.<br>
+            <br>
+          The image command can also be used to set the background for shapes. Select "Alt Text.." to
+          input the command.
+          <div class="imageContainer"><img src="images/guide/ImageShapeProperties.png" /></div>
+          The attribute <code-word>keepWidth</code-word> is ignored for this kind of images.
+
 
           <h3>${CreateImage}-Command</h3>
 
@@ -2155,6 +2153,9 @@ ${Calc key:"x", a:2.0, operator:"*", $b:"i"}${$x}</code></pre>
 
         <h3>${Ignore}-Command</h3>
         Lets the engine ignore all following commands/placeholders until <code-word>${EndIgnore}</code-word> command is reached.
+
+        <h3>${Exit}-Command</h3>
+          Stops interpretation of all following placeholders.
 
         <h3>${Model}-Command</h3>
 
