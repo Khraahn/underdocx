@@ -2189,8 +2189,9 @@ ${Calc key:"x", a:2.0, operator:"*", $b:"i"}${$x}</code></pre>
         You can change the syntax style of placeholders by implementing your own style or by
         using predefined styles. Changing the placeholder style might help you to
         edit (text) templates. The TxtEngine can use <code-word>TxtPlaceholderStyle</code-word> that
-        provides styles <code-word>XML-COMMENT</code-word>, <code-word>CODE-COMMENT</code-word> and
+        provides styles <code-word>DOUBLE-BRACKETS</code-word>, <code-word>XML-COMMENT</code-word>, <code-word>CODE-COMMENT</code-word> and
         <code-word>HASH-COMMENT</code-word>.
+
         <h3>XML-Comment Style</h3>
         Use the XML-Comment style to hide the commands in XML comments.
         <pre class="highlightjs highlight nowrap"><code class="language-xml hljs" data-lang="xml">&lt;html&gt;&lt;body&gt;
@@ -2201,7 +2202,13 @@ ${Calc key:"x", a:2.0, operator:"*", $b:"i"}${$x}</code></pre>
   &lt;/ul&gt;
 &lt;/body&gt;&lt;/html&gt;</code></pre>
 
-        <h3>Code-Comment Style</h3>
+          <h3>Double-Brackets Style</h3>
+          This placeholder style is derived from the mustache-template-engine placeholder syntax.
+          <pre
+                  class="highlightjs highlight nowrap"><code class="language-java hljs" data-lang="python">{{Join value:["Bibi", "Tina", "Amadeus", "Sabrina"]}} {{Date value:"2022-02-02"}}</code></pre>
+
+
+          <h3>Code-Comment Style</h3>
         Use the Code-Comment Style to hide the commands in language-comments as used in Java, TypeScript, C++ etc.
         <pre class="highlightjs highlight nowrap"><code class="language-java hljs" data-lang="java">public class Test {
     /*!For $value:"entries", $as:"item"!*/
