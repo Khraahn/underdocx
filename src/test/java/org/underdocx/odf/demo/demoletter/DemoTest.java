@@ -22,7 +22,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-package org.underdocx.odf.demo.demo_0_7_1;
+package org.underdocx.odf.demo.demoletter;
 
 import org.junit.jupiter.api.Test;
 import org.underdocx.AbstractOdtTest;
