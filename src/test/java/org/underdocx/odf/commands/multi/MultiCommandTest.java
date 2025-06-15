@@ -28,7 +28,9 @@ import org.junit.jupiter.api.Test;
 import org.underdocx.AbstractOdtTest;
 import org.underdocx.doctypes.odf.odt.OdtContainer;
 import org.underdocx.doctypes.odf.odt.OdtEngine;
+import org.underdocx.enginelayers.modelengine.data.simple.DataTreeBuilder;
 import org.underdocx.enginelayers.modelengine.data.simple.MapDataNode;
+import org.underdocx.environment.UnderdocxEnv;
 
 public class MultiCommandTest extends AbstractOdtTest {
 
@@ -55,5 +57,22 @@ public class MultiCommandTest extends AbstractOdtTest {
         assertContains(doc, "2 C");
         assertOrder(doc, "A", "B", "C");
         assertNoPlaceholders(doc);
+    }
+
+    @Test
+    public void testReplacementCascade() {
+        UnderdocxEnv.getInstance().isDebug = true;
+        OdtEngine engine = new OdtEngine();
+        engine.pushVariable("test", DataTreeBuilder.beginMap()//
+                .add("patient", "Hans") //
+                .add("topic", "Betrifft: ${$test.patient}") //
+                .build());
+        engine.registerStringReplacement("topic", "${$test.topic rescan:true}");
+
+        OdtContainer doc = new OdtContainer("${topic}");
+        engine.run(doc);
+
+        assertNoPlaceholders(doc);
+        assertContains(doc, "Betrifft: Hans");
     }
 }
