@@ -22,27 +22,35 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-package org.underdocx.common.codec;
+package org.underdocx.mains.potion;
 
-import org.underdocx.environment.UnderdocxEnv;
+import org.underdocx.doctypes.odf.odg.OdgContainer;
+import org.underdocx.doctypes.odf.odg.OdgEngine;
 
-import java.util.Optional;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
 
-public interface Codec<P> {
+public class PotionDemo {
+    public static void main(String[] args) throws IOException {
+        // read template
+        String in = "potion.odg";
+        Class<?> clazz = PotionDemo.class;
+        InputStream is = clazz.getResourceAsStream(in);
+        OdgContainer doc = new OdgContainer(is);
 
-    default Optional<P> tryParse(String string) {
-        try {
-            return Optional.ofNullable(parse(string));
-        } catch (Exception e) {
-            if (UnderdocxEnv.getInstance().isDebug) {
-                UnderdocxEnv.getInstance().logger.info("can not parse: " + string);
-            }
-            return Optional.empty();
-        }
+        // execute template engine
+        OdgEngine engine = new OdgEngine();
+        engine.registerStringReplacement(
+                "pt.heal",
+                "Potion of Regeneration"
+        );
+        engine.run(doc);
+
+        // save document
+        File out = File.createTempFile(
+                "demo", ".odg"
+        );
+        doc.save(out);
     }
-
-    P parse(String string) throws Exception;
-
-    String getTextContent(P data);
-
 }

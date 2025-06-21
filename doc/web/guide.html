@@ -86,12 +86,12 @@
         <pre class="highlightjs highlight nowrap"><code class="language-xml hljs" data-lang="xml">&lt;dependency&gt;
     &lt;groupId&gt;io.github.winterrifier&lt;/groupId&gt;
     &lt;artifactId&gt;underdocx&lt;/artifactId&gt;
-    &lt;version&gt;0.12.1&lt;/version&gt;
+    &lt;version&gt;0.12.2&lt;/version&gt;
 &lt;/dependency&gt;</code></pre>
 
         When you use Gradle your dependency should look like this
 
-        <pre class="padding"><code>implementation 'io.github.winterrifier:underdocx:0.12.1'</code></pre>
+        <pre class="padding"><code>implementation 'io.github.winterrifier:underdocx:0.12.2'</code></pre>
 
         You can also visit <a href="https://central.sonatype.com/artifact/io.github.winterrifier/underdocx"
           target="_blank">
@@ -2248,16 +2248,16 @@ ${Calc key:"x", a:2.0, operator:"*", $b:"i"}${$x}</code></pre>
         <pre class="padding"><code>git clone https://github.com/winterrifier/underdocx.git
 cd underdocx
 mvn clean install -P buildCli</code></pre>
-        After execution there will be a target folder that contains "underdocx-0.12.1-jar-with-dependencies.jar".
+        After execution there will be a target folder that contains "underdocx-0.12.2-jar-with-dependencies.jar".
         You can use this jar file as CLI tool.
 
         <h3>Usage of CLI</h3>
         To call Underdocx by CLI use this syntax:
         <pre
-          class="padding"><code>java -jar underdocx-0.12.1-jar-with-dependencies.jar &lt;engineType&gt; &lt;templateFile&gt; &lt;outFile&gt; [dataJsonFile1] [dataJsonFile2] ...</code></pre>
+          class="padding"><code>java -jar underdocx-0.12.2-jar-with-dependencies.jar &lt;engineType&gt; &lt;templateFile&gt; &lt;outFile&gt; [dataJsonFile1] [dataJsonFile2] ...</code></pre>
         For example:
         <pre
-          class="padding"><code>java -jar underdocx-0.12.1-jar-with-dependencies.jar ODT template.odt out.odt data.json</code></pre>
+          class="padding"><code>java -jar underdocx-0.12.2-jar-with-dependencies.jar ODT template.odt out.odt data.json</code></pre>
           Note: It is also possible to add custom Placeholder/Command implementations (see section Custom Extensions).
         Implement interface <code-word>EngineProvider</code-word>,
         include your classes to the classpath, execute <code-word>UnderdocxEngineRunder</code-word> as main class and
